@@ -47,6 +47,22 @@ class BaselineEvaluationTest(unittest.TestCase):
         with self.assertRaises(KeyError):
             evaluate_target_forms(selected, split="test", predictor=fake_predictor)
 
+    def test_evaluates_multiple_samples_per_target_form(self):
+        selected = select_target_archive_pairs(discover_archives())
+
+        evaluations = evaluate_target_forms(
+            selected,
+            split="validation",
+            predictor=fake_predictor,
+            samples_per_form=2,
+        )
+
+        self.assertEqual(len(evaluations), 6)
+        self.assertEqual(
+            {evaluation.sample.form_type for evaluation in evaluations},
+            set(FINTRA_FORM_TYPES),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -9,7 +9,7 @@ from .image_loader import load_image_bytes
 from .label_bbox import parse_bounding_boxes
 from .label_loader import load_label_json
 from .prediction_parser import parse_paddle_result
-from .sample_selection import TargetSample, select_target_sample
+from .sample_selection import TargetSample, select_target_samples
 from .target_scope import FINTRA_FORM_TYPES
 from .target_selection import TargetArchivePair
 
@@ -30,8 +30,12 @@ def evaluate_target_forms(
     split: str = "training",
     predictor: Optional[RawPredictor] = None,
     ocr: Any = None,
+    samples_per_form: int = 1,
 ) -> list[FormEvaluation]:
-    """Evaluate one sample for each of the three Fintra target form types."""
+    """Evaluate one or more samples for each Fintra target form type."""
+    if samples_per_form <= 0:
+        raise ValueError("samples_per_form must be greater than zero")
+
     if predictor is None:
         from .baseline_ocr import create_paddle_ocr, predict_image_bytes
 
@@ -43,20 +47,21 @@ def evaluate_target_forms(
     pairs = archive_groups[split]
     evaluations: list[FormEvaluation] = []
     for form_type in sorted(FINTRA_FORM_TYPES):
-        sample = select_target_sample(pairs, form_type)
-        image_bytes = load_image_bytes(sample.source_archive, sample.image_member)
-        raw_results = list(predictor(image_bytes))
-        if not raw_results:
-            raise ValueError(f"PaddleOCR returned no result for {form_type!r}")
+        samples = select_target_samples(pairs, form_type, samples_per_form)
+        for sample in samples:
+            image_bytes = load_image_bytes(sample.source_archive, sample.image_member)
+            raw_results = list(predictor(image_bytes))
+            if not raw_results:
+                raise ValueError(f"PaddleOCR returned no result for {form_type!r}")
 
-        predictions = parse_paddle_result(raw_results[0])
-        record = load_label_json(sample.label_archive, sample.label_member)
-        ground_truth = parse_bounding_boxes(record)
-        evaluations.append(
-            FormEvaluation(
-                sample=sample,
-                comparison=compare_predictions(predictions, ground_truth),
+            predictions = parse_paddle_result(raw_results[0])
+            record = load_label_json(sample.label_archive, sample.label_member)
+            ground_truth = parse_bounding_boxes(record)
+            evaluations.append(
+                FormEvaluation(
+                    sample=sample,
+                    comparison=compare_predictions(predictions, ground_truth),
+                )
             )
-        )
 
     return evaluations

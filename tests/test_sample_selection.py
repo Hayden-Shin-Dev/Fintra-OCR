@@ -8,7 +8,7 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from fintra_ocr.archive_discovery import discover_archives
 from fintra_ocr.label_loader import load_label_json
-from fintra_ocr.sample_selection import select_target_sample
+from fintra_ocr.sample_selection import select_target_sample, select_target_samples
 from fintra_ocr.target_scope import FINTRA_FORM_TYPES, is_fintra_target_document
 from fintra_ocr.target_selection import select_target_archive_pairs
 
@@ -35,6 +35,23 @@ class SampleSelectionTest(unittest.TestCase):
         self.assertTrue(sample.image_member.lower().endswith(".png"))
         self.assertTrue(sample.label_member.lower().endswith(".json"))
         self.assertNotEqual(sample.image_member, sample.label_member)
+
+    def test_selects_multiple_distinct_samples_for_one_form_type(self):
+        selected = select_target_archive_pairs(discover_archives())
+
+        samples = select_target_samples(selected["training"], "상업송장", limit=2)
+
+        self.assertEqual(len(samples), 2)
+        self.assertEqual(
+            len({sample.label_member for sample in samples}),
+            2,
+        )
+
+    def test_non_positive_sample_limit_raises_value_error(self):
+        selected = select_target_archive_pairs(discover_archives())
+
+        with self.assertRaises(ValueError):
+            select_target_samples(selected["training"], "상업송장", limit=0)
 
 
 if __name__ == "__main__":
