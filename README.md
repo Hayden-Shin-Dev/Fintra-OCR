@@ -6,7 +6,7 @@ Fintra의 거래 증빙 OCR 파트를 단계적으로 개발하기 위한 작업
 
 1. [완료] 데이터셋 기본 구조 확인
 2. [완료] 데이터 경로 구성
-3. [진행 중] ZIP 구조 및 파일 구성 분석
+3. [완료] ZIP 구조 및 파일 구성 분석
 4. [미완료] 라벨 JSON 구조 상세 분석
 5. [미완료] 이미지-라벨 pairing 검증
 6. [미완료] 대상 문서 3종 선별
@@ -51,6 +51,20 @@ OCR/
 현재 원천 및 라벨 데이터는 ZIP으로 보관되어 있습니다. 원천 ZIP에는 PNG, 라벨 ZIP에는 JSON이 들어 있으며, 분석 과정에서 원본 ZIP을 수정하거나 이동하지 않습니다.
 
 샘플 라벨 JSON의 top-level 구성은 `Annotation`, `Dataset`, `Images`, `bbox`입니다. `bbox` 항목에는 OCR 텍스트와 좌표 정보가 포함되어 있습니다. 상세 schema 검증은 이후 단계에서 수행합니다.
+
+## ZIP 구조
+
+- Training 원천 archive: 34개
+- Training 라벨 archive: 34개
+- Validation 원천 archive: 34개
+- Validation 라벨 archive: 34개
+- Training 원천 내부 파일: `.png` 126,326개
+- Training 라벨 내부 파일: `.json` 126,326개
+- Validation 원천 내부 파일: `.png` 15,785개
+- Validation 라벨 내부 파일: `.json` 15,785개
+- archive pairing 누락: 0개
+
+원천 archive 이름의 `TS_` 및 `VS_` prefix는 각각 라벨 archive의 `TL_` 및 `VL_` prefix와 대응합니다. archive 내부 파일은 원천 PNG와 라벨 JSON으로 구성되며, 집계 과정에서 압축을 해제하지 않았습니다.
 
 ## 개발 원칙
 
