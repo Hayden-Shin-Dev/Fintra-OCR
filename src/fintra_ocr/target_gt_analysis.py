@@ -109,7 +109,8 @@ def _field_hits(text: str) -> set[str]:
         hits.add("quantity")
     if re.search(r"\b(?:amount|total|subtotal|grand|value|price)\b", normalized):
         hits.add("amount_total")
-    if re.search(r"\b(?:currency|usd|cad|eur|gbp|jpy|cny|krw)\b", normalized):
+    # A currency code/symbol is a value-format signal, not a visible currency label.
+    if re.search(r"\bcurrency\b", normalized):
         hits.add("currency")
     if re.search(r"\b(?:number of packages?|packages?|package|no & kinds|bundles?)\b", normalized):
         hits.add("number_of_packages")
@@ -214,6 +215,8 @@ def _value_candidate(field_name: str, text: str, *, anchored: bool = False) -> b
         )
     if field_name in {"invoice_no", "bl_no"}:
         return bool(_ID_PATTERN.search(candidate))
+    if field_name in {"buyer_consignee", "shipper", "consignee", "goods_description"}:
+        return bool(candidate) and not _field_hits(candidate)
     return False
 
 
@@ -371,7 +374,6 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
             total_marker_indices.add(index)
 
     lines = _line_groups(boxes)
-    line_by_index = _line_index_map(lines)
     table_like_rows = 0
     item_rows = 0
     total_rows = 0
@@ -450,7 +452,9 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
                 continue
             for index in line:
                 text = boxes[index]["text"]
-                if field_name == "gross_weight" and "net_weight_context" in box_field_hits[index]:
+                if field_name == "gross_weight" and "net_weight_context" in box_field_hits[index] and (
+                    _measure_unit(text) is not None or _number(text)
+                ):
                     ambiguous[field_name] += 1
                     ambiguous_occurrences[field_name] += 1
                 elif field_name == "gross_weight" and any(
