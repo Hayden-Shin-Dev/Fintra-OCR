@@ -54,7 +54,7 @@ def make_field_evidence(
         raise ValueError("status must be found, missing, or ambiguous")
     if status == "found" and value is None:
         raise ValueError("found evidence must have a value")
-    if status != "found":
+    if status == "missing":
         return FieldEvidence(
             field_name=field_name,
             value=None,
@@ -67,6 +67,16 @@ def make_field_evidence(
 
     selected = [predictions[index] for index in source_indices]
     if not selected:
+        if status == "ambiguous":
+            return FieldEvidence(
+                field_name=field_name,
+                value=value,
+                raw_text="",
+                bbox=None,
+                confidence=0.0,
+                status=status,
+                reason=reason,
+            )
         raise ValueError("found evidence must reference at least one prediction")
     ordered = sorted(
         zip(source_indices, selected),

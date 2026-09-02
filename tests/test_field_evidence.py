@@ -46,6 +46,20 @@ class FieldEvidenceTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             make_field_evidence("field", predictions, (0,), None)
 
+    def test_ambiguous_evidence_keeps_source_details(self):
+        predictions = [OCRPrediction("$", (0, 1, 1, 0), (0, 0, 1, 1), 0.82)]
+
+        evidence = make_field_evidence(
+            "currency", predictions, (0,), "$", status="ambiguous",
+            reason="currency code is not visible",
+        )
+
+        self.assertEqual(evidence.status, "ambiguous")
+        self.assertEqual(evidence.value, "$")
+        self.assertEqual(evidence.raw_text, "$")
+        self.assertIsNotNone(evidence.bbox)
+        self.assertEqual(evidence.confidence, 0.82)
+
 
 if __name__ == "__main__":
     unittest.main()
