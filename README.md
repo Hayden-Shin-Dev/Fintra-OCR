@@ -1,0 +1,73 @@
+# Fintra OCR
+
+Fintra의 거래 증빙 OCR 파트를 단계적으로 개발하기 위한 작업 공간입니다.
+
+## OCR 작업 현황
+
+1. [완료] 데이터셋 기본 구조 확인
+2. [미완료] 데이터 경로 구성
+3. [미완료] ZIP 구조 및 파일 구성 분석
+4. [미완료] 라벨 JSON 구조 상세 분석
+5. [미완료] 이미지-라벨 pairing 검증
+6. [미완료] 대상 문서 3종 선별
+7. [미완료] PaddleOCR baseline 환경 구성
+8. [미완료] 단일 이미지 baseline 추론
+9. [미완료] OCR prediction과 정답 라벨 비교
+10. [미완료] 여러 샘플 baseline 평가
+11. [미완료] Fine-tuning 필요 여부 결정
+12. [미완료] 필요 시 Fine-tuning 및 성능 평가
+13. [미완료] 최종 OCR 모델 확정
+14. [미완료] OCR 결과에서 필요한 필드 추출
+15. [미완료] 필드 값 normalization
+16. [미완료] 공통 JSON schema 출력
+17. [미완료] Fintra 교차검증 모듈 연결
+18. [미완료] 전체 OCR 파이프라인 테스트
+19. [미완료] README 최종 정리
+
+단계 상태는 구현, 실행 또는 테스트, 실제 데이터 검증이 모두 끝난 뒤에만 완료로 변경합니다. 다음 단계는 현재 단계가 완료된 뒤 별도로 시작합니다.
+
+## OCR 데이터 메모
+
+- Training 원천 ZIP: 34개
+- Training 라벨 ZIP: 34개
+- Validation 원천 ZIP: 34개
+- Validation 라벨 ZIP: 34개
+- Training 내부 PNG/JSON: 각각 126,326개
+- Validation 내부 PNG/JSON: 각각 15,785개
+- 현재 확인 범위에서 이미지와 라벨의 basename pairing 누락: 0개
+
+데이터 디렉터리는 다음과 같이 구성되어 있습니다.
+
+```text
+OCR/
+├─ Training/
+│  ├─ 01.원천데이터/
+│  └─ 02.라벨링데이터/
+└─ Validation/
+   ├─ 01.원천데이터/
+   └─ 02.라벨링데이터/
+```
+
+현재 원천 및 라벨 데이터는 ZIP으로 보관되어 있습니다. 원천 ZIP에는 PNG, 라벨 ZIP에는 JSON이 들어 있으며, 분석 과정에서 원본 ZIP을 수정하거나 이동하지 않습니다.
+
+샘플 라벨 JSON의 top-level 구성은 `Annotation`, `Dataset`, `Images`, `bbox`입니다. `bbox` 항목에는 OCR 텍스트와 좌표 정보가 포함되어 있습니다. 상세 schema 검증은 이후 단계에서 수행합니다.
+
+## 개발 원칙
+
+- 원천 데이터와 라벨 데이터는 Git에 추가하지 않습니다.
+- 독립적으로 설명할 수 있는 기능 또는 검증 단위마다 commit을 만듭니다.
+- 각 변경 후 테스트와 실제 데이터 검증을 수행합니다.
+- 현재 단계에서는 OCR 모델 설치, 추론, 학습을 진행하지 않습니다.
+- Fine-tuning은 pretrained OCR baseline 결과를 확인한 뒤 필요할 때만 결정합니다.
+
+## Commit 규칙
+
+Conventional Commits 형식을 사용합니다.
+
+예시:
+
+```text
+docs: add OCR development roadmap
+feat: define OCR dataset paths
+test: validate OCR dataset paths
+```
