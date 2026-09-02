@@ -65,6 +65,20 @@ class TargetGTAnalysisTest(unittest.TestCase):
         self.assertEqual(len(samples), 3)
         self.assertTrue(all(sample["selection_reason"] for sample in samples))
 
+    def test_plain_integer_is_not_counted_as_money(self):
+        result = analyze_records([
+            record("commercial_invoice", "amounts.json", [
+                ("$1,216.98", 10, 10), ("1216", 100, 10),
+            ])
+        ])
+
+        amount_stats = result["document_types"]["commercial_invoice"]["field_stats"]["amount_total"]
+        self.assertEqual(amount_stats["occurrences"], 1)
+        self.assertEqual(
+            result["document_types"]["commercial_invoice"]["amount_patterns"]["with_symbol"],
+            1,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

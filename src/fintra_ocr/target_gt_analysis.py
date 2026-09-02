@@ -47,6 +47,8 @@ _DATE_PATTERNS = (
     ("numeric_day_month_year", re.compile(r"^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$")),
 )
 _MONEY_PATTERN = re.compile(r"^(?:[$€£¥]\s*)?\d[\d,]*(?:\.\d+)?(?:\s*[A-Z]{3})?$", re.I)
+_MONEY_TOKEN_PATTERN = re.compile(r"(?:[$€£¥]\s*)?\d[\d,]*(?:\.\d+)?(?:\s*(?:USD|CAD|EUR|GBP|JPY|CNY|KRW|HKD|AUD|SGD))?", re.I)
+_CURRENCY_CODE_PATTERN = re.compile(r"\b(?:USD|CAD|EUR|GBP|JPY|CNY|KRW|HKD|AUD|SGD)\b", re.I)
 _NUMBER_PATTERN = re.compile(r"^[+-]?\d[\d,]*(?:\.\d+)?$")
 _MEASURE_PATTERN = re.compile(
     r"^[+-]?\d[\d,]*(?:\.\d+)?\s*(KG|KGS|LB|LBS|PKG|PKGS|PCS?|CTN|CTNS?|BUNDLES?|BOX(?:ES)?|CARTONS?|CASES?|PALLETS?|ST|CT)$",
@@ -118,7 +120,11 @@ def _money_features(text: str) -> tuple[bool, str | None, bool, bool]:
     candidate = _clean_text(text).strip(" :;,.()")
     if not _MONEY_PATTERN.fullmatch(candidate):
         return False, None, False, False
+    if _MEASURE_PATTERN.fullmatch(candidate) or _UNIT_ONLY_PATTERN.fullmatch(candidate):
+        return False, None, False, False
     code_match = re.search(r"\b(USD|CAD|EUR|GBP|JPY|CNY|KRW|HKD|AUD|SGD)\b", candidate, re.I)
+    if not code_match and not re.search(r"[$€£¥]", candidate) and "." not in candidate:
+        return False, None, False, False
     return (
         True,
         code_match.group(1).upper() if code_match else None,
@@ -152,6 +158,21 @@ def _line_groups(boxes: Sequence[Mapping[str, Any]]) -> list[list[int]]:
     for group in groups:
         group.sort(key=lambda index: min(boxes[index]["x"]))
     return groups
+
+
+def _value_candidate(field_name: str, text: str) -> bool:
+    candidate = _clean_text(text)
+    if field_name == "date":
+        return any(pattern.search(candidate) for _, pattern in _DATE_PATTERNS)
+    if field_name == "amount_total":
+        return bool(_MONEY_TOKEN_PATTERN.search(candidate)) and _money_features(candidate)[0]
+    if field_name == "currency":
+        return bool(_CURRENCY_CODE_PATTERN.search(candidate) or re.search(r"[$€£¥]", candidate))
+    if field_name in {"quantity", "number_of_packages", "gross_weight"}:
+        return bool(_MEASURE_PATTERN.search(candidate) or _NUMBER_PATTERN.search(candidate))
+    if field_name in {"invoice_no", "bl_no"}:
+        return bool(_ID_PATTERN.search(candidate))
+    return False
 
 
 def _empty_field_stats() -> dict[str, Any]:
@@ -199,7 +220,7 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
     total_marker_indices: set[int] = set()
     numeric_indices: set[int] = set()
     measure_indices: set[int] = set()
-    value_split_count = 0
+    value_split_count = Counter()
     box_field_hits: dict[int, set[str]] = {}
     box_date_formats: dict[int, str | None] = {}
     box_measure_units: dict[int, str | None] = {}
@@ -236,7 +257,7 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
         box_money[index] = (is_money, code, has_thousands, has_decimal)
         if is_money:
             field_hits["amount_total"].append(index)
-            if code or re.search(r"[$€£¥]", text):
+            if code or _CURRENCY_CODE_PATTERN.search(text) or re.search(r"[$€£¥]", text):
                 field_hits["currency"].append(index)
             amount_count += 1
             amount_with_symbol += int(bool(re.search(r"[$€£¥]", text)))
@@ -271,13 +292,25 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
         if line_has_total:
             total_rows += 1
         if numbers and measures:
-            value_split_count += 1
+            split_units = [_unit_only(boxes[index]["text"]) for index in measures]
+            if any(unit in {"KG", "KGS", "LB", "LBS"} for unit in split_units):
+                value_split_count["gross_weight"] += 1
+            if any(unit in {"PKG", "PKGS", "BOX", "BOXES", "CTN", "CTNS", "BUNDLES", "BUNDLE", "CARTONS", "CARTON", "CASES", "CASE", "PALLETS", "PALLET"} for unit in split_units):
+                value_split_count["number_of_packages"] += 1
+            if any(unit in {"ST", "CT", "PC", "PCS"} for unit in split_units):
+                value_split_count["quantity"] += 1
+            if not split_units:
+                value_split_count["quantity"] += 1
         for index in line:
             hits = box_field_hits[index]
             for field_name in hits:
-                if box_date_formats[index] or box_money[index][0] or index in numeric_indices or box_measure_units[index]:
+                if _value_candidate(field_name, boxes[index]["text"]):
                     same_bbox[field_name] += 1
-                elif len(line) > 1:
+                elif any(
+                    other_index != index
+                    and _value_candidate(field_name, boxes[other_index]["text"])
+                    for other_index in line
+                ):
                     separate_pairs[field_name] += 1
                 if len(line) >= 3:
                     table_occurrences[field_name] += 1
@@ -304,7 +337,7 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
         "table_like_rows": table_like_rows,
         "item_rows": item_rows,
         "total_rows": total_rows,
-        "value_split_count": value_split_count,
+        "value_split_count": dict(value_split_count),
         "same_bbox": same_bbox,
         "separate_pairs": separate_pairs,
         "table_occurrences": table_occurrences,
@@ -324,7 +357,7 @@ def _representative_features(profile: Mapping[str, Any]) -> dict[str, int]:
         "core_fields": sum(value > 0 for value in candidates.values()),
         "missing_core_fields": sum(value == 0 for value in candidates.values()),
         "table_rows": profile["table_like_rows"],
-        "split_values": profile["value_split_count"],
+        "split_values": sum(profile["value_split_count"].values()),
         "repeated_fields": sum(len(indices) > 1 for indices in profile["field_hits"].values()),
         "item_rows": profile["item_rows"],
         "unusual_formats": sum(profile["date_formats"].values()) + sum(profile["unit_counts"].values()),
@@ -408,7 +441,7 @@ def analyze_records(records: Iterable[TargetLabelRecord], representatives_per_ty
                 stats["documents_without_candidate"] += 1
             stats["same_bbox_label_value"] += profile["same_bbox"].get(field_name, 0)
             stats["separate_bbox_label_value"] += profile["separate_pairs"].get(field_name, 0)
-            stats["split_value_across_bboxes"] += profile["value_split_count"] if field_name in {"quantity", "number_of_packages", "gross_weight"} else 0
+            stats["split_value_across_bboxes"] += profile["value_split_count"].get(field_name, 0)
             stats["table_like_occurrences"] += profile["table_occurrences"].get(field_name, 0)
             stats["item_value_signals"] += profile["item_signals"].get(field_name, 0)
             stats["total_value_signals"] += profile["total_signals"].get(field_name, 0)
@@ -426,7 +459,7 @@ def analyze_records(records: Iterable[TargetLabelRecord], representatives_per_ty
         type_counters[item.document_type]["geometry"]["table_like_rows"] += profile["table_like_rows"]
         type_counters[item.document_type]["geometry"]["item_rows"] += profile["item_rows"]
         type_counters[item.document_type]["geometry"]["total_rows"] += profile["total_rows"]
-        type_counters[item.document_type]["geometry"]["split_value_rows"] += profile["value_split_count"]
+        type_counters[item.document_type]["geometry"]["split_value_rows"] += sum(profile["value_split_count"].values())
 
     types: dict[str, Any] = {}
     for document_type in DOCUMENT_TYPES:
