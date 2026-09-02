@@ -1,7 +1,7 @@
 """Minimal PaddleOCR runner for one in-memory target image."""
 
 from io import BytesIO
-from typing import Any, Optional
+from typing import Any, Optional, Sequence
 
 import numpy as np
 from PIL import Image, UnidentifiedImageError
@@ -36,3 +36,15 @@ def predict_image_bytes(image_bytes: bytes, ocr: Any = None) -> list[Any]:
     image = decode_image_bytes(image_bytes)
     pipeline = ocr if ocr is not None else create_paddle_ocr()
     return list(pipeline.predict(input=image))
+
+
+def predict_image_bytes_batch(
+    image_bytes_list: Sequence[bytes], ocr: Any = None
+) -> list[Any]:
+    """Run several image byte inputs through PaddleOCR in one batch."""
+    if not image_bytes_list:
+        return []
+
+    images = [decode_image_bytes(image_bytes) for image_bytes in image_bytes_list]
+    pipeline = ocr if ocr is not None else create_paddle_ocr()
+    return list(pipeline.predict(input=images))
