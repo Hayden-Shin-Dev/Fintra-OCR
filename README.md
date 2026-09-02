@@ -100,6 +100,7 @@ OCR/
 - 10-4 실제 실행 메모: batch 6장 평가도 CPU 처리 시간이 길어 중단. batch API 자체는 2장 실제 입력에서 결과 2개 반환을 확인했고, 기록 수치는 3장 평가 결과를 사용.
 - 11-1 fine-tuning 판단: 3장 합산 prediction 230 / 정답 328 / 매칭 67 / exact 54, precision 0.2913, recall 0.2043. baseline은 낮지만 표본 3장과 CPU 시간 제약이 있어 즉시 fine-tuning은 보류.
 - 12-1 학습 준비: 대상 3종 라벨을 PaddleOCR detection line으로 변환하는 순수 변환기 추가. 실제 학습/대량 추출은 아직 시작하지 않음.
+- 평가 보완 1-1: Unicode/공백 정규화 exact match와 character-level CER/edit similarity 계산 추가 예정.
 - split별 target JSON: Training 63,977개 / Validation 7,996개.
 - 전체 사전 scan 142,111개에서는 금융/물류 schema가 섞여 있었음. 이후 Fintra 기준 통계는 물류 3종만 사용.
 - Fintra OCR 대상: 상업송장 / 포장명세서 / 선하증권.
