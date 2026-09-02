@@ -37,6 +37,8 @@ class FieldEvidenceTest(unittest.TestCase):
         self.assertEqual(evidence.confidence, 0.0)
         self.assertEqual(evidence.status, "missing")
         self.assertEqual(evidence.reason, "no deterministic candidate")
+        self.assertIsNone(evidence.normalized)
+        self.assertEqual(evidence.normalization_status, "not_processed")
 
     def test_found_evidence_requires_a_prediction_and_value(self):
         predictions = [OCRPrediction("one", (0, 1, 1, 0), (0, 0, 1, 1), 0.9)]

@@ -7,6 +7,9 @@ from .prediction_parser import OCRPrediction
 
 
 FieldStatus = Literal["found", "missing", "ambiguous"]
+NormalizationStatus = Literal[
+    "not_processed", "normalized", "unchanged", "ambiguous", "failed"
+]
 BoundingBox = tuple[
     tuple[int, int],
     tuple[int, int],
@@ -27,6 +30,9 @@ class FieldEvidence:
     status: FieldStatus
     source_indices: tuple[int, ...] = ()
     reason: str | None = None
+    normalized: object | None = None
+    normalization_status: NormalizationStatus = "not_processed"
+    normalization_reason: str | None = None
 
 
 def _prediction_order(prediction: OCRPrediction, index: int) -> tuple[int, int, int]:
