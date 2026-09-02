@@ -130,20 +130,25 @@ def _money_features(text: str) -> tuple[bool, str | None, bool, bool]:
 def _line_groups(boxes: Sequence[Mapping[str, Any]]) -> list[list[int]]:
     ordered = sorted(range(len(boxes)), key=lambda index: (min(boxes[index]["y"]), min(boxes[index]["x"])))
     groups: list[list[int]] = []
+    current_top: int | None = None
+    current_bottom: int | None = None
     for index in ordered:
         top = min(boxes[index]["y"])
         bottom = max(boxes[index]["y"])
         if not groups:
             groups.append([index])
+            current_top = top
+            current_bottom = bottom
             continue
-        current = groups[-1]
-        current_top = min(min(boxes[group_index]["y"]) for group_index in current)
-        current_bottom = max(max(boxes[group_index]["y"]) for group_index in current)
+        assert current_top is not None and current_bottom is not None
         height = max(bottom - top, current_bottom - current_top, 1)
         if top <= current_bottom + height * 0.35:
-            current.append(index)
+            groups[-1].append(index)
+            current_bottom = max(current_bottom, bottom)
         else:
             groups.append([index])
+            current_top = top
+            current_bottom = bottom
     for group in groups:
         group.sort(key=lambda index: min(boxes[index]["x"]))
     return groups
@@ -256,13 +261,14 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
 
     for line in lines:
         line_texts = [boxes[index]["text"] for index in line]
+        line_has_total = any(_TOTAL_PATTERN.search(text) for text in line_texts)
         numbers = [index for index in line if index in numeric_indices]
         measures = [index for index in line if index in measure_indices]
         if len(line) >= 3 and numbers:
             table_like_rows += 1
         if len(numbers) >= 2 or (numbers and any(_clean_text(boxes[index]["text"]).isalpha() for index in line)):
             item_rows += 1
-        if any(index in total_marker_indices for index in line):
+        if line_has_total:
             total_rows += 1
         if numbers and measures:
             value_split_count += 1
@@ -275,7 +281,7 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
                     separate_pairs[field_name] += 1
                 if len(line) >= 3:
                     table_occurrences[field_name] += 1
-                if any(_TOTAL_PATTERN.search(text) for text in line_texts):
+                if line_has_total:
                     total_signals[field_name] += 1
                 else:
                     item_signals[field_name] += 1
