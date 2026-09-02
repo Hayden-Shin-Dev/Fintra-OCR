@@ -22,7 +22,9 @@ DOCUMENT_TYPES = (
 FIELD_SPECS: dict[str, tuple[str, ...]] = {
     "invoice_no": ("invoice", "inv no", "inv number"),
     "date": ("date", "dated", "on board", "laden on board", "shipped"),
-    "buyer_consignee": ("buyer", "consignee", "sold to", "bill to", "shipper", "seller", "notify"),
+    "buyer_consignee": ("buyer", "sold to", "bill to", "seller"),
+    "shipper": ("shipper", "consignor", "exporter"),
+    "consignee": ("consignee",),
     "goods_description": ("description", "goods", "products", "product", "commodity", "item", "model"),
     "quantity": ("quantity", "qty", "q'ty", "unit", "units", "piece", "pieces", "pcs"),
     "amount_total": ("amount", "total", "subtotal", "grand", "value", "price"),
@@ -204,16 +206,26 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
         date_name = _date_format(text)
         if date_name:
             date_formats[date_name] += 1
+            field_hits["date"].append(index)
         measure_unit = _measure_unit(text)
         if measure_unit:
             unit_counts[measure_unit] += 1
             measure_indices.add(index)
+            if measure_unit in {"KG", "KGS", "LB", "LBS"}:
+                field_hits["gross_weight"].append(index)
+            elif measure_unit in {"PKG", "PKGS", "BOX", "BOXES", "CTN", "CTNS", "BUNDLES", "BUNDLE", "CARTONS", "CARTON", "CASES", "CASE", "PALLETS", "PALLET"}:
+                field_hits["number_of_packages"].append(index)
+            elif measure_unit in {"ST", "CT", "PC", "PCS"}:
+                field_hits["quantity"].append(index)
         unit = _unit_only(text)
         if unit:
             unit_counts[unit] += 1
             measure_indices.add(index)
         is_money, code, has_thousands, has_decimal = _money_features(text)
         if is_money:
+            field_hits["amount_total"].append(index)
+            if code or re.search(r"[$€£¥]", text):
+                field_hits["currency"].append(index)
             amount_count += 1
             amount_with_symbol += int(bool(re.search(r"[$€£¥]", text)))
             amount_with_thousands += int(has_thousands)
@@ -263,7 +275,7 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
                     item_signals[field_name] += 1
 
     candidate_counts: dict[str, int] = {}
-    for field_name in FIELD_SPECS:
+    for field_name in FIELD_KEYS_BY_DOCUMENT[record.document_type]:
         candidate_counts[field_name] = len(field_hits.get(field_name, []))
 
     return {
@@ -363,6 +375,8 @@ def analyze_records(records: Iterable[TargetLabelRecord], representatives_per_ty
             profile = _record_profile(item)
         except (KeyError, TypeError, ValueError):
             malformed_counts[item.document_type] += 1
+            for field_name in FIELD_KEYS_BY_DOCUMENT[item.document_type]:
+                field_stats[item.document_type][field_name]["documents_without_candidate"] += 1
             continue
         features = _representative_features(profile)
         candidates_by_type[item.document_type].append({
@@ -371,7 +385,7 @@ def analyze_records(records: Iterable[TargetLabelRecord], representatives_per_ty
             "member_name": item.member_name,
             "features": features,
         })
-        for field_name in FIELD_SPECS:
+        for field_name in FIELD_KEYS_BY_DOCUMENT[item.document_type]:
             stats = field_stats[item.document_type][field_name]
             indices = profile["field_hits"].get(field_name, [])
             if indices:
