@@ -20,6 +20,16 @@ class NormalizationTest(unittest.TestCase):
     def test_normalizes_supported_dates(self):
         self.assertEqual(normalize_field("date", evidence("date", "20-Apr-2017")).normalized, "2017-04-20")
         self.assertEqual(normalize_field("on_board_date", evidence("on_board_date", "JUN 11, 2013")).normalized, "2013-06-11")
+        self.assertEqual(normalize_field("date", evidence("date", "2024-03-22")).normalized, "2024-03-22")
+        self.assertEqual(normalize_field("date", evidence("date", "20-Apr-17")).normalized, "2017-04-20")
+
+    def test_ambiguous_numeric_dates_are_not_silently_forced(self):
+        date = normalize_field("date", evidence("date", "03.04.2024"))
+        self.assertEqual(date.normalization_status, "ambiguous")
+        self.assertEqual(
+            date.normalized,
+            {"candidates": ["2024-03-04", "2024-04-03"]},
+        )
 
     def test_normalizes_amount_without_inventing_currency(self):
         amount = normalize_field("amount", evidence("amount", "$1,216.98"))
@@ -50,6 +60,11 @@ class NormalizationTest(unittest.TestCase):
             {"items": [{"value": 2, "unit": None}, {"value": 3, "unit": None}]},
         )
         self.assertEqual(quantity.value, "2 | 3")
+
+    def test_rejects_weight_unit_as_quantity_unit(self):
+        quantity = normalize_field("quantity", evidence("quantity", "10 KG"))
+        self.assertEqual(quantity.normalization_status, "failed")
+        self.assertIn("unsupported quantity unit", quantity.normalization_reason)
 
     def test_normalizes_weight_and_package_units_without_conversion(self):
         self.assertEqual(
@@ -88,3 +103,4 @@ class NormalizationTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

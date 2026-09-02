@@ -93,7 +93,12 @@ class TargetGTAnalysisTest(unittest.TestCase):
         self.assertEqual(amount_stats["documents_with_label_anchor"], 0)
         self.assertEqual(amount_stats["documents_with_anchored_value"], 0)
         self.assertEqual(amount_stats["format_only_unanchored_candidate"], 1)
-        self.assertEqual(amount_stats["ambiguous_or_unclassified"], 1)
+        self.assertEqual(amount_stats["ambiguous_or_unclassified"], 0)
+        self.assertEqual(amount_stats["exclusive_document_status"], {"format_only": 1})
+        self.assertEqual(
+            result["document_types"]["commercial_invoice"]["unclassified_numeric_occurrences"],
+            1,
+        )
         self.assertEqual(
             result["document_types"]["commercial_invoice"]["amount_patterns"]["with_symbol"],
             1,
@@ -142,7 +147,9 @@ class TargetGTAnalysisTest(unittest.TestCase):
         self.assertEqual(stats["documents_with_label_anchor"], 0)
         self.assertEqual(stats["documents_with_anchored_value"], 0)
         self.assertEqual(stats["same_bbox_label_value"], 0)
-        self.assertGreaterEqual(stats["ambiguous_or_unclassified"], 1)
+        self.assertEqual(stats["format_only_unanchored_candidate"], 0)
+        self.assertEqual(stats["non_target_context_documents"], 1)
+        self.assertEqual(stats["exclusive_document_status"], {"non_target_context": 1})
 
     def test_gross_weight_anchor_accepts_weight_value(self):
         result = analyze_records([
@@ -169,7 +176,12 @@ class TargetGTAnalysisTest(unittest.TestCase):
         ])
         stats = result["document_types"]["commercial_invoice"]["field_stats"]["amount_total"]
         self.assertEqual(stats["format_only_unanchored_candidate"], 0)
-        self.assertEqual(stats["ambiguous_or_unclassified"], 1)
+        self.assertEqual(stats["ambiguous_or_unclassified"], 0)
+        self.assertEqual(stats["exclusive_document_status"], {"missing": 1})
+        self.assertEqual(
+            result["document_types"]["commercial_invoice"]["unclassified_numeric_occurrences"],
+            1,
+        )
 
     def test_amount_and_weight_anchors_can_share_one_bbox(self):
         result = analyze_records([
@@ -185,6 +197,38 @@ class TargetGTAnalysisTest(unittest.TestCase):
             1,
         )
 
+    def test_iso_currency_code_without_amount_anchor_is_format_only_amount_but_extracted_currency(self):
+        result = analyze_records([
+            record("commercial_invoice", "usd-only.json", [("USD 5000", 10, 10)])
+        ])
+        fields = result["document_types"]["commercial_invoice"]["field_stats"]
+        self.assertEqual(fields["amount_total"]["exclusive_document_status"], {"format_only": 1})
+        self.assertEqual(fields["currency"]["documents_with_extracted_value"], 1)
+        self.assertEqual(fields["currency"]["documents_with_anchored_value"], 0)
+        self.assertEqual(fields["currency"]["exclusive_document_status"], {"derived_value": 1})
+
+    def test_attached_units_are_counted(self):
+        result = analyze_records([
+            record("packing_list", "units.json", [
+                ("TOTAL Gross Weight: 614KG", 10, 10),
+                ("Number of Packages: 31PKG", 10, 30),
+            ])
+        ])
+        units = result["document_types"]["packing_list"]["units"]
+        self.assertEqual(units["KG"], 1)
+        self.assertEqual(units["PKG"], 1)
+
+    def test_exclusive_status_is_a_true_per_field_partition(self):
+        result = analyze_records([
+            record("commercial_invoice", "anchored.json", [("TOTAL AMOUNT", 10, 10), ("5000", 100, 10)]),
+            record("commercial_invoice", "format.json", [("$5000", 10, 10)]),
+            record("commercial_invoice", "missing.json", [("HELLO", 10, 10)]),
+        ])
+        total = result["document_types"]["commercial_invoice"]["document_count"]
+        for stats in result["document_types"]["commercial_invoice"]["field_stats"].values():
+            self.assertEqual(sum(stats["exclusive_document_status"].values()), total)
+
 
 if __name__ == "__main__":
     unittest.main()
+

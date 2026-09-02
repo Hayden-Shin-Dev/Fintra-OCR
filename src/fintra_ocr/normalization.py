@@ -11,8 +11,10 @@ from .field_evidence import FieldEvidence
 
 
 _DATE_FORMATS = (
-    "%d-%b-%Y", "%d-%B-%Y", "%b %d, %Y", "%B %d, %Y",
-    "%b %d %Y", "%B %d %Y", "%d/%m/%Y", "%m/%d/%Y",
+    "%Y-%m-%d", "%Y/%m/%d",
+    "%d-%b-%Y", "%d-%B-%Y", "%d-%b-%y", "%d-%B-%y",
+    "%b %d, %Y", "%B %d, %Y", "%b %d, %y", "%B %d, %y",
+    "%b %d %Y", "%B %d %Y", "%b %d %y", "%B %d %y",
 )
 _NUMBER_PATTERN = re.compile(r"^\s*([+-]?\d[\d,]*(?:\.\d+)?)")
 _WEIGHT_PATTERN = re.compile(
@@ -20,10 +22,12 @@ _WEIGHT_PATTERN = re.compile(
     re.IGNORECASE,
 )
 _PACKAGE_PATTERN = re.compile(
-    r"^\s*([+-]?\d[\d,]*(?:\.\d+)?)\s*(PKG|PCS?|CTN?|CT|ST|BOX|BAG|BUNDLES?)\s*$",
+    r"^\s*([+-]?\d[\d,]*(?:\.\d+)?)\s*(PKG|PKGS|CTN|CTNS|BOX|BOXES|BAG|BAGS|"
+    r"BUNDLE|BUNDLES|CARTON|CARTONS|CASE|CASES|PALLET|PALLETS)\s*$",
     re.IGNORECASE,
 )
-_CURRENCY_SYMBOLS = re.compile(r"[$€£]")
+_CURRENCY_SYMBOLS = re.compile(r"[$€£¥]")
+_CURRENCY_CODE = re.compile(r"\b(USD|EUR|GBP|CAD|AUD|JPY|CNY|KRW|HKD|SGD)\b", re.IGNORECASE)
 
 _DATE_FIELDS = {"date", "on_board_date"}
 _AMOUNT_FIELDS = {"amount"}
@@ -38,6 +42,9 @@ _SUPPORTED_FIELDS = (
     _DATE_FIELDS | _AMOUNT_FIELDS | _CURRENCY_FIELDS | _QUANTITY_FIELDS
     | _WEIGHT_FIELDS | _PACKAGE_FIELDS | _STRING_FIELDS
 )
+_QUANTITY_UNITS = {
+    "EA", "EACH", "PC", "PCS", "PIECE", "PIECES", "ST", "CT", "UNIT", "UNITS"
+}
 
 
 def _clean_string(value: str) -> str:
@@ -67,12 +74,37 @@ def _successful(
 
 def _normalize_date(evidence: FieldEvidence) -> FieldEvidence:
     value = _clean_string(evidence.value or "")
+    # ISO and month-name forms are unambiguous.
     for date_format in _DATE_FORMATS:
         try:
             parsed = datetime.strptime(value, date_format)
         except ValueError:
             continue
         return _successful(evidence, parsed.date().isoformat())
+
+    # Slash/hyphen numeric dates are locale-sensitive. Do not silently choose
+    # DD/MM over MM/DD when both are valid and yield different dates.
+    match = re.fullmatch(r"(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})", value)
+    if match:
+        first, second, year = (int(part) for part in match.groups())
+        if year < 100:
+            year += 2000 if year < 70 else 1900
+        candidates = []
+        for month, day, label in ((second, first, "day/month"), (first, second, "month/day")):
+            try:
+                candidates.append((datetime(year, month, day).date().isoformat(), label))
+            except ValueError:
+                pass
+        unique = {item[0] for item in candidates}
+        if len(unique) == 1:
+            return _successful(evidence, next(iter(unique)))
+        if len(unique) > 1:
+            return _successful(
+                evidence,
+                {"candidates": sorted(unique)},
+                ambiguous=True,
+                reason="numeric date is ambiguous between day/month and month/day",
+            )
     return _failed(evidence, "date format is not supported")
 
 
@@ -91,25 +123,27 @@ def _number_value(number: Decimal) -> int | float:
 
 
 def _normalize_amount(evidence: FieldEvidence) -> FieldEvidence:
-    raw_value = evidence.value or ""
-    number_text = _CURRENCY_SYMBOLS.sub("", raw_value, count=1)
+    raw_value = _clean_string(evidence.value or "")
+    code_match = _CURRENCY_CODE.search(raw_value)
+    symbol_match = _CURRENCY_SYMBOLS.search(raw_value)
+    number_text = _CURRENCY_CODE.sub("", raw_value)
+    number_text = _CURRENCY_SYMBOLS.sub("", number_text)
     number = _parse_decimal(number_text)
     if number is None:
         return _failed(evidence, "amount does not contain a parseable number")
-    symbol_match = _CURRENCY_SYMBOLS.search(evidence.value or "")
     return _successful(
         evidence,
         {
             "value": float(number),
             "symbol": symbol_match.group() if symbol_match else None,
-            "currency_code": None,
+            "currency_code": code_match.group(1).upper() if code_match else None,
         },
     )
 
 
 def _normalize_currency(evidence: FieldEvidence) -> FieldEvidence:
     value = _clean_string(evidence.value or "")
-    if re.fullmatch(r"[A-Z]{3}", value, re.IGNORECASE):
+    if _CURRENCY_CODE.fullmatch(value):
         return _successful(evidence, {"code": value.upper(), "symbol": None})
     symbol_match = _CURRENCY_SYMBOLS.search(value)
     if symbol_match:
@@ -133,6 +167,8 @@ def _normalize_quantity(evidence: FieldEvidence) -> FieldEvidence:
             return _failed(evidence, "quantity item does not contain a parseable number")
         unit_match = re.match(r"^\s*[+-]?\d[\d,]*(?:\.\d+)?\s*([A-Za-z]+)?\s*$", item)
         unit = unit_match.group(1).upper() if unit_match and unit_match.group(1) else None
+        if unit is not None and unit not in _QUANTITY_UNITS:
+            return _failed(evidence, f"unsupported quantity unit: {unit}")
         items.append({"value": _number_value(number), "unit": unit})
     return _successful(evidence, {"items": items})
 
@@ -203,3 +239,4 @@ def normalize_fields(
         field_name: normalize_field(field_name, evidence)
         for field_name, evidence in fields.items()
     }
+
