@@ -15,8 +15,8 @@ Fintra의 거래 증빙 OCR 파트 부분 단계별 구현 현황입니다 참�
 9. [완료] OCR prediction과 정답 라벨 비교
 10. [완료] 여러 샘플 baseline 평가
 11. [완료] Fine-tuning 필요 여부 결정
-12. [미완료] 필요 시 Fine-tuning 및 성능 평가
-13. [미완료] 최종 OCR 모델 확정
+12. [완료] Fine-tuning 보류 결정 및 MVP 범위 확정
+13. [완료] pretrained PaddleOCR의 Fintra MVP 사용 판단
 14. [미완료] OCR 결과에서 필요한 필드 추출
 15. [미완료] 필드 값 normalization
 16. [미완료] 공통 JSON schema 출력
@@ -135,3 +135,10 @@ OCR/
 - segmentation 회수: 상업송장 GT→many 11건 중 0건, prediction→many 23건 중 16건; 선하증권 4건 중 0건, 42건 중 41건; 포장명세서 0건, 26건 중 20건.
 - 판단 메모: 현재 샘플에서는 recognition 오류와 bbox/segmentation 실패가 분리되어 확인됨. segmentation 회수가 많아 bbox 지표만으로 Fine-tuning을 결정하지 않고, 더 많은 샘플의 text-only/segmentation 보정 평가 후 판단.
 - Fine-tuning은 아직 실행하지 않음.
+- 12-2 Fine-tuning 결정: 상세 baseline에서 bbox 매칭 실패와 text recognition 오류가 분리되었고 segmentation 회수가 다수 확인됨. 현재 표본만으로 학습을 시작하지 않고 Fintra MVP에서는 fine-tuning을 보류.
+- 13-1 모델 결정: 현재 `PP-OCRv6_medium_det` + `PP-OCRv6_medium_rec` pretrained 조합을 MVP OCR 모델로 사용. 상업송장·포장명세서·선하증권의 주요 문자와 필드 라벨을 실제 OCR 출력에서 확인함.
+- 13-2 모델 한계: B/L은 IoU matched CER 0.203, matched text exact 13/22로 상대적으로 취약하고 전체 bbox recall도 낮음. 병합/분할과 누락 가능성이 있어 field 결과에는 원문 evidence·confidence·missing 상태가 필요함.
+- 14 사전 분석: 대상 라벨 71,973건과 기존 3종 OCR 샘플을 확인. 공통 후보는 document_type, date, party/address, document/reference number, goods description, quantity/package, weight/measurement, origin/destination, transport term.
+- 문서별 후보: 상업송장은 invoice no/date, L/C no/date, PO no, HS code, unit price, amount, total, currency, payment/delivery term; 포장명세서는 invoice no, PO no, country of origin, POL/POD, vessel/voyage, shipping mark, net/gross weight, quantity, CBM, number of packages; 선하증권은 B/L no, shipper/consignee/notify, receipt/loading/discharge/delivery/final destination, vessel/voyage, container/seal no, packages, gross weight, measurement, freight, on-board date, original count.
+- 교차검증 후보: invoice↔packing은 invoice no, parties, goods, quantity/package, marks, origin, weight; invoice↔B/L은 parties, ports, vessel/voyage, packages, weight/measurement; packing↔B/L은 parties, goods/marks, packages, gross weight/measurement, ports, vessel/voyage.
+- 필드 표현은 실제로 한 bbox에 완성되지 않고 `Feb`/`23,`/`2013`처럼 분리되거나 OCR에서 여러 단어가 한 줄로 병합됨. 현재는 후보와 표현만 확정하고 필드 추출 로직·LLM·공통 JSON 구현은 시작하지 않음.
