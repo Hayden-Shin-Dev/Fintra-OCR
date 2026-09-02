@@ -128,3 +128,10 @@ OCR/
 
 
 지금 문제 : OCR 성능이 낮다고 확정된 건 아니고 현재 bbox 중심 평가가 실제 OCR 성능을 제대로 보여주는지 아직 검증이 안 됐습니다.
+- 평가 보완 1-5: 기존 Training 3종 샘플을 상세 재평가. 기존 bbox 결과는 상업송장 27/80(P 38.6%, R 33.8%), 선하증권 22/139(P 22.7%, R 15.8%), 포장명세서 18/109(P 28.6%, R 16.5%)로 재현.
+- 상세 text 결과: IoU 매칭 exact/CER는 상업송장 24건/0.070, 선하증권 13건/0.203, 포장명세서 17건/0.022. IoU 매칭 내 recognition 오류는 각각 3/9/1건.
+- bbox 미매칭 text 회수: 상업송장 0건, 선하증권 0건, 포장명세서 normalized exact 2건(유사 text 0건). text-only exact는 24/13/19건.
+- text-only CER(전체 prediction-GT greedy pair 평균): 상업송장 1.639, 선하증권 1.846, 포장명세서 1.133. CER는 삽입/병합이 있으면 1보다 커질 수 있음.
+- segmentation 회수: 상업송장 GT→many 11건 중 0건, prediction→many 23건 중 16건; 선하증권 4건 중 0건, 42건 중 41건; 포장명세서 0건, 26건 중 20건.
+- 판단 메모: 현재 샘플에서는 recognition 오류와 bbox/segmentation 실패가 분리되어 확인됨. segmentation 회수가 많아 bbox 지표만으로 Fine-tuning을 결정하지 않고, 더 많은 샘플의 text-only/segmentation 보정 평가 후 판단.
+- Fine-tuning은 아직 실행하지 않음.
