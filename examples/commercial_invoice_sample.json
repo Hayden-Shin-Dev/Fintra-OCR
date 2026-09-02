@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "document_type": "commercial_invoice",
+  "document_id": "IMG_OCR_6_T_NV_000002",
+  "processing_status": "partial",
+  "fields": {
+    "invoice_no": {
+      "value": "463059",
+      "normalized": "463059",
+      "raw_text": "463059",
+      "bbox": [[917, 336], [1025, 336], [1025, 368], [917, 368]],
+      "confidence": 0.9999983906745911,
+      "status": "found",
+      "source_indices": [4],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    },
+    "date": {
+      "value": "20-Apr-2017",
+      "normalized": "2017-04-20",
+      "raw_text": "20-Apr-2017",
+      "bbox": [[1209, 337], [1382, 337], [1382, 368], [1209, 368]],
+      "confidence": 0.9999961256980896,
+      "status": "found",
+      "source_indices": [5],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    },
+    "buyer": {
+      "value": "Same to consignee",
+      "normalized": "Same to consignee",
+      "raw_text": "Same to consignee",
+      "bbox": [[1078, 559], [1303, 559], [1303, 589], [1078, 589]],
+      "confidence": 0.9999784827232361,
+      "status": "ambiguous",
+      "source_indices": [13],
+      "reason": "buyer is expressed as a consignee reference",
+      "normalization_status": "ambiguous",
+      "normalization_reason": "source field remains ambiguous"
+    },
+    "amount": {
+      "value": "$1,216.98",
+      "normalized": {"value": 1216.98, "symbol": "$", "currency_code": null},
+      "raw_text": "$1,216.98",
+      "bbox": [[1168, 1681], [1312, 1681], [1312, 1720], [1168, 1720]],
+      "confidence": 0.9998986124992371,
+      "status": "found",
+      "source_indices": [63],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    },
+    "currency": {
+      "value": "$",
+      "normalized": {"code": null, "symbol": "$"},
+      "raw_text": "$1,216.98",
+      "bbox": [[1168, 1681], [1312, 1681], [1312, 1720], [1168, 1720]],
+      "confidence": 0.9998986124992371,
+      "status": "ambiguous",
+      "source_indices": [63],
+      "reason": "currency symbol found but ISO code absent",
+      "normalization_status": "ambiguous",
+      "normalization_reason": "currency symbol does not identify an ISO currency code"
+    },
+    "goods_description": {
+      "value": "Tube | CASE-AIR DRAIN | Terminal | Adjustment Piston | Assembly",
+      "normalized": "Tube | CASE-AIR DRAIN | Terminal | Adjustment Piston | Assembly",
+      "raw_text": "Tube CASE-AIR DRAIN Terminal Adjustment Piston Assembly",
+      "bbox": [[133, 1195], [580, 1195], [580, 1455], [133, 1455]],
+      "confidence": 0.9984934329986572,
+      "status": "found",
+      "source_indices": [43, 44, 52, 53, 60],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    },
+    "quantity": {
+      "value": "2 | 3",
+      "normalized": {"items": [{"value": 2, "unit": null}, {"value": 3, "unit": null}]},
+      "raw_text": "2 3",
+      "bbox": [[676, 1198], [705, 1198], [705, 1419], [676, 1419]],
+      "confidence": 0.9999830722808838,
+      "status": "found",
+      "source_indices": [45, 54],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    }
+  }
+}

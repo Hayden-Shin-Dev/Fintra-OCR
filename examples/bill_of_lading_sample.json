@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "document_type": "bill_of_lading",
+  "document_id": "IMG_OCR_6_T_BL_000002",
+  "processing_status": "success",
+  "fields": {
+    "bl_no": {
+      "value": "HG290309",
+      "normalized": "HG290309",
+      "raw_text": "B/L No. HG290309",
+      "bbox": [[912, 330], [1168, 330], [1168, 365], [912, 365]],
+      "confidence": 0.9911564588546753,
+      "status": "found",
+      "source_indices": [8],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    },
+    "shipper": {
+      "value": "GAE WOON CO., LTD.",
+      "normalized": "GAE WOON CO., LTD.",
+      "raw_text": "GAE WOON CO., LTD.",
+      "bbox": [[128, 188], [418, 188], [418, 215], [128, 215]],
+      "confidence": 0.9880700707435608,
+      "status": "found",
+      "source_indices": [2],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    },
+    "consignee": {
+      "value": "DHHJ FRANCHISING CO., LTD.",
+      "normalized": "DHHJ FRANCHISING CO., LTD.",
+      "raw_text": "DHHJ FRANCHISING CO., LTD.",
+      "bbox": [[127, 402], [526, 402], [526, 432], [127, 432]],
+      "confidence": 0.9983152151107788,
+      "status": "found",
+      "source_indices": [10],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    },
+    "goods_description": {
+      "value": "CELL ASSEMBLY, | FOR OPTICAL INSTRUMENTS | STRAP, WEBBING | SAW MACHINE, ETC.",
+      "normalized": "CELL ASSEMBLY, | FOR OPTICAL INSTRUMENTS | STRAP, WEBBING | SAW MACHINE, ETC.",
+      "raw_text": "CELL ASSEMBLY, FOR OPTICAL INSTRUMENTS STRAP, WEBBING SAW MACHINE, ETC.",
+      "bbox": [[562, 1238], [932, 1238], [932, 1539], [562, 1539]],
+      "confidence": 0.9833205342292786,
+      "status": "found",
+      "source_indices": [54, 57, 60, 66],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    },
+    "number_of_packages": {
+      "value": "88 BUNDLES",
+      "normalized": {"value": 88, "unit": "BUNDLES"},
+      "raw_text": "SAY : 88 BUNDLES ONLY THREE",
+      "bbox": [[301, 1731], [706, 1731], [706, 1763], [301, 1763]],
+      "confidence": 0.9692315459251404,
+      "status": "found",
+      "source_indices": [72],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    },
+    "gross_weight": {
+      "value": "884KG",
+      "normalized": {"value": 884, "unit": "KG"},
+      "raw_text": "884KG",
+      "bbox": [[1123, 1615], [1216, 1615], [1216, 1647], [1123, 1647]],
+      "confidence": 0.9997075200080872,
+      "status": "found",
+      "source_indices": [68],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    },
+    "on_board_date": {
+      "value": "JUN 11, 2013",
+      "normalized": "2013-06-11",
+      "raw_text": "JUN 11, 2013",
+      "bbox": [[434, 1926], [623, 1926], [623, 1957], [434, 1957]],
+      "confidence": 0.9816579818725586,
+      "status": "found",
+      "source_indices": [85],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "document_type": "packing_list",
+  "document_id": "IMG_OCR_6_T_PL_000002",
+  "processing_status": "success",
+  "fields": {
+    "invoice_no": {
+      "value": "172224",
+      "normalized": "172224",
+      "raw_text": "Invoice No. 172224",
+      "bbox": [[845, 281], [1097, 281], [1097, 314], [845, 314]],
+      "confidence": 0.9806906580924988,
+      "status": "found",
+      "source_indices": [3],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    },
+    "goods_description": {
+      "value": "Bellows, For Protection | BRACKET-FLRCONSOLERR MTG | Filter Element, For Fluid, Pressure Type",
+      "normalized": "Bellows, For Protection | BRACKET-FLRCONSOLERR MTG | Filter Element, For Fluid, Pressure Type",
+      "raw_text": "Bellows, For Protection BRACKET-FLRCONSOLERR MTG Filter Element, For Fluid, Pressure Type",
+      "bbox": [[121, 1085], [576, 1085], [576, 1429], [121, 1429]],
+      "confidence": 0.9798970818519592,
+      "status": "found",
+      "source_indices": [38, 44, 50],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    },
+    "quantity": {
+      "value": "83 | 98 | 26",
+      "normalized": {"items": [{"value": 83, "unit": null}, {"value": 98, "unit": null}, {"value": 26, "unit": null}]},
+      "raw_text": "83 98 26",
+      "bbox": [[838, 1083], [879, 1083], [879, 1429], [838, 1429]],
+      "confidence": 0.999995768070221,
+      "status": "found",
+      "source_indices": [39, 45, 51],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    },
+    "number_of_packages": {
+      "value": "31 PKG",
+      "normalized": {"value": 31, "unit": "PKG"},
+      "raw_text": "Number of Packages: 31 PKG",
+      "bbox": [[119, 1720], [512, 1720], [512, 1752], [119, 1752]],
+      "confidence": 0.971095621585846,
+      "status": "found",
+      "source_indices": [56],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    },
+    "gross_weight": {
+      "value": "614KG",
+      "normalized": {"value": 614, "unit": "KG"},
+      "raw_text": "TOTAL Gross Weight: 614KG",
+      "bbox": [[118, 1784], [547, 1784], [547, 1815], [118, 1815]],
+      "confidence": 0.9803346991539001,
+      "status": "found",
+      "source_indices": [58],
+      "reason": null,
+      "normalization_status": "normalized",
+      "normalization_reason": null
+    }
+  }
+}
