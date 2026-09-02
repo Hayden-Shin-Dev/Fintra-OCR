@@ -24,6 +24,7 @@ PACKAGE_PATTERN = re.compile(
     re.IGNORECASE,
 )
 NUMBER_PATTERN = re.compile(r"^\d[\d,.]*$")
+INTEGER_PATTERN = re.compile(r"^\d[\d,]*$")
 
 _CONTROL_WORDS = {
     "amount", "carrier", "cbm", "collect", "container", "containers",
@@ -77,6 +78,13 @@ def _right_or_below(
 
 def _label_indices(predictions: Sequence[OCRPrediction], aliases: Sequence[str]) -> list[int]:
     return [index for index, prediction in enumerate(predictions) if _has_alias(prediction.text, aliases)]
+
+
+def _visual_order_indices(predictions: Sequence[OCRPrediction]) -> list[int]:
+    return sorted(
+        range(len(predictions)),
+        key=lambda index: (min(predictions[index].y), min(predictions[index].x), index),
+    )
 
 
 def _embedded(
@@ -135,13 +143,14 @@ def _table_evidence(
     headers = _label_indices(predictions, header_aliases)
     if not headers:
         return missing_field(field_name, "table header not found")
-    start = headers[0] + 1
-    end = len(predictions)
-    for index in range(start, len(predictions)):
+    ordered_indices = _visual_order_indices(predictions)
+    header_position = min(ordered_indices.index(index) for index in headers)
+    table_indices = ordered_indices[header_position + 1:]
+    for position, index in enumerate(table_indices):
         if _has_alias(predictions[index].text, stop_aliases):
-            end = index
+            table_indices = table_indices[:position]
             break
-    indices = tuple(index for index in range(start, end) if matcher(predictions[index].text))
+    indices = tuple(index for index in table_indices if matcher(predictions[index].text))
     if not indices:
         return missing_field(field_name, "no deterministic table value found")
     value = " | ".join(predictions[index].text.strip() for index in indices)
@@ -154,7 +163,7 @@ def _party_value(text: str) -> bool:
         return False
     if normalized in _CONTROL_WORDS or normalized.endswith(":"):
         return False
-    if re.search(r"\b(?:tel|fax|reg|no)\b|\d{3,}", normalized):
+    if re.search(r"\b(?:tel|fax|reg|no|negotiable|multimodal|transport)\b|\d{3,}", normalized):
         return False
     return True
 
@@ -168,20 +177,33 @@ def _description_value(text: str) -> bool:
         or MONEY_PATTERN.match(text)
         or WEIGHT_PATTERN.search(text)
         or PACKAGE_PATTERN.search(text)
+        or re.search(r"\b(?:cbm|pkgs?|marks\s+and\s+no)\b", normalized)
     ):
         return False
-    if normalized in _CONTROL_WORDS or normalized in {"pkg", "pcs", "ct", "st", "cbm", "bag", "inch", "pound"}:
+    if normalized in _CONTROL_WORDS or normalized in {"pkg", "pcs", "ct", "st", "cbm", "bag", "inch", "pound", "(kgs)", "kgs"}:
         return False
     return True
+
+
+def _identifier_value(text: str) -> bool:
+    normalized = _normalized(text)
+    return bool(ID_PATTERN.fullmatch(text.strip())) and normalized not in {"and", "date", "no", "number"}
+
+
+def _first_found(*evidence: FieldEvidence) -> FieldEvidence:
+    for candidate in evidence:
+        if candidate.status != "missing":
+            return candidate
+    return evidence[-1]
 
 
 def _invoice_fields(predictions: Sequence[OCRPrediction]) -> dict[str, FieldEvidence]:
     fields = {
         "invoice_no": _embedded(
             "invoice_no", predictions,
-            [re.compile(r"invoice\s*(?:no\.?|number)\s*[:#]?\s*(?P<value>[A-Z0-9][A-Z0-9./-]*)", re.I)],
+            [re.compile(r"invoice\s*(?:no\.?|number)\s*[:#]?\s*(?!and\b|date\b)(?P<value>[A-Z0-9][A-Z0-9./-]*)", re.I)],
         )
-        or _labeled_value("invoice_no", predictions, ("invoice no", "invoice number"), ID_PATTERN),
+        or _labeled_value("invoice_no", predictions, ("invoice no", "invoice number"), _identifier_value),
         "date": _embedded(
             "date", predictions,
             [re.compile(r"(?:date|invoice\s+date)\s*[:#-]?\s*(?P<value>" + DATE_PATTERN.pattern + r")", re.I)],
@@ -191,8 +213,9 @@ def _invoice_fields(predictions: Sequence[OCRPrediction]) -> dict[str, FieldEvid
             "buyer", predictions,
             [re.compile(r"(?:buyer|sold\s+to)\s*:\s*(?P<value>.+)", re.I)],
         ) or _labeled_value("buyer", predictions, ("buyer", "sold to"), _party_value),
-        "amount": _labeled_value(
-            "amount", predictions, ("total", "amount"), MONEY_PATTERN,
+        "amount": _first_found(
+            _labeled_value("amount", predictions, ("total",), MONEY_PATTERN),
+            _labeled_value("amount", predictions, ("amount",), MONEY_PATTERN),
         ),
         "currency": None,
     }
@@ -213,7 +236,17 @@ def _invoice_fields(predictions: Sequence[OCRPrediction]) -> dict[str, FieldEvid
             "currency", list(predictions), (currency_codes[0],), predictions[currency_codes[0]].text.strip()
         )
     else:
-        symbols = [index for index, prediction in enumerate(predictions) if re.search(r"[$€£]", prediction.text)]
+        symbols = [
+            index for index, prediction in enumerate(predictions)
+            if re.search(r"[$€£]", prediction.text)
+        ]
+        if fields["amount"].source_indices:
+            amount_symbols = [
+                index for index in fields["amount"].source_indices
+                if re.search(r"[$€£]", predictions[index].text)
+            ]
+            if amount_symbols:
+                symbols = amount_symbols
         fields["currency"] = (
             make_field_evidence("currency", list(predictions), (symbols[0],), re.search(r"[$€£]", predictions[symbols[0]].text).group(), status="ambiguous", reason="currency symbol found but ISO code absent")
             if symbols else missing_field("currency", "currency code or symbol not found")
@@ -226,13 +259,13 @@ def _packing_list_fields(predictions: Sequence[OCRPrediction]) -> dict[str, Fiel
         "invoice_no": _embedded(
             "invoice_no", predictions,
             [re.compile(r"invoice\s*(?:no\.?|number)\s*[:#]?\s*(?P<value>[A-Z0-9][A-Z0-9./-]*)", re.I)],
-        ) or _labeled_value("invoice_no", predictions, ("invoice no", "invoice number"), ID_PATTERN),
+        ) or _labeled_value("invoice_no", predictions, ("invoice no", "invoice number"), _identifier_value),
         "goods_description": _table_evidence(
             "goods_description", predictions, ("description of goods",),
             _description_value, stop_aliases=("signed by", "total",),
         ),
         "quantity": _table_evidence(
-            "quantity", predictions, ("quantity",), NUMBER_PATTERN.search, stop_aliases=("signed by",),
+            "quantity", predictions, ("quantity",), INTEGER_PATTERN.search, stop_aliases=("signed by",),
         ),
         "number_of_packages": _embedded(
             "number_of_packages", predictions,
@@ -264,9 +297,10 @@ def _bill_of_lading_fields(predictions: Sequence[OCRPrediction]) -> dict[str, Fi
             "number_of_packages", predictions, ("no. & kinds", "pkgs"),
             lambda text: bool(PACKAGE_PATTERN.search(text)), stop_aliases=("total",),
         ),
-        "gross_weight": _labeled_value("gross_weight", predictions, ("total",), WEIGHT_PATTERN)
-        if _label_indices(predictions, ("total",))
-        else _labeled_value("gross_weight", predictions, ("gross weight",), WEIGHT_PATTERN),
+        "gross_weight": _first_found(
+            _labeled_value("gross_weight", predictions, ("total",), WEIGHT_PATTERN),
+            _labeled_value("gross_weight", predictions, ("gross weight",), WEIGHT_PATTERN),
+        ),
         "on_board_date": _labeled_value(
             "on_board_date", predictions, ("laden on board", "on board"), DATE_PATTERN,
         ),
