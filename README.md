@@ -70,6 +70,7 @@ OCR/
 
 - 4-1 JSON 로딩: `zipfile`로 archive 안의 JSON을 직접 읽는 중. 압축 해제 없음.
 - 4-1 schema 샘플: 금융 archive는 `Dataset`, 물류 archive는 `DataSet` 키를 사용함.
+- 4-2 metadata: `form_type`, `identifier`, `width`, `height`는 공통으로 읽을 수 있음.
 
 ## 개발 원칙
 
