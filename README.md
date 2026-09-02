@@ -19,7 +19,7 @@ Fintra의 거래 증빙 OCR 파트 부분 단계별 구현 현황입니다 참�
 13. [완료] pretrained PaddleOCR의 Fintra MVP 사용 판단
 14. [완료] 핵심 필드 추출 POC 및 실제 의미 검증
 15. [완료] 필드 값 normalization
-16. [미완료] 공통 JSON schema 출력
+16. [완료] 공통 JSON schema 출력
 17. [미완료] Fintra 교차검증 모듈 연결
 18. [미완료] 전체 OCR 파이프라인 테스트
 19. [미완료] README 최종 정리
@@ -155,4 +155,12 @@ OCR/
 - 15-2 실제 3종 검증: 상업송장 date는 `20-Apr-2017` → `2017-04-20`, amount는 `$1,216.98` → `{"value": 1216.98, "symbol": "$", "currency_code": null}`. currency는 `$`만 근거로 `ambiguous` 유지하고 USD로 확정하지 않음. buyer `Same to consignee`도 `ambiguous` 유지.
 - 15-3 실제 검증: 포장명세서 quantity `[83, 98, 26]`을 item별로 유지하고 합산하지 않음. `31 PKG` → `{value: 31, unit: PKG}`, `614KG` → `{value: 614, unit: KG}`. 선하증권 `88 BUNDLES`, `884KG`, `JUN 11, 2013`은 각각 `{88, BUNDLES}`, `{884, KG}`, `2013-06-11`로 표준화.
 - 15-4 normalization 한계: invoice quantity의 ST/CT는 원본 OCR evidence에 없어 추정하지 않음. package type은 서로 같은 의미로 통합하지 않고, 중량 환산도 하지 않음. 파싱 실패 값은 원본과 상태를 보존하면서 `normalization_status=failed`로 표시.
-- 15-5 검증 완료: normalization 단위 테스트 8개와 전체 테스트 83개 통과. 실제 Training 3종 샘플의 PaddleOCR 재추론 및 field extraction 연결 결과까지 확인. 15단계 완료, 16단계 공통 JSON schema는 아직 시작하지 않음.
+- 15-5 검증 완료: normalization 단위 테스트 8개와 전체 테스트 83개 통과. 실제 Training 3종 샘플의 PaddleOCR 재추론 및 field extraction 연결 결과까지 확인.
+- 16-1 공통 계약: `schema_version`, `document_type`, `document_id`, `processing_status`, `fields`를 문서 최상위에 둠. 공개 문서 유형은 `commercial_invoice`, `packing_list`, `bill_of_lading` 세 가지로 고정.
+- 16-2 field evidence 계약: 모든 field가 동일하게 `value`, `normalized`, `raw_text`, `bbox`, `confidence`, `status`, `source_indices`, `reason`, `normalization_status`, `normalization_reason`을 가짐. 원본 추출값과 normalized 값을 덮어쓰지 않고 함께 보존.
+- 16-3 상태 의미: field `found`는 값과 evidence가 확인된 상태, `missing`은 fabricated value 없이 찾지 못한 상태, `ambiguous`는 후보 또는 의미 해석이 불확실한 상태. 문서 `success`는 모든 field가 found이고 normalization 실패가 없는 상태, `partial`은 ambiguous/missing/normalization 실패가 포함된 상태, `failed`는 field가 없거나 전부 missing인 상태.
+- 16-4 normalized 사용: 교차검증은 `document["fields"]["amount"]["normalized"]`처럼 접근하고, 원문 표시·근거 추적은 같은 field의 `value`·`raw_text`·`bbox`·`source_indices`를 사용. quantity는 `normalized.items` 배열을 합산하지 않음.
+- 16-5 bbox 계약: `bbox`는 원본 이미지 pixel 기준 `[top-left, top-right, bottom-right, bottom-left]` 순서의 네 점 `[[x, y], ...]`이며 missing field는 `null`. UI는 이 좌표로 원본 evidence 위치를 강조 표시할 수 있음.
+- 16-6 문서별 주요 field key: commercial_invoice는 `invoice_no`, `date`, `buyer`, `goods_description`, `quantity`, `amount`, `currency`; packing_list는 `invoice_no`, `goods_description`, `quantity`, `number_of_packages`, `gross_weight`; bill_of_lading은 `bl_no`, `shipper`, `consignee`, `goods_description`, `number_of_packages`, `gross_weight`, `on_board_date`.
+- 16-7 실제 3종 검증: 동일 Training 샘플을 최종 JSON으로 변환하고 schema validation 통과. Invoice는 buyer/currency가 ambiguous라 `partial`, Packing List와 B/L은 현재 field 기준 `success`. quantity 배열, amount numeric, weight/package `{value, unit}`, ISO date, bbox/raw_text/confidence/source_indices 보존을 확인.
+- 16-8 전달용 예시: 실제 변환 결과 3개를 `examples/commercial_invoice_sample.json`, `examples/packing_list_sample.json`, `examples/bill_of_lading_sample.json`에 보존. 교차검증·RAG·LLM·UI 연결은 아직 시작하지 않음.
