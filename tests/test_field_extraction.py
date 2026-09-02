@@ -88,6 +88,17 @@ class FieldExtractionTest(unittest.TestCase):
         self.assertIsNone(fields["quantity"].value)
         self.assertIn("header", fields["quantity"].reason)
 
+    def test_buyer_reference_is_ambiguous_but_keeps_evidence(self):
+        fields = extract_fields(
+            "상업송장",
+            [prediction("Buyer", 10, 10), prediction("Same to consignee", 150, 10)],
+        )
+
+        self.assertEqual(fields["buyer"].status, "ambiguous")
+        self.assertEqual(fields["buyer"].value, "Same to consignee")
+        self.assertEqual(fields["buyer"].raw_text, "Same to consignee")
+        self.assertIsNotNone(fields["buyer"].bbox)
+
     def test_rejects_financial_form_types(self):
         with self.assertRaises(ValueError):
             extract_fields("재무상태표", [])

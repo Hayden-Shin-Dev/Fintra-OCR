@@ -211,6 +211,17 @@ def _first_found(*evidence: FieldEvidence) -> FieldEvidence:
 
 
 def _invoice_fields(predictions: Sequence[OCRPrediction]) -> dict[str, FieldEvidence]:
+    buyer = _embedded(
+        "buyer", predictions,
+        [re.compile(r"(?:buyer|sold\s+to)\s*:\s*(?P<value>.+)", re.I)],
+    ) or _labeled_value("buyer", predictions, ("buyer", "sold to"), _party_value)
+    if buyer.status == "found" and _normalized(buyer.value or "") in {
+        "same to consignee", "same as consignee"
+    }:
+        buyer = make_field_evidence(
+            "buyer", list(predictions), buyer.source_indices, buyer.value,
+            status="ambiguous", reason="buyer is expressed as a consignee reference",
+        )
     fields = {
         "invoice_no": _embedded(
             "invoice_no", predictions,
@@ -222,10 +233,7 @@ def _invoice_fields(predictions: Sequence[OCRPrediction]) -> dict[str, FieldEvid
             [re.compile(r"(?:date|invoice\s+date)\s*[:#-]?\s*(?P<value>" + DATE_PATTERN.pattern + r")", re.I)],
         )
         or _labeled_value("date", predictions, ("invoice no", "invoice number", "invoice date"), DATE_PATTERN),
-        "buyer": _embedded(
-            "buyer", predictions,
-            [re.compile(r"(?:buyer|sold\s+to)\s*:\s*(?P<value>.+)", re.I)],
-        ) or _labeled_value("buyer", predictions, ("buyer", "sold to"), _party_value),
+        "buyer": buyer,
         "amount": _first_found(
             _labeled_value("amount", predictions, ("total",), MONEY_PATTERN),
             _labeled_value("amount", predictions, ("amount",), MONEY_PATTERN),
