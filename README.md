@@ -12,7 +12,7 @@ Fintra의 거래 증빙 OCR 파트를 단계적으로 개발하기 위한 작업
 6. [완료] 대상 문서 3종 선별
 7. [완료] PaddleOCR baseline 환경 구성
 8. [완료] 단일 이미지 baseline 추론
-9. [미완료] OCR prediction과 정답 라벨 비교
+9. [완료] OCR prediction과 정답 라벨 비교
 10. [미완료] 여러 샘플 baseline 평가
 11. [미완료] Fine-tuning 필요 여부 결정
 12. [미완료] 필요 시 Fine-tuning 및 성능 평가
