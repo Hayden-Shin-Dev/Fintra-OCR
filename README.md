@@ -17,7 +17,7 @@ Fintra의 거래 증빙 OCR 파트 부분 단계별 구현 현황입니다 참�
 11. [완료] Fine-tuning 필요 여부 결정
 12. [완료] Fine-tuning 보류 결정 및 MVP 범위 확정
 13. [완료] pretrained PaddleOCR의 Fintra MVP 사용 판단
-14. [미완료] OCR 결과에서 필요한 필드 추출
+14. [완료] 핵심 필드 추출 POC 및 실제 의미 검증
 15. [미완료] 필드 값 normalization
 16. [미완료] 공통 JSON schema 출력
 17. [미완료] Fintra 교차검증 모듈 연결
@@ -147,3 +147,7 @@ OCR/
 - 14-3 실제 3종 검증: 상업송장 `463059`, `20-Apr-2017`, `Same to consignee`, goods `Tube | CASE-AIR DRAIN | Terminal | Adjustment Piston | Assembly`, quantity `2 | 3`, total `$1,216.98` 추출. 통화는 `$`만 OCR되어 ISO code 부재로 `ambiguous`.
 - 14-4 실제 검증: 포장명세서 `172224`, goods 3개, quantity `83 | 98 | 26`, `31 PKG`, `614KG`; 선하증권 `HG290309`, shipper, consignee, goods 4개, `88 BUNDLES`, `884KG`, `JUN 11, 2013` 추출.
 - 14-5 POC 한계: invoice quantity의 `ST/CT`와 숫자 열 결합, buyer의 `Same to consignee` 참조 해석, 표의 item별 구조화, 통화 code 복원은 아직 불안정하여 후속 작업으로 남김. 현재 공통 JSON/LLM/대량 추출은 시작하지 않음.
+- 14-6 의미 검증: invoice `invoice_no=463059`, `date=20-Apr-2017`, `amount=$1,216.98`은 GT 위치·의미와 `correct`; `quantity=2 | 3`은 실제 item quantity이나 `ST/CT` unit이 빠져 `partial`(table row/column + OCR 분할); `buyer=Same to consignee`는 위치는 맞지만 거래처명이 아닌 참조 문구라 `partial`(label/value 의미 문제); currency는 GT의 `CAD`에 대해 `$`만 인식되어 `partial/ambiguous`이며 USD로 변환하지 않음(OCR 인식·표현 문제).
+- 14-7 의미 검증: packing `invoice_no=172224`, `quantity=83 | 98 | 26`, `number_of_packages=31 PKG`, `gross_weight=614KG`는 각각 GT의 invoice·item quantity·총 포장 수·총중량과 `correct`.
+- 14-8 의미 검증: B/L `bl_no=HG290309`, shipper, consignee, `number_of_packages=88 BUNDLES`, `gross_weight=884KG`, `on_board_date=JUN 11, 2013`는 GT의 식별자·당사자·총합·선적일 영역과 `correct`.
+- 14-9 검증 요약: 대상 핵심 필드에서 `incorrect/missing`은 없었고, partial은 invoice buyer·quantity·currency에 한정됨. 표 item별 구조화와 buyer 참조 해석, 통화 code 복원은 15단계 이후 보완 대상으로 유지.
