@@ -7,7 +7,7 @@ Fintra의 거래 증빙 OCR 파트를 단계적으로 개발하기 위한 작업
 1. [완료] 데이터셋 기본 구조 확인
 2. [완료] 데이터 경로 구성
 3. [완료] ZIP 구조 및 파일 구성 분석
-4. [진행 중] 라벨 JSON 구조 상세 분석
+4. [완료] 라벨 JSON 구조 상세 분석
 5. [미완료] 이미지-라벨 pairing 검증
 6. [미완료] 대상 문서 3종 선별
 7. [미완료] PaddleOCR baseline 환경 구성
@@ -75,6 +75,9 @@ OCR/
 - 4-4 schema target: 물류 3종은 `DataSet` + `Images` 6개 필드 + bbox `data/id/x/y` 구조. 빈 text는 허용.
 - 4-5 target schema scan: 물류 3종 JSON 71,973개, schema 오류 0개.
 - 4-6 malformed test: 필수 bbox 누락, ID 타입, 좌표 개수, 금융 전용 필드를 오류로 처리함.
+- 4-7 target bbox: 7,294,849개. 빈 text 783개.
+- Training form_type: 상업송장 20,835개 / 포장명세서 21,910개 / 선하증권 21,232개.
+- Validation form_type: 상업송장 2,604개 / 포장명세서 2,738개 / 선하증권 2,654개.
 - split별 target JSON: Training 63,977개 / Validation 7,996개.
 - 전체 사전 scan 142,111개에서는 금융/물류 schema가 섞여 있었음. 이후 Fintra 기준 통계는 물류 3종만 사용.
 - Fintra OCR 대상: 상업송장 / 포장명세서 / 선하증권.
