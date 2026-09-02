@@ -8,6 +8,15 @@ from .prediction_parser import OCRPrediction
 
 
 @dataclass(frozen=True)
+class BoundingBoxMatch:
+    """One greedy IoU match between a ground-truth and prediction box."""
+
+    ground_truth_index: int
+    prediction_index: int
+    iou: float
+
+
+@dataclass(frozen=True)
 class OCRComparison:
     """Counts from one prediction-versus-ground-truth comparison."""
 
@@ -55,6 +64,50 @@ def _intersection_over_union(
     return intersection / union
 
 
+def bounding_box_iou(
+    ground_truth: OCRBoundingBox, prediction: OCRPrediction
+) -> float:
+    """Return IoU between one target annotation and one prediction."""
+    return _intersection_over_union(
+        _bounds(ground_truth.x, ground_truth.y),
+        _bounds(prediction.x, prediction.y),
+    )
+
+
+def match_bounding_boxes(
+    predictions: Sequence[OCRPrediction],
+    ground_truth: Sequence[OCRBoundingBox],
+    iou_threshold: float = 0.5,
+) -> list[BoundingBoxMatch]:
+    """Return greedy one-to-one IoU matches with their source indices."""
+    if not 0.0 <= iou_threshold <= 1.0:
+        raise ValueError("iou_threshold must be between 0 and 1")
+
+    pairs = [
+        (bounding_box_iou(truth, prediction), truth_index, prediction_index)
+        for truth_index, truth in enumerate(ground_truth)
+        for prediction_index, prediction in enumerate(predictions)
+    ]
+    matched_truth = set()
+    matched_predictions = set()
+    matches: list[BoundingBoxMatch] = []
+    for iou, truth_index, prediction_index in sorted(pairs, reverse=True):
+        if iou < iou_threshold:
+            break
+        if truth_index in matched_truth or prediction_index in matched_predictions:
+            continue
+        matched_truth.add(truth_index)
+        matched_predictions.add(prediction_index)
+        matches.append(
+            BoundingBoxMatch(
+                ground_truth_index=truth_index,
+                prediction_index=prediction_index,
+                iou=iou,
+            )
+        )
+    return matches
+
+
 def compare_predictions(
     predictions: Sequence[OCRPrediction],
     ground_truth: Sequence[OCRBoundingBox],
@@ -64,36 +117,16 @@ def compare_predictions(
     if not 0.0 <= iou_threshold <= 1.0:
         raise ValueError("iou_threshold must be between 0 and 1")
 
-    pairs = []
-    for truth_index, truth in enumerate(ground_truth):
-        truth_bounds = _bounds(truth.x, truth.y)
-        for prediction_index, prediction in enumerate(predictions):
-            prediction_bounds = _bounds(prediction.x, prediction.y)
-            pairs.append(
-                (
-                    _intersection_over_union(truth_bounds, prediction_bounds),
-                    truth_index,
-                    prediction_index,
-                )
-            )
-
-    matched_truth = set()
-    matched_predictions = set()
+    matches = match_bounding_boxes(predictions, ground_truth, iou_threshold)
     exact_text_matches = 0
-    for iou, truth_index, prediction_index in sorted(pairs, reverse=True):
-        if iou < iou_threshold:
-            break
-        if truth_index in matched_truth or prediction_index in matched_predictions:
-            continue
-        matched_truth.add(truth_index)
-        matched_predictions.add(prediction_index)
-        if ground_truth[truth_index].text == predictions[prediction_index].text:
+    for match in matches:
+        if ground_truth[match.ground_truth_index].text == predictions[match.prediction_index].text:
             exact_text_matches += 1
 
     return OCRComparison(
         ground_truth_count=len(ground_truth),
         prediction_count=len(predictions),
-        matched_count=len(matched_truth),
+        matched_count=len(matches),
         exact_text_match_count=exact_text_matches,
         iou_threshold=iou_threshold,
     )

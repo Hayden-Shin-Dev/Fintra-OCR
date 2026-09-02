@@ -6,7 +6,11 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
-from fintra_ocr.comparison import compare_predictions
+from fintra_ocr.comparison import (
+    bounding_box_iou,
+    compare_predictions,
+    match_bounding_boxes,
+)
 from fintra_ocr.label_bbox import OCRBoundingBox
 from fintra_ocr.prediction_parser import OCRPrediction
 
@@ -49,6 +53,21 @@ class ComparisonTest(unittest.TestCase):
         self.assertEqual(comparison.matched_count, 0)
         self.assertEqual(comparison.precision, 0.0)
         self.assertEqual(comparison.recall, 0.0)
+
+    def test_exposes_indices_and_iou_for_matching_boxes(self):
+        ground_truth = [
+            OCRBoundingBox("gt-1", "Invoice", (0, 10, 10, 0), (0, 0, 10, 10))
+        ]
+        predictions = [
+            OCRPrediction("Invoice", (1, 9, 9, 1), (1, 1, 9, 9), 0.99)
+        ]
+
+        matches = match_bounding_boxes(predictions, ground_truth)
+
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0].ground_truth_index, 0)
+        self.assertEqual(matches[0].prediction_index, 0)
+        self.assertEqual(matches[0].iou, bounding_box_iou(ground_truth[0], predictions[0]))
 
 
 if __name__ == "__main__":
