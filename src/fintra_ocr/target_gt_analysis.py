@@ -133,17 +133,16 @@ def _line_groups(boxes: Sequence[Mapping[str, Any]]) -> list[list[int]]:
     for index in ordered:
         top = min(boxes[index]["y"])
         bottom = max(boxes[index]["y"])
-        placed = False
-        for group in groups:
-            group_boxes = [boxes[group_index] for group_index in group]
-            group_top = min(min(item["y"]) for item in group_boxes)
-            group_bottom = max(max(item["y"]) for item in group_boxes)
-            height = max(bottom - top, group_bottom - group_top, 1)
-            if min(bottom, group_bottom) - max(top, group_top) >= -height * 0.35:
-                group.append(index)
-                placed = True
-                break
-        if not placed:
+        if not groups:
+            groups.append([index])
+            continue
+        current = groups[-1]
+        current_top = min(min(boxes[group_index]["y"]) for group_index in current)
+        current_bottom = max(max(boxes[group_index]["y"]) for group_index in current)
+        height = max(bottom - top, current_bottom - current_top, 1)
+        if top <= current_bottom + height * 0.35:
+            current.append(index)
+        else:
             groups.append([index])
     for group in groups:
         group.sort(key=lambda index: min(boxes[index]["x"]))
