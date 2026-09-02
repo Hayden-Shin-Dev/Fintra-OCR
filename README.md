@@ -83,6 +83,8 @@ OCR/
 - 6-1 target archive selection: 실제 `form_type`으로 대상 3종 archive만 선택 완료. split별 15개.
 - 8-1 single sample selection: 대상 3종별 실제 PNG/JSON basename 일치 샘플 선택 기능 추가. 압축 해제 없음.
 - 8-2 image loading: 선택한 PNG를 ZIP에서 bytes로 직접 읽는 기능 추가. 원본 추출 없음.
+- 8-3 single inference runner: 이미지 bytes를 RGB array로 바꿔 PaddleOCR raw 결과를 받는 최소 runner 추가. 평가/필드 추출은 아직 하지 않음.
+- 8-3 실제 실행: Training 상업송장 1장 추론 성공. `OCRResult` 1개, text 70개, bbox 70개 반환.
 - split별 target JSON: Training 63,977개 / Validation 7,996개.
 - 전체 사전 scan 142,111개에서는 금융/물류 schema가 섞여 있었음. 이후 Fintra 기준 통계는 물류 3종만 사용.
 - Fintra OCR 대상: 상업송장 / 포장명세서 / 선하증권.
