@@ -18,7 +18,7 @@ Fintra의 거래 증빙 OCR 파트 부분 단계별 구현 현황입니다 참�
 12. [완료] Fine-tuning 보류 결정 및 MVP 범위 확정
 13. [완료] pretrained PaddleOCR의 Fintra MVP 사용 판단
 14. [완료] 핵심 필드 추출 POC 및 실제 의미 검증
-15. [미완료] 필드 값 normalization
+15. [완료] 필드 값 normalization
 16. [미완료] 공통 JSON schema 출력
 17. [미완료] Fintra 교차검증 모듈 연결
 18. [미완료] 전체 OCR 파이프라인 테스트
@@ -151,3 +151,8 @@ OCR/
 - 14-7 의미 검증: packing `invoice_no=172224`, `quantity=83 | 98 | 26`, `number_of_packages=31 PKG`, `gross_weight=614KG`는 각각 GT의 invoice·item quantity·총 포장 수·총중량과 `correct`.
 - 14-8 의미 검증: B/L `bl_no=HG290309`, shipper, consignee, `number_of_packages=88 BUNDLES`, `gross_weight=884KG`, `on_board_date=JUN 11, 2013`는 GT의 식별자·당사자·총합·선적일 영역과 `correct`.
 - 14-9 검증 요약: 대상 핵심 필드에서 `incorrect/missing`은 없었고, partial은 invoice buyer·quantity·currency에 한정됨. 표 item별 구조화와 buyer 참조 해석, 통화 code 복원은 15단계 이후 보완 대상으로 유지.
+- 15-1 normalization 구현: 기존 `value`, `raw_text`, `bbox`, `confidence`, `status`, `source_indices`, `reason`을 유지한 채 `normalized`, `normalization_status`, `normalization_reason`을 추가. 기존 필드 집합과 원본 ZIP은 변경하지 않음.
+- 15-2 실제 3종 검증: 상업송장 date는 `20-Apr-2017` → `2017-04-20`, amount는 `$1,216.98` → `{"value": 1216.98, "symbol": "$", "currency_code": null}`. currency는 `$`만 근거로 `ambiguous` 유지하고 USD로 확정하지 않음. buyer `Same to consignee`도 `ambiguous` 유지.
+- 15-3 실제 검증: 포장명세서 quantity `[83, 98, 26]`을 item별로 유지하고 합산하지 않음. `31 PKG` → `{value: 31, unit: PKG}`, `614KG` → `{value: 614, unit: KG}`. 선하증권 `88 BUNDLES`, `884KG`, `JUN 11, 2013`은 각각 `{88, BUNDLES}`, `{884, KG}`, `2013-06-11`로 표준화.
+- 15-4 normalization 한계: invoice quantity의 ST/CT는 원본 OCR evidence에 없어 추정하지 않음. package type은 서로 같은 의미로 통합하지 않고, 중량 환산도 하지 않음. 파싱 실패 값은 원본과 상태를 보존하면서 `normalization_status=failed`로 표시.
+- 15-5 검증 완료: normalization 단위 테스트 8개와 전체 테스트 83개 통과. 실제 Training 3종 샘플의 PaddleOCR 재추론 및 field extraction 연결 결과까지 확인. 15단계 완료, 16단계 공통 JSON schema는 아직 시작하지 않음.
