@@ -37,31 +37,43 @@ def evaluate_target_forms(
         raise ValueError("samples_per_form must be greater than zero")
 
     if predictor is None:
-        from .baseline_ocr import create_paddle_ocr, predict_image_bytes
+        from .baseline_ocr import create_paddle_ocr, predict_image_bytes_batch
 
         pipeline = ocr if ocr is not None else create_paddle_ocr()
 
-        def predictor(image_bytes: bytes) -> Sequence[Mapping[str, Any]]:
-            return predict_image_bytes(image_bytes, ocr=pipeline)
-
     pairs = archive_groups[split]
-    evaluations: list[FormEvaluation] = []
+    samples: list[TargetSample] = []
     for form_type in sorted(FINTRA_FORM_TYPES):
-        samples = select_target_samples(pairs, form_type, samples_per_form)
-        for sample in samples:
-            image_bytes = load_image_bytes(sample.source_archive, sample.image_member)
-            raw_results = list(predictor(image_bytes))
-            if not raw_results:
-                raise ValueError(f"PaddleOCR returned no result for {form_type!r}")
+        samples.extend(select_target_samples(pairs, form_type, samples_per_form))
 
-            predictions = parse_paddle_result(raw_results[0])
-            record = load_label_json(sample.label_archive, sample.label_member)
-            ground_truth = parse_bounding_boxes(record)
-            evaluations.append(
-                FormEvaluation(
-                    sample=sample,
-                    comparison=compare_predictions(predictions, ground_truth),
-                )
+    image_bytes_list = [
+        load_image_bytes(sample.source_archive, sample.image_member)
+        for sample in samples
+    ]
+    if predictor is None:
+        raw_results = list(
+            predict_image_bytes_batch(image_bytes_list, ocr=pipeline)
+        )
+        if len(raw_results) != len(samples):
+            raise ValueError("PaddleOCR result count must match sample count")
+    else:
+        raw_results = []
+        for image_bytes in image_bytes_list:
+            sample_results = list(predictor(image_bytes))
+            if not sample_results:
+                raise ValueError("PaddleOCR returned no result for a sample")
+            raw_results.append(sample_results[0])
+
+    evaluations: list[FormEvaluation] = []
+    for sample, raw_result in zip(samples, raw_results):
+        predictions = parse_paddle_result(raw_result)
+        record = load_label_json(sample.label_archive, sample.label_member)
+        ground_truth = parse_bounding_boxes(record)
+        evaluations.append(
+            FormEvaluation(
+                sample=sample,
+                comparison=compare_predictions(predictions, ground_truth),
             )
+        )
 
     return evaluations
