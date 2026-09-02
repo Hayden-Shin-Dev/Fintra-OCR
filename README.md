@@ -87,6 +87,8 @@ OCR/
 - 금융 문서와 물류의 원산지증명서 / 기타는 Fintra 대상에서 제외.
 - 물류 metadata 실제값: `DataSet.identifier=IMG_OCR_6_T`, `Images.form_type`로 문서 종류 구분.
 - 물류 form_type 실제값: 상업송장 / 포장명세서 / 선하증권 / 원산지증명서 / 기타.
+- 7-1 baseline 의존성: CPU 기준 `paddlepaddle==3.2.0`, `paddleocr==3.7.0`로 고정.
+- 7-1 환경 기준: Python 3.13 가상환경 사용 예정. 현재 머신에는 NVIDIA GPU가 없어 CPU baseline부터 진행.
 
 ## 개발 원칙
 
