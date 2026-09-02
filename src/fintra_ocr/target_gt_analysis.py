@@ -22,6 +22,7 @@ DOCUMENT_TYPES = (
 FIELD_SPECS: dict[str, tuple[str, ...]] = {
     "invoice_no": ("invoice", "inv no", "inv number"),
     "date": ("date", "dated", "on board", "laden on board", "shipped"),
+    "on_board_date": ("date", "dated", "on board", "laden on board", "shipped"),
     "buyer_consignee": ("buyer", "sold to", "bill to", "seller"),
     "shipper": ("shipper", "consignor", "exporter"),
     "consignee": ("consignee",),
@@ -37,7 +38,7 @@ FIELD_SPECS: dict[str, tuple[str, ...]] = {
 FIELD_KEYS_BY_DOCUMENT: dict[str, tuple[str, ...]] = {
     "commercial_invoice": ("invoice_no", "date", "buyer_consignee", "goods_description", "quantity", "amount_total", "currency"),
     "packing_list": ("invoice_no", "goods_description", "quantity", "number_of_packages", "gross_weight"),
-    "bill_of_lading": ("bl_no", "shipper", "consignee", "goods_description", "number_of_packages", "gross_weight", "date"),
+    "bill_of_lading": ("bl_no", "shipper", "consignee", "goods_description", "number_of_packages", "gross_weight", "on_board_date"),
 }
 
 _DATE_PATTERNS = (
@@ -123,7 +124,7 @@ def _money_features(text: str) -> tuple[bool, str | None, bool, bool]:
     if _MEASURE_PATTERN.fullmatch(candidate) or _UNIT_ONLY_PATTERN.fullmatch(candidate):
         return False, None, False, False
     code_match = re.search(r"\b(USD|CAD|EUR|GBP|JPY|CNY|KRW|HKD|AUD|SGD)\b", candidate, re.I)
-    if not code_match and not re.search(r"[$€£¥]", candidate) and "." not in candidate:
+    if not code_match and not re.search(r"[$€£¥]", candidate):
         return False, None, False, False
     return (
         True,
@@ -162,7 +163,7 @@ def _line_groups(boxes: Sequence[Mapping[str, Any]]) -> list[list[int]]:
 
 def _value_candidate(field_name: str, text: str) -> bool:
     candidate = _clean_text(text)
-    if field_name == "date":
+    if field_name in {"date", "on_board_date"}:
         return any(pattern.search(candidate) for _, pattern in _DATE_PATTERNS)
     if field_name == "amount_total":
         return bool(_MONEY_TOKEN_PATTERN.search(candidate)) and _money_features(candidate)[0]
@@ -237,18 +238,29 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
         box_date_formats[index] = date_name
         if date_name:
             date_formats[date_name] += 1
-            field_hits["date"].append(index)
+            if index not in field_hits["date"]:
+                field_hits["date"].append(index)
+            if index not in field_hits["on_board_date"]:
+                field_hits["on_board_date"].append(index)
+            hits.add("date")
+            hits.add("on_board_date")
         measure_unit = _measure_unit(text)
         box_measure_units[index] = measure_unit
         if measure_unit:
             unit_counts[measure_unit] += 1
             measure_indices.add(index)
             if measure_unit in {"KG", "KGS", "LB", "LBS"}:
-                field_hits["gross_weight"].append(index)
+                if index not in field_hits["gross_weight"]:
+                    field_hits["gross_weight"].append(index)
+                hits.add("gross_weight")
             elif measure_unit in {"PKG", "PKGS", "BOX", "BOXES", "CTN", "CTNS", "BUNDLES", "BUNDLE", "CARTONS", "CARTON", "CASES", "CASE", "PALLETS", "PALLET"}:
-                field_hits["number_of_packages"].append(index)
+                if index not in field_hits["number_of_packages"]:
+                    field_hits["number_of_packages"].append(index)
+                hits.add("number_of_packages")
             elif measure_unit in {"ST", "CT", "PC", "PCS"}:
-                field_hits["quantity"].append(index)
+                if index not in field_hits["quantity"]:
+                    field_hits["quantity"].append(index)
+                hits.add("quantity")
         unit = _unit_only(text)
         if unit:
             unit_counts[unit] += 1
@@ -256,15 +268,25 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
         is_money, code, has_thousands, has_decimal = _money_features(text)
         box_money[index] = (is_money, code, has_thousands, has_decimal)
         if is_money:
-            field_hits["amount_total"].append(index)
+            if index not in field_hits["amount_total"]:
+                field_hits["amount_total"].append(index)
+            hits.add("amount_total")
             if code or _CURRENCY_CODE_PATTERN.search(text) or re.search(r"[$€£¥]", text):
-                field_hits["currency"].append(index)
+                if index not in field_hits["currency"]:
+                    field_hits["currency"].append(index)
+                hits.add("currency")
             amount_count += 1
             amount_with_symbol += int(bool(re.search(r"[$€£¥]", text)))
             amount_with_thousands += int(has_thousands)
             amount_with_decimal += int(has_decimal)
             if code:
                 currency_codes[code] += 1
+        code_only = _CURRENCY_CODE_PATTERN.fullmatch(_clean_text(text).strip(" :;,.()"))
+        if code_only:
+            currency_codes[code_only.group(0).upper()] += 1
+            if index not in field_hits["currency"]:
+                field_hits["currency"].append(index)
+            hits.add("currency")
         if _number(text):
             numeric_indices.add(index)
         if _TOTAL_PATTERN.search(text):

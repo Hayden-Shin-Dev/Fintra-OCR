@@ -45,6 +45,8 @@ class TargetGTAnalysisTest(unittest.TestCase):
         self.assertEqual(packing["units"]["PKG"], 2)
         self.assertEqual(packing["units"]["KG"], 1)
         self.assertGreaterEqual(packing["geometry"]["split_value_rows"], 1)
+        self.assertEqual(packing["field_stats"]["number_of_packages"]["same_bbox_label_value"], 1)
+        self.assertEqual(packing["field_stats"]["gross_weight"]["same_bbox_label_value"], 1)
 
     def test_malformed_bbox_is_counted_without_aborting(self):
         result = analyze_records([
@@ -74,6 +76,7 @@ class TargetGTAnalysisTest(unittest.TestCase):
 
         amount_stats = result["document_types"]["commercial_invoice"]["field_stats"]["amount_total"]
         self.assertEqual(amount_stats["occurrences"], 1)
+        self.assertEqual(amount_stats["same_bbox_label_value"], 1)
         self.assertEqual(
             result["document_types"]["commercial_invoice"]["amount_patterns"]["with_symbol"],
             1,
