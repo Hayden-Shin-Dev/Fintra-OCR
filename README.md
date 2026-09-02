@@ -88,6 +88,8 @@ OCR/
 - 9-1 prediction parsing: PaddleOCR의 `rec_texts/rec_scores/rec_boxes`를 정답과 비교할 `text + x/y bbox + score`로 정규화. NumPy 결과도 처리.
 - 9-2 comparison: IoU 0.5 기준 bbox 1:1 매칭, prediction precision/recall, 매칭 text exact count 계산 추가.
 - 9-2 실제 실행: 상업송장 1장에서 prediction 70개 / 정답 80개 / 매칭 27개 / exact text 24개. precision 0.3857, recall 0.3375.
+- 10-1 multi-sample evaluation: Training 대상 3종에서 1장씩 평가하는 실행기 추가. 모델 1회 생성 후 문서 유형별 결과 수집.
+- 10-1 실제 실행: 상업송장 70/80 box, 매칭 27, exact 24, precision 0.3857, recall 0.3375. 선하증권 97/139, 매칭 22, exact 13, precision 0.2268, recall 0.1583. 포장명세서 63/109, 매칭 18, exact 17, precision 0.2857, recall 0.1651.
 - split별 target JSON: Training 63,977개 / Validation 7,996개.
 - 전체 사전 scan 142,111개에서는 금융/물류 schema가 섞여 있었음. 이후 Fintra 기준 통계는 물류 3종만 사용.
 - Fintra OCR 대상: 상업송장 / 포장명세서 / 선하증권.
