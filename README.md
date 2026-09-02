@@ -72,7 +72,10 @@ OCR/
 - 4-1 schema 샘플: 금융 archive는 `Dataset`, 물류 archive는 `DataSet` 키를 사용함.
 - 4-2 metadata: `form_type`, `identifier`, `width`, `height`는 공통으로 읽을 수 있음.
 - 4-3 bbox: `data`, `x`, `y`는 공통 필드. 금융 `id`는 정수, 물류 `id`는 UUID 문자열. `data_type`은 optional.
-- 4-4 schema 규칙: `Options`, `_Splitter_`, `data_type`, `tag`는 선택 필드. 빈 text도 실제 데이터에 존재함.
+- 4-4 schema target: 물류 3종은 `DataSet` + `Images` 6개 필드 + bbox `data/id/x/y` 구조. 빈 text는 허용.
+- 4-5 target schema scan: 물류 3종 JSON 71,973개, schema 오류 0개.
+- split별 target JSON: Training 63,977개 / Validation 7,996개.
+- 전체 사전 scan 142,111개에서는 금융/물류 schema가 섞여 있었음. 이후 Fintra 기준 통계는 물류 3종만 사용.
 - Fintra OCR 대상: 상업송장 / 포장명세서 / 선하증권.
 - 금융 문서와 물류의 원산지증명서 / 기타는 Fintra 대상에서 제외.
 - 물류 metadata 실제값: `DataSet.identifier=IMG_OCR_6_T`, `Images.form_type`로 문서 종류 구분.
