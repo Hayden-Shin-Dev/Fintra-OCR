@@ -102,7 +102,8 @@ OCR/
 - 12-1 학습 준비: 대상 3종 라벨을 PaddleOCR detection line으로 변환하는 순수 변환기 추가. 실제 학습/대량 추출은 아직 시작하지 않음.
 - 평가 보완 1-1: Unicode/공백 정규화 exact match와 character-level CER/edit similarity 계산 추가.
 - 평가 보완 1-2: 기존 IoU matching 지표는 유지하면서 GT/prediction index와 IoU를 상세 분석에서 재사용하도록 공개.
-- 평가 보완 1-3: IoU 매칭 text 오류, 미매칭 exact/유사 text, GT↔prediction segmentation 관계를 별도 집계하는 분석기 추가 예정.
+- 평가 보완 1-3: IoU 매칭 text 오류, 미매칭 exact/유사 text, GT↔prediction segmentation 관계를 별도 집계하는 분석기 추가.
+- 평가 보완 1-4: 기존 3종 샘플 평가 경로에 상세 분석을 연결. 실제 재평가 결과는 다음 메모에 기록.
 - split별 target JSON: Training 63,977개 / Validation 7,996개.
 - 전체 사전 scan 142,111개에서는 금융/물류 schema가 섞여 있었음. 이후 Fintra 기준 통계는 물류 3종만 사용.
 - Fintra OCR 대상: 상업송장 / 포장명세서 / 선하증권.

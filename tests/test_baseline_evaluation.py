@@ -7,7 +7,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from fintra_ocr.archive_discovery import discover_archives
-from fintra_ocr.baseline_evaluation import evaluate_target_forms
+from fintra_ocr.baseline_evaluation import (
+    evaluate_detailed_target_forms,
+    evaluate_target_forms,
+)
 from fintra_ocr.target_scope import FINTRA_FORM_TYPES
 from fintra_ocr.target_selection import select_target_archive_pairs
 
@@ -61,6 +64,21 @@ class BaselineEvaluationTest(unittest.TestCase):
         self.assertEqual(
             {evaluation.sample.form_type for evaluation in evaluations},
             set(FINTRA_FORM_TYPES),
+        )
+
+    def test_evaluates_detailed_metrics_without_changing_original_evaluator(self):
+        selected = select_target_archive_pairs(discover_archives())
+
+        evaluations = evaluate_detailed_target_forms(
+            selected,
+            split="validation",
+            predictor=fake_predictor,
+        )
+
+        self.assertEqual(len(evaluations), 3)
+        self.assertTrue(
+            all(evaluation.analysis.detection.ground_truth_count > 0
+                for evaluation in evaluations)
         )
 
 
