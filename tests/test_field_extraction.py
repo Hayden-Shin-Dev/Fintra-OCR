@@ -25,7 +25,7 @@ class FieldExtractionTest(unittest.TestCase):
             prediction("Q'ty / Unit", 10, 130),
             prediction("Description of Goods", 100, 130),
             prediction("CASE-AIR DRAIN", 100, 170),
-            prediction("56 PKG", 10, 170),
+            prediction("2", 10, 170),
             prediction("Total", 10, 210),
             prediction("$1,216.98", 100, 210),
         ]
@@ -35,7 +35,7 @@ class FieldExtractionTest(unittest.TestCase):
         self.assertEqual(fields["invoice_no"].value, "172224")
         self.assertEqual(fields["date"].value, "Feb 23, 2013")
         self.assertEqual(fields["buyer"].value, "ACME CO., LTD.")
-        self.assertEqual(fields["quantity"].value, "56 PKG")
+        self.assertEqual(fields["quantity"].value, "2")
         self.assertEqual(fields["goods_description"].value, "CASE-AIR DRAIN")
         self.assertEqual(fields["amount"].value, "$1,216.98")
         self.assertEqual(fields["amount"].status, "found")

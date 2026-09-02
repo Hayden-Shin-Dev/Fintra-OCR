@@ -145,7 +145,11 @@ def _table_evidence(
         return missing_field(field_name, "table header not found")
     ordered_indices = _visual_order_indices(predictions)
     header_position = min(ordered_indices.index(index) for index in headers)
-    table_indices = ordered_indices[header_position + 1:]
+    header_bottom = max(max(predictions[index].y) for index in headers)
+    table_indices = [
+        index for index in ordered_indices[header_position + 1:]
+        if min(predictions[index].y) > header_bottom
+    ]
     for position, index in enumerate(table_indices):
         if _has_alias(predictions[index].text, stop_aliases):
             table_indices = table_indices[:position]
@@ -177,10 +181,19 @@ def _description_value(text: str) -> bool:
         or MONEY_PATTERN.match(text)
         or WEIGHT_PATTERN.search(text)
         or PACKAGE_PATTERN.search(text)
-        or re.search(r"\b(?:cbm|pkgs?|marks\s+and\s+no)\b", normalized)
+        or any(word in normalized for word in ("cbm", "pkgs", "marks and no", "container"))
     ):
         return False
     if normalized in _CONTROL_WORDS or normalized in {"pkg", "pcs", "ct", "st", "cbm", "bag", "inch", "pound", "(kgs)", "kgs"}:
+        return False
+    if re.fullmatch(r"[A-Z0-9-]+", text.strip(), re.IGNORECASE) and any(
+        character.isdigit() for character in text
+    ):
+        return False
+    if any(
+        phrase in normalized
+        for phrase in ("q'ty", "hs code", "unit price", "shipping mark", "po no")
+    ):
         return False
     return True
 
@@ -225,7 +238,7 @@ def _invoice_fields(predictions: Sequence[OCRPrediction]) -> dict[str, FieldEvid
     )
     fields["quantity"] = _table_evidence(
         "quantity", predictions, ("q'ty", "qty", "quantity"),
-        lambda text: bool(PACKAGE_PATTERN.search(text)), stop_aliases=("total",),
+        INTEGER_PATTERN.search, stop_aliases=("total",),
     )
     currency_codes = [
         index for index, prediction in enumerate(predictions)
