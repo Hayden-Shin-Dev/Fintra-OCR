@@ -195,18 +195,25 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
     numeric_indices: set[int] = set()
     measure_indices: set[int] = set()
     value_split_count = 0
+    box_field_hits: dict[int, set[str]] = {}
+    box_date_formats: dict[int, str | None] = {}
+    box_measure_units: dict[int, str | None] = {}
+    box_money: dict[int, tuple[bool, str | None, bool, bool]] = {}
 
     for index, box in enumerate(boxes):
         text = box["text"]
         hits = _field_hits(text)
+        box_field_hits[index] = hits
         for field_name in hits:
             field_hits[field_name].append(index)
             expression_counts[field_name][text] += 1
         date_name = _date_format(text)
+        box_date_formats[index] = date_name
         if date_name:
             date_formats[date_name] += 1
             field_hits["date"].append(index)
         measure_unit = _measure_unit(text)
+        box_measure_units[index] = measure_unit
         if measure_unit:
             unit_counts[measure_unit] += 1
             measure_indices.add(index)
@@ -221,6 +228,7 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
             unit_counts[unit] += 1
             measure_indices.add(index)
         is_money, code, has_thousands, has_decimal = _money_features(text)
+        box_money[index] = (is_money, code, has_thousands, has_decimal)
         if is_money:
             field_hits["amount_total"].append(index)
             if code or re.search(r"[$€£¥]", text):
@@ -237,7 +245,6 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
             total_marker_indices.add(index)
 
     lines = _line_groups(boxes)
-    line_by_index = {index: line for line in lines for index in line}
     table_like_rows = 0
     item_rows = 0
     total_rows = 0
@@ -260,9 +267,9 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
         if numbers and measures:
             value_split_count += 1
         for index in line:
-            hits = _field_hits(boxes[index]["text"])
+            hits = box_field_hits[index]
             for field_name in hits:
-                if _date_format(boxes[index]["text"]) or _money_features(boxes[index]["text"])[0] or _number(boxes[index]["text"]) or _measure_unit(boxes[index]["text"]):
+                if box_date_formats[index] or box_money[index][0] or index in numeric_indices or box_measure_units[index]:
                     same_bbox[field_name] += 1
                 elif len(line) > 1:
                     separate_pairs[field_name] += 1
