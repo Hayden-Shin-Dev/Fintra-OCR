@@ -74,6 +74,7 @@ OCR/
 - 4-3 bbox: `data`, `x`, `y`는 공통 필드. 금융 `id`는 정수, 물류 `id`는 UUID 문자열. `data_type`은 optional.
 - 4-4 schema target: 물류 3종은 `DataSet` + `Images` 6개 필드 + bbox `data/id/x/y` 구조. 빈 text는 허용.
 - 4-5 target schema scan: 물류 3종 JSON 71,973개, schema 오류 0개.
+- 4-6 malformed test: 필수 bbox 누락, ID 타입, 좌표 개수, 금융 전용 필드를 오류로 처리함.
 - split별 target JSON: Training 63,977개 / Validation 7,996개.
 - 전체 사전 scan 142,111개에서는 금융/물류 schema가 섞여 있었음. 이후 Fintra 기준 통계는 물류 3종만 사용.
 - Fintra OCR 대상: 상업송장 / 포장명세서 / 선하증권.
