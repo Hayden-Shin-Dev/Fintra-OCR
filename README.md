@@ -7,7 +7,7 @@ Fintra의 거래 증빙 OCR 파트를 단계적으로 개발하기 위한 작업
 1. [완료] 데이터셋 기본 구조 확인
 2. [완료] 데이터 경로 구성
 3. [완료] ZIP 구조 및 파일 구성 분석
-4. [미완료] 라벨 JSON 구조 상세 분석
+4. [진행 중] 라벨 JSON 구조 상세 분석
 5. [미완료] 이미지-라벨 pairing 검증
 6. [미완료] 대상 문서 3종 선별
 7. [미완료] PaddleOCR baseline 환경 구성
@@ -65,6 +65,11 @@ OCR/
 - archive pairing 누락: 0개
 
 원천 archive 이름의 `TS_` 및 `VS_` prefix는 각각 라벨 archive의 `TL_` 및 `VL_` prefix와 대응합니다. archive 내부 파일은 원천 PNG와 라벨 JSON으로 구성되며, 집계 과정에서 압축을 해제하지 않았습니다.
+
+## OCR 개발 메모
+
+- 4-1 JSON 로딩: `zipfile`로 archive 안의 JSON을 직접 읽는 중. 압축 해제 없음.
+- 4-1 schema 샘플: 금융 archive는 `Dataset`, 물류 archive는 `DataSet` 키를 사용함.
 
 ## 개발 원칙
 
