@@ -81,6 +81,7 @@ OCR/
 - 5-1 member pairing: PNG/JSON basename 비교 완료. 압축 해제 없음.
 - 5-2 target pairing: Training 63,977쌍 / Validation 7,996쌍. 누락·중복 0.
 - 6-1 target archive selection: 실제 `form_type`으로 대상 3종 archive만 선택 완료. split별 15개.
+- 8-1 single sample selection: 대상 3종별 실제 PNG/JSON basename 일치 샘플 선택 기능 추가. 압축 해제 없음.
 - split별 target JSON: Training 63,977개 / Validation 7,996개.
 - 전체 사전 scan 142,111개에서는 금융/물류 schema가 섞여 있었음. 이후 Fintra 기준 통계는 물류 3종만 사용.
 - Fintra OCR 대상: 상업송장 / 포장명세서 / 선하증권.
