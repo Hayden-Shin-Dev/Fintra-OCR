@@ -10,7 +10,7 @@ Fintra의 거래 증빙 OCR 파트를 단계적으로 개발하기 위한 작업
 4. [완료] 라벨 JSON 구조 상세 분석
 5. [완료] 이미지-라벨 pairing 검증
 6. [완료] 대상 문서 3종 선별
-7. [미완료] PaddleOCR baseline 환경 구성
+7. [완료] PaddleOCR baseline 환경 구성
 8. [미완료] 단일 이미지 baseline 추론
 9. [미완료] OCR prediction과 정답 라벨 비교
 10. [미완료] 여러 샘플 baseline 평가
