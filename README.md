@@ -9,7 +9,7 @@ Fintra의 거래 증빙 OCR 파트를 단계적으로 개발하기 위한 작업
 3. [완료] ZIP 구조 및 파일 구성 분석
 4. [완료] 라벨 JSON 구조 상세 분석
 5. [완료] 이미지-라벨 pairing 검증
-6. [진행 중] 대상 문서 3종 선별
+6. [완료] 대상 문서 3종 선별
 7. [미완료] PaddleOCR baseline 환경 구성
 8. [미완료] 단일 이미지 baseline 추론
 9. [미완료] OCR prediction과 정답 라벨 비교
@@ -80,7 +80,7 @@ OCR/
 - Validation form_type: 상업송장 2,604개 / 포장명세서 2,738개 / 선하증권 2,654개.
 - 5-1 member pairing: PNG/JSON basename 비교 완료. 압축 해제 없음.
 - 5-2 target pairing: Training 63,977쌍 / Validation 7,996쌍. 누락·중복 0.
-- 6-1 target archive selection: 실제 `form_type`으로 대상 3종 archive만 고르는 중.
+- 6-1 target archive selection: 실제 `form_type`으로 대상 3종 archive만 선택 완료. split별 15개.
 - split별 target JSON: Training 63,977개 / Validation 7,996개.
 - 전체 사전 scan 142,111개에서는 금융/물류 schema가 섞여 있었음. 이후 Fintra 기준 통계는 물류 3종만 사용.
 - Fintra OCR 대상: 상업송장 / 포장명세서 / 선하증권.
