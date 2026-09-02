@@ -220,7 +220,7 @@ def _pure_value_token(text: str) -> bool:
     )
 
 
-def find_label_spans(
+def _find_label_spans_uncached(
     predictions: Sequence[OCRPrediction], field_name: str, *, max_span: int = 4
 ) -> list[LabelSpan]:
     """Find visible semantic labels, including labels split across OCR boxes.
@@ -274,6 +274,26 @@ def find_label_spans(
                     matches.append(LabelSpan(field_name, indices, text))
                     seen.add(indices)
     return sorted(matches, key=lambda span: (min(min(predictions[index].y) for index in span.indices), min(min(predictions[index].x) for index in span.indices)))
+
+
+_LABEL_SPAN_CACHE_SOURCE: Sequence[OCRPrediction] | None = None
+_LABEL_SPAN_CACHE: dict[tuple[str, int], list[LabelSpan]] = {}
+
+
+def find_label_spans(
+    predictions: Sequence[OCRPrediction], field_name: str, *, max_span: int = 4
+) -> list[LabelSpan]:
+    """Find label spans once per prediction sequence and field."""
+    global _LABEL_SPAN_CACHE_SOURCE, _LABEL_SPAN_CACHE
+    if predictions is not _LABEL_SPAN_CACHE_SOURCE:
+        _LABEL_SPAN_CACHE_SOURCE = predictions
+        _LABEL_SPAN_CACHE = {}
+    key = (field_name, max_span)
+    if key not in _LABEL_SPAN_CACHE:
+        _LABEL_SPAN_CACHE[key] = _find_label_spans_uncached(
+            predictions, field_name, max_span=max_span
+        )
+    return _LABEL_SPAN_CACHE[key]
 
 
 def _visual_order_indices(predictions: Sequence[OCRPrediction]) -> list[int]:
