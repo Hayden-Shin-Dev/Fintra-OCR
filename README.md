@@ -141,4 +141,9 @@ OCR/
 - 14 사전 분석: 대상 라벨 71,973건과 기존 3종 OCR 샘플을 확인. 공통 후보는 document_type, date, party/address, document/reference number, goods description, quantity/package, weight/measurement, origin/destination, transport term.
 - 문서별 후보: 상업송장은 invoice no/date, L/C no/date, PO no, HS code, unit price, amount, total, currency, payment/delivery term; 포장명세서는 invoice no, PO no, country of origin, POL/POD, vessel/voyage, shipping mark, net/gross weight, quantity, CBM, number of packages; 선하증권은 B/L no, shipper/consignee/notify, receipt/loading/discharge/delivery/final destination, vessel/voyage, container/seal no, packages, gross weight, measurement, freight, on-board date, original count.
 - 교차검증 후보: invoice↔packing은 invoice no, parties, goods, quantity/package, marks, origin, weight; invoice↔B/L은 parties, ports, vessel/voyage, packages, weight/measurement; packing↔B/L은 parties, goods/marks, packages, gross weight/measurement, ports, vessel/voyage.
-- 필드 표현은 실제로 한 bbox에 완성되지 않고 `Feb`/`23,`/`2013`처럼 분리되거나 OCR에서 여러 단어가 한 줄로 병합됨. 현재는 후보와 표현만 확정하고 필드 추출 로직·LLM·공통 JSON 구현은 시작하지 않음.
+- 필드 표현은 실제로 한 bbox에 완성되지 않고 `Feb`/`23,`/`2013`처럼 분리되거나 OCR에서 여러 단어가 한 줄로 병합됨. 이후 POC도 이 특성을 전제로 진행.
+- 14-1 evidence POC: 각 필드는 `value`, `raw_text`, 결합 bbox, OCR token 최저 confidence, `found/missing/ambiguous`와 reason을 함께 반환. 원본 위치 추적을 위해 source token index도 보존.
+- 14-2 deterministic POC: label:value 병합, label 인접 token, 시각적 table 순서와 명시적 단위/총계 표현만 사용. 조건이 불충분하면 임의의 숫자·회사를 선택하지 않음.
+- 14-3 실제 3종 검증: 상업송장 `463059`, `20-Apr-2017`, `Same to consignee`, goods `Tube | CASE-AIR DRAIN | Terminal | Adjustment Piston | Assembly`, quantity `2 | 3`, total `$1,216.98` 추출. 통화는 `$`만 OCR되어 ISO code 부재로 `ambiguous`.
+- 14-4 실제 검증: 포장명세서 `172224`, goods 3개, quantity `83 | 98 | 26`, `31 PKG`, `614KG`; 선하증권 `HG290309`, shipper, consignee, goods 4개, `88 BUNDLES`, `884KG`, `JUN 11, 2013` 추출.
+- 14-5 POC 한계: invoice quantity의 `ST/CT`와 숫자 열 결합, buyer의 `Same to consignee` 참조 해석, 표의 item별 구조화, 통화 code 복원은 아직 불안정하여 후속 작업으로 남김. 현재 공통 JSON/LLM/대량 추출은 시작하지 않음.
