@@ -13,6 +13,7 @@ import re
 import unicodedata
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
+from functools import lru_cache
 
 from .field_evidence import FieldEvidence, missing_field, make_field_evidence
 from .prediction_parser import OCRPrediction
@@ -137,6 +138,7 @@ def _normalized(text: str) -> str:
     return " ".join(text.split())
 
 
+@lru_cache(maxsize=256)
 def _normalize_alias(alias: str) -> str:
     return _normalized(alias)
 
