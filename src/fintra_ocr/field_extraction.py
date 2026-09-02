@@ -178,7 +178,14 @@ def _same_row(first: OCRPrediction, second: OCRPrediction) -> bool:
     ) <= max(20, min(first_h, second_h))
 
 
+_ROW_GROUP_CACHE_SOURCE: Sequence[OCRPrediction] | None = None
+_ROW_GROUP_CACHE_RESULT: list[list[int]] | None = None
+
+
 def _row_groups(predictions: Sequence[OCRPrediction]) -> list[list[int]]:
+    global _ROW_GROUP_CACHE_SOURCE, _ROW_GROUP_CACHE_RESULT
+    if predictions is _ROW_GROUP_CACHE_SOURCE and _ROW_GROUP_CACHE_RESULT is not None:
+        return _ROW_GROUP_CACHE_RESULT
     ordered = sorted(range(len(predictions)), key=lambda index: (min(predictions[index].y), min(predictions[index].x), index))
     groups: list[list[int]] = []
     for index in ordered:
@@ -193,6 +200,8 @@ def _row_groups(predictions: Sequence[OCRPrediction]) -> list[list[int]]:
     for group in groups:
         group.sort(key=lambda index: (min(predictions[index].x), index))
     groups.sort(key=lambda group: min(min(predictions[index].y) for index in group))
+    _ROW_GROUP_CACHE_SOURCE = predictions
+    _ROW_GROUP_CACHE_RESULT = groups
     return groups
 
 
@@ -745,4 +754,3 @@ def extract_fields(form_type: str, predictions: Sequence[OCRPrediction]) -> dict
     if form_type == "선하증권":
         return _bill_of_lading_fields(predictions)
     raise ValueError(f"Unsupported Fintra form type: {form_type!r}")
-
