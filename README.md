@@ -91,6 +91,7 @@ OCR/
 - 10-1 multi-sample evaluation: Training 대상 3종에서 1장씩 평가하는 실행기 추가. 모델 1회 생성 후 문서 유형별 결과 수집.
 - 10-1 실제 실행: 상업송장 70/80 box, 매칭 27, exact 24, precision 0.3857, recall 0.3375. 선하증권 97/139, 매칭 22, exact 13, precision 0.2268, recall 0.1583. 포장명세서 63/109, 매칭 18, exact 17, precision 0.2857, recall 0.1651.
 - 10-2 multi-sample 확장: 대상 3종별 여러 샘플 선택 및 평가 지원. 기본 1장 동작은 유지하고 `samples_per_form`으로 개수 지정.
+- 10-2 실제 실행 메모: 6장 CPU 평가를 시도했으나 처리 시간이 길어 중단. 현재 기록된 실제 수치는 10-1의 3장 결과이며, 다음에 입력 크기/처리 방식 점검.
 - split별 target JSON: Training 63,977개 / Validation 7,996개.
 - 전체 사전 scan 142,111개에서는 금융/물류 schema가 섞여 있었음. 이후 Fintra 기준 통계는 물류 3종만 사용.
 - Fintra OCR 대상: 상업송장 / 포장명세서 / 선하증권.
