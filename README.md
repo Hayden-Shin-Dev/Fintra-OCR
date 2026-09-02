@@ -72,6 +72,11 @@ OCR/
 - 4-1 schema 샘플: 금융 archive는 `Dataset`, 물류 archive는 `DataSet` 키를 사용함.
 - 4-2 metadata: `form_type`, `identifier`, `width`, `height`는 공통으로 읽을 수 있음.
 - 4-3 bbox: `data`, `x`, `y`는 공통 필드. 금융 `id`는 정수, 물류 `id`는 UUID 문자열. `data_type`은 optional.
+- 4-4 schema 규칙: `Options`, `_Splitter_`, `data_type`, `tag`는 선택 필드. 빈 text도 실제 데이터에 존재함.
+- Fintra OCR 대상: 상업송장 / 포장명세서 / 선하증권.
+- 금융 문서와 물류의 원산지증명서 / 기타는 Fintra 대상에서 제외.
+- 물류 metadata 실제값: `DataSet.identifier=IMG_OCR_6_T`, `Images.form_type`로 문서 종류 구분.
+- 물류 form_type 실제값: 상업송장 / 포장명세서 / 선하증권 / 원산지증명서 / 기타.
 
 ## 개발 원칙
 
