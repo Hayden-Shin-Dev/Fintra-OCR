@@ -49,6 +49,10 @@ _DATE_PATTERNS = (
 )
 _MONEY_PATTERN = re.compile(r"^(?:[$€£¥]\s*)?\d[\d,]*(?:\.\d+)?(?:\s*[A-Z]{3})?$", re.I)
 _MONEY_TOKEN_PATTERN = re.compile(r"(?:[$€£¥]\s*)?\d[\d,]*(?:\.\d+)?(?:\s*(?:USD|CAD|EUR|GBP|JPY|CNY|KRW|HKD|AUD|SGD))?", re.I)
+_MEASURE_TOKEN_PATTERN = re.compile(
+    r"[+-]?\d[\d,]*(?:\.\d+)?\s*(KG|KGS|LB|LBS|PKG|PKGS|PCS?|CTN|CTNS?|BUNDLES?|BOX(?:ES)?|CARTONS?|CASES?|PALLETS?|ST|CT)",
+    re.I,
+)
 _CURRENCY_CODE_PATTERN = re.compile(r"\b(?:USD|CAD|EUR|GBP|JPY|CNY|KRW|HKD|AUD|SGD)\b", re.I)
 _NUMBER_PATTERN = re.compile(r"^[+-]?\d[\d,]*(?:\.\d+)?$")
 _MEASURE_PATTERN = re.compile(
@@ -81,17 +85,43 @@ def _normalized_expression(text: str) -> str:
 
 
 def _field_hits(text: str) -> set[str]:
+    """Return semantic label anchors only, never format-derived field hits."""
     normalized = _normalized_expression(text)
+    if not normalized or _number(text) or _MEASURE_PATTERN.fullmatch(normalized) or _unit_only(text):
+        return set()
+
     hits: set[str] = set()
-    for field_name, expressions in FIELD_SPECS.items():
-        if any(
-            normalized == expression
-            or normalized.startswith(expression + " ")
-            or normalized.startswith(expression + ":")
-            or (expression in {"invoice", "date", "dated", "gross", "weight", "total", "amount", "price", "value"} and re.search(rf"\b{re.escape(expression)}\b", normalized))
-            for expression in expressions
-        ):
-            hits.add(field_name)
+    if re.search(r"\b(?:invoice|inv)\s*(?:no|number|#)\b", normalized):
+        hits.add("invoice_no")
+    if re.search(r"\b(?:date|dated)\b", normalized):
+        hits.update({"date", "on_board_date"})
+    if re.search(r"\b(?:on board|laden on board|shipped)\b", normalized):
+        hits.update({"date", "on_board_date"})
+    if re.search(r"\b(?:buyer|sold to|bill to|seller)\b", normalized):
+        hits.add("buyer_consignee")
+    if re.search(r"\b(?:shipper|consignor|exporter)\b", normalized):
+        hits.add("shipper")
+    if re.search(r"\bconsignee\b", normalized):
+        hits.add("consignee")
+    if re.search(r"\b(?:description|goods|products?|commodity|item|model)\b", normalized):
+        hits.add("goods_description")
+    if re.search(r"\b(?:quantity|qty|q'ty|unit|units|pieces?|pcs?)\b", normalized):
+        hits.add("quantity")
+    if re.search(r"\b(?:amount|total|subtotal|grand|value|price)\b", normalized):
+        hits.add("amount_total")
+    if re.search(r"\b(?:currency|usd|cad|eur|gbp|jpy|cny|krw)\b", normalized):
+        hits.add("currency")
+    if re.search(r"\b(?:number of packages?|packages?|package|no & kinds|bundles?)\b", normalized):
+        hits.add("number_of_packages")
+    if re.search(r"\bnet\s+weight\b", normalized):
+        # NET WEIGHT is a meaningful anchor, but not a gross-weight anchor.
+        hits.add("net_weight_context")
+    elif re.search(r"\b(?:gross\s+weight|gross|g\.w|g\.wt|g\.weight)\b", normalized):
+        hits.add("gross_weight")
+    elif re.fullmatch(r"(?:weight|g\.w|g\.wt|g\.weight)", normalized):
+        hits.add("gross_weight")
+    if re.search(r"\b(?:b/l|bl)\s*(?:no|number|#)\b", normalized) or re.search(r"\bbill of lading(?:\s+no|\s+number|\s*#)?\b", normalized):
+        hits.add("bl_no")
     return hits
 
 
@@ -108,7 +138,8 @@ def _number(text: str) -> bool:
 
 
 def _measure_unit(text: str) -> str | None:
-    match = _MEASURE_PATTERN.fullmatch(_clean_text(text).strip(" :;,.()"))
+    candidate = _clean_text(text).strip(" :;,.()")
+    match = _MEASURE_PATTERN.fullmatch(candidate) or _MEASURE_TOKEN_PATTERN.search(candidate)
     return match.group(1).upper() if match else None
 
 
@@ -117,14 +148,15 @@ def _unit_only(text: str) -> str | None:
     return match.group(1).upper() if match else None
 
 
-def _money_features(text: str) -> tuple[bool, str | None, bool, bool]:
+def _money_features(text: str, *, allow_plain_integer: bool = False) -> tuple[bool, str | None, bool, bool]:
     candidate = _clean_text(text).strip(" :;,.()")
     if not _MONEY_PATTERN.fullmatch(candidate):
         return False, None, False, False
     if _MEASURE_PATTERN.fullmatch(candidate) or _UNIT_ONLY_PATTERN.fullmatch(candidate):
         return False, None, False, False
     code_match = re.search(r"\b(USD|CAD|EUR|GBP|JPY|CNY|KRW|HKD|AUD|SGD)\b", candidate, re.I)
-    if not code_match and not re.search(r"[$€£¥]", candidate):
+    has_currency_marker = bool(code_match or re.search(r"[$€£¥]", candidate))
+    if not has_currency_marker and "." not in candidate and not allow_plain_integer:
         return False, None, False, False
     return (
         True,
@@ -161,23 +193,61 @@ def _line_groups(boxes: Sequence[Mapping[str, Any]]) -> list[list[int]]:
     return groups
 
 
-def _value_candidate(field_name: str, text: str) -> bool:
+def _value_candidate(field_name: str, text: str, *, anchored: bool = False) -> bool:
     candidate = _clean_text(text)
     if field_name in {"date", "on_board_date"}:
-        return any(pattern.search(candidate) for _, pattern in _DATE_PATTERNS)
+        return _date_format(candidate) is not None or bool(
+            re.search(r"\b\d{1,4}[-/. ](?:[A-Za-z]{3,9}|\d{1,2})[-/. ,]\d{2,4}\b", candidate)
+        )
     if field_name == "amount_total":
-        return bool(_MONEY_TOKEN_PATTERN.search(candidate)) and _money_features(candidate)[0]
+        return any(
+            _money_features(match.group(0), allow_plain_integer=anchored)[0]
+            for match in _MONEY_TOKEN_PATTERN.finditer(candidate)
+        )
     if field_name == "currency":
         return bool(_CURRENCY_CODE_PATTERN.search(candidate) or re.search(r"[$€£¥]", candidate))
     if field_name in {"quantity", "number_of_packages", "gross_weight"}:
-        return bool(_MEASURE_PATTERN.search(candidate) or _NUMBER_PATTERN.search(candidate))
+        if _MEASURE_PATTERN.fullmatch(candidate) or _NUMBER_PATTERN.fullmatch(candidate):
+            return True
+        return bool(_MEASURE_TOKEN_PATTERN.search(candidate)) or (
+            anchored and bool(re.search(r"\b[+-]?\d[\d,]*(?:\.\d+)?\b", candidate))
+        )
     if field_name in {"invoice_no", "bl_no"}:
         return bool(_ID_PATTERN.search(candidate))
     return False
 
 
+def _value_candidate_indices(field_name: str, texts: Sequence[str], index: int, *, anchored: bool = False) -> set[int]:
+    """Find value boxes, including the common number + unit split form."""
+    candidates: set[int] = set()
+    if _value_candidate(field_name, texts[index], anchored=anchored):
+        candidates.add(index)
+    if field_name not in {"quantity", "number_of_packages", "gross_weight"}:
+        return candidates
+    unit = _unit_only(texts[index])
+    if unit:
+        return candidates
+    if not _number(texts[index]):
+        return candidates
+    next_index = index + 1
+    if next_index < len(texts) and _unit_only(texts[next_index]):
+        combined = f"{texts[index]} {_unit_only(texts[next_index])}"
+        if _value_candidate(field_name, combined, anchored=anchored):
+            candidates.update({index, next_index})
+    return candidates
+
+
 def _empty_field_stats() -> dict[str, Any]:
     return {
+        "documents_with_label_anchor": 0,
+        "documents_with_anchored_value": 0,
+        "label_anchor_occurrences": 0,
+        "anchored_value_occurrences": 0,
+        "format_only_unanchored_candidate": 0,
+        "format_only_unanchored_occurrences": 0,
+        "ambiguous_or_unclassified": 0,
+        "ambiguous_or_unclassified_occurrences": 0,
+        # Compatibility aliases retained for existing consumers of the profile.
         "documents_with_candidate": 0,
         "occurrences": 0,
         "documents_without_candidate": 0,
@@ -190,6 +260,40 @@ def _empty_field_stats() -> dict[str, Any]:
         "total_value_signals": 0,
         "label_expressions": Counter(),
     }
+
+
+_WEIGHT_UNITS = {"KG", "KGS", "LB", "LBS"}
+_PACKAGE_UNITS = {
+    "PKG", "PKGS", "BOX", "BOXES", "CTN", "CTNS", "BUNDLES", "BUNDLE",
+    "CARTONS", "CARTON", "CASES", "CASE", "PALLETS", "PALLET",
+}
+_QUANTITY_UNITS = {"ST", "CT", "PC", "PCS"}
+
+
+def _format_only_field(field_name: str, text: str) -> bool:
+    """Whether a value has a recognizable format but no semantic label."""
+    if field_name in {"date", "on_board_date"}:
+        return _date_format(text) is not None
+    if field_name == "amount_total":
+        return _money_features(text)[0]
+    if field_name == "currency":
+        return bool(_CURRENCY_CODE_PATTERN.search(text) or re.search(r"[$€£¥]", text))
+    unit = _measure_unit(text)
+    if field_name == "gross_weight":
+        return unit in _WEIGHT_UNITS
+    if field_name == "number_of_packages":
+        return unit in _PACKAGE_UNITS
+    if field_name == "quantity":
+        return unit in _QUANTITY_UNITS
+    return False
+
+
+def _unclassified_numeric(text: str) -> bool:
+    return _number(text) and not _measure_unit(text) and not _unit_only(text) and not _money_features(text)[0]
+
+
+def _line_index_map(lines: Sequence[Sequence[int]]) -> dict[int, int]:
+    return {index: line_number for line_number, line in enumerate(lines) for index in line}
 
 
 def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
@@ -238,29 +342,11 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
         box_date_formats[index] = date_name
         if date_name:
             date_formats[date_name] += 1
-            if index not in field_hits["date"]:
-                field_hits["date"].append(index)
-            if index not in field_hits["on_board_date"]:
-                field_hits["on_board_date"].append(index)
-            hits.add("date")
-            hits.add("on_board_date")
         measure_unit = _measure_unit(text)
         box_measure_units[index] = measure_unit
         if measure_unit:
             unit_counts[measure_unit] += 1
             measure_indices.add(index)
-            if measure_unit in {"KG", "KGS", "LB", "LBS"}:
-                if index not in field_hits["gross_weight"]:
-                    field_hits["gross_weight"].append(index)
-                hits.add("gross_weight")
-            elif measure_unit in {"PKG", "PKGS", "BOX", "BOXES", "CTN", "CTNS", "BUNDLES", "BUNDLE", "CARTONS", "CARTON", "CASES", "CASE", "PALLETS", "PALLET"}:
-                if index not in field_hits["number_of_packages"]:
-                    field_hits["number_of_packages"].append(index)
-                hits.add("number_of_packages")
-            elif measure_unit in {"ST", "CT", "PC", "PCS"}:
-                if index not in field_hits["quantity"]:
-                    field_hits["quantity"].append(index)
-                hits.add("quantity")
         unit = _unit_only(text)
         if unit:
             unit_counts[unit] += 1
@@ -268,13 +354,8 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
         is_money, code, has_thousands, has_decimal = _money_features(text)
         box_money[index] = (is_money, code, has_thousands, has_decimal)
         if is_money:
-            if index not in field_hits["amount_total"]:
-                field_hits["amount_total"].append(index)
-            hits.add("amount_total")
             if code or _CURRENCY_CODE_PATTERN.search(text) or re.search(r"[$€£¥]", text):
-                if index not in field_hits["currency"]:
-                    field_hits["currency"].append(index)
-                hits.add("currency")
+                pass
             amount_count += 1
             amount_with_symbol += int(bool(re.search(r"[$€£¥]", text)))
             amount_with_thousands += int(has_thousands)
@@ -284,20 +365,25 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
         code_only = _CURRENCY_CODE_PATTERN.fullmatch(_clean_text(text).strip(" :;,.()"))
         if code_only:
             currency_codes[code_only.group(0).upper()] += 1
-            if index not in field_hits["currency"]:
-                field_hits["currency"].append(index)
-            hits.add("currency")
         if _number(text):
             numeric_indices.add(index)
         if _TOTAL_PATTERN.search(text):
             total_marker_indices.add(index)
 
     lines = _line_groups(boxes)
+    line_by_index = _line_index_map(lines)
     table_like_rows = 0
     item_rows = 0
     total_rows = 0
     separate_pairs: dict[str, int] = Counter()
     same_bbox: dict[str, int] = Counter()
+    anchored_values: dict[str, int] = Counter()
+    format_only: dict[str, int] = Counter()
+    format_only_occurrences: dict[str, int] = Counter()
+    ambiguous: dict[str, int] = Counter()
+    ambiguous_occurrences: dict[str, int] = Counter()
+    unclassified_numeric_count = 0
+    unclassified_numeric_docs = 0
     table_occurrences: dict[str, int] = Counter()
     item_signals: dict[str, int] = Counter()
     total_signals: dict[str, int] = Counter()
@@ -323,23 +409,81 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
                 value_split_count["quantity"] += 1
             if not split_units:
                 value_split_count["quantity"] += 1
+        line_has_any_anchor = any(box_field_hits[index] for index in line)
         for index in line:
-            hits = box_field_hits[index]
-            for field_name in hits:
-                if _value_candidate(field_name, boxes[index]["text"]):
+            for field_name in box_field_hits[index]:
+                if field_name not in FIELD_SPECS:
+                    continue
+                same_indices = _value_candidate_indices(
+                    field_name, line_texts, line.index(index), anchored=True
+                )
+                same_indices = {line[position] for position in same_indices}
+                if same_indices:
                     same_bbox[field_name] += 1
-                elif any(
-                    other_index != index
-                    and _value_candidate(field_name, boxes[other_index]["text"])
-                    for other_index in line
-                ):
+                    anchored_values[field_name] += len(same_indices)
+                other_indices: set[int] = set()
+                for other_index in line:
+                    if other_index == index:
+                        continue
+                    if _value_candidate(field_name, boxes[other_index]["text"], anchored=True):
+                        other_indices.add(other_index)
+                # A numeric box followed by a unit-only box is one split value.
+                for position, other_index in enumerate(line[:-1]):
+                    if other_index == index and _number(boxes[other_index]["text"]):
+                        if _unit_only(boxes[line[position + 1]]["text"]):
+                            combined = f"{boxes[other_index]['text']} {_unit_only(boxes[line[position + 1]]['text'])}"
+                            if _value_candidate(field_name, combined, anchored=True):
+                                other_indices.update({other_index, line[position + 1]})
+                other_indices.difference_update(same_indices)
+                if other_indices:
                     separate_pairs[field_name] += 1
+                    anchored_values[field_name] += 1
                 if len(line) >= 3:
                     table_occurrences[field_name] += 1
                 if line_has_total:
-                    total_signals[field_name] += 1
+                    total_signals[field_name] += int(bool(same_indices or other_indices))
                 else:
-                    item_signals[field_name] += 1
+                    item_signals[field_name] += int(bool(same_indices or other_indices))
+
+        for field_name in FIELD_KEYS_BY_DOCUMENT[record.document_type]:
+            if any(field_name in box_field_hits[index] for index in line):
+                continue
+            for index in line:
+                text = boxes[index]["text"]
+                if field_name == "gross_weight" and "net_weight_context" in box_field_hits[index]:
+                    ambiguous[field_name] += 1
+                    ambiguous_occurrences[field_name] += 1
+                elif field_name == "gross_weight" and any(
+                    "net_weight_context" in box_field_hits[other_index] for other_index in line
+                ) and _measure_unit(text) in _WEIGHT_UNITS:
+                    ambiguous[field_name] += 1
+                    ambiguous_occurrences[field_name] += 1
+                elif _format_only_field(field_name, text):
+                    format_only[field_name] += 1
+                    format_only_occurrences[field_name] += 1
+                elif field_name == "amount_total" and _unclassified_numeric(text) and not line_has_any_anchor:
+                    ambiguous[field_name] += 1
+                    ambiguous_occurrences[field_name] += 1
+
+        if any(_unclassified_numeric(boxes[index]["text"]) for index in line if not line_has_any_anchor):
+            unclassified_numeric_docs = 1
+            unclassified_numeric_count += sum(
+                _unclassified_numeric(boxes[index]["text"])
+                for index in line
+                if not line_has_any_anchor
+            )
+
+    # Value-only annotations may be separated from a label by a line break.
+    # Keep this conservative: only the nearest following line is considered.
+    for line_number, line in enumerate(lines[:-1]):
+        anchor_fields = set().union(*(box_field_hits[index] for index in line))
+        next_line = lines[line_number + 1]
+        for field_name in anchor_fields & set(FIELD_SPECS):
+            if any(_value_candidate(field_name, boxes[index]["text"], anchored=True) for index in line):
+                continue
+            if any(_value_candidate(field_name, boxes[index]["text"], anchored=True) for index in next_line):
+                separate_pairs[field_name] += 1
+                anchored_values[field_name] += 1
 
     candidate_counts: dict[str, int] = {}
     for field_name in FIELD_KEYS_BY_DOCUMENT[record.document_type]:
@@ -366,6 +510,13 @@ def _record_profile(record: TargetLabelRecord) -> dict[str, Any]:
         "item_signals": item_signals,
         "total_signals": total_signals,
         "candidate_counts": candidate_counts,
+        "anchored_values": anchored_values,
+        "format_only": format_only,
+        "format_only_occurrences": format_only_occurrences,
+        "ambiguous": ambiguous,
+        "ambiguous_occurrences": ambiguous_occurrences,
+        "unclassified_numeric_count": unclassified_numeric_count,
+        "unclassified_numeric_docs": unclassified_numeric_docs,
     }
 
 
@@ -408,8 +559,19 @@ def _select_representatives(candidates: list[dict[str, Any]], limit: int) -> lis
     )
     selected: list[dict[str, Any]] = []
     used: set[tuple[str, str]] = set()
+    feature_key_by_category = {
+        "general": "core_fields",
+        "core_field_rich": "core_fields",
+        "missing_core_field": "missing_core_fields",
+        "complex_table": "table_rows",
+        "split_geometry": "split_values",
+        "repeated_field": "repeated_fields",
+        "many_item_rows": "item_rows",
+        "unusual_format": "unusual_formats",
+    }
     for category in categories:
-        ranked = sorted(candidates, key=lambda item: (item["features"].get(category if category != "unusual_format" else "unusual_formats", 0), item["features"]["core_fields"], item["features"]["box_count"]), reverse=True)
+        feature_key = feature_key_by_category[category]
+        ranked = sorted(candidates, key=lambda item: (item["features"].get(feature_key, 0), item["features"]["core_fields"], item["features"]["box_count"]), reverse=True)
         for candidate in ranked:
             key = (candidate["split"], candidate["member_name"])
             if key not in used:
@@ -444,6 +606,7 @@ def analyze_records(records: Iterable[TargetLabelRecord], representatives_per_ty
             malformed_counts[item.document_type] += 1
             for field_name in FIELD_KEYS_BY_DOCUMENT[item.document_type]:
                 field_stats[item.document_type][field_name]["documents_without_candidate"] += 1
+                field_stats[item.document_type][field_name]["ambiguous_or_unclassified"] += 1
             continue
         features = _representative_features(profile)
         candidates_by_type[item.document_type].append({
@@ -456,11 +619,27 @@ def analyze_records(records: Iterable[TargetLabelRecord], representatives_per_ty
             stats = field_stats[item.document_type][field_name]
             indices = profile["field_hits"].get(field_name, [])
             if indices:
+                stats["documents_with_label_anchor"] += 1
+                stats["label_anchor_occurrences"] += len(indices)
                 stats["documents_with_candidate"] += 1
                 stats["occurrences"] += len(indices)
                 stats["documents_with_multiple_occurrences"] += int(len(indices) > 1)
             else:
                 stats["documents_without_candidate"] += 1
+            anchored_count = profile["anchored_values"].get(field_name, 0)
+            if anchored_count:
+                stats["documents_with_anchored_value"] += 1
+                stats["anchored_value_occurrences"] += anchored_count
+            format_count = profile["format_only_occurrences"].get(field_name, 0)
+            if format_count:
+                stats["format_only_unanchored_candidate"] += 1
+                stats["format_only_unanchored_occurrences"] += format_count
+            ambiguous_count = profile["ambiguous_occurrences"].get(field_name, 0)
+            if field_name == "amount_total":
+                ambiguous_count += profile["unclassified_numeric_count"]
+            if ambiguous_count:
+                stats["ambiguous_or_unclassified"] += 1
+                stats["ambiguous_or_unclassified_occurrences"] += ambiguous_count
             stats["same_bbox_label_value"] += profile["same_bbox"].get(field_name, 0)
             stats["separate_bbox_label_value"] += profile["separate_pairs"].get(field_name, 0)
             stats["split_value_across_bboxes"] += profile["value_split_count"].get(field_name, 0)
@@ -491,6 +670,10 @@ def analyze_records(records: Iterable[TargetLabelRecord], representatives_per_ty
             stats_output[field_name] = {
                 **{key: value for key, value in stats.items() if key != "label_expressions"},
                 "coverage": stats["documents_with_candidate"] / total if total else 0.0,
+                "label_anchor_coverage": stats["documents_with_label_anchor"] / total if total else 0.0,
+                "anchored_value_coverage": stats["documents_with_anchored_value"] / total if total else 0.0,
+                "format_only_rate": stats["format_only_unanchored_candidate"] / total if total else 0.0,
+                "ambiguous_or_unclassified_rate": stats["ambiguous_or_unclassified"] / total if total else 0.0,
                 "missing_rate": stats["documents_without_candidate"] / total if total else 0.0,
                 "label_expressions": dict(stats["label_expressions"].most_common(30)),
             }
