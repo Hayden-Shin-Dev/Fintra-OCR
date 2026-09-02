@@ -14,7 +14,7 @@ Fintra의 거래 증빙 OCR 파트를 단계적으로 개발하기 위한 작업
 8. [완료] 단일 이미지 baseline 추론
 9. [완료] OCR prediction과 정답 라벨 비교
 10. [완료] 여러 샘플 baseline 평가
-11. [미완료] Fine-tuning 필요 여부 결정
+11. [완료] Fine-tuning 필요 여부 결정
 12. [미완료] 필요 시 Fine-tuning 및 성능 평가
 13. [미완료] 최종 OCR 모델 확정
 14. [미완료] OCR 결과에서 필요한 필드 추출
@@ -95,6 +95,7 @@ OCR/
 - 10-3 batch runner: PaddleOCR에 여러 RGB array를 한 번에 전달하는 batch runner 추가. 상업송장 2장 입력에서 결과 2개 반환 확인.
 - 10-4 batch evaluation 연결: 실제 다중 샘플 평가도 batch runner를 사용하도록 연결. 테스트용 predictor 주입 경로는 유지.
 - 10-4 실제 실행 메모: batch 6장 평가도 CPU 처리 시간이 길어 중단. batch API 자체는 2장 실제 입력에서 결과 2개 반환을 확인했고, 기록 수치는 3장 평가 결과를 사용.
+- 11-1 fine-tuning 판단: 3장 합산 prediction 230 / 정답 328 / 매칭 67 / exact 54, precision 0.2913, recall 0.2043. baseline은 낮지만 표본 3장과 CPU 시간 제약이 있어 즉시 fine-tuning은 보류.
 - split별 target JSON: Training 63,977개 / Validation 7,996개.
 - 전체 사전 scan 142,111개에서는 금융/물류 schema가 섞여 있었음. 이후 Fintra 기준 통계는 물류 3종만 사용.
 - Fintra OCR 대상: 상업송장 / 포장명세서 / 선하증권.
