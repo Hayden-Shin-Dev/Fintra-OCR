@@ -164,3 +164,57 @@ OCR/
 - 16-6 문서별 주요 field key: commercial_invoice는 `invoice_no`, `date`, `buyer`, `goods_description`, `quantity`, `amount`, `currency`; packing_list는 `invoice_no`, `goods_description`, `quantity`, `number_of_packages`, `gross_weight`; bill_of_lading은 `bl_no`, `shipper`, `consignee`, `goods_description`, `number_of_packages`, `gross_weight`, `on_board_date`.
 - 16-7 실제 3종 검증: 동일 Training 샘플을 최종 JSON으로 변환하고 schema validation 통과. Invoice는 buyer/currency가 ambiguous라 `partial`, Packing List와 B/L은 현재 field 기준 `success`. quantity 배열, amount numeric, weight/package `{value, unit}`, ISO date, bbox/raw_text/confidence/source_indices 보존을 확인.
 - 16-8 전달용 예시: 실제 변환 결과 3개를 `examples/commercial_invoice_sample.json`, `examples/packing_list_sample.json`, `examples/bill_of_lading_sample.json`에 보존. 교차검증·RAG·LLM·UI 연결은 아직 시작하지 않음.
+
+### 16.5 전체 target GT 전수분석 메모
+
+- 분석 범위: 이미지 inference 없이 target 3종 라벨 JSON만 ZIP에서 streaming 분석. 금융 문서는 제외.
+- 전체 target GT: 71,973건. Training 63,977건, Validation 7,996건.
+- 문서별: Commercial Invoice 23,439건(20,835/2,604), Packing List 24,648건(21,910/2,738), Bill of Lading 23,886건(21,232/2,654).
+- malformed record: 0건.
+- 최종 산출물: `analysis/target_gt_profile.json`. field 통계의 `documents_with_label_anchor`와 `documents_with_anchored_value`는 서로 다른 문서 수이며, `same_bbox_label_value`/`separate_bbox_label_value`는 연결 occurrence 수이다.
+
+| 문서 / field | label anchor | anchored value | same bbox | separate bbox | format-only | ambiguous/unclassified |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Invoice / invoice_no | 5 | 0 | 0 | 0 | 0 | 0 |
+| Invoice / date | 502 | 20 | 1 | 21 | 18,643 | 0 |
+| Invoice / buyer_consignee | 156 | 149 | 0 | 174 | 0 | 0 |
+| Invoice / goods_description | 834 | 834 | 0 | 1,273 | 0 | 0 |
+| Invoice / quantity | 2,948 | 2,908 | 37 | 3,250 | 128 | 0 |
+| Invoice / amount_total | 5,526 | 5,494 | 6 | 6,420 | 19,001 | 18,332 |
+| Invoice / currency | 10 | 7 | 0 | 7 | 19,361 | 0 |
+| Packing / invoice_no | 1 | 1 | 0 | 1 | 0 | 0 |
+| Packing / goods_description | 366 | 366 | 0 | 395 | 0 | 0 |
+| Packing / quantity | 3,974 | 3,972 | 1 | 4,334 | 182 | 0 |
+| Packing / number_of_packages | 29 | 29 | 2 | 36 | 10 | 0 |
+| Packing / gross_weight | 70 | 68 | 0 | 132 | 9,933 | 0 |
+| B/L / bl_no | 5 | 0 | 0 | 0 | 0 | 0 |
+| B/L / shipper | 4,705 | 4,702 | 0 | 5,828 | 0 | 0 |
+| B/L / consignee | 4,698 | 4,698 | 0 | 5,253 | 0 | 0 |
+| B/L / goods_description | 530 | 530 | 0 | 716 | 0 | 0 |
+| B/L / number_of_packages | 95 | 94 | 0 | 107 | 3 | 0 |
+| B/L / gross_weight | 133 | 130 | 0 | 230 | 19,061 | 0 |
+| B/L / on_board_date | 14,219 | 11,574 | 0 | 11,581 | 19,554 | 0 |
+
+- 실제 label 표현 변형: Invoice는 `INVOICE NO:`, `Invoice-Number`, `Invoice No.`, `INVOICE NO.`가 확인됐고, B/L 번호는 `B/LNo.:`, `B/L NO.`, `B/L No.`, `B/L No`가 확인됐다. Packing invoice는 `INVOICE NO:` 1건만 anchor로 확인됐다.
+- 실제 party/description 변형: `Buyer`, `Sold To`, `BILL TO / SHIPTO`, `SHIPPER'S`, `Consignor/Shipper`, `CONSIGNEE`, `Products`, `Goods`, `Description`, `Model`, `Item` 등이 확인됐다.
+- 실제 수량/포장/중량 변형: `Quantity`, `Qty`, `Q'ty`, `Unit`, `Piece`, `PCS`, `Packages`, `Package`, `PKG`, `BOX`, `CTN`, `BUNDLES`, `KG`, `KGS`, `LB`, `LBS`가 확인됐다. 단위 빈도 전체 목록은 artifact에 보존했다. KG는 Packing 125,015건/B-L 66,700건, PKG는 Invoice 14,489건/Packing 29,710건/B-L 61,779건이다.
+- 날짜 표현: Invoice `day_month_name_year` 22,570, `iso` 12,832, `numeric_day_month_year` 10,113; Packing 22,130/13,253/12,296; B/L 20,312/12,391/15,059이다.
+- 금액 format signal: Invoice annotation 160,747건 중 symbol 100,671, thousands separator 40,971, decimal 160,657; Packing 93,497건, B/L 111,047건이다. 이 통계는 semantic amount 확정이 아니라 값 표현 패턴 통계다.
+- item/total 위험: total marker가 있는 row는 Invoice 5,495, Packing 10,162, B/L 16,610건이고, item-like row는 각각 63,667/109,187/123,395건이다. 수량·포장·중량은 item 값과 문서 total이 섞여 있으며, `TOTAL`, `TOTAL GROSS WEIGHT` 같은 marker가 없는 값은 현재 규칙만으로 total 여부를 확정하지 않는다. split-value row는 각각 28,651/76,428/58,629건이다.
+- extractor 위험: label 없는 `$`/currency code/decimal, plain integer, `614 KG` 같은 format-only 값이 많다. `QUANTITY`와 `AMOUNT`, `NET WEIGHT`와 `GROSS WEIGHT`를 format만으로 구분하면 오추출한다. `INVOICE`/`B/L` 제목과 번호 label이 분리된 사례, table row/column 분리, 동일 field 반복, 여러 bbox로 나뉜 quantity/package/weight가 현재 deterministic extractor의 우선 보완 대상이다.
+
+#### 16.5 판단
+
+- `schema 유지 가능`: 공통 field container가 raw value/evidence, normalized, bbox, confidence, status, source index, reason, 배열을 이미 수용한다. 이번 전수분석으로 schema v1을 즉시 변경할 근거는 확인하지 않았다.
+- `field extraction 규칙 보완 필요`: field의 label anchor와 anchored value를 별도 집계할 필요가 확인됐다. plain integer는 amount anchor가 있을 때만 허용하고, unanchored format은 후보로만 남겨야 한다. item/total 및 반복 field 연결도 보완 대상이다.
+- `schema v1 변경 검토 필요`: 향후 item-level과 document-total 관계를 공통 schema에서 1급 구조로 노출할 필요는 있으나, 이번 단계에서는 실제 추출 규칙을 보완한 뒤 추가 근거를 보고 검토한다.
+
+#### 16.5 대표 OCR 검증 샘플
+
+문서 유형별 10개씩, 총 30개를 자동 선정했다. 일반/core-rich, 핵심 field 누락, 복잡 table, split geometry, 반복 field, 많은 item row, unusual date/unit format을 각각 우선순위로 반영했다. 파일은 라벨 ZIP 내부 member 이름이며 선정 이유의 수치와 feature는 artifact에 함께 저장했다.
+
+- Commercial Invoice: `NV_011937`(core 6, split 2), `NV_001282`(core 6), `NV_020390`(missing core 7), `NV_010025`(table 17), `NV_009701`(split 11), `NV_005471`(repeated 6), `NV_013097`(item row 25), `NV_013613`(unusual format 35), `NV_002151`(core 6), `NV_013542`(core 6).
+- Packing List: `PL_009878`(core 4, split 3), `PL_014050`(core 4), `PL_008322`(missing core 5), `PL_023796`(table 10), `PL_002983`(split 12), `PL_003151`(repeated 7), `PL_008920`(item row 11), `PL_016758`(unusual format 23), `PL_017834`(core 4), `PL_003866`(core 4).
+- Bill of Lading: `BL_005244`(core 7), `BL_008564`(core 7), `BL_001404`(missing core 7), `BL_002230`(table 14), `BL_019376`(split 7), `BL_017666`(repeated 7), `BL_019577`(item row 13), `BL_009468`(unusual format 15), `BL_015776`(core 7), `BL_003547`(core 6).
+
+- 추가 OCR 검증 우선순위: 1) label/value 분리 및 table row가 많은 샘플, 2) item quantity와 total이 함께 있는 샘플, 3) quantity/package/weight unit split 샘플, 4) invoice/B/L 번호 label 분리 샘플, 5) unusual date/currency/unit 샘플. 이번 16.5에서는 대표 샘플 선정까지만 하고 PaddleOCR inference는 실행하지 않았다.
