@@ -1,6 +1,6 @@
 # Fintra OCR
 
-Fintra의 거래 증빙 OCR 파트를 단계적으로 개발하기 위한 작업 공간입니다.
+Fintra의 거래 증빙 OCR 파트 부분 단계별 구현 현황입니다 참고 부탁드립니다 ( 이름은 그냥 제가 임의로 Fintra 라고 정했습니다. Finance + Trace )
 
 ## OCR 작업 현황
 
@@ -24,9 +24,11 @@ Fintra의 거래 증빙 OCR 파트를 단계적으로 개발하기 위한 작업
 18. [미완료] 전체 OCR 파이프라인 테스트
 19. [미완료] README 최종 정리
 
-단계 상태는 구현, 실행 또는 테스트, 실제 데이터 검증이 모두 끝난 뒤에만 완료로 변경합니다. 다음 단계는 현재 단계가 완료된 뒤 별도로 시작합니다.
+현재까지 완료된 사항들입니다. 미완료 부분은 계속 진행 예정입니다.
 
-## OCR 데이터 메모
+
+
+## OCR 데이터 메모 (아래부터는 데이터 분석 결과입니다 참고해주세요.)
 
 - Training 원천 ZIP: 34개
 - Training 라벨 ZIP: 34개
@@ -36,7 +38,7 @@ Fintra의 거래 증빙 OCR 파트를 단계적으로 개발하기 위한 작업
 - Validation 내부 PNG/JSON: 각각 15,785개
 - 현재 확인 범위에서 이미지와 라벨의 basename pairing 누락: 0개
 
-데이터 디렉터리는 다음과 같이 구성되어 있습니다.
+데이터 디렉터리는 다음과 같이 구성되어 있는데 깃허브 레포지토리에는 따로 업로드 하지 않습니다 ( 용량 약 170GB )
 
 ```text
 OCR/
@@ -48,9 +50,9 @@ OCR/
    └─ 02.라벨링데이터/
 ```
 
-현재 원천 및 라벨 데이터는 ZIP으로 보관되어 있습니다. 원천 ZIP에는 PNG, 라벨 ZIP에는 JSON이 들어 있으며, 분석 과정에서 원본 ZIP을 수정하거나 이동하지 않습니다.
+현재 원천 및 라벨 데이터는 ZIP으로 보관되어 있고 원천 ZIP에는 PNG, 라벨 ZIP에는 JSON이 들어 있습니다.
 
-샘플 라벨 JSON의 top-level 구성은 `Annotation`, `Dataset`, `Images`, `bbox`입니다. `bbox` 항목에는 OCR 텍스트와 좌표 정보가 포함되어 있습니다. 상세 schema 검증은 이후 단계에서 수행합니다.
+샘플 라벨 JSON의 top-level 구성은 `Annotation`, `Dataset`, `Images`, `bbox`입니다 `bbox` 항목에는 OCR 텍스트와 좌표 정보가 포함되어 있습니다. 
 
 ## ZIP 구조
 
@@ -64,9 +66,10 @@ OCR/
 - Validation 라벨 내부 파일: `.json` 15,785개
 - archive pairing 누락: 0개
 
-원천 archive 이름의 `TS_` 및 `VS_` prefix는 각각 라벨 archive의 `TL_` 및 `VL_` prefix와 대응합니다. archive 내부 파일은 원천 PNG와 라벨 JSON으로 구성되며, 집계 과정에서 압축을 해제하지 않았습니다.
+원천 archive 이름의 `TS_` 및 `VS_` prefix는 각각 라벨 archive의 `TL_` 및 `VL_` prefix와 대응합니다. archive 내부 파일은 원천 PNG와 라벨 JSON으로 구성되어있는데, 
+용량 문제 관계로 집계 과정에서 압축을 해제하지 않고 파이썬 코드로 다이렉트로 분석 진행했습니다.
 
-## OCR 개발 메모
+## OCR 개발 메모 ( 단계별로 수행하면서 남기는 메모입니다 )
 
 - 4-1 JSON 로딩: `zipfile`로 archive 안의 JSON을 직접 읽는 중. 압축 해제 없음.
 - 4-1 schema 샘플: 금융 archive는 `Dataset`, 물류 archive는 `DataSet` 키를 사용함.
@@ -107,22 +110,17 @@ OCR/
 - 7-1 환경 기준: Python 3.13 `.venv` 생성 및 설치 완료. 현재 머신에는 NVIDIA GPU가 없어 CPU baseline부터 진행.
 - 7-2 import 확인: PaddlePaddle 3.2.0 / PaddleOCR 3.7.0 / PaddleX 3.7.2 정상.
 
-## 개발 원칙
 
-- 원천 데이터와 라벨 데이터는 Git에 추가하지 않습니다.
-- 독립적으로 설명할 수 있는 기능 또는 검증 단위마다 commit을 만듭니다.
-- 각 변경 후 테스트와 실제 데이터 검증을 수행합니다.
-- 현재 단계에서는 OCR 모델 설치, 추론, 학습을 진행하지 않습니다.
-- Fine-tuning은 pretrained OCR baseline 결과를 확인한 뒤 필요할 때만 결정합니다.
 
-## Commit 규칙
+질문 있으면 바로 팀즈 DM 주세요. 계속 업데이트 예정입니다. 
 
-Conventional Commits 형식을 사용합니다.
 
-예시:
+| 문서    | Precision |    Recall | bbox 매칭 | 매칭된 bbox 중 Text Exact |
+| ----- | --------: | --------: | ------: | --------------------: |
+| 상업송장  |     38.6% |     33.8% |   27/80 |     24/27 = **88.9%** |
+| 선하증권  |     22.7% |     15.8% |  22/139 |     13/22 = **59.1%** |
+| 포장명세서 |     28.6% |     16.5% |  18/109 |     17/18 = **94.4%** |
+| 합계    | **29.1%** | **20.4%** |  67/328 |     54/67 = **80.6%** |
 
-```text
-docs: add OCR development roadmap
-feat: define OCR dataset paths
-test: validate OCR dataset paths
-```
+
+지금 문제 : OCR 성능이 낮다고 확정된 건 아니고 현재 bbox 중심 평가가 실제 OCR 성능을 제대로 보여주는지 아직 검증이 안 됐습니다.
