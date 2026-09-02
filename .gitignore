@@ -1,0 +1,41 @@
+# =========================================================
+# Fintra - Git Ignore
+# =========================================================
+
+# OCR datasets - DO NOT upload
+Training/
+Validation/
+data/raw/
+
+# Python virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environment variables / secrets
+.env
+.env.*
+
+# Model files / checkpoints
+models/
+checkpoints/
+*.pth
+*.pt
+*.onnx
+
+# Generated OCR outputs
+outputs/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
