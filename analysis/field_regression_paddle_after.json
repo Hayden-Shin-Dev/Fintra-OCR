@@ -7148,7 +7148,7 @@
       "split": "development",
       "ocr_prediction_count": 143,
       "ocr_elapsed_seconds": 26.353,
-      "field_extraction_seconds": 2.0793092001695186,
+      "field_extraction_seconds": 1.871779999928549,
       "baseline_status_counts": {
         "found": 4,
         "ambiguous": 1,
@@ -7382,7 +7382,7 @@
       "split": "development",
       "ocr_prediction_count": 191,
       "ocr_elapsed_seconds": 43.701,
-      "field_extraction_seconds": 4.5655557999853045,
+      "field_extraction_seconds": 4.271034999983385,
       "baseline_status_counts": {
         "found": 7
       },
@@ -7612,7 +7612,7 @@
       "split": "development",
       "ocr_prediction_count": 143,
       "ocr_elapsed_seconds": 26.285,
-      "field_extraction_seconds": 1.9994882000610232,
+      "field_extraction_seconds": 1.904476399999112,
       "baseline_status_counts": {
         "found": 4,
         "ambiguous": 1,
@@ -7846,7 +7846,7 @@
       "split": "holdout",
       "ocr_prediction_count": 117,
       "ocr_elapsed_seconds": 11.374,
-      "field_extraction_seconds": 0.8926184000447392,
+      "field_extraction_seconds": 0.816378999967128,
       "baseline_status_counts": {
         "found": 7
       },
@@ -8076,7 +8076,7 @@
       "split": "holdout",
       "ocr_prediction_count": 217,
       "ocr_elapsed_seconds": 42.754,
-      "field_extraction_seconds": 5.115006600040942,
+      "field_extraction_seconds": 4.821796600008383,
       "baseline_status_counts": {
         "found": 7
       },
@@ -8306,7 +8306,7 @@
       "split": "development",
       "ocr_prediction_count": 115,
       "ocr_elapsed_seconds": 7.478,
-      "field_extraction_seconds": 0.8315156998578459,
+      "field_extraction_seconds": 0.7655187998898327,
       "baseline_status_counts": {
         "found": 6,
         "missing": 2
@@ -8614,7 +8614,7 @@
       "split": "development",
       "ocr_prediction_count": 118,
       "ocr_elapsed_seconds": 6.813,
-      "field_extraction_seconds": 0.8937086998485029,
+      "field_extraction_seconds": 0.754285000031814,
       "baseline_status_counts": {
         "found": 5,
         "ambiguous": 1,
@@ -8921,7 +8921,7 @@
       "split": "development",
       "ocr_prediction_count": 115,
       "ocr_elapsed_seconds": 6.736,
-      "field_extraction_seconds": 0.7879751001019031,
+      "field_extraction_seconds": 0.7462004001718014,
       "baseline_status_counts": {
         "found": 5,
         "ambiguous": 1,
@@ -9228,7 +9228,7 @@
       "split": "development",
       "ocr_prediction_count": 116,
       "ocr_elapsed_seconds": 10.285,
-      "field_extraction_seconds": 0.8025753998663276,
+      "field_extraction_seconds": 0.740443600108847,
       "baseline_status_counts": {
         "found": 5,
         "ambiguous": 1,
@@ -9535,7 +9535,7 @@
       "split": "development",
       "ocr_prediction_count": 116,
       "ocr_elapsed_seconds": 13.511,
-      "field_extraction_seconds": 0.8169553999323398,
+      "field_extraction_seconds": 0.735981399891898,
       "baseline_status_counts": {
         "found": 6,
         "missing": 2
@@ -9843,7 +9843,7 @@
       "split": "development",
       "ocr_prediction_count": 114,
       "ocr_elapsed_seconds": 14.085,
-      "field_extraction_seconds": 0.8053091999609023,
+      "field_extraction_seconds": 0.7288916001562029,
       "baseline_status_counts": {
         "found": 6,
         "missing": 2
@@ -10151,7 +10151,7 @@
       "split": "development",
       "ocr_prediction_count": 81,
       "ocr_elapsed_seconds": 9.996,
-      "field_extraction_seconds": 0.2827783999964595,
+      "field_extraction_seconds": 0.2605957000050694,
       "baseline_status_counts": {
         "found": 5,
         "ambiguous": 1,
@@ -10416,7 +10416,7 @@
       "split": "development",
       "ocr_prediction_count": 120,
       "ocr_elapsed_seconds": 13.561,
-      "field_extraction_seconds": 1.0010566001292318,
+      "field_extraction_seconds": 0.8272293000482023,
       "baseline_status_counts": {
         "found": 6,
         "missing": 2
@@ -10724,7 +10724,7 @@
       "split": "development",
       "ocr_prediction_count": 80,
       "ocr_elapsed_seconds": 9.639,
-      "field_extraction_seconds": 0.35021819989196956,
+      "field_extraction_seconds": 0.25119089987128973,
       "baseline_status_counts": {
         "found": 5,
         "ambiguous": 1,
@@ -10989,7 +10989,7 @@
       "split": "development",
       "ocr_prediction_count": 91,
       "ocr_elapsed_seconds": 12.208,
-      "field_extraction_seconds": 0.6583911997731775,
+      "field_extraction_seconds": 0.6129239997826517,
       "baseline_status_counts": {
         "found": 5,
         "ambiguous": 2,
@@ -11299,7 +11299,7 @@
       "split": "holdout",
       "ocr_prediction_count": 59,
       "ocr_elapsed_seconds": 7.95,
-      "field_extraction_seconds": 0.19140439992770553,
+      "field_extraction_seconds": 0.16633559996262193,
       "baseline_status_counts": {
         "found": 4,
         "ambiguous": 2,
@@ -11564,7 +11564,7 @@
       "split": "holdout",
       "ocr_prediction_count": 26,
       "ocr_elapsed_seconds": 1.342,
-      "field_extraction_seconds": 0.07464310014620423,
+      "field_extraction_seconds": 0.0607162001542747,
       "baseline_status_counts": {
         "missing": 6,
         "found": 2
@@ -11836,7 +11836,7 @@
       "split": "holdout",
       "ocr_prediction_count": 118,
       "ocr_elapsed_seconds": 13.318,
-      "field_extraction_seconds": 0.8823094998952001,
+      "field_extraction_seconds": 0.7969279999379069,
       "baseline_status_counts": {
         "found": 5,
         "ambiguous": 1,
@@ -12143,7 +12143,7 @@
       "split": "holdout",
       "ocr_prediction_count": 63,
       "ocr_elapsed_seconds": 8.08,
-      "field_extraction_seconds": 0.20228819991461933,
+      "field_extraction_seconds": 0.18676059995777905,
       "baseline_status_counts": {
         "found": 4,
         "ambiguous": 2,
@@ -12408,7 +12408,7 @@
       "split": "holdout",
       "ocr_prediction_count": 82,
       "ocr_elapsed_seconds": 9.181,
-      "field_extraction_seconds": 0.272185199894011,
+      "field_extraction_seconds": 0.2653570999391377,
       "baseline_status_counts": {
         "found": 5,
         "ambiguous": 1,
@@ -12673,7 +12673,7 @@
       "split": "development",
       "ocr_prediction_count": 86,
       "ocr_elapsed_seconds": 11.669,
-      "field_extraction_seconds": 0.5401552000548691,
+      "field_extraction_seconds": 0.5011664000339806,
       "baseline_status_counts": {
         "found": 3,
         "ambiguous": 1,
@@ -12842,7 +12842,7 @@
       "split": "development",
       "ocr_prediction_count": 80,
       "ocr_elapsed_seconds": 11.038,
-      "field_extraction_seconds": 0.6359245001804084,
+      "field_extraction_seconds": 0.4993588998913765,
       "baseline_status_counts": {
         "found": 4,
         "missing": 1
@@ -13015,7 +13015,7 @@
       "split": "development",
       "ocr_prediction_count": 99,
       "ocr_elapsed_seconds": 11.233,
-      "field_extraction_seconds": 0.7170734999235719,
+      "field_extraction_seconds": 0.5977530998643488,
       "baseline_status_counts": {
         "found": 4,
         "missing": 1
@@ -13227,7 +13227,7 @@
       "split": "development",
       "ocr_prediction_count": 84,
       "ocr_elapsed_seconds": 10.119,
-      "field_extraction_seconds": 0.37604690017178655,
+      "field_extraction_seconds": 0.3329562998842448,
       "baseline_status_counts": {
         "found": 5
       },
@@ -13446,7 +13446,7 @@
       "split": "development",
       "ocr_prediction_count": 80,
       "ocr_elapsed_seconds": 11.0,
-      "field_extraction_seconds": 0.5947870998643339,
+      "field_extraction_seconds": 0.49712820001877844,
       "baseline_status_counts": {
         "found": 4,
         "missing": 1
@@ -13619,7 +13619,7 @@
       "split": "development",
       "ocr_prediction_count": 84,
       "ocr_elapsed_seconds": 10.025,
-      "field_extraction_seconds": 0.4525385000742972,
+      "field_extraction_seconds": 0.3405425001401454,
       "baseline_status_counts": {
         "found": 5
       },
@@ -13838,7 +13838,7 @@
       "split": "development",
       "ocr_prediction_count": 86,
       "ocr_elapsed_seconds": 10.3,
-      "field_extraction_seconds": 0.44895390002056956,
+      "field_extraction_seconds": 0.3819113001227379,
       "baseline_status_counts": {
         "found": 5
       },
@@ -14065,7 +14065,7 @@
       "split": "holdout",
       "ocr_prediction_count": 79,
       "ocr_elapsed_seconds": 9.663,
-      "field_extraction_seconds": 0.3781775999814272,
+      "field_extraction_seconds": 0.3519334001466632,
       "baseline_status_counts": {
         "found": 3,
         "missing": 2
@@ -14232,7 +14232,7 @@
       "split": "holdout",
       "ocr_prediction_count": 83,
       "ocr_elapsed_seconds": 13.503,
-      "field_extraction_seconds": 0.6078914999961853,
+      "field_extraction_seconds": 0.5603008999023587,
       "baseline_status_counts": {
         "found": 3,
         "ambiguous": 1,
@@ -14401,7 +14401,7 @@
       "split": "holdout",
       "ocr_prediction_count": 82,
       "ocr_elapsed_seconds": 10.15,
-      "field_extraction_seconds": 0.35002889996394515,
+      "field_extraction_seconds": 0.3163030000869185,
       "baseline_status_counts": {
         "found": 5
       },
@@ -14620,7 +14620,7 @@
       "split": "holdout",
       "ocr_prediction_count": 79,
       "ocr_elapsed_seconds": 11.664,
-      "field_extraction_seconds": 0.3964925999753177,
+      "field_extraction_seconds": 0.36406360007822514,
       "baseline_status_counts": {
         "found": 3,
         "missing": 2
@@ -14783,7 +14783,7 @@
     }
   ],
   "timing": {
-    "field_extraction_mean_seconds": 0.9355923451498271,
-    "field_extraction_total_seconds": 29.00336269964464
+    "field_extraction_mean_seconds": 0.8492981548376021,
+    "field_extraction_total_seconds": 26.328242799965665
   }
 }

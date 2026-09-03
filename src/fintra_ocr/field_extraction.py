@@ -1767,7 +1767,7 @@ def _embedded_total_gross_weight(predictions: Sequence[OCRPrediction]) -> FieldE
         _normalized(item.text) in {"pkg", "pkgs", "ctn", "ctns", "carton", "cartons"}
         for item in predictions
     )
-    if has_volume_column and has_package_column:
+    if has_package_column:
         for row in rows:
             row_text = " ".join(predictions[index].text for index in row)
             if not _has_semantic_alias(row_text, ("total", "grand total")):
