@@ -158,7 +158,11 @@ def analyze_failures(
             ),
             "oracle_expected_raw_text": expected.get("raw_text"),
             "oracle_expected_bbox": expected.get("bbox"),
-            "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+            "expected_bbox_source": (
+                "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy"
+                if expected.get("bbox") is not None
+                else "semantic GT field bbox unavailable"
+            ),
             "expected_text_in_raw_ocr": bool(matches),
             "expected_text_matches": matches,
             "extractor_output": actual.value,

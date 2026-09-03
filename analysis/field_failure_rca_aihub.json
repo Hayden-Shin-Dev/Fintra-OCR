@@ -23,7 +23,7 @@
       "true_failure_under_reconstructed_oracle": false,
       "oracle_expected_raw_text": null,
       "oracle_expected_bbox": null,
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "semantic GT field bbox unavailable",
       "expected_text_in_raw_ocr": true,
       "expected_text_matches": [
         {
@@ -102,7 +102,7 @@
           710
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": true,
       "expected_text_matches": [
         {
@@ -284,7 +284,7 @@
           1827
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": "$39,583.7",
@@ -397,7 +397,7 @@
           1828
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": "$12,003.6",
@@ -498,7 +498,7 @@
           327
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": "895-353-5469",
@@ -607,7 +607,7 @@
           1827
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": "$38900435",
@@ -720,7 +720,7 @@
           1828
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": "$30,333.6",
@@ -821,7 +821,7 @@
           328
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": "233965",
@@ -930,7 +930,7 @@
           1826
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": null,
@@ -993,7 +993,7 @@
           1892
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": null,
@@ -1047,7 +1047,7 @@
           327
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": "311999",
@@ -1156,7 +1156,7 @@
           1828
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": "$49,180.7",
@@ -1266,7 +1266,7 @@
           1890
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": "$",
@@ -1366,7 +1366,7 @@
           328
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": "316-937-4094",
@@ -1463,7 +1463,7 @@
           427
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": "WINNIE,,",
@@ -1572,7 +1572,7 @@
           1648
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": null,
@@ -1647,7 +1647,7 @@
           516
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": null,
@@ -1746,7 +1746,7 @@
           1401
         ]
       ],
-      "expected_bbox_source": "oracle_fields[field].bbox; semantic GT field bbox unavailable",
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
       "expected_text_in_raw_ocr": false,
       "expected_text_matches": [],
       "extractor_output": "4 | 3",
