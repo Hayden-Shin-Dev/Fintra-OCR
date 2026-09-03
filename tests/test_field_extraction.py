@@ -126,6 +126,15 @@ class FieldExtractionTest(unittest.TestCase):
         )
         self.assertEqual(fields["buyer"].status, "missing")
 
+    def test_explicit_seller_is_extracted_without_borrowing_buyer_or_shipper(self):
+        fields = extract_fields(
+            "\uc0c1\uc5c5\uc1a1\uc7a5",
+            [prediction("Exporter", 10, 10, 90), prediction("ACME LTD", 110, 10, 220)],
+        )
+        self.assertEqual(fields["seller"].value, "ACME LTD")
+        self.assertEqual(fields["seller"].status, "found")
+        self.assertEqual(fields["buyer"].status, "missing")
+
     def test_generic_bill_date_is_not_on_board_date(self):
         fields = extract_fields(
             "선하증권",
@@ -186,6 +195,21 @@ class FieldExtractionTest(unittest.TestCase):
         )
         self.assertEqual(fields["gross_weight"].status, "missing")
 
+    def test_total_row_weight_requires_structural_shipment_signature(self):
+        fields = extract_fields(
+            "\uc120\ud558\uc99d\uad8c",
+            [
+                prediction("TOTAL", 10, 100, 70),
+                prediction("55", 100, 100, 130),
+                prediction("PKG", 140, 100, 190),
+                prediction("690KG", 300, 100, 370),
+                prediction("CBM", 400, 10, 450),
+                prediction("PKG", 100, 10, 150),
+            ],
+        )
+        self.assertEqual(fields["gross_weight"].value, "690KG")
+        self.assertEqual(fields["gross_weight"].status, "found")
+
     def test_real_gt_label_variants_from_previous_full_profile(self):
         invoice = extract_fields(
             "상업송장",
@@ -235,4 +259,3 @@ class FieldExtractionTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

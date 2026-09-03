@@ -101,6 +101,7 @@ FIELD_LABEL_ALIASES: dict[str, tuple[str, ...]] = {
     ),
     "date": ("date of invoice", "invoice date", "inv date", "invoice no and date of invoice", "invoice no and date", "invoice no & date", "no and date of invoice", "no & date of invoice", "date of issue", "date", "dated"),
     "buyer": ("buyer if not consignee", "buyer (if not consignee)", "buyer", "sold to", "bill to", "buyer consignee", "purchaser", "customer", "purchaser name"),
+    "seller": ("seller", "exporter", "supplier", "vendor", "sold by", "shipped by"),
     "goods_description": (
         "description of goods", "description of good", "goods description",
         "description of commodity", "commodity description", "description of articles",
@@ -1153,6 +1154,21 @@ def _invoice_buyer_value(predictions: Sequence[OCRPrediction]) -> FieldEvidence:
     return missing_field("buyer", "buyer/sold-to/bill-to label and consignee proxy not found")
 
 
+def _invoice_seller_value(predictions: Sequence[OCRPrediction]) -> FieldEvidence:
+    """Extract an explicitly labelled invoice seller/exporter/supplier only."""
+    aliases = FIELD_LABEL_ALIASES["seller"]
+    embedded = _embedded(
+        "seller", predictions,
+        [re.compile(r"(?:seller|exporter|supplier|vendor|sold\s+by)\s*[:#-]\s*(?P<value>.+)", re.I)],
+    )
+    evidence = embedded or _party_block_below_label(
+        "seller", predictions, aliases, max_y_ratio=0.55
+    )
+    if evidence.status == "missing":
+        return evidence
+    return _semantic_party_guard("seller", _expand_party_evidence("seller", predictions, evidence))
+
+
 def _column_value_groups(
     predictions: Sequence[OCRPrediction], header: LabelSpan, matcher: Callable[[str], bool],
     *, stop_aliases: Sequence[str] = (), max_rows: int = 100,
@@ -1740,7 +1756,14 @@ def _embedded_total_gross_weight(predictions: Sequence[OCRPrediction]) -> FieldE
     # unambiguous weight in the TOTAL row. Use only that structural evidence;
     # never promote an arbitrary standalone weight to a shipment total.
     has_volume_column = any(_normalized(item.text) == "cbm" for item in predictions)
-    has_package_column = any(
+    package_token_count = sum(
+        1 for item in predictions
+        if _normalized(item.text) in {"pkg", "pkgs", "ctn", "ctns", "carton", "cartons"}
+    )
+    has_package_column = package_token_count >= 2
+    if has_volume_column:
+        has_package_column = package_token_count >= 1
+    has_package_column = has_package_column or any(
         _normalized(item.text) in {"pkg", "pkgs", "ctn", "ctns", "carton", "cartons"}
         for item in predictions
     )
@@ -1819,6 +1842,7 @@ def _shipment_date_value(predictions: Sequence[OCRPrediction]) -> FieldEvidence:
 
 def _invoice_fields(predictions: Sequence[OCRPrediction]) -> dict[str, FieldEvidence]:
     buyer = _semantic_party_guard("buyer", _invoice_buyer_value(predictions))
+    seller = _invoice_seller_value(predictions)
 
     invoice_no = _invoice_no_value(predictions)
 
@@ -1829,6 +1853,7 @@ def _invoice_fields(predictions: Sequence[OCRPrediction]) -> dict[str, FieldEvid
         "invoice_no": invoice_no,
         "date": date,
         "buyer": buyer,
+        "seller": seller,
         "amount": amount,
         "currency": None,
     }

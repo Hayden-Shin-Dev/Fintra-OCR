@@ -45,6 +45,13 @@ class CommonSchemaTest(unittest.TestCase):
         self.assertEqual(document["fields"]["buyer"]["bbox"], [[10, 10], [20, 10], [20, 20], [10, 20]])
         validate_common_document(document)
 
+    def test_invoice_seller_is_backward_compatible_and_serialized(self):
+        fields = normalize_fields({"seller": evidence("seller", "ACME LTD")})
+        document = build_common_document_from_form_type("\uc0c1\uc5c5\uc1a1\uc7a5", "seller-id", fields)
+        self.assertEqual(document["fields"]["seller"]["value"], "ACME LTD")
+        self.assertEqual(document["fields"]["seller"]["status"], "found")
+        validate_common_document(document)
+
     def test_keeps_quantity_array_and_measurement_objects(self):
         fields = normalize_fields({
             "quantity": evidence("quantity", "83 | 98 | 26"),

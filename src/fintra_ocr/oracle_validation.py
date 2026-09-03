@@ -116,7 +116,7 @@ def _amount_agreement(first: object, second: object) -> float:
 def _field_agreement(field_name: str, first: object, second: object) -> float:
     if field_name == "goods_description":
         return _description_agreement(first, second)
-    if field_name in {"buyer", "shipper", "consignee"}:
+    if field_name in {"buyer", "seller", "shipper", "consignee"}:
         return _text_agreement(first, second)
     if field_name == "amount":
         return _amount_agreement(first, second)
@@ -132,7 +132,7 @@ def _field_agreement(field_name: str, first: object, second: object) -> float:
 def _agreement_threshold(field_name: str) -> float:
     if field_name == "goods_description":
         return 0.72
-    if field_name in {"buyer", "shipper", "consignee"}:
+    if field_name in {"buyer", "seller", "shipper", "consignee"}:
         return 0.82
     return 1.0
 
@@ -150,7 +150,7 @@ def _semantic_value_valid(field_name: str, value: object) -> bool:
     if field_name in {"invoice_no", "bl_no"}:
         text=_canonical_text(value)
         return len(text) >= 3 and any(ch.isdigit() for ch in text) and text not in {"and","date","number","invoice","bill"}
-    if field_name in {"buyer", "shipper", "consignee"}:
+    if field_name in {"buyer", "seller", "shipper", "consignee"}:
         text=_canonical_text(value)
         if len(text) < 3 or not any(ch.isalpha() for ch in text):
             return False

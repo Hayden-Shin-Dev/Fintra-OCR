@@ -81,11 +81,26 @@ def _raw_value_present(field_name: str, expected: Mapping[str, object], predicti
             code = expected_value.get("code")
             symbol = expected_value.get("symbol")
             return bool((code and str(code).casefold() in candidate) or (symbol and str(symbol) in text))
+        if field_name in {"gross_weight", "number_of_packages"} and isinstance(expected_value, Mapping):
+            number = expected_value.get("value")
+            unit = str(expected_value.get("unit") or "").casefold()
+            numbers = re.findall(r"\d[\d,]*(?:\.\d+)?", candidate)
+            units = re.findall(r"[a-z]+", candidate)
+            return bool(number is not None and any(float(item.replace(",", "")) == float(number) for item in numbers) and (not unit or unit in units))
+        if field_name == "quantity" and isinstance(expected_value, Mapping):
+            expected_items = expected_value.get("items")
+            if isinstance(expected_items, list):
+                expected_numbers = [str(item.get("value")) for item in expected_items if isinstance(item, Mapping)]
+                candidate_numbers = [item.replace(",", "") for item in re.findall(r"\d[\d,]*(?:\.\d+)?", candidate)]
+                if expected_numbers and len(candidate_numbers) >= len(expected_numbers):
+                    return any(candidate_numbers[start:start + len(expected_numbers)] == expected_numbers for start in range(len(candidate_numbers) - len(expected_numbers) + 1))
         expected_text = str(expected_raw or expected_value or "")
         if field_name in {"date", "on_board_date"}:
-            expected_text = re.sub(r"[^0-9a-z]", "", expected_text.casefold())
+            candidates = {expected_text.casefold()}
+            if isinstance(expected_value, str):
+                candidates.add(expected_value)
             candidate_text = re.sub(r"[^0-9a-z]", "", candidate)
-            return bool(expected_text and expected_text in candidate_text)
+            return any(re.sub(r"[^0-9a-z]", "", item) in candidate_text for item in candidates if item)
         return _field_agreement(field_name, text, expected_value) >= threshold
 
     for text in texts:

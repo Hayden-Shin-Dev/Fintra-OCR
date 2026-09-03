@@ -22,7 +22,7 @@ _FORM_TYPE_TO_DOCUMENT_TYPE: dict[str, SchemaDocumentType] = {
 }
 DOCUMENT_FIELD_KEYS: dict[SchemaDocumentType, frozenset[str]] = {
     "commercial_invoice": frozenset(
-        {"invoice_no", "date", "buyer", "goods_description", "quantity", "amount", "currency"}
+        {"invoice_no", "date", "buyer", "seller", "goods_description", "quantity", "amount", "currency"}
     ),
     "packing_list": frozenset(
         {"invoice_no", "goods_description", "quantity", "number_of_packages", "gross_weight"}
