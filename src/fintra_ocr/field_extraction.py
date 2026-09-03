@@ -863,6 +863,16 @@ def _semantic_party_guard(field_name: str, evidence: FieldEvidence) -> FieldEvid
     )
     if norm.rstrip(":") in {item.rstrip(":") for item in forbidden_exact} or any(x in norm for x in forbidden_contains):
         return missing_field(field_name, "candidate was a form caption/control label, not a party name")
+    # Logistics templates frequently print an empty party-cell instruction such
+    # as ``Please provide complete name and address``.  AI-Hub may split or
+    # distort that caption (for example ``Tlease proydde compleee name``), so
+    # use the stable semantic anchors rather than requiring an exact phrase.
+    if (
+        ("provide" in norm or "proydde" in norm or "pryvde" in norm)
+        and ("complete" in norm or "compleee" in norm)
+        and "name" in norm
+    ):
+        return missing_field(field_name, "candidate was an empty-party instruction caption")
     if norm.startswith("address") and len(norm.split()) <= 4:
         return missing_field(field_name, "address label is not a party name")
     return evidence
@@ -907,6 +917,22 @@ def _invoice_amount_value(predictions: Sequence[OCRPrediction]) -> FieldEvidence
         prefer_bottom=True,
     )
     if strong.status != "missing":
+        # A generic ``Total`` caption can sit beside a one-character table
+        # fragment while the real monetary tokens are elsewhere on a dense
+        # AI-Hub page.  Keep a legitimate bare total (e.g. ``Total: 5``), but
+        # fail closed when an explicit currency token makes that fragment
+        # ambiguous.  This prevents a clearly unrelated ``4`` from becoming
+        # the document total.
+        value = (strong.value or "").strip()
+        if re.fullmatch(r"\d{1,2}", value) and any(
+            _explicit_money_token(item.text)
+            for index, item in enumerate(predictions)
+            if index not in strong.source_indices
+        ):
+            return missing_field(
+                "amount",
+                "generic total label matched a small bare number while another explicit money token was present",
+            )
         return strong
     return missing_field("amount", "invoice-level total amount not recovered")
 
@@ -1285,6 +1311,18 @@ def _weight_value(text: str) -> bool:
 def _money_value(text: str) -> bool:
     return bool(MONEY_PATTERN.fullmatch(text.strip())) and not bool(
         WEIGHT_PATTERN.fullmatch(text.strip()) or PACKAGE_PATTERN.fullmatch(text.strip()) or QUANTITY_PATTERN.fullmatch(text.strip()) and UNIT_ONLY_PATTERN.search(text.strip())
+    )
+
+
+def _explicit_money_token(text: str) -> bool:
+    """Return whether a token visibly carries a currency marker."""
+    candidate = text.strip()
+    return bool(
+        _money_value(candidate)
+        and (
+            re.search(r"[$??Ｂ?]", candidate)
+            or CURRENCY_CODE_TOKEN_PATTERN.search(candidate)
+        )
     )
 
 

@@ -3,6 +3,7 @@ from fintra_ocr.gt_recall import evaluate_gt_recall
 from fintra_ocr.label_bbox import OCRBoundingBox
 from fintra_ocr.ocr_backends import _deduplicate_predictions, _focus_regions, _tile_starts
 from fintra_ocr.prediction_parser import OCRPrediction
+from fintra_ocr.target_scope import FINTRA_FORM_TYPES
 
 
 def p(text, left, top, right, bottom=None, score=.9):
@@ -126,3 +127,22 @@ def test_party_caption_guard_rejects_address_label_as_buyer():
     ]
     fields = extract_fields("상업송장", predictions)
     assert fields["buyer"].status == "missing"
+
+
+def test_party_caption_guard_rejects_distorted_aihub_empty_party_instruction():
+    predictions = [
+        OCRPrediction("CONSIGNEE", (10, 100, 100, 10), (100, 100, 125, 125), 0.99),
+        OCRPrediction("Tlease proydde compleee name", (120, 360, 360, 120), (100, 100, 125, 125), 0.64),
+    ]
+    fields = extract_fields(next(item for item in FINTRA_FORM_TYPES if "증권" in item), predictions)
+    assert fields["consignee"].status == "missing"
+
+
+def test_generic_total_does_not_promote_small_fragment_over_explicit_money_token():
+    predictions = [
+        p("Total", 10, 100, 70),
+        p("4", 90, 100, 110),
+        p("$655777", 300, 300, 380),
+    ]
+    fields = extract_fields(next(item for item in FINTRA_FORM_TYPES if "상업" in item), predictions)
+    assert fields["amount"].status == "missing"
