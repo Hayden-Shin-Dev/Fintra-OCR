@@ -9,7 +9,6 @@ from __future__ import annotations
 import argparse
 import json
 import math
-import re
 import string
 import sys
 import tempfile
@@ -135,7 +134,10 @@ def _recognize(crop_paths, polygons, source_root, checkpoint, dictionary, device
             for raw_text, token_probabilities, path in zip(decoded, probabilities, image_paths):
                 eos = raw_text.find("[s]")
                 text_value = raw_text if eos < 0 else raw_text[:eos]
-                text_value = re.sub(r",", "쉼표", text_value.strip("\n\t"))
+                # The official text-file writer replaces commas to protect its
+                # comma-separated polygon format. JSON has no such collision;
+                # preserve the recognizer text for Fintra number parsing.
+                text_value = text_value.strip("\n\t")
                 token_count = len(text_value)
                 if token_count:
                     confidence = math.exp(
