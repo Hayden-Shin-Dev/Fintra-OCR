@@ -17,6 +17,7 @@ from difflib import SequenceMatcher
 from functools import lru_cache
 
 from .field_evidence import FieldEvidence, missing_field, make_field_evidence
+from .layout_reconstruction import line_groups, reconstruct_layout
 from .prediction_parser import OCRPrediction
 
 
@@ -96,10 +97,10 @@ FIELD_LABEL_ALIASES: dict[str, tuple[str, ...]] = {
     "invoice_no": (
         "invoice no", "invoice number", "invoice #", "invoice nr", "invoice no and date of invoice",
         "invoice no and date", "invoice no & date", "no and date of invoice", "no & date of invoice", "no date of invoice",
-        "inv no", "inv number", "inv #", "inv nr",
+        "inv no", "inv number", "inv #", "inv nr", "invoice reference", "invoice ref",
     ),
     "date": ("date of invoice", "invoice date", "inv date", "invoice no and date of invoice", "invoice no and date", "invoice no & date", "no and date of invoice", "no & date of invoice", "date of issue", "date", "dated"),
-    "buyer": ("buyer if not consignee", "buyer (if not consignee)", "buyer", "sold to", "bill to", "buyer consignee", "purchaser", "customer"),
+    "buyer": ("buyer if not consignee", "buyer (if not consignee)", "buyer", "sold to", "bill to", "buyer consignee", "purchaser", "customer", "purchaser name"),
     "goods_description": (
         "description of goods", "description of good", "goods description",
         "description of commodity", "commodity description", "description of articles",
@@ -133,7 +134,7 @@ FIELD_LABEL_ALIASES: dict[str, tuple[str, ...]] = {
     "on_board_date": (
         "laden on board", "laden on board date", "shipped on board", "shipped on board date",
         "on board date", "onboard date", "date on board", "date shipped", "shipped date",
-        "date of shipment", "on board",
+        "date of shipment", "date shipped on board", "on board",
     ),
 }
 
@@ -200,9 +201,16 @@ def _fuzzy_has_alias(text: str, aliases: Sequence[str]) -> bool:
             if len(token_target) < 6:
                 continue
             for token in candidate_tokens:
+                if len(token_target) >= 8 and len(token) < len(token_target) - 1:
+                    continue
                 if abs(len(token) - len(token_target)) > max(2, len(token_target) // 3):
                     continue
-                if SequenceMatcher(None, token, token_target).ratio() >= 0.86:
+                # Longer labels tolerate two OCR substitutions because the
+                # surrounding geometry and field-specific value validator are
+                # still required before extraction. Short labels stay strict
+                # to avoid collisions such as ``Date``/``Dated``.
+                minimum_ratio = 0.80 if len(token_target) >= 8 else 0.86
+                if SequenceMatcher(None, token, token_target).ratio() >= minimum_ratio:
                     return True
             continue
         window_size = len(target_tokens)
@@ -270,21 +278,10 @@ def _same_row(first: OCRPrediction, second: OCRPrediction) -> bool:
 
 
 def _row_groups(predictions: Sequence[OCRPrediction]) -> list[list[int]]:
-    ordered = sorted(range(len(predictions)), key=lambda index: (min(predictions[index].y), min(predictions[index].x), index))
-    groups: list[list[int]] = []
-    for index in ordered:
-        placed = False
-        for group in reversed(groups[-3:]):
-            if any(_same_row(predictions[index], predictions[other]) for other in group):
-                group.append(index)
-                placed = True
-                break
-        if not placed:
-            groups.append([index])
-    for group in groups:
-        group.sort(key=lambda index: (min(predictions[index].x), index))
-    groups.sort(key=lambda group: min(min(predictions[index].y) for index in group))
-    return groups
+    # Keep this compatibility function because the extractor has several
+    # specialized table routines, but source its rows from the shared derived
+    # layout.  Raw OCRPrediction objects and their indices are untouched.
+    return line_groups(predictions)
 
 
 def _pure_value_token(text: str) -> bool:
@@ -401,6 +398,48 @@ def _combine_text(predictions: Sequence[OCRPrediction], indices: Sequence[int]) 
     return " ".join(predictions[index].text.strip() for index in indices if predictions[index].text.strip())
 
 
+def _line_embedded(
+    field_name: str,
+    predictions: Sequence[OCRPrediction],
+    patterns: Sequence[re.Pattern[str]],
+    value_pattern: re.Pattern[str] | Callable[[str], bool],
+) -> FieldEvidence | None:
+    """Read a key/value expression reconstructed from several OCR boxes.
+
+    MMOCR/ViTSTR frequently returns ``TOTAL | GROSS | WEIGHT | 89 | KG``
+    instead of one prediction.  The line is a derived view only; evidence still
+    points to the original prediction indices and never replaces raw OCR.
+    """
+    for line in reconstruct_layout(predictions).lines:
+        for pattern in patterns:
+            match = pattern.search(line.text)
+            if not match:
+                continue
+            value = match.group("value").strip(" ,:;")
+            if not value or _matched_value(value_pattern, value) is None:
+                continue
+            value_start, value_end = match.span("value")
+            offsets: list[tuple[int, int, int]] = []
+            cursor = 0
+            for index in line.indices:
+                token_text = predictions[index].text.strip()
+                token_start = line.text.find(token_text, cursor)
+                if token_start < 0:
+                    token_start = cursor
+                token_end = token_start + len(token_text)
+                offsets.append((index, token_start, token_end))
+                cursor = token_end + 1
+            value_indices = tuple(
+                index for index, token_start, token_end in offsets
+                if token_end > value_start and token_start < value_end
+            ) or line.indices
+            return make_field_evidence(
+                field_name, list(predictions), value_indices, value,
+                reason="value reconstructed from scale-aware OCR line",
+            )
+    return None
+
+
 def _candidate_groups_near_span(
     predictions: Sequence[OCRPrediction], span: LabelSpan, *, max_group: int = 6
 ) -> list[tuple[tuple[int, int, int], tuple[int, ...]]]:
@@ -414,6 +453,19 @@ def _candidate_groups_near_span(
     anchor_row = anchor_rows[0]
     occupied = set(span.indices)
     results: list[tuple[tuple[int, int, int], tuple[int, ...]]] = []
+    layout = reconstruct_layout(predictions)
+    token_by_index = {token.index: token for token in layout.tokens}
+    # Adjacent words in a reconstructed line may be separated by a document
+    # scale-dependent gap.  Do not let a value candidate span into the next
+    # table column merely because all boxes share the same y coordinate.
+    max_join_gap = max(24.0, layout.median_height * 4.0)
+
+    def contiguous(group: Sequence[int]) -> bool:
+        ordered = sorted(group, key=lambda index: token_by_index[index].left)
+        return all(
+            token_by_index[second].left - token_by_index[first].right <= max_join_gap
+            for first, second in zip(ordered, ordered[1:])
+        )
 
     # Same-row values to the right. Composite labels can be split vertically,
     # so inspect every row occupied by the label rather than only its first row.
@@ -428,6 +480,8 @@ def _candidate_groups_near_span(
         for pos in range(len(right_positions)):
             for size in range(1, min(max_group, len(right_positions) - pos) + 1):
                 group = tuple(right_positions[pos:pos + size])
+                if not contiguous(group):
+                    continue
                 gap = max(0, min(min(predictions[index].x) for index in group) - local_right)
                 results.append(((label_row_no - anchor_row, int(gap), size), group))
 
@@ -451,6 +505,8 @@ def _candidate_groups_near_span(
         for pos in range(len(aligned)):
             for size in range(1, min(max_group, len(aligned) - pos) + 1):
                 group = tuple(aligned[pos:pos + size])
+                if not contiguous(group):
+                    continue
                 group_center = sum((min(predictions[index].x) + max(predictions[index].x)) / 2 for index in group) / len(group)
                 horizontal = int(abs(group_center - anchor_center))
                 results.append(((1 + row_no - anchor_row, vertical_gap + horizontal, size), group))
@@ -569,13 +625,33 @@ def _ranked_labeled_value(
                 continue
             alias_score = _alias_rank(span.text, aliases)
             vertical_score = -span_bottom if prefer_bottom else span_top
-            score = (*alias_score, vertical_score, *geometric_score)
+            confidence = sum(predictions[index].score for index in group) / len(group)
+            # Alias identity remains primary, while the remaining terms make
+            # the decision reproducible across detector order: line relation,
+            # relative distance and OCR confidence all contribute.
+            score = (*alias_score, vertical_score, *geometric_score, -round(confidence, 4))
             candidates.append((score, group, value))
-            break
     if not candidates:
         return missing_field(field_name, "semantic label found but compatible neighboring value not found")
     candidates.sort(key=lambda item: item[0])
-    _, indices, text = candidates[0]
+    best_score, indices, text = candidates[0]
+    if len(candidates) > 1:
+        second_score, second_indices, second_text = candidates[1]
+        # Two distinct values attached to the same semantic label and with the
+        # same local geometry are not safely resolvable.  Keep both as evidence
+        # so callers can route the document to review instead of silently
+        # selecting a nearby number.
+        same_label = best_score[:5] == second_score[:5]
+        close_geometry = best_score[5:7] == second_score[5:7]
+        if same_label and close_geometry and _normalized(text) != _normalized(second_text):
+            return make_field_evidence(
+                field_name,
+                list(predictions),
+                tuple(index for index in (*indices, *second_indices)),
+                f"{text} | {second_text}",
+                status="ambiguous",
+                reason="multiple semantically valid values have indistinguishable label geometry",
+            )
     return make_field_evidence(field_name, list(predictions), indices, text)
 
 
@@ -860,6 +936,7 @@ def _semantic_party_guard(field_name: str, evidence: FieldEvidence) -> FieldEvid
         "gross weight", "measurement", "description of packages",
         "particulars furnished", "port of loading", "port of discharge",
         "country of origin", "country of final destination", "date shipped",
+        "negotiable", "multimodal", "transport document", "fbl",
     )
     if norm.rstrip(":") in {item.rstrip(":") for item in forbidden_exact} or any(x in norm for x in forbidden_contains):
         return missing_field(field_name, "candidate was a form caption/control label, not a party name")
@@ -1262,11 +1339,18 @@ def _party_value(text: str) -> bool:
         return False
     if normalized in _CONTROL_WORDS or normalized.endswith(":"):
         return False
-    if normalized in {"if", "not", "if not", "consignee", "buyer", "seller", "shipper", "exporter", "importer"}:
+    if normalized in {
+        "if", "not", "if not", "consignee", "buyer", "seller", "shipper",
+        "exporter", "importer", "notify", "notiyy", "notiy", "notification",
+    } or (normalized.startswith("noti") and len(normalized) <= 10):
         return False
     if "not consignee" in normalized or "other than consignee" in normalized or "if other than" in normalized or normalized in {"other than", "if other", "same to consignee", "same as consignee"}:
         return False
-    if re.search(r"\b(?:tel|fax|reg|no|negotiable|multimodal|transport)\b|\d{4,}", normalized):
+    # Phone/address captions are common false neighbours in B/L party cells.
+    # A bare legal suffix is not enough evidence of a company block either.
+    if normalized in {"co", "co ltd", "co limited", "ltd", "limited", "inc", "inc co", "llc", "corp"}:
+        return False
+    if re.search(r"\b(?:tel|fax|phone|reg|no|negotiable|multimodal|transport)\b|\d{4,}", normalized):
         return False
     return True
 
@@ -1632,8 +1716,8 @@ def _embedded_total_gross_weight(predictions: Sequence[OCRPrediction]) -> FieldE
                 onorm=_normalized(other.text); ol,ot,or_,ob=_bounds(other)
                 if onorm.startswith('weight') and -15 <= ot-b <= 90 and max(0,min(r,or_)-max(l,ol)) > 0:
                     centers.append((((l+r+ol+or_)/4),ob))
-    if not centers:
-        return None
+    # Continue to the structural TOTAL-row fallback when the header itself
+    # was missed by OCR.
     # Search explicit TOTAL rows below the header. The nearest weight-shaped
     # value to the gross column is the shipment total.
     for center,header_bottom in centers:
@@ -1651,6 +1735,28 @@ def _embedded_total_gross_weight(predictions: Sequence[OCRPrediction]) -> FieldE
             if candidates:
                 candidates.sort(); _,i,value=candidates[0]
                 return make_field_evidence('gross_weight',list(predictions),(i,),value)
+    # Some B/L templates omit the gross-weight header from OCR but retain a
+    # clear shipment table signature: package/unit and CBM columns plus one
+    # unambiguous weight in the TOTAL row. Use only that structural evidence;
+    # never promote an arbitrary standalone weight to a shipment total.
+    has_volume_column = any(_normalized(item.text) == "cbm" for item in predictions)
+    has_package_column = any(
+        _normalized(item.text) in {"pkg", "pkgs", "ctn", "ctns", "carton", "cartons"}
+        for item in predictions
+    )
+    if has_volume_column and has_package_column:
+        for row in rows:
+            row_text = " ".join(predictions[index].text for index in row)
+            if not _has_semantic_alias(row_text, ("total", "grand total")):
+                continue
+            weights = [
+                (index, predictions[index].text)
+                for index in row
+                if _weight_value(predictions[index].text)
+            ]
+            if len(weights) == 1:
+                index, value = weights[0]
+                return make_field_evidence("gross_weight", list(predictions), (index,), value)
     return None
 
 
@@ -1785,6 +1891,16 @@ def _packing_list_fields(predictions: Sequence[OCRPrediction]) -> dict[str, Fiel
 
     package_total = _embedded_total_package(predictions)
     if package_total is None:
+        package_total = _line_embedded(
+            "number_of_packages", predictions,
+            [re.compile(
+                r"(?:total\s+)?(?:number\s+of\s+)?(?:packages?|pkgs?|ctns?|cartons?)"
+                r"\s*[:#=-]?\s*(?P<value>\d[\d,.]*\s*(?:PKGS?|CTNS?|BOX(?:ES)?|"
+                r"BAGS?|BUNDLES?|CARTONS?|CASES?|PALLETS?))", re.I,
+            )],
+            _package_value,
+        )
+    if package_total is None:
         package_total = _embedded(
             "number_of_packages", predictions,
             [re.compile(r"(?:number|no\.?)\s+of\s+packages?\s*[:#-]?\s*(?P<value>\d[\d,.]*\s*(?:PKGS?|CTNS?|BOX(?:ES)?|BAGS?|BUNDLES?|CARTONS?|CASES?|PALLETS?))", re.I)],
@@ -1806,6 +1922,15 @@ def _packing_list_fields(predictions: Sequence[OCRPrediction]) -> dict[str, Fiel
         "gross_weight", predictions,
         [re.compile(r"(?:total\s+)?gross\s*(?:weight|wt\.?|wgt\.?)\s*[:#-]?\s*(?P<value>\d[\d,.]*\s*(?:KG|KGS|LB|LBS|POUND|POUNDS))", re.I)],
     )
+    if gross_weight is None:
+        gross_weight = _line_embedded(
+            "gross_weight", predictions,
+            [re.compile(
+                r"(?:total\s+)?gross\s*(?:weight|wt\.?|wgt\.?)\s*[:#=-]?\s*"
+                r"(?P<value>\d[\d,.]*\s*(?:KG|KGS|LB|LBS|POUND|POUNDS))", re.I,
+            )],
+            _weight_value,
+        )
     if gross_weight is None:
         gross_weight = _ranked_labeled_value(
             "gross_weight",
@@ -1843,8 +1968,27 @@ def _bill_of_lading_fields(predictions: Sequence[OCRPrediction]) -> dict[str, Fi
         "bl_no", predictions,
         [re.compile(r"(?:b\s*/\s*l|bl|bill\s+of\s+lading)\s*(?:no\.?|number|#)\s*[:#-]?\s*(?P<value>[A-Z0-9][A-Z0-9./_-]*)", re.I)],
     ) or _labeled_value("bl_no", predictions, None, _identifier_value)
+    if bl_no.status == "missing":
+        bl_no = _line_embedded(
+            "bl_no", predictions,
+            [re.compile(
+                r"(?:b\s*/\s*l|bl|bill\s+of\s+lading)\s*(?:no\.?|number|#)\s*"
+                r"[:#-]?\s*(?P<value>[A-Z0-9][A-Z0-9./_-]*)", re.I,
+            )],
+            _identifier_value,
+        ) or bl_no
 
     package_total = _embedded_total_package(predictions)
+    if package_total is None:
+        package_total = _line_embedded(
+            "number_of_packages", predictions,
+            [re.compile(
+                r"(?:total\s+)?(?:number\s+of\s+)?(?:packages?|pkgs?|ctns?|cartons?)"
+                r"\s*[:#=-]?\s*(?P<value>\d[\d,.]*\s*(?:PKGS?|CTNS?|BOX(?:ES)?|"
+                r"BAGS?|BUNDLES?|CARTONS?|CASES?|PALLETS?))", re.I,
+            )],
+            _package_value,
+        )
     if package_total is None:
         package_total = _labeled_value("number_of_packages", predictions, None, _package_value)
         # Multiple line-item package counts without an explicit total are not a
@@ -1870,6 +2014,15 @@ def _bill_of_lading_fields(predictions: Sequence[OCRPrediction]) -> dict[str, Fi
         _weight_value,
         prefer_bottom=True,
     )
+    if gross_weight.status == "missing":
+        gross_weight = _line_embedded(
+            "gross_weight", predictions,
+            [re.compile(
+                r"(?:total\s+)?gross\s*(?:weight|wt\.?|wgt\.?)\s*[:#=-]?\s*"
+                r"(?P<value>\d[\d,.]*\s*(?:KG|KGS|LB|LBS|POUND|POUNDS))", re.I,
+            )],
+            _weight_value,
+        ) or gross_weight
     explicit_total_weight = _embedded_total_gross_weight(predictions)
     table_weight = _table_prefer_total_value(
         "gross_weight", predictions, _weight_value,
