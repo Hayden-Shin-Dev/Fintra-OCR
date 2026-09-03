@@ -7,8 +7,13 @@ machine, where OCR/ exists, those integration tests run normally.
 """
 
 from pathlib import Path
+import sys
 
 import pytest
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 
 _DATASET_DEPENDENT_MODULES = {
@@ -49,4 +54,3 @@ def pytest_collection_modifyitems(config, items):
     for item in items:
         if Path(str(item.fspath)).name in _DATASET_DEPENDENT_MODULES:
             item.add_marker(marker)
-
