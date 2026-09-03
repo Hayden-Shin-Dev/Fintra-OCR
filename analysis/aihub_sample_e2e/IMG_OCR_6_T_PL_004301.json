@@ -7,11 +7,11 @@
     "gt_boxes": 96,
     "predicted_boxes": 105,
     "geometric_recall": 1.0,
-    "exact_text_recall": 0.6354166666666666,
-    "segmentation_aware_recall": 0.6458333333333334,
-    "similarity_90_recall": 0.6979166666666666,
-    "mean_similarity": 0.9068098279035779,
-    "mean_cer": 0.10053548881673882
+    "exact_text_recall": 0.7083333333333334,
+    "segmentation_aware_recall": 0.71875,
+    "similarity_90_recall": 0.7708333333333334,
+    "mean_similarity": 0.9323885316072816,
+    "mean_cer": 0.07016181156806156
   },
   "fields": {
     "invoice_no": {
@@ -432,8 +432,8 @@
     },
     {
       "index": 11,
-      "text": "SILAY쉼표",
-      "confidence": 0.987871377748077,
+      "text": "SILAY,",
+      "confidence": 0.9867228311240416,
       "bbox": [
         [
           511,
@@ -754,8 +754,8 @@
     },
     {
       "index": 25,
-      "text": "5W9쉼표",
-      "confidence": 0.9978666493013548,
+      "text": "5W9,",
+      "confidence": 0.997562365897843,
       "bbox": [
         [
           749,
@@ -777,8 +777,8 @@
     },
     {
       "index": 26,
-      "text": "10535쉼표",
-      "confidence": 0.9994004772564771,
+      "text": "10535,",
+      "confidence": 0.9993031728044864,
       "bbox": [
         [
           556,
@@ -915,8 +915,8 @@
     },
     {
       "index": 32,
-      "text": "2380쉼표",
-      "confidence": 0.9998428787851348,
+      "text": "2380,",
+      "confidence": 0.9999569169744581,
       "bbox": [
         [
           591,
@@ -938,8 +938,8 @@
     },
     {
       "index": 33,
-      "text": "Winniceg쉼표",
-      "confidence": 0.880871717597438,
+      "text": "Winniceg,",
+      "confidence": 0.8694416266565648,
       "bbox": [
         [
           486,
@@ -1237,8 +1237,8 @@
     },
     {
       "index": 46,
-      "text": "Chung-ku쉼표",
-      "confidence": 0.9067127233824311,
+      "text": "Chung-ku,",
+      "confidence": 0.9672841252644326,
       "bbox": [
         [
           380,
@@ -1720,8 +1720,8 @@
     },
     {
       "index": 67,
-      "text": "L.TCH쉼표",
-      "confidence": 0.9239821470438271,
+      "text": "L.TCH,",
+      "confidence": 0.9146161767794903,
       "bbox": [
         [
           128,
@@ -1743,8 +1743,8 @@
     },
     {
       "index": 68,
-      "text": "HASKOY쉼표",
-      "confidence": 0.9858165134142105,
+      "text": "HASKOY,",
+      "confidence": 0.9911723553777694,
       "bbox": [
         [
           124,
@@ -1973,8 +1973,8 @@
     },
     {
       "index": 78,
-      "text": "Street쉼표",
-      "confidence": 0.9786152781486409,
+      "text": "Street,",
+      "confidence": 0.9756693942592198,
       "bbox": [
         [
           270,
@@ -2593,7 +2593,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 32.509,
+  "elapsed_seconds": 31.949,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "packing_list",

@@ -7,11 +7,11 @@
     "gt_boxes": 99,
     "predicted_boxes": 160,
     "geometric_recall": 1.0,
-    "exact_text_recall": 0.5353535353535354,
-    "segmentation_aware_recall": 0.5454545454545454,
-    "similarity_90_recall": 0.5757575757575758,
-    "mean_similarity": 0.8539008970827152,
-    "mean_cer": 0.27603633739997374
+    "exact_text_recall": 0.5757575757575758,
+    "segmentation_aware_recall": 0.5858585858585859,
+    "similarity_90_recall": 0.6262626262626263,
+    "mean_similarity": 0.8776149495846466,
+    "mean_cer": 0.24566917369947672
   },
   "fields": {
     "invoice_no": {
@@ -34,25 +34,28 @@
     },
     "amount": {
       "status": "found",
-      "value": "6",
+      "value": "$30,333.6",
       "normalized": {
-        "value": 6.0,
-        "symbol": null,
+        "value": 30333.6,
+        "symbol": "$",
         "currency_code": null
       },
-      "confidence": 0.9974845647459865
+      "confidence": 0.9942746450408715
     },
     "currency": {
-      "status": "missing",
-      "value": null,
-      "normalized": null,
-      "confidence": 0.0
+      "status": "ambiguous",
+      "value": "$",
+      "normalized": {
+        "code": null,
+        "symbol": "$"
+      },
+      "confidence": 0.9942746450408715
     },
     "goods_description": {
       "status": "found",
-      "value": "Electric | Valve쉼표 | Higb | Assembly",
-      "normalized": "Electric | Valve쉼표 | Higb | Assembly",
-      "confidence": 0.9086511047073011
+      "value": "Electric | Valve, | Higb | Assembly",
+      "normalized": "Electric | Valve, | Higb | Assembly",
+      "confidence": 0.9013005228699084
     },
     "quantity": {
       "status": "missing",
@@ -118,8 +121,8 @@
       "actual_status": "found",
       "oracle_status": "found",
       "actual_value": {
-        "value": 6.0,
-        "symbol": null,
+        "value": 30333.6,
+        "symbol": "$",
         "currency_code": null
       },
       "oracle_value": {
@@ -141,15 +144,18 @@
     },
     "currency": {
       "field_name": "currency",
-      "actual_status": "missing",
+      "actual_status": "ambiguous",
       "oracle_status": "ambiguous",
-      "actual_value": null,
+      "actual_value": {
+        "code": null,
+        "symbol": "$"
+      },
       "oracle_value": {
         "code": null,
         "symbol": "$"
       },
-      "classification": "extractor_instability_or_ambiguity",
-      "agreement_score": 0.0
+      "classification": "e2e_matches_oracle",
+      "agreement_score": 1.0
     },
     "date": {
       "field_name": "date",
@@ -164,7 +170,7 @@
       "field_name": "goods_description",
       "actual_status": "found",
       "oracle_status": "found",
-      "actual_value": "Electric | Valve쉼표 | Higb | Assembly",
+      "actual_value": "Electric | Valve, | Higb | Assembly",
       "oracle_value": "Electric | Valve, | High | Assembly",
       "classification": "e2e_matches_oracle",
       "agreement_score": 0.9375
@@ -306,8 +312,8 @@
     },
     {
       "index": 5,
-      "text": "Valve쉼표",
-      "confidence": 0.9127510726489076,
+      "text": "Valve,",
+      "confidence": 0.9013005228699084,
       "bbox": [
         [
           235,
@@ -352,8 +358,8 @@
     },
     {
       "index": 7,
-      "text": "Whithy쉼표",
-      "confidence": 0.8393183112044459,
+      "text": "Whithy,",
+      "confidence": 0.8274795866071492,
       "bbox": [
         [
           272,
@@ -467,8 +473,8 @@
     },
     {
       "index": 12,
-      "text": "Melbourne쉼표",
-      "confidence": 0.868004863087297,
+      "text": "Melbourne,",
+      "confidence": 0.8628852794715074,
       "bbox": [
         [
           1033,
@@ -1157,8 +1163,8 @@
     },
     {
       "index": 42,
-      "text": "TO+)JJ7-016-11쉼표7",
-      "confidence": 0.40518008071724926,
+      "text": "TO+)JJ7-016-11,7",
+      "confidence": 0.3908670515965732,
       "bbox": [
         [
           1249,
@@ -1203,8 +1209,8 @@
     },
     {
       "index": 44,
-      "text": "$30쉼표333.6",
-      "confidence": 0.9711012078645874,
+      "text": "$30,333.6",
+      "confidence": 0.9942746450408715,
       "bbox": [
         [
           938,
@@ -1295,8 +1301,8 @@
     },
     {
       "index": 48,
-      "text": "L.OBEI쉼표",
-      "confidence": 0.8702364844943055,
+      "text": "L.OBEI,",
+      "confidence": 0.8534509154874593,
       "bbox": [
         [
           442,
@@ -1341,8 +1347,8 @@
     },
     {
       "index": 50,
-      "text": "MO.쉼표",
-      "confidence": 0.9181714061800045,
+      "text": "MO.,",
+      "confidence": 0.8989705675009619,
       "bbox": [
         [
           332,
@@ -1640,8 +1646,8 @@
     },
     {
       "index": 63,
-      "text": "Ixtrac쉼표",
-      "confidence": 0.7075417643597475,
+      "text": "Ixtrac,",
+      "confidence": 0.6748407719269255,
       "bbox": [
         [
           48,
@@ -1870,8 +1876,8 @@
     },
     {
       "index": 73,
-      "text": "$6쉼표329..5",
-      "confidence": 0.9164133425889981,
+      "text": "$6,329..5",
+      "confidence": 0.9076455073881893,
       "bbox": [
         [
           1436,
@@ -2675,8 +2681,8 @@
     },
     {
       "index": 108,
-      "text": "GARRUCHA쉼표",
-      "confidence": 0.8854518954173288,
+      "text": "GARRUCHA,",
+      "confidence": 0.8913452358097197,
       "bbox": [
         [
           48,
@@ -2951,8 +2957,8 @@
     },
     {
       "index": 120,
-      "text": "SUAO쉼표",
-      "confidence": 0.8727335094255027,
+      "text": "SUAO,",
+      "confidence": 0.9313971148905027,
       "bbox": [
         [
           47,
@@ -3870,7 +3876,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 33.508,
+  "elapsed_seconds": 26.715,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "commercial_invoice",
@@ -3973,56 +3979,78 @@
         "normalization_reason": "source field remains ambiguous"
       },
       "amount": {
-        "value": "6",
+        "value": "$30,333.6",
         "normalized": {
-          "value": 6.0,
-          "symbol": null,
+          "value": 30333.6,
+          "symbol": "$",
           "currency_code": null
         },
-        "raw_text": "6",
+        "raw_text": "$30,333.6",
         "bbox": [
           [
-            540,
-            1756
+            938,
+            1797
           ],
           [
-            556,
-            1756
+            1056,
+            1797
           ],
           [
-            556,
-            1782
+            1056,
+            1825
           ],
           [
-            540,
-            1782
+            938,
+            1825
           ]
         ],
-        "confidence": 0.9974845647459865,
+        "confidence": 0.9942746450408715,
         "status": "found",
         "source_indices": [
-          64
+          44
         ],
         "reason": null,
         "normalization_status": "normalized",
         "normalization_reason": null
       },
       "currency": {
-        "value": null,
-        "normalized": null,
-        "raw_text": "",
-        "bbox": null,
-        "confidence": 0.0,
-        "status": "missing",
-        "source_indices": [],
-        "reason": "currency code or symbol not found",
-        "normalization_status": "failed",
-        "normalization_reason": "source field is missing"
+        "value": "$",
+        "normalized": {
+          "code": null,
+          "symbol": "$"
+        },
+        "raw_text": "$30,333.6",
+        "bbox": [
+          [
+            938,
+            1797
+          ],
+          [
+            1056,
+            1797
+          ],
+          [
+            1056,
+            1825
+          ],
+          [
+            938,
+            1825
+          ]
+        ],
+        "confidence": 0.9942746450408715,
+        "status": "ambiguous",
+        "source_indices": [
+          44
+        ],
+        "reason": "currency symbol found but ISO code absent",
+        "normalization_status": "ambiguous",
+        "normalization_reason": "currency symbol does not identify an ISO currency code"
       },
       "goods_description": {
-        "value": "Electric | Valve쉼표 | Higb | Assembly",
-        "normalized": "Electric | Valve쉼표 | Higb | Assembly",
-        "raw_text": "Electric Valve쉼표 Higb Assembly",
+        "value": "Electric | Valve, | Higb | Assembly",
+        "normalized": "Electric | Valve, | Higb | Assembly",
+        "raw_text": "Electric Valve, Higb Assembly",
         "bbox": [
           [
             235,
@@ -4041,7 +4069,7 @@
             1299
           ]
         ],
-        "confidence": 0.9086511047073011,
+        "confidence": 0.9013005228699084,
         "status": "found",
         "source_indices": [
           2,

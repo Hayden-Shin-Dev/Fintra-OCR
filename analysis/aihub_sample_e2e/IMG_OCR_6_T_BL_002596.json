@@ -7,11 +7,11 @@
     "gt_boxes": 118,
     "predicted_boxes": 174,
     "geometric_recall": 0.9661016949152542,
-    "exact_text_recall": 0.6271186440677966,
-    "segmentation_aware_recall": 0.652542372881356,
-    "similarity_90_recall": 0.635593220338983,
-    "mean_similarity": 0.8335506301607997,
-    "mean_cer": 0.21532462358733545
+    "exact_text_recall": 0.7372881355932204,
+    "segmentation_aware_recall": 0.7627118644067796,
+    "similarity_90_recall": 0.7457627118644068,
+    "mean_similarity": 0.8725217579031138,
+    "mean_cer": 0.15956729240627546
   },
   "fields": {
     "bl_no": {
@@ -261,8 +261,8 @@
     },
     {
       "index": 4,
-      "text": "OONNCCMUN--OOUNGRON쉼표",
-      "confidence": 0.42208420900391874,
+      "text": "OONNCCMUN--OOUNGRON,",
+      "confidence": 0.4364904985458747,
       "bbox": [
         [
           971,
@@ -330,8 +330,8 @@
     },
     {
       "index": 7,
-      "text": "ELBOV쉼표쉼표",
-      "confidence": 0.909414049343987,
+      "text": "ELBOV,,",
+      "confidence": 0.8851052378950586,
       "bbox": [
         [
           611,
@@ -491,8 +491,8 @@
     },
     {
       "index": 14,
-      "text": "DAYTON쉼표",
-      "confidence": 0.9864342031435599,
+      "text": "DAYTON,",
+      "confidence": 0.9845351898600698,
       "bbox": [
         [
           270,
@@ -721,8 +721,8 @@
     },
     {
       "index": 24,
-      "text": "186-41쉼표",
-      "confidence": 0.9965776797509592,
+      "text": "186-41,",
+      "confidence": 0.9960934660321021,
       "bbox": [
         [
           839,
@@ -859,8 +859,8 @@
     },
     {
       "index": 30,
-      "text": "BRADFORD쉼표",
-      "confidence": 0.9935758878394959,
+      "text": "BRADFORD,",
+      "confidence": 0.9930551400204064,
       "bbox": [
         [
           1059,
@@ -882,8 +882,8 @@
     },
     {
       "index": 31,
-      "text": "23406쉼표",
-      "confidence": 0.9998156520280591,
+      "text": "23406,",
+      "confidence": 0.9997853875361732,
       "bbox": [
         [
           1224,
@@ -974,8 +974,8 @@
     },
     {
       "index": 35,
-      "text": "34996쉼표",
-      "confidence": 0.999861982630272,
+      "text": "34996,",
+      "confidence": 0.9998505832361154,
       "bbox": [
         [
           409,
@@ -1365,8 +1365,8 @@
     },
     {
       "index": 52,
-      "text": "1521쉼표",
-      "confidence": 0.9950369336991504,
+      "text": "1521,",
+      "confidence": 0.9940655302455009,
       "bbox": [
         [
           436,
@@ -1434,8 +1434,8 @@
     },
     {
       "index": 55,
-      "text": "13567쉼표",
-      "confidence": 0.9996029564067073,
+      "text": "13567,",
+      "confidence": 0.9995437685001338,
       "bbox": [
         [
           1361,
@@ -1480,8 +1480,8 @@
     },
     {
       "index": 57,
-      "text": "DARICA쉼표",
-      "confidence": 0.8731547956764506,
+      "text": "DARICA,",
+      "confidence": 0.8564030658083338,
       "bbox": [
         [
           492,
@@ -1595,8 +1595,8 @@
     },
     {
       "index": 62,
-      "text": "MAAGLL쉼표",
-      "confidence": 0.8687882577250251,
+      "text": "MAAGLL,",
+      "confidence": 0.8515617018460737,
       "bbox": [
         [
           303,
@@ -1940,8 +1940,8 @@
     },
     {
       "index": 77,
-      "text": "1114쉼표",
-      "confidence": 0.8179409597013616,
+      "text": "1114,",
+      "confidence": 0.7864381377986822,
       "bbox": [
         [
           381,
@@ -1986,8 +1986,8 @@
     },
     {
       "index": 79,
-      "text": "STREET쉼표",
-      "confidence": 0.9671779312718012,
+      "text": "STREET,",
+      "confidence": 0.9625849740044478,
       "bbox": [
         [
           218,
@@ -2124,8 +2124,8 @@
     },
     {
       "index": 85,
-      "text": "70쉼표870.01",
-      "confidence": 0.9194074321131923,
+      "text": "70,870.01",
+      "confidence": 0.9109112247545368,
       "bbox": [
         [
           1375,
@@ -2262,8 +2262,8 @@
     },
     {
       "index": 91,
-      "text": "$7쉼표223.07",
-      "confidence": 0.9931681026450504,
+      "text": "$7,223.07",
+      "confidence": 0.9924194874646713,
       "bbox": [
         [
           1268,
@@ -2308,8 +2308,8 @@
     },
     {
       "index": 93,
-      "text": "SEIGURA쉼표쉼표",
-      "confidence": 0.8950685327083394,
+      "text": "SEIGURA,,",
+      "confidence": 0.8733062180486562,
       "bbox": [
         [
           76,
@@ -2331,8 +2331,8 @@
     },
     {
       "index": 94,
-      "text": "AMERIC쉼표",
-      "confidence": 0.8412289980535016,
+      "text": "AMERIC,",
+      "confidence": 0.8394307300077195,
       "bbox": [
         [
           207,
@@ -2469,8 +2469,8 @@
     },
     {
       "index": 100,
-      "text": "BALSTA쉼표",
-      "confidence": 0.9986425781448276,
+      "text": "BALSTA,",
+      "confidence": 0.998454252456439,
       "bbox": [
         [
           77,
@@ -2561,8 +2561,8 @@
     },
     {
       "index": 104,
-      "text": "$9쉼표742.81",
-      "confidence": 0.952757231226919,
+      "text": "$9,742.81",
+      "confidence": 0.9476763046575696,
       "bbox": [
         [
           1267,
@@ -2952,8 +2952,8 @@
     },
     {
       "index": 121,
-      "text": "(COMR쉼표TL",
-      "confidence": 0.6542482225743558,
+      "text": "(COMR,TL",
+      "confidence": 0.6328714986340893,
       "bbox": [
         [
           286,
@@ -3412,8 +3412,8 @@
     },
     {
       "index": 141,
-      "text": "NAME쉼표",
-      "confidence": 0.7431288592766725,
+      "text": "NAME,",
+      "confidence": 0.7023864805359579,
       "bbox": [
         [
           401,
@@ -3941,8 +3941,8 @@
     },
     {
       "index": 164,
-      "text": "JANA쉼표",
-      "confidence": 0.7954322968617539,
+      "text": "JANA,",
+      "confidence": 0.7631028221859704,
       "bbox": [
         [
           150,
@@ -4170,7 +4170,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 34.269,
+  "elapsed_seconds": 36.298,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "bill_of_lading",

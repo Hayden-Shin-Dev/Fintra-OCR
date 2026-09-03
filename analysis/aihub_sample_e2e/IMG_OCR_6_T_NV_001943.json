@@ -7,11 +7,11 @@
     "gt_boxes": 99,
     "predicted_boxes": 120,
     "geometric_recall": 0.696969696969697,
-    "exact_text_recall": 0.2222222222222222,
-    "segmentation_aware_recall": 0.2222222222222222,
-    "similarity_90_recall": 0.23232323232323232,
-    "mean_similarity": 0.40827685221624616,
-    "mean_cer": 0.6814137041409769
+    "exact_text_recall": 0.23232323232323232,
+    "segmentation_aware_recall": 0.24242424242424243,
+    "similarity_90_recall": 0.24242424242424243,
+    "mean_similarity": 0.4180692203419476,
+    "mean_cer": 0.6644383954990015
   },
   "fields": {
     "invoice_no": {
@@ -28,8 +28,8 @@
     },
     "buyer": {
       "status": "ambiguous",
-      "value": "ASCUIT쉼표 Zeeloan",
-      "normalized": "ASCUIT쉼표 Zeeloan",
+      "value": "ASCUIT, Zeeloan",
+      "normalized": "ASCUIT, Zeeloan",
       "confidence": 0.5805280131247259
     },
     "amount": {
@@ -50,9 +50,9 @@
     },
     "goods_description": {
       "status": "found",
-      "value": "86-898 DRRVE | 53-414 BuSh쉼표쉼표",
-      "normalized": "86-898 DRRVE | 53-414 BuSh쉼표쉼표",
-      "confidence": 0.7662697732510171
+      "value": "86-898 DRRVE | 53-414 BuSh,,",
+      "normalized": "86-898 DRRVE | 53-414 BuSh,,",
+      "confidence": 0.7014256344127606
     },
     "quantity": {
       "status": "found",
@@ -164,7 +164,7 @@
       "field_name": "buyer",
       "actual_status": "ambiguous",
       "oracle_status": "ambiguous",
-      "actual_value": "ASCUIT쉼표 Zeeloan",
+      "actual_value": "ASCUIT, Zeeloan",
       "oracle_value": "PSM Technology Alistic LP",
       "classification": "extractor_instability_or_ambiguity",
       "agreement_score": 0.2564102564102564
@@ -194,7 +194,7 @@
       "field_name": "goods_description",
       "actual_status": "found",
       "oracle_status": "found",
-      "actual_value": "86-898 DRRVE | 53-414 BuSh쉼표쉼표",
+      "actual_value": "86-898 DRRVE | 53-414 BuSh,,",
       "oracle_value": "86-898 DRIVE | 53-414 Bush, | 16-087 Cover,",
       "classification": "e2e_matches_oracle",
       "agreement_score": 0.8819444444444444
@@ -619,8 +619,8 @@
     },
     {
       "index": 16,
-      "text": "BuSh쉼표쉼표",
-      "confidence": 0.7662697732510171,
+      "text": "BuSh,,",
+      "confidence": 0.7014256344127606,
       "bbox": [
         [
           237,
@@ -1194,8 +1194,8 @@
     },
     {
       "index": 41,
-      "text": "NICE쉼표",
-      "confidence": 0.8756846733573611,
+      "text": "NICE,",
+      "confidence": 0.8585898133913409,
       "bbox": [
         [
           443,
@@ -1700,8 +1700,8 @@
     },
     {
       "index": 63,
-      "text": "ASCUIT쉼표",
-      "confidence": 0.7641606821151342,
+      "text": "ASCUIT,",
+      "confidence": 0.7454534452141865,
       "bbox": [
         [
           1037,
@@ -2758,8 +2758,8 @@
     },
     {
       "index": 109,
-      "text": "JOAA2--72-/쉼표---S00",
-      "confidence": 0.4292327635930946,
+      "text": "JOAA2--72-/,---S00",
+      "confidence": 0.41333896498366546,
       "bbox": [
         [
           444,
@@ -2781,8 +2781,8 @@
     },
     {
       "index": 110,
-      "text": "PIOMANNO쉼표",
-      "confidence": 0.552187048332319,
+      "text": "PIOMANNO,",
+      "confidence": 0.5501058812692204,
       "bbox": [
         [
           49,
@@ -3010,7 +3010,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 34.126,
+  "elapsed_seconds": 26.826,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "commercial_invoice",
@@ -3080,9 +3080,9 @@
         "normalization_reason": null
       },
       "buyer": {
-        "value": "ASCUIT쉼표 Zeeloan",
-        "normalized": "ASCUIT쉼표 Zeeloan",
-        "raw_text": "ASCUIT쉼표 Zeeloan",
+        "value": "ASCUIT, Zeeloan",
+        "normalized": "ASCUIT, Zeeloan",
+        "raw_text": "ASCUIT, Zeeloan",
         "bbox": [
           [
             1037,
@@ -3159,9 +3159,9 @@
         "normalization_reason": "source field is missing"
       },
       "goods_description": {
-        "value": "86-898 DRRVE | 53-414 BuSh쉼표쉼표",
-        "normalized": "86-898 DRRVE | 53-414 BuSh쉼표쉼표",
-        "raw_text": "DRRVE 86-898 BuSh쉼표쉼표 53-414",
+        "value": "86-898 DRRVE | 53-414 BuSh,,",
+        "normalized": "86-898 DRRVE | 53-414 BuSh,,",
+        "raw_text": "DRRVE 86-898 BuSh,, 53-414",
         "bbox": [
           [
             48,
@@ -3180,7 +3180,7 @@
             1130
           ]
         ],
-        "confidence": 0.7662697732510171,
+        "confidence": 0.7014256344127606,
         "status": "found",
         "source_indices": [
           89,

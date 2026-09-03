@@ -7,11 +7,11 @@
     "gt_boxes": 115,
     "predicted_boxes": 188,
     "geometric_recall": 0.991304347826087,
-    "exact_text_recall": 0.5217391304347826,
-    "segmentation_aware_recall": 0.5391304347826087,
-    "similarity_90_recall": 0.5565217391304348,
-    "mean_similarity": 0.8136920723493614,
-    "mean_cer": 0.26457279435540304
+    "exact_text_recall": 0.5652173913043478,
+    "segmentation_aware_recall": 0.5826086956521739,
+    "similarity_90_recall": 0.6086956521739131,
+    "mean_similarity": 0.8387809930904561,
+    "mean_cer": 0.23137854898724464
   },
   "fields": {
     "invoice_no": {
@@ -34,25 +34,28 @@
     },
     "amount": {
       "status": "found",
-      "value": "9",
+      "value": "$49,180.7",
       "normalized": {
-        "value": 9.0,
-        "symbol": null,
+        "value": 49180.7,
+        "symbol": "$",
         "currency_code": null
       },
-      "confidence": 0.6307514928606869
+      "confidence": 0.9364587547281473
     },
     "currency": {
-      "status": "missing",
-      "value": null,
-      "normalized": null,
-      "confidence": 0.0
+      "status": "ambiguous",
+      "value": "$",
+      "normalized": {
+        "code": null,
+        "symbol": "$"
+      },
+      "confidence": 0.9364587547281473
     },
     "goods_description": {
       "status": "found",
-      "value": "68-900 Coupling | 69-415 Screw쉼표 | 43-607 Tubes",
-      "normalized": "68-900 Coupling | 69-415 Screw쉼표 | 43-607 Tubes",
-      "confidence": 0.8654130501202258
+      "value": "68-900 Coupling | 69-415 Screw, | 43-607 Tubes",
+      "normalized": "68-900 Coupling | 69-415 Screw, | 43-607 Tubes",
+      "confidence": 0.8548429398652923
     },
     "quantity": {
       "status": "found",
@@ -148,8 +151,8 @@
       "actual_status": "found",
       "oracle_status": "found",
       "actual_value": {
-        "value": 9.0,
-        "symbol": null,
+        "value": 49180.7,
+        "symbol": "$",
         "currency_code": null
       },
       "oracle_value": {
@@ -171,9 +174,12 @@
     },
     "currency": {
       "field_name": "currency",
-      "actual_status": "missing",
+      "actual_status": "ambiguous",
       "oracle_status": "found",
-      "actual_value": null,
+      "actual_value": {
+        "code": null,
+        "symbol": "$"
+      },
       "oracle_value": {
         "code": "CAD",
         "symbol": null
@@ -194,7 +200,7 @@
       "field_name": "goods_description",
       "actual_status": "found",
       "oracle_status": "found",
-      "actual_value": "68-900 Coupling | 69-415 Screw쉼표 | 43-607 Tubes",
+      "actual_value": "68-900 Coupling | 69-415 Screw, | 43-607 Tubes",
       "oracle_value": "68-902 Coupling | 69-415 Screw, | 43-607 Tubes",
       "classification": "e2e_matches_oracle",
       "agreement_score": 0.9777777777777779
@@ -435,8 +441,8 @@
     },
     {
       "index": 8,
-      "text": "MIN쉼표",
-      "confidence": 0.6752165854832739,
+      "text": "MIN,",
+      "confidence": 0.6195580991508407,
       "bbox": [
         [
           1301,
@@ -504,8 +510,8 @@
     },
     {
       "index": 11,
-      "text": "Screw쉼표",
-      "confidence": 0.8654130501202258,
+      "text": "Screw,",
+      "confidence": 0.8548429398652923,
       "bbox": [
         [
           236,
@@ -573,8 +579,8 @@
     },
     {
       "index": 14,
-      "text": "Type쉼표",
-      "confidence": 0.9950469953991685,
+      "text": "Type,",
+      "confidence": 0.995117717911931,
       "bbox": [
         [
           386,
@@ -665,8 +671,8 @@
     },
     {
       "index": 18,
-      "text": "$5쉼표788",
-      "confidence": 0.7901593845522662,
+      "text": "$5,788",
+      "confidence": 0.7600690957369057,
       "bbox": [
         [
           1254,
@@ -711,8 +717,8 @@
     },
     {
       "index": 20,
-      "text": "Fitinges쉼표",
-      "confidence": 0.8560023877973855,
+      "text": "Fitinges,",
+      "confidence": 0.8422199693852211,
       "bbox": [
         [
           386,
@@ -1217,8 +1223,8 @@
     },
     {
       "index": 42,
-      "text": "Boccmfontrnn쉼표",
-      "confidence": 0.6958639780412734,
+      "text": "Boccmfontrnn,",
+      "confidence": 0.6800477167241676,
       "bbox": [
         [
           425,
@@ -2344,8 +2350,8 @@
     },
     {
       "index": 91,
-      "text": "KAGAMI쉼표",
-      "confidence": 0.8911282994519925,
+      "text": "KAGAMI,",
+      "confidence": 0.8766828946973283,
       "bbox": [
         [
           48,
@@ -2413,8 +2419,8 @@
     },
     {
       "index": 94,
-      "text": "OYO쉼표",
-      "confidence": 0.9106507025192212,
+      "text": "OYO,",
+      "confidence": 0.9217874163812169,
       "bbox": [
         [
           441,
@@ -2574,8 +2580,8 @@
     },
     {
       "index": 101,
-      "text": "$8쉼표335558",
-      "confidence": 0.7528159945515966,
+      "text": "$8,335558",
+      "confidence": 0.729579415820704,
       "bbox": [
         [
           1439,
@@ -3172,8 +3178,8 @@
     },
     {
       "index": 127,
-      "text": "16쉼표",
-      "confidence": 0.78190647852807,
+      "text": "16,",
+      "confidence": 0.8471875543104898,
       "bbox": [
         [
           496,
@@ -3241,8 +3247,8 @@
     },
     {
       "index": 130,
-      "text": "$49쉼표180.7",
-      "confidence": 0.9395683942962876,
+      "text": "$49,180.7",
+      "confidence": 0.9364587547281473,
       "bbox": [
         [
           938,
@@ -4574,7 +4580,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 37.192,
+  "elapsed_seconds": 38.412,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "commercial_invoice",
@@ -4657,56 +4663,78 @@
         "normalization_reason": "source field remains ambiguous"
       },
       "amount": {
-        "value": "9",
+        "value": "$49,180.7",
         "normalized": {
-          "value": 9.0,
-          "symbol": null,
+          "value": 49180.7,
+          "symbol": "$",
           "currency_code": null
         },
-        "raw_text": "9",
+        "raw_text": "$49,180.7",
         "bbox": [
           [
-            541,
-            1761
+            938,
+            1799
           ],
           [
-            558,
-            1761
+            1080,
+            1799
           ],
           [
-            558,
-            1782
+            1080,
+            1826
           ],
           [
-            541,
-            1782
+            938,
+            1826
           ]
         ],
-        "confidence": 0.6307514928606869,
+        "confidence": 0.9364587547281473,
         "status": "found",
         "source_indices": [
-          9
+          130
         ],
         "reason": null,
         "normalization_status": "normalized",
         "normalization_reason": null
       },
       "currency": {
-        "value": null,
-        "normalized": null,
-        "raw_text": "",
-        "bbox": null,
-        "confidence": 0.0,
-        "status": "missing",
-        "source_indices": [],
-        "reason": "currency code or symbol not found",
-        "normalization_status": "failed",
-        "normalization_reason": "source field is missing"
+        "value": "$",
+        "normalized": {
+          "code": null,
+          "symbol": "$"
+        },
+        "raw_text": "$49,180.7",
+        "bbox": [
+          [
+            938,
+            1799
+          ],
+          [
+            1080,
+            1799
+          ],
+          [
+            1080,
+            1826
+          ],
+          [
+            938,
+            1826
+          ]
+        ],
+        "confidence": 0.9364587547281473,
+        "status": "ambiguous",
+        "source_indices": [
+          130
+        ],
+        "reason": "currency symbol found but ISO code absent",
+        "normalization_status": "ambiguous",
+        "normalization_reason": "currency symbol does not identify an ISO currency code"
       },
       "goods_description": {
-        "value": "68-900 Coupling | 69-415 Screw쉼표 | 43-607 Tubes",
-        "normalized": "68-900 Coupling | 69-415 Screw쉼표 | 43-607 Tubes",
-        "raw_text": "Coupling 68-900 Screw쉼표 69-415 Tubes 43-607",
+        "value": "68-900 Coupling | 69-415 Screw, | 43-607 Tubes",
+        "normalized": "68-900 Coupling | 69-415 Screw, | 43-607 Tubes",
+        "raw_text": "Coupling 68-900 Screw, 69-415 Tubes 43-607",
         "bbox": [
           [
             48,
@@ -4725,7 +4753,7 @@
             1266
           ]
         ],
-        "confidence": 0.8654130501202258,
+        "confidence": 0.8548429398652923,
         "status": "found",
         "source_indices": [
           80,

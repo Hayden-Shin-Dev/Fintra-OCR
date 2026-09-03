@@ -23,7 +23,7 @@
   "evaluated_documents": 31,
   "aihub": {
     "backend": "aihub-logistics",
-    "elapsed_seconds": 950.697,
+    "elapsed_seconds": 948.377,
     "real_pretrained_inference": true,
     "detector": "AI-Hub OCRMaskRCNN / ResNet-50 + FPN + mask head",
     "recognizer": "AI-Hub vitstr_small_patch16_224"
@@ -36,10 +36,10 @@
     "상업송장": {
       "documents": 15,
       "aihub": {
-        "exact_text_recall": 0.5168113465066856,
-        "segmentation_aware_recall": 0.5329756039635155,
-        "similarity_90_recall": 0.5381593206240565,
-        "mean_cer": 0.3490150420897962
+        "exact_text_recall": 0.5851287997341756,
+        "segmentation_aware_recall": 0.6027895031318959,
+        "similarity_90_recall": 0.61085744750524,
+        "mean_cer": 0.3114576296091095
       },
       "paddle": {
         "exact_text_recall": 0.32231141366758465,
@@ -48,19 +48,19 @@
         "mean_cer": 2.1367821094044492
       },
       "delta_aihub_minus_paddle": {
-        "exact_text_recall": 0.19449993283910094,
-        "segmentation_aware_recall": -0.39872426171528663,
-        "similarity_90_recall": 0.21334590184577107,
-        "mean_cer": -1.787767067314653
+        "exact_text_recall": 0.262817386066591,
+        "segmentation_aware_recall": -0.3289103625469062,
+        "similarity_90_recall": 0.28604402872695456,
+        "mean_cer": -1.8253244797953396
       }
     },
     "선하증권": {
       "documents": 5,
       "aihub": {
-        "exact_text_recall": 0.4258721839025128,
-        "segmentation_aware_recall": 0.44920412994892517,
-        "similarity_90_recall": 0.4438989664468637,
-        "mean_cer": 0.34983084543564325
+        "exact_text_recall": 0.52791393847314,
+        "segmentation_aware_recall": 0.5544151402435527,
+        "similarity_90_recall": 0.5475800652797861,
+        "mean_cer": 0.28039884947353466
       },
       "paddle": {
         "exact_text_recall": 0.2005436716850779,
@@ -69,19 +69,19 @@
         "mean_cer": 2.327192295952208
       },
       "delta_aihub_minus_paddle": {
-        "exact_text_recall": 0.2253285122174349,
-        "segmentation_aware_recall": -0.5038607798162145,
-        "similarity_90_recall": 0.23369447837857718,
-        "mean_cer": -1.9773614505165646
+        "exact_text_recall": 0.32737026678806214,
+        "segmentation_aware_recall": -0.39864976952158704,
+        "similarity_90_recall": 0.3373755772114996,
+        "mean_cer": -2.0467934464786732
       }
     },
     "포장명세서": {
       "documents": 11,
       "aihub": {
-        "exact_text_recall": 0.5628408153128022,
-        "segmentation_aware_recall": 0.5804501697553246,
-        "similarity_90_recall": 0.5947321286387625,
-        "mean_cer": 0.21243366936918423
+        "exact_text_recall": 0.6570798715037391,
+        "segmentation_aware_recall": 0.6764805815524104,
+        "similarity_90_recall": 0.6917663579228601,
+        "mean_cer": 0.15711642003236054
       },
       "paddle": {
         "exact_text_recall": 0.22532731722259286,
@@ -90,10 +90,10 @@
         "mean_cer": 2.20586736088062
       },
       "delta_aihub_minus_paddle": {
-        "exact_text_recall": 0.3375134980902093,
-        "segmentation_aware_recall": -0.3337836245124547,
-        "similarity_90_recall": 0.36196892738340036,
-        "mean_cer": -1.993433691511436
+        "exact_text_recall": 0.4317525542811463,
+        "segmentation_aware_recall": -0.23775321271536887,
+        "similarity_90_recall": 0.459003156667498,
+        "mean_cer": -2.0487509408482594
       }
     }
   },
@@ -103,17 +103,18 @@
         "documents": 15,
         "evaluable_documents": 10,
         "status_counts": {
-          "found": 8,
-          "missing": 7
+          "found": 9,
+          "missing": 6
         },
         "diagnostic_counts": {
-          "ocr_or_extractor_value_mismatch": 8,
+          "ocr_or_extractor_value_mismatch": 6,
+          "e2e_matches_oracle": 3,
           "both_missing_or_oracle_unavailable": 5,
-          "ocr_value_degradation": 2
+          "ocr_value_degradation": 1
         },
-        "coverage_rate": 0.5333333333333333,
-        "oracle_agreement_rate": 0.0,
-        "mean_agreement_score": 0.0,
+        "coverage_rate": 0.6,
+        "oracle_agreement_rate": 0.3,
+        "mean_agreement_score": 0.3,
         "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
       },
       "bl_no": {
@@ -170,19 +171,19 @@
         "documents": 15,
         "evaluable_documents": 12,
         "status_counts": {
-          "found": 4,
-          "missing": 10,
-          "ambiguous": 1
+          "found": 3,
+          "ambiguous": 7,
+          "missing": 5
         },
         "diagnostic_counts": {
-          "e2e_matches_oracle": 4,
-          "extractor_instability_or_ambiguity": 6,
+          "e2e_matches_oracle": 9,
           "ocr_value_degradation": 2,
-          "both_missing_or_oracle_unavailable": 3
+          "both_missing_or_oracle_unavailable": 3,
+          "extractor_instability_or_ambiguity": 1
         },
-        "coverage_rate": 0.3333333333333333,
-        "oracle_agreement_rate": 0.3333333333333333,
-        "mean_agreement_score": 0.3333333333333333,
+        "coverage_rate": 0.6666666666666666,
+        "oracle_agreement_rate": 0.75,
+        "mean_agreement_score": 0.75,
         "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
       },
       "date": {

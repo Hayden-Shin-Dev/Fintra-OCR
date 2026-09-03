@@ -7,11 +7,11 @@
     "gt_boxes": 102,
     "predicted_boxes": 112,
     "geometric_recall": 1.0,
-    "exact_text_recall": 0.7352941176470589,
-    "segmentation_aware_recall": 0.7450980392156863,
-    "similarity_90_recall": 0.7549019607843137,
-    "mean_similarity": 0.9115625339673783,
-    "mean_cer": 0.10059134765017118
+    "exact_text_recall": 0.8725490196078431,
+    "segmentation_aware_recall": 0.8921568627450981,
+    "similarity_90_recall": 0.9019607843137255,
+    "mean_similarity": 0.9596798850259058,
+    "mean_cer": 0.04123482726423903
   },
   "fields": {
     "invoice_no": {
@@ -187,8 +187,8 @@
   "ocr_predictions": [
     {
       "index": 0,
-      "text": "10963쉼표",
-      "confidence": 0.999898023224381,
+      "text": "10963,",
+      "confidence": 0.999882021399231,
       "bbox": [
         [
           548,
@@ -279,8 +279,8 @@
     },
     {
       "index": 4,
-      "text": "Maidstone쉼표",
-      "confidence": 0.956913168626647,
+      "text": "Maidstone,",
+      "confidence": 0.9550025744190358,
       "bbox": [
         [
           514,
@@ -417,8 +417,8 @@
     },
     {
       "index": 10,
-      "text": "street쉼표",
-      "confidence": 0.9942336120110189,
+      "text": "street,",
+      "confidence": 0.9934538384092452,
       "bbox": [
         [
           436,
@@ -670,8 +670,8 @@
     },
     {
       "index": 21,
-      "text": "2355쉼표",
-      "confidence": 0.9234045364643427,
+      "text": "2355,",
+      "confidence": 0.9089104725059578,
       "bbox": [
         [
           703,
@@ -693,8 +693,8 @@
     },
     {
       "index": 22,
-      "text": "52252쉼표",
-      "confidence": 0.99988425000468,
+      "text": "52252,",
+      "confidence": 0.9999234358828001,
       "bbox": [
         [
           510,
@@ -739,8 +739,8 @@
     },
     {
       "index": 24,
-      "text": "MUNDRA쉼표",
-      "confidence": 0.9732695912242844,
+      "text": "MUNDRA,",
+      "confidence": 0.9722982640267251,
       "bbox": [
         [
           506,
@@ -854,8 +854,8 @@
     },
     {
       "index": 29,
-      "text": "12쉼표",
-      "confidence": 0.9999064881773101,
+      "text": "12,",
+      "confidence": 0.99997452883206,
       "bbox": [
         [
           556,
@@ -946,8 +946,8 @@
     },
     {
       "index": 33,
-      "text": "Pungmu-doog쉼표",
-      "confidence": 0.8273967550809429,
+      "text": "Pungmu-doog,",
+      "confidence": 0.8169225208198162,
       "bbox": [
         [
           199,
@@ -969,8 +969,8 @@
     },
     {
       "index": 34,
-      "text": "Memphis쉼표쉼표",
-      "confidence": 0.8235299218672021,
+      "text": "Memphis,,",
+      "confidence": 0.7888205702584116,
       "bbox": [
         [
           352,
@@ -1015,8 +1015,8 @@
     },
     {
       "index": 36,
-      "text": "Talso-ku쉼표",
-      "confidence": 0.9649658622221753,
+      "text": "Talso-ku,",
+      "confidence": 0.9630273400549375,
       "bbox": [
         [
           368,
@@ -1245,8 +1245,8 @@
     },
     {
       "index": 46,
-      "text": "Bar쉼표",
-      "confidence": 0.9960000883128536,
+      "text": "Bar,",
+      "confidence": 0.9980854622706252,
       "bbox": [
         [
           476,
@@ -1337,8 +1337,8 @@
     },
     {
       "index": 50,
-      "text": "Plate쉼표",
-      "confidence": 0.9727550466237028,
+      "text": "Plate,",
+      "confidence": 0.9686498924889012,
       "bbox": [
         [
           123,
@@ -1613,8 +1613,8 @@
     },
     {
       "index": 62,
-      "text": "Street쉼표",
-      "confidence": 0.8761441609510473,
+      "text": "Street,",
+      "confidence": 0.8597768787541572,
       "bbox": [
         [
           272,
@@ -1728,8 +1728,8 @@
     },
     {
       "index": 67,
-      "text": "272-8쉼표",
-      "confidence": 0.995578028201662,
+      "text": "272-8,",
+      "confidence": 0.9948849548640997,
       "bbox": [
         [
           119,
@@ -1935,8 +1935,8 @@
     },
     {
       "index": 76,
-      "text": "30쉼표",
-      "confidence": 0.9308213880065267,
+      "text": "30,",
+      "confidence": 0.9094593390009732,
       "bbox": [
         [
           1270,
@@ -2050,8 +2050,8 @@
     },
     {
       "index": 81,
-      "text": "20쉼표",
-      "confidence": 0.9992847904830419,
+      "text": "20,",
+      "confidence": 0.9998090817180446,
       "bbox": [
         [
           1269,
@@ -2762,7 +2762,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 23.559,
+  "elapsed_seconds": 25.565,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "packing_list",

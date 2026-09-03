@@ -7,11 +7,11 @@
     "gt_boxes": 94,
     "predicted_boxes": 103,
     "geometric_recall": 0.9893617021276596,
-    "exact_text_recall": 0.6063829787234043,
-    "segmentation_aware_recall": 0.6276595744680851,
-    "similarity_90_recall": 0.6382978723404256,
-    "mean_similarity": 0.8582253975339081,
-    "mean_cer": 0.17210933865189185
+    "exact_text_recall": 0.7340425531914894,
+    "segmentation_aware_recall": 0.7553191489361702,
+    "similarity_90_recall": 0.7659574468085106,
+    "mean_similarity": 0.9150391806774786,
+    "mean_cer": 0.10000954128613702
   },
   "fields": {
     "invoice_no": {
@@ -288,8 +288,8 @@
     },
     {
       "index": 7,
-      "text": "DATC쉼표쉼표",
-      "confidence": 0.9193642979246076,
+      "text": "DATC,,",
+      "confidence": 0.8939625591526317,
       "bbox": [
         [
           696,
@@ -403,8 +403,8 @@
     },
     {
       "index": 12,
-      "text": "473쉼표",
-      "confidence": 0.99866127691104,
+      "text": "473,",
+      "confidence": 0.998519169697919,
       "bbox": [
         [
           910,
@@ -426,8 +426,8 @@
     },
     {
       "index": 13,
-      "text": "Jiangxi쉼표",
-      "confidence": 0.9448368439217196,
+      "text": "Jiangxi,",
+      "confidence": 0.9386423083107641,
       "bbox": [
         [
           853,
@@ -472,8 +472,8 @@
     },
     {
       "index": 15,
-      "text": "FURIAN쉼표쉼표",
-      "confidence": 0.9099229626448929,
+      "text": "FURIAN,,",
+      "confidence": 0.888780384876795,
       "bbox": [
         [
           1133,
@@ -518,8 +518,8 @@
     },
     {
       "index": 17,
-      "text": "10731쉼표",
-      "confidence": 0.9963649961156841,
+      "text": "10731,",
+      "confidence": 0.9957641475517816,
       "bbox": [
         [
           626,
@@ -541,8 +541,8 @@
     },
     {
       "index": 18,
-      "text": "CoUnty쉼표",
-      "confidence": 0.9204618723379074,
+      "text": "CoUnty,",
+      "confidence": 0.9096732418190732,
       "bbox": [
         [
           644,
@@ -702,8 +702,8 @@
     },
     {
       "index": 25,
-      "text": "Co.쉼표",
-      "confidence": 0.9138249560074944,
+      "text": "Co.,",
+      "confidence": 0.9999063275319267,
       "bbox": [
         [
           424,
@@ -725,8 +725,8 @@
     },
     {
       "index": 26,
-      "text": "Town쉼표",
-      "confidence": 0.9896995433482251,
+      "text": "Town,",
+      "confidence": 0.9876938910613814,
       "bbox": [
         [
           468,
@@ -840,8 +840,8 @@
     },
     {
       "index": 31,
-      "text": "Co.쉼표",
-      "confidence": 0.9988827083235865,
+      "text": "Co.,",
+      "confidence": 0.9999504365646668,
       "bbox": [
         [
           1084,
@@ -932,8 +932,8 @@
     },
     {
       "index": 35,
-      "text": "Co.쉼표",
-      "confidence": 0.9863826091126169,
+      "text": "Co.,",
+      "confidence": 0.9950121262397867,
       "bbox": [
         [
           1067,
@@ -955,8 +955,8 @@
     },
     {
       "index": 36,
-      "text": "Town쉼표",
-      "confidence": 0.8988006590374485,
+      "text": "Town,",
+      "confidence": 0.8799063693943332,
       "bbox": [
         [
           1124,
@@ -1346,8 +1346,8 @@
     },
     {
       "index": 53,
-      "text": "Cimpo-Shi쉼표쉼표",
-      "confidence": 0.9301370007553275,
+      "text": "Cimpo-Shi,,",
+      "confidence": 0.9189598241670615,
       "bbox": [
         [
           364,
@@ -1599,8 +1599,8 @@
     },
     {
       "index": 64,
-      "text": "Hubei쉼표",
-      "confidence": 0.8330593281442601,
+      "text": "Hubei,",
+      "confidence": 0.8172088821729526,
       "bbox": [
         [
           148,
@@ -1622,8 +1622,8 @@
     },
     {
       "index": 65,
-      "text": "Co.쉼표",
-      "confidence": 0.9563827375011916,
+      "text": "Co.,",
+      "confidence": 0.9942573513941426,
       "bbox": [
         [
           360,
@@ -1668,8 +1668,8 @@
     },
     {
       "index": 67,
-      "text": "624쉼표",
-      "confidence": 0.9421796356009412,
+      "text": "624,",
+      "confidence": 0.9347675197261669,
       "bbox": [
         [
           217,
@@ -1829,8 +1829,8 @@
     },
     {
       "index": 74,
-      "text": "COty쉼표",
-      "confidence": 0.8112938198021337,
+      "text": "COty,",
+      "confidence": 0.7783538621579735,
       "bbox": [
         [
           1298,
@@ -2243,8 +2243,8 @@
     },
     {
       "index": 92,
-      "text": "642-1쉼표",
-      "confidence": 0.9838342479664648,
+      "text": "642-1,",
+      "confidence": 0.9812821883858852,
       "bbox": [
         [
           148,
@@ -2495,7 +2495,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 23.509,
+  "elapsed_seconds": 27.454,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "packing_list",

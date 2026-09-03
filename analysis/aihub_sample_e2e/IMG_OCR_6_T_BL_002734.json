@@ -7,11 +7,11 @@
     "gt_boxes": 117,
     "predicted_boxes": 172,
     "geometric_recall": 0.9572649572649573,
-    "exact_text_recall": 0.4017094017094017,
-    "segmentation_aware_recall": 0.452991452991453,
-    "similarity_90_recall": 0.4444444444444444,
-    "mean_similarity": 0.7263852760836169,
-    "mean_cer": 0.40186798007310826
+    "exact_text_recall": 0.49572649572649574,
+    "segmentation_aware_recall": 0.5555555555555556,
+    "similarity_90_recall": 0.5384615384615384,
+    "mean_similarity": 0.780212095596711,
+    "mean_cer": 0.3225688129534283
   },
   "fields": {
     "bl_no": {
@@ -34,8 +34,8 @@
     },
     "goods_description": {
       "status": "found",
-      "value": "DFFENSE | EDOCNNA-KU쉼표 | TEL)+94-854-537-6314 | KOREA | HEADDULNNNG--OO 850KG | HANGEE--NGG 297KG | PREPAID AND | RLSOURCES | GZARREE | DATED E.L",
-      "normalized": "DFFENSE | EDOCNNA-KU쉼표 | TEL)+94-854-537-6314 | KOREA | HEADDULNNNG--OO 850KG | HANGEE--NGG 297KG | PREPAID AND | RLSOURCES | GZARREE | DATED E.L",
+      "value": "DFFENSE | EDOCNNA-KU, | TEL)+94-854-537-6314 | KOREA | HEADDULNNNG--OO 850KG | HANGEE--NGG 297KG | PREPAID AND | RLSOURCES | GZARREE | DATED E.L",
+      "normalized": "DFFENSE | EDOCNNA-KU, | TEL)+94-854-537-6314 | KOREA | HEADDULNNNG--OO 850KG | HANGEE--NGG 297KG | PREPAID AND | RLSOURCES | GZARREE | DATED E.L",
       "confidence": 0.4280149691691009
     },
     "number_of_packages": {
@@ -124,7 +124,7 @@
       "field_name": "goods_description",
       "actual_status": "found",
       "oracle_status": "found",
-      "actual_value": "DFFENSE | EDOCNNA-KU쉼표 | TEL)+94-854-537-6314 | KOREA | HEADDULNNNG--OO 850KG | HANGEE--NGG 297KG | PREPAID AND | RLSOURCES | GZARREE | DATED E.L",
+      "actual_value": "DFFENSE | EDOCNNA-KU, | TEL)+94-854-537-6314 | KOREA | HEADDULNNNG--OO 850KG | HANGEE--NGG 297KG | PREPAID AND | RLSOURCES | GZARREE | DATED E.L",
       "oracle_value": "DEFENSE | EDOGAWA-KU, | TEL)+94-854-537-6314 | KOREA | HEADLINING-FRONT 850KG | HANGER-ENGINE 297KG | PREPAID AND | RESOURCES | GZARREE | DATED ELI",
       "classification": "e2e_matches_oracle",
       "agreement_score": 0.8896825396825397
@@ -192,8 +192,8 @@
     },
     {
       "index": 1,
-      "text": "7-3--1쉼표",
-      "confidence": 0.8140117029973254,
+      "text": "7-3--1,",
+      "confidence": 0.8529705996776217,
       "bbox": [
         [
           839,
@@ -560,8 +560,8 @@
     },
     {
       "index": 17,
-      "text": "90214455쉼표",
-      "confidence": 0.8638134181563073,
+      "text": "90214455,",
+      "confidence": 0.8501718788233099,
       "bbox": [
         [
           558,
@@ -744,8 +744,8 @@
     },
     {
       "index": 25,
-      "text": "PAKENAAM쉼표",
-      "confidence": 0.7241889253065528,
+      "text": "PAKENAAM,",
+      "confidence": 0.7045420867177437,
       "bbox": [
         [
           511,
@@ -767,8 +767,8 @@
     },
     {
       "index": 26,
-      "text": "EDOCNNA-KU쉼표",
-      "confidence": 0.7627274856847552,
+      "text": "EDOCNNA-KU,",
+      "confidence": 0.7517904863597131,
       "bbox": [
         [
           961,
@@ -813,8 +813,8 @@
     },
     {
       "index": 28,
-      "text": "INATORI쉼표",
-      "confidence": 0.8685149857339107,
+      "text": "INATORI,",
+      "confidence": 0.8576342893544985,
       "bbox": [
         [
           462,
@@ -836,8 +836,8 @@
     },
     {
       "index": 29,
-      "text": "change쉼표쉼표",
-      "confidence": 0.8444199508220593,
+      "text": "change,,",
+      "confidence": 0.8121059808999846,
       "bbox": [
         [
           1240,
@@ -882,8 +882,8 @@
     },
     {
       "index": 31,
-      "text": "9쉼표9.43",
-      "confidence": 0.8996038715043979,
+      "text": "9,9.43",
+      "confidence": 0.884063220752548,
       "bbox": [
         [
           1364,
@@ -974,8 +974,8 @@
     },
     {
       "index": 35,
-      "text": "SATOURA쉼표",
-      "confidence": 0.9987159432630652,
+      "text": "SATOURA,",
+      "confidence": 0.9993644785041937,
       "bbox": [
         [
           458,
@@ -997,8 +997,8 @@
     },
     {
       "index": 36,
-      "text": "vaalue쉼표",
-      "confidence": 0.7887941351851535,
+      "text": "vaalue,",
+      "confidence": 0.7627669250768762,
       "bbox": [
         [
           1299,
@@ -1089,8 +1089,8 @@
     },
     {
       "index": 40,
-      "text": "CO.쉼표",
-      "confidence": 0.9997129246506027,
+      "text": "CO.,",
+      "confidence": 0.9996649438133616,
       "bbox": [
         [
           1105,
@@ -1112,8 +1112,8 @@
     },
     {
       "index": 41,
-      "text": "NWTA쉼표",
-      "confidence": 0.9605639649011962,
+      "text": "NWTA,",
+      "confidence": 0.9562528322637318,
       "bbox": [
         [
           461,
@@ -1227,8 +1227,8 @@
     },
     {
       "index": 46,
-      "text": "TOKYO쉼표",
-      "confidence": 0.9769998106783491,
+      "text": "TOKYO,",
+      "confidence": 0.9732659872734616,
       "bbox": [
         [
           1157,
@@ -1319,8 +1319,8 @@
     },
     {
       "index": 50,
-      "text": "CO.쉼표",
-      "confidence": 0.9993123251487841,
+      "text": "CO.,",
+      "confidence": 0.999182231643367,
       "bbox": [
         [
           1100,
@@ -1365,8 +1365,8 @@
     },
     {
       "index": 52,
-      "text": "ONO쉼표",
-      "confidence": 0.9638099281234472,
+      "text": "ONO,",
+      "confidence": 0.955265721104789,
       "bbox": [
         [
           475,
@@ -1687,8 +1687,8 @@
     },
     {
       "index": 66,
-      "text": "CO.쉼표",
-      "confidence": 0.9954485724744532,
+      "text": "CO.,",
+      "confidence": 0.9961799770482994,
       "bbox": [
         [
           355,
@@ -1733,8 +1733,8 @@
     },
     {
       "index": 68,
-      "text": "CO.쉼표",
-      "confidence": 0.9979984006324214,
+      "text": "CO.,",
+      "confidence": 0.9977338082067808,
       "bbox": [
         [
           379,
@@ -1756,8 +1756,8 @@
     },
     {
       "index": 69,
-      "text": "23쉼표쉼표",
-      "confidence": 0.9631851839457073,
+      "text": "23,,",
+      "confidence": 0.9456324615328141,
       "bbox": [
         [
           271,
@@ -1848,8 +1848,8 @@
     },
     {
       "index": 73,
-      "text": "$1쉼표109.79",
-      "confidence": 0.9428743449158756,
+      "text": "$1,109.79",
+      "confidence": 0.9367844773488552,
       "bbox": [
         [
           425,
@@ -1871,8 +1871,8 @@
     },
     {
       "index": 74,
-      "text": "CHUNGAAAG-U쉼표쉼표쉼표",
-      "confidence": 0.7288886801225466,
+      "text": "CHUNGAAAG-U,,,",
+      "confidence": 0.6893192502906315,
       "bbox": [
         [
           390,
@@ -1917,8 +1917,8 @@
     },
     {
       "index": 76,
-      "text": "120-701쉼표쉼표",
-      "confidence": 0.7836874614129826,
+      "text": "120-701,,",
+      "confidence": 0.7427634134919314,
       "bbox": [
         [
           1272,
@@ -2400,8 +2400,8 @@
     },
     {
       "index": 97,
-      "text": "INTTAL쉼표",
-      "confidence": 0.7075775488646681,
+      "text": "INTTAL,",
+      "confidence": 0.6752148750285396,
       "bbox": [
         [
           182,
@@ -2837,8 +2837,8 @@
     },
     {
       "index": 116,
-      "text": "2616쉼표",
-      "confidence": 0.9992003782704757,
+      "text": "2616,",
+      "confidence": 0.999117531368814,
       "bbox": [
         [
           149,
@@ -2952,8 +2952,8 @@
     },
     {
       "index": 121,
-      "text": "OTTAAA쉼표",
-      "confidence": 0.862938834672748,
+      "text": "OTTAAA,",
+      "confidence": 0.8469288633295958,
       "bbox": [
         [
           84,
@@ -3021,8 +3021,8 @@
     },
     {
       "index": 124,
-      "text": "11327쉼표",
-      "confidence": 0.8168563383878453,
+      "text": "11327,",
+      "confidence": 0.8416004630483068,
       "bbox": [
         [
           187,
@@ -3412,8 +3412,8 @@
     },
     {
       "index": 141,
-      "text": "MMY쉼표NO--K",
-      "confidence": 0.6422735492869182,
+      "text": "MMY,NO--K",
+      "confidence": 0.708546104217023,
       "bbox": [
         [
           192,
@@ -3780,8 +3780,8 @@
     },
     {
       "index": 157,
-      "text": "CO.쉼표",
-      "confidence": 0.9630388167162685,
+      "text": "CO.,",
+      "confidence": 0.9684058441592096,
       "bbox": [
         [
           306,
@@ -3918,8 +3918,8 @@
     },
     {
       "index": 163,
-      "text": "JNOSSOOT쉼표쉼표S",
-      "confidence": 0.5714101777722024,
+      "text": "JNOSSOOT,,S",
+      "confidence": 0.5324709007750397,
       "bbox": [
         [
           182,
@@ -3964,8 +3964,8 @@
     },
     {
       "index": 165,
-      "text": "CRL쉼표",
-      "confidence": 0.1761539153324237,
+      "text": "CRL,",
+      "confidence": 0.18305576791592956,
       "bbox": [
         [
           232,
@@ -4124,7 +4124,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 28.11,
+  "elapsed_seconds": 35.947,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "bill_of_lading",
@@ -4168,9 +4168,9 @@
         "normalization_reason": "source field is missing"
       },
       "goods_description": {
-        "value": "DFFENSE | EDOCNNA-KU쉼표 | TEL)+94-854-537-6314 | KOREA | HEADDULNNNG--OO 850KG | HANGEE--NGG 297KG | PREPAID AND | RLSOURCES | GZARREE | DATED E.L",
-        "normalized": "DFFENSE | EDOCNNA-KU쉼표 | TEL)+94-854-537-6314 | KOREA | HEADDULNNNG--OO 850KG | HANGEE--NGG 297KG | PREPAID AND | RLSOURCES | GZARREE | DATED E.L",
-        "raw_text": "DFFENSE EDOCNNA-KU쉼표 TEL)+94-854-537-6314 KOREA 850KG HEADDULNNNG--OO 297KG HANGEE--NGG PREPAID AND RLSOURCES GZARREE E.L DATED",
+        "value": "DFFENSE | EDOCNNA-KU, | TEL)+94-854-537-6314 | KOREA | HEADDULNNNG--OO 850KG | HANGEE--NGG 297KG | PREPAID AND | RLSOURCES | GZARREE | DATED E.L",
+        "normalized": "DFFENSE | EDOCNNA-KU, | TEL)+94-854-537-6314 | KOREA | HEADDULNNNG--OO 850KG | HANGEE--NGG 297KG | PREPAID AND | RLSOURCES | GZARREE | DATED E.L",
+        "raw_text": "DFFENSE EDOCNNA-KU, TEL)+94-854-537-6314 KOREA 850KG HEADDULNNNG--OO 297KG HANGEE--NGG PREPAID AND RLSOURCES GZARREE E.L DATED",
         "bbox": [
           [
             455,

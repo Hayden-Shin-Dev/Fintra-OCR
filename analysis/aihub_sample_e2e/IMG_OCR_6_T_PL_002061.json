@@ -7,11 +7,11 @@
     "gt_boxes": 96,
     "predicted_boxes": 100,
     "geometric_recall": 1.0,
-    "exact_text_recall": 0.6979166666666666,
-    "segmentation_aware_recall": 0.71875,
-    "similarity_90_recall": 0.7395833333333334,
-    "mean_similarity": 0.9101043480155322,
-    "mean_cer": 0.09854744579251158
+    "exact_text_recall": 0.8020833333333334,
+    "segmentation_aware_recall": 0.8229166666666666,
+    "similarity_90_recall": 0.8541666666666666,
+    "mean_similarity": 0.9468240519227361,
+    "mean_cer": 0.054188679558745345
   },
   "fields": {
     "invoice_no": {
@@ -127,8 +127,8 @@
   "ocr_predictions": [
     {
       "index": 0,
-      "text": "83639쉼표",
-      "confidence": 0.9994183339531505,
+      "text": "83639,",
+      "confidence": 0.9995096204403825,
       "bbox": [
         [
           570,
@@ -173,8 +173,8 @@
     },
     {
       "index": 2,
-      "text": "street쉼표",
-      "confidence": 0.9761812365484329,
+      "text": "street,",
+      "confidence": 0.9728904953887408,
       "bbox": [
         [
           1060,
@@ -196,8 +196,8 @@
     },
     {
       "index": 3,
-      "text": "10455쉼표",
-      "confidence": 0.9995866923572391,
+      "text": "10455,",
+      "confidence": 0.9995191151719367,
       "bbox": [
         [
           622,
@@ -219,8 +219,8 @@
     },
     {
       "index": 4,
-      "text": "ADEN쉼표",
-      "confidence": 0.9644985464363052,
+      "text": "ADEN,",
+      "confidence": 0.9923356067781274,
       "bbox": [
         [
           697,
@@ -702,8 +702,8 @@
     },
     {
       "index": 25,
-      "text": "SINGATOK쉼표",
-      "confidence": 0.949058989484121,
+      "text": "SINGATOK,",
+      "confidence": 0.9501248574910164,
       "bbox": [
         [
           1133,
@@ -771,8 +771,8 @@
     },
     {
       "index": 28,
-      "text": "Pascagoua쉼표쉼표",
-      "confidence": 0.8667819871771093,
+      "text": "Pascagoua,,",
+      "confidence": 0.8448145652954536,
       "bbox": [
         [
           1148,
@@ -1162,8 +1162,8 @@
     },
     {
       "index": 45,
-      "text": "Co.쉼표",
-      "confidence": 0.9995507437698483,
+      "text": "Co.,",
+      "confidence": 0.9999235863526453,
       "bbox": [
         [
           1073,
@@ -1208,8 +1208,8 @@
     },
     {
       "index": 47,
-      "text": "Kangso-ku쉼표",
-      "confidence": 0.9907396224897081,
+      "text": "Kangso-ku,",
+      "confidence": 0.9902726037275174,
       "bbox": [
         [
           406,
@@ -1277,8 +1277,8 @@
     },
     {
       "index": 50,
-      "text": "Co.쉼표",
-      "confidence": 0.9999055541340045,
+      "text": "Co.,",
+      "confidence": 0.9999689158750676,
       "bbox": [
         [
           363,
@@ -1461,8 +1461,8 @@
     },
     {
       "index": 58,
-      "text": "32704쉼표",
-      "confidence": 0.9971618449889786,
+      "text": "32704,",
+      "confidence": 0.9967147541084448,
       "bbox": [
         [
           1343,
@@ -1484,8 +1484,8 @@
     },
     {
       "index": 59,
-      "text": "Co.쉼표",
-      "confidence": 0.9997145931902266,
+      "text": "Co.,",
+      "confidence": 0.9998358608399551,
       "bbox": [
         [
           1178,
@@ -2036,8 +2036,8 @@
     },
     {
       "index": 83,
-      "text": "Co.쉼표",
-      "confidence": 0.9986613260887987,
+      "text": "Co.,",
+      "confidence": 0.9989849698080885,
       "bbox": [
         [
           283,
@@ -2426,7 +2426,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 21.368,
+  "elapsed_seconds": 56.589,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "packing_list",

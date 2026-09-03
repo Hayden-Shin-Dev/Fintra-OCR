@@ -7,11 +7,11 @@
     "gt_boxes": 124,
     "predicted_boxes": 192,
     "geometric_recall": 0.9838709677419355,
-    "exact_text_recall": 0.4112903225806452,
-    "segmentation_aware_recall": 0.41935483870967744,
-    "similarity_90_recall": 0.4274193548387097,
-    "mean_similarity": 0.7832748709977063,
-    "mean_cer": 0.2549199256223874
+    "exact_text_recall": 0.532258064516129,
+    "segmentation_aware_recall": 0.5403225806451613,
+    "similarity_90_recall": 0.5483870967741935,
+    "mean_similarity": 0.8410321674646802,
+    "mean_cer": 0.17188101113186002
   },
   "fields": {
     "bl_no": {
@@ -215,8 +215,8 @@
     },
     {
       "index": 2,
-      "text": "COUNTY쉼표",
-      "confidence": 0.8913418090399149,
+      "text": "COUNTY,",
+      "confidence": 0.8775129169809599,
       "bbox": [
         [
           1381,
@@ -261,8 +261,8 @@
     },
     {
       "index": 4,
-      "text": "HATNAN쉼표",
-      "confidence": 0.9413323496488007,
+      "text": "HATNAN,",
+      "confidence": 0.9332590720934634,
       "bbox": [
         [
           846,
@@ -353,8 +353,8 @@
     },
     {
       "index": 8,
-      "text": "406-3쉼표",
-      "confidence": 0.8991528479453661,
+      "text": "406-3,",
+      "confidence": 0.8916974863610377,
       "bbox": [
         [
           582,
@@ -376,8 +376,8 @@
     },
     {
       "index": 9,
-      "text": "ASSEMBLY쉼표",
-      "confidence": 0.9948574197702047,
+      "text": "ASSEMBLY,",
+      "confidence": 0.994914198416725,
       "bbox": [
         [
           748,
@@ -629,8 +629,8 @@
     },
     {
       "index": 20,
-      "text": "1228쉼표",
-      "confidence": 0.9417976787778195,
+      "text": "1228,",
+      "confidence": 0.9306410358455661,
       "bbox": [
         [
           466,
@@ -744,8 +744,8 @@
     },
     {
       "index": 25,
-      "text": "CO.쉼표",
-      "confidence": 0.9871704969870481,
+      "text": "CO.,",
+      "confidence": 0.9868296408727177,
       "bbox": [
         [
           1111,
@@ -859,8 +859,8 @@
     },
     {
       "index": 30,
-      "text": "SET쉼표",
-      "confidence": 0.9885444539045792,
+      "text": "SET,",
+      "confidence": 0.986844084873864,
       "bbox": [
         [
           688,
@@ -1089,8 +1089,8 @@
     },
     {
       "index": 40,
-      "text": "SHISHIMI쉼표",
-      "confidence": 0.8980772702586773,
+      "text": "SHISHIMI,",
+      "confidence": 0.9015720194903156,
       "bbox": [
         [
           466,
@@ -1135,8 +1135,8 @@
     },
     {
       "index": 42,
-      "text": "SHAANAI쉼표",
-      "confidence": 0.8727148218103175,
+      "text": "SHAANAI,",
+      "confidence": 0.8586092220862691,
       "bbox": [
         [
           378,
@@ -1181,8 +1181,8 @@
     },
     {
       "index": 44,
-      "text": "CO.쉼표",
-      "confidence": 0.9595371756075923,
+      "text": "CO.,",
+      "confidence": 0.9733860886892565,
       "bbox": [
         [
           479,
@@ -1204,8 +1204,8 @@
     },
     {
       "index": 45,
-      "text": "223쉼표쉼표",
-      "confidence": 0.8462973809597363,
+      "text": "223,,",
+      "confidence": 0.7917428098292221,
       "bbox": [
         [
           932,
@@ -1227,8 +1227,8 @@
     },
     {
       "index": 46,
-      "text": "KOWA쉼표",
-      "confidence": 0.9554335293769717,
+      "text": "KOWA,",
+      "confidence": 0.9548486396840548,
       "bbox": [
         [
           465,
@@ -1342,8 +1342,8 @@
     },
     {
       "index": 51,
-      "text": "2쉼표",
-      "confidence": 0.7645330555177718,
+      "text": "2,",
+      "confidence": 0.6768815007004595,
       "bbox": [
         [
           425,
@@ -1388,8 +1388,8 @@
     },
     {
       "index": 53,
-      "text": "VILLAGES쉼표",
-      "confidence": 0.9399210495858101,
+      "text": "VILLAGES,",
+      "confidence": 0.936489901294716,
       "bbox": [
         [
           1146,
@@ -1503,8 +1503,8 @@
     },
     {
       "index": 58,
-      "text": "9쉼표",
-      "confidence": 0.7209019664679474,
+      "text": "9,",
+      "confidence": 0.6212363143841927,
       "bbox": [
         [
           427,
@@ -1526,8 +1526,8 @@
     },
     {
       "index": 59,
-      "text": "CO.쉼표",
-      "confidence": 0.9887274544597262,
+      "text": "CO.,",
+      "confidence": 0.9946826918858257,
       "bbox": [
         [
           492,
@@ -1595,8 +1595,8 @@
     },
     {
       "index": 62,
-      "text": "DANP쉼표",
-      "confidence": 0.7729367347196634,
+      "text": "DANP,",
+      "confidence": 0.827170977098568,
       "bbox": [
         [
           467,
@@ -1733,8 +1733,8 @@
     },
     {
       "index": 68,
-      "text": "CO.쉼표",
-      "confidence": 0.9767371682046393,
+      "text": "CO.,",
+      "confidence": 0.9730653708706309,
       "bbox": [
         [
           1175,
@@ -1779,8 +1779,8 @@
     },
     {
       "index": 70,
-      "text": "DJSTTRCT쉼표",
-      "confidence": 0.7848137815054265,
+      "text": "DJSTTRCT,",
+      "confidence": 0.7771993817209369,
       "bbox": [
         [
           413,
@@ -1848,8 +1848,8 @@
     },
     {
       "index": 73,
-      "text": "D1쉼표6816",
-      "confidence": 0.9046266729733612,
+      "text": "D1,6816",
+      "confidence": 0.891786256773961,
       "bbox": [
         [
           104,
@@ -1940,8 +1940,8 @@
     },
     {
       "index": 77,
-      "text": "COUNTY쉼표",
-      "confidence": 0.9333260280321058,
+      "text": "COUNTY,",
+      "confidence": 0.9248682106292722,
       "bbox": [
         [
           245,
@@ -2262,8 +2262,8 @@
     },
     {
       "index": 91,
-      "text": "CO.쉼표",
-      "confidence": 0.9463965809693122,
+      "text": "CO.,",
+      "confidence": 0.9533880649184141,
       "bbox": [
         [
           432,
@@ -2377,8 +2377,8 @@
     },
     {
       "index": 96,
-      "text": "yalue쉼표",
-      "confidence": 0.9543851284369034,
+      "text": "yalue,",
+      "confidence": 0.9473989358937563,
       "bbox": [
         [
           1310,
@@ -2400,8 +2400,8 @@
     },
     {
       "index": 97,
-      "text": "CO.쉼표",
-      "confidence": 0.91093777517151,
+      "text": "CO.,",
+      "confidence": 0.899484251968071,
       "bbox": [
         [
           1107,
@@ -2446,8 +2446,8 @@
     },
     {
       "index": 99,
-      "text": "$2쉼표611.88",
-      "confidence": 0.883028897566469,
+      "text": "$2,611.88",
+      "confidence": 0.917286420805049,
       "bbox": [
         [
           433,
@@ -2584,8 +2584,8 @@
     },
     {
       "index": 105,
-      "text": "T1LJS--K쉼표쉼표",
-      "confidence": 0.7775990117444507,
+      "text": "T1LJS--K,,",
+      "confidence": 0.7578967249173145,
       "bbox": [
         [
           317,
@@ -2745,8 +2745,8 @@
     },
     {
       "index": 112,
-      "text": "WANDRE쉼표",
-      "confidence": 0.9690658544193725,
+      "text": "WANDRE,",
+      "confidence": 0.9672905934144895,
       "bbox": [
         [
           91,
@@ -3021,8 +3021,8 @@
     },
     {
       "index": 124,
-      "text": "KOPRA쉼표",
-      "confidence": 0.7030036396071996,
+      "text": "KOPRA,",
+      "confidence": 0.6630146840928729,
       "bbox": [
         [
           235,
@@ -3550,8 +3550,8 @@
     },
     {
       "index": 147,
-      "text": "779쉼표",
-      "confidence": 0.6299388965405962,
+      "text": "779,",
+      "confidence": 0.5936208073379514,
       "bbox": [
         [
           182,
@@ -3918,8 +3918,8 @@
     },
     {
       "index": 163,
-      "text": "5H쉼표NN",
-      "confidence": 0.6893084035059028,
+      "text": "5H,NN",
+      "confidence": 0.6417517796322816,
       "bbox": [
         [
           182,
@@ -4079,8 +4079,8 @@
     },
     {
       "index": 170,
-      "text": "RerEn쉼표Dy",
-      "confidence": 0.7935270414802641,
+      "text": "RerEn,Dy",
+      "confidence": 0.7721916714244854,
       "bbox": [
         [
           1460,
@@ -4148,8 +4148,8 @@
     },
     {
       "index": 173,
-      "text": "changed쉼표",
-      "confidence": 0.9374053568547623,
+      "text": "changed,",
+      "confidence": 0.9435942074359885,
       "bbox": [
         [
           1243,
@@ -4584,7 +4584,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 31.223,
+  "elapsed_seconds": 31.682,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "bill_of_lading",

@@ -7,11 +7,11 @@
     "gt_boxes": 79,
     "predicted_boxes": 89,
     "geometric_recall": 1.0,
-    "exact_text_recall": 0.6708860759493671,
-    "segmentation_aware_recall": 0.6708860759493671,
-    "similarity_90_recall": 0.6835443037974683,
-    "mean_similarity": 0.8977911624980246,
-    "mean_cer": 0.17071291096940663
+    "exact_text_recall": 0.8227848101265823,
+    "segmentation_aware_recall": 0.8227848101265823,
+    "similarity_90_recall": 0.8481012658227848,
+    "mean_similarity": 0.94698226675242,
+    "mean_cer": 0.11173847064919683
   },
   "fields": {
     "invoice_no": {
@@ -28,8 +28,8 @@
     },
     "buyer": {
       "status": "ambiguous",
-      "value": "ChUgai Pharmaccechcca Co.쉼표 Ltd.",
-      "normalized": "ChUgai Pharmaccechcca Co.쉼표 Ltd.",
+      "value": "ChUgai Pharmaccechcca Co., Ltd.",
+      "normalized": "ChUgai Pharmaccechcca Co., Ltd.",
       "confidence": 0.6426040121333929
     },
     "amount": {
@@ -115,7 +115,7 @@
       "field_name": "buyer",
       "actual_status": "ambiguous",
       "oracle_status": "ambiguous",
-      "actual_value": "ChUgai Pharmaccechcca Co.쉼표 Ltd.",
+      "actual_value": "ChUgai Pharmaccechcca Co., Ltd.",
       "oracle_value": "Chugai Pharmaceutical Co., Ltd.",
       "classification": "e2e_matches_oracle",
       "agreement_score": 0.8571428571428571
@@ -192,8 +192,8 @@
     },
     {
       "index": 1,
-      "text": "District쉼표",
-      "confidence": 0.9854715569504895,
+      "text": "District,",
+      "confidence": 0.9862291428835912,
       "bbox": [
         [
           447,
@@ -261,8 +261,8 @@
     },
     {
       "index": 4,
-      "text": "SpaCer쉼표",
-      "confidence": 0.9483162871277859,
+      "text": "SpaCer,",
+      "confidence": 0.9651386966491217,
       "bbox": [
         [
           332,
@@ -583,8 +583,8 @@
     },
     {
       "index": 18,
-      "text": "62019쉼표",
-      "confidence": 0.9999019395242784,
+      "text": "62019,",
+      "confidence": 0.9998895106981314,
       "bbox": [
         [
           679,
@@ -698,8 +698,8 @@
     },
     {
       "index": 23,
-      "text": "ASSY-WHEE쉼표",
-      "confidence": 0.9195155539011532,
+      "text": "ASSY-WHEE,",
+      "confidence": 0.915446324959933,
       "bbox": [
         [
           443,
@@ -767,8 +767,8 @@
     },
     {
       "index": 26,
-      "text": "Co.쉼표",
-      "confidence": 0.9999555100950532,
+      "text": "Co.,",
+      "confidence": 0.999964742818884,
       "bbox": [
         [
           442,
@@ -951,8 +951,8 @@
     },
     {
       "index": 34,
-      "text": "City쉼표",
-      "confidence": 0.9927581604225053,
+      "text": "City,",
+      "confidence": 0.9922505133615473,
       "bbox": [
         [
           647,
@@ -1089,8 +1089,8 @@
     },
     {
       "index": 40,
-      "text": "$5쉼표107.56",
-      "confidence": 0.9978927437636933,
+      "text": "$5,107.56",
+      "confidence": 0.9976639262443545,
       "bbox": [
         [
           1173,
@@ -1158,8 +1158,8 @@
     },
     {
       "index": 43,
-      "text": "TARIF쉼표",
-      "confidence": 0.8414159701273558,
+      "text": "TARIF,",
+      "confidence": 0.8323476778755071,
       "bbox": [
         [
           144,
@@ -1342,8 +1342,8 @@
     },
     {
       "index": 51,
-      "text": "Co.쉼표",
-      "confidence": 0.9997869185940421,
+      "text": "Co.,",
+      "confidence": 0.9997919863517893,
       "bbox": [
         [
           1060,
@@ -1411,8 +1411,8 @@
     },
     {
       "index": 54,
-      "text": "Anhui쉼표",
-      "confidence": 0.9787262026058188,
+      "text": "Anhui,",
+      "confidence": 0.988944977059666,
       "bbox": [
         [
           159,
@@ -1480,8 +1480,8 @@
     },
     {
       "index": 57,
-      "text": "373쉼표",
-      "confidence": 0.9428460698706114,
+      "text": "373,",
+      "confidence": 0.9293844859027811,
       "bbox": [
         [
           210,
@@ -1503,8 +1503,8 @@
     },
     {
       "index": 58,
-      "text": "Co.쉼표",
-      "confidence": 0.9964866333741005,
+      "text": "Co.,",
+      "confidence": 0.9998615411716469,
       "bbox": [
         [
           325,
@@ -1618,8 +1618,8 @@
     },
     {
       "index": 63,
-      "text": "Tobong-dong쉼표",
-      "confidence": 0.935626017239648,
+      "text": "Tobong-dong,",
+      "confidence": 0.930821277043977,
       "bbox": [
         [
           235,
@@ -1641,8 +1641,8 @@
     },
     {
       "index": 64,
-      "text": "Voy쉼표",
-      "confidence": 0.9819707592047267,
+      "text": "Voy,",
+      "confidence": 0.9776035769974877,
       "bbox": [
         [
           237,
@@ -1802,8 +1802,8 @@
     },
     {
       "index": 71,
-      "text": "I92쉼표589-22994444",
-      "confidence": 0.5942474444979925,
+      "text": "I92,589-22994444",
+      "confidence": 0.5851291736175274,
       "bbox": [
         [
           211,
@@ -1940,8 +1940,8 @@
     },
     {
       "index": 77,
-      "text": "91-6쉼표",
-      "confidence": 0.9825797040253706,
+      "text": "91-6,",
+      "confidence": 0.9793238377461331,
       "bbox": [
         [
           164,
@@ -2101,8 +2101,8 @@
     },
     {
       "index": 84,
-      "text": "96쉼표",
-      "confidence": 0.7662117019299243,
+      "text": "96,",
+      "confidence": 0.701157736666319,
       "bbox": [
         [
           959,
@@ -2193,8 +2193,8 @@
     },
     {
       "index": 88,
-      "text": "ss0/W쉼표yy",
-      "confidence": 0.36751606573084133,
+      "text": "ss0/W,yy",
+      "confidence": 0.3449358783754875,
       "bbox": [
         [
           181,
@@ -2215,7 +2215,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 19.287,
+  "elapsed_seconds": 21.176,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "commercial_invoice",
@@ -2247,9 +2247,9 @@
         "normalization_reason": "source field is missing"
       },
       "buyer": {
-        "value": "ChUgai Pharmaccechcca Co.쉼표 Ltd.",
-        "normalized": "ChUgai Pharmaccechcca Co.쉼표 Ltd.",
-        "raw_text": "ChUgai Ltd. Pharmaccechcca Co.쉼표",
+        "value": "ChUgai Pharmaccechcca Co., Ltd.",
+        "normalized": "ChUgai Pharmaccechcca Co., Ltd.",
+        "raw_text": "ChUgai Ltd. Pharmaccechcca Co.,",
         "bbox": [
           [
             159,

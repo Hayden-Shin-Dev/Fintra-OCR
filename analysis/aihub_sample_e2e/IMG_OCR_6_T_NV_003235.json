@@ -7,11 +7,11 @@
     "gt_boxes": 70,
     "predicted_boxes": 79,
     "geometric_recall": 0.9,
-    "exact_text_recall": 0.38571428571428573,
-    "segmentation_aware_recall": 0.4,
-    "similarity_90_recall": 0.42857142857142855,
-    "mean_similarity": 0.6830136926565498,
-    "mean_cer": 0.46627959342245057
+    "exact_text_recall": 0.4142857142857143,
+    "segmentation_aware_recall": 0.42857142857142855,
+    "similarity_90_recall": 0.45714285714285713,
+    "mean_similarity": 0.698546572475144,
+    "mean_cer": 0.4475370661084947
   },
   "fields": {
     "invoice_no": {
@@ -252,8 +252,8 @@
     },
     {
       "index": 3,
-      "text": "1454쉼표",
-      "confidence": 0.9927182813969149,
+      "text": "1454,",
+      "confidence": 0.991412931815962,
       "bbox": [
         [
           513,
@@ -321,8 +321,8 @@
     },
     {
       "index": 6,
-      "text": "WERUTK쉼표",
-      "confidence": 0.7237780245669249,
+      "text": "WERUTK,",
+      "confidence": 0.6916483095660877,
       "bbox": [
         [
           521,
@@ -528,8 +528,8 @@
     },
     {
       "index": 15,
-      "text": "Yangju-Kun쉼표",
-      "confidence": 0.9646554922847018,
+      "text": "Yangju-Kun,",
+      "confidence": 0.9626455454900081,
       "bbox": [
         [
           536,
@@ -643,8 +643,8 @@
     },
     {
       "index": 20,
-      "text": "4770O쉼표",
-      "confidence": 0.8920741420511823,
+      "text": "4770O,",
+      "confidence": 0.8752723657060442,
       "bbox": [
         [
           547,
@@ -666,8 +666,8 @@
     },
     {
       "index": 21,
-      "text": "Mayfeel쉼표",
-      "confidence": 0.7397688108363074,
+      "text": "Mayfeel,",
+      "confidence": 0.7305992734119825,
       "bbox": [
         [
           390,
@@ -1999,7 +1999,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 27.305,
+  "elapsed_seconds": 21.321,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "commercial_invoice",

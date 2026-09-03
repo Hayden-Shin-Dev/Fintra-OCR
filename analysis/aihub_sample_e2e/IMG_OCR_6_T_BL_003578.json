@@ -7,11 +7,11 @@
     "gt_boxes": 137,
     "predicted_boxes": 129,
     "geometric_recall": 0.8759124087591241,
-    "exact_text_recall": 0.39416058394160586,
-    "segmentation_aware_recall": 0.40145985401459855,
-    "similarity_90_recall": 0.40875912408759124,
-    "mean_similarity": 0.6170857862141675,
-    "mean_cer": 0.5627586930506638
+    "exact_text_recall": 0.48905109489051096,
+    "segmentation_aware_recall": 0.5036496350364964,
+    "similarity_90_recall": 0.5036496350364964,
+    "mean_similarity": 0.6586873922318319,
+    "mean_cer": 0.4919354975924319
   },
   "fields": {
     "bl_no": {
@@ -28,9 +28,9 @@
     },
     "consignee": {
       "status": "found",
-      "value": "CO.쉼표 LTD.",
-      "normalized": "CO.쉼표 LTD.",
-      "confidence": 0.8023283471390268
+      "value": "CO., LTD.",
+      "normalized": "CO., LTD.",
+      "confidence": 0.8962110832027267
     },
     "goods_description": {
       "status": "missing",
@@ -115,7 +115,7 @@
       "field_name": "consignee",
       "actual_status": "found",
       "oracle_status": "found",
-      "actual_value": "CO.쉼표 LTD.",
+      "actual_value": "CO., LTD.",
       "oracle_value": "QHOENIX TELECOM CO., LTD.",
       "classification": "ocr_or_extractor_value_mismatch",
       "agreement_score": 0.42857142857142855
@@ -169,8 +169,8 @@
   "ocr_predictions": [
     {
       "index": 0,
-      "text": "DAHAB쉼표",
-      "confidence": 0.9258627022216906,
+      "text": "DAHAB,",
+      "confidence": 0.9269442699037949,
       "bbox": [
         [
           1135,
@@ -192,8 +192,8 @@
     },
     {
       "index": 1,
-      "text": "BUSUM쉼표쉼표",
-      "confidence": 0.9409314607850623,
+      "text": "BUSUM,,",
+      "confidence": 0.924761402426558,
       "bbox": [
         [
           509,
@@ -491,8 +491,8 @@
     },
     {
       "index": 14,
-      "text": "SHAFT쉼표",
-      "confidence": 0.9605130280179035,
+      "text": "SHAFT,",
+      "confidence": 0.9666719260472956,
       "bbox": [
         [
           754,
@@ -675,8 +675,8 @@
     },
     {
       "index": 22,
-      "text": "MAA)U쉼표",
-      "confidence": 0.6696456751144098,
+      "text": "MAA)U,",
+      "confidence": 0.6597786704808949,
       "bbox": [
         [
           278,
@@ -790,8 +790,8 @@
     },
     {
       "index": 27,
-      "text": "TEPRE쉼표",
-      "confidence": 0.8414483942140283,
+      "text": "TEPRE,",
+      "confidence": 0.8357487982482125,
       "bbox": [
         [
           121,
@@ -1043,8 +1043,8 @@
     },
     {
       "index": 38,
-      "text": "SHAANA쉼표쉼표",
-      "confidence": 0.8542938344273835,
+      "text": "SHAANA,,",
+      "confidence": 0.8215954520232392,
       "bbox": [
         [
           1131,
@@ -1066,8 +1066,8 @@
     },
     {
       "index": 39,
-      "text": "1252쉼표",
-      "confidence": 0.9699163747419927,
+      "text": "1252,",
+      "confidence": 0.9647215884401493,
       "bbox": [
         [
           527,
@@ -1112,8 +1112,8 @@
     },
     {
       "index": 41,
-      "text": "300쉼표",
-      "confidence": 0.9235692353149219,
+      "text": "300,",
+      "confidence": 0.9061905087401021,
       "bbox": [
         [
           985,
@@ -1181,8 +1181,8 @@
     },
     {
       "index": 44,
-      "text": "COUNTY쉼표",
-      "confidence": 0.9826214004653854,
+      "text": "COUNTY,",
+      "confidence": 0.9807657935370536,
       "bbox": [
         [
           1005,
@@ -1227,8 +1227,8 @@
     },
     {
       "index": 46,
-      "text": "SHAANXI쉼표",
-      "confidence": 0.9089877771542207,
+      "text": "SHAANXI,",
+      "confidence": 0.8982486615506902,
       "bbox": [
         [
           1138,
@@ -1342,8 +1342,8 @@
     },
     {
       "index": 51,
-      "text": "COUNTY쉼표",
-      "confidence": 0.9957216875449186,
+      "text": "COUNTY,",
+      "confidence": 0.9952053484026095,
       "bbox": [
         [
           997,
@@ -1388,8 +1388,8 @@
     },
     {
       "index": 53,
-      "text": "BANNER쉼표",
-      "confidence": 0.9873442206655345,
+      "text": "BANNER,",
+      "confidence": 0.9896972233577253,
       "bbox": [
         [
           1202,
@@ -1549,8 +1549,8 @@
     },
     {
       "index": 60,
-      "text": "WINNIE쉼표쉼표",
-      "confidence": 0.8197784643736328,
+      "text": "WINNIE,,",
+      "confidence": 0.8133022902807806,
       "bbox": [
         [
           396,
@@ -1618,8 +1618,8 @@
     },
     {
       "index": 63,
-      "text": "9EA쉼표",
-      "confidence": 0.7786421119748923,
+      "text": "9EA,",
+      "confidence": 0.7316598266750916,
       "bbox": [
         [
           348,
@@ -1641,8 +1641,8 @@
     },
     {
       "index": 64,
-      "text": "CO.쉼표",
-      "confidence": 0.9716710564679583,
+      "text": "CO.,",
+      "confidence": 0.968090873165104,
       "bbox": [
         [
           504,
@@ -1802,8 +1802,8 @@
     },
     {
       "index": 71,
-      "text": "CO.쉼표",
-      "confidence": 0.9977979293809832,
+      "text": "CO.,",
+      "confidence": 0.9984299687413601,
       "bbox": [
         [
           1301,
@@ -1940,8 +1940,8 @@
     },
     {
       "index": 77,
-      "text": "a0reed쉼표",
-      "confidence": 0.8786918261573989,
+      "text": "a0reed,",
+      "confidence": 0.8967748172722968,
       "bbox": [
         [
           1301,
@@ -1963,8 +1963,8 @@
     },
     {
       "index": 78,
-      "text": "VILLAGES쉼표",
-      "confidence": 0.8665688467638014,
+      "text": "VILLAGES,",
+      "confidence": 0.8531879599733767,
       "bbox": [
         [
           1147,
@@ -2055,8 +2055,8 @@
     },
     {
       "index": 82,
-      "text": "$6쉼표623.30",
-      "confidence": 0.8803772945467334,
+      "text": "$6,623.30",
+      "confidence": 0.8692466783395121,
       "bbox": [
         [
           447,
@@ -2745,8 +2745,8 @@
     },
     {
       "index": 112,
-      "text": "1125쉼표쉼표",
-      "confidence": 0.9756783846116921,
+      "text": "1125,,",
+      "confidence": 0.9678139758160081,
       "bbox": [
         [
           225,
@@ -2975,8 +2975,8 @@
     },
     {
       "index": 122,
-      "text": "CO.쉼표",
-      "confidence": 0.8023283471390268,
+      "text": "CO.,",
+      "confidence": 0.8962110832027267,
       "bbox": [
         [
           402,
@@ -2998,8 +2998,8 @@
     },
     {
       "index": 123,
-      "text": "665쉼표001C",
-      "confidence": 0.7710320151882565,
+      "text": "665,001C",
+      "confidence": 0.7474250068494825,
       "bbox": [
         [
           1333,
@@ -3135,7 +3135,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 26.99,
+  "elapsed_seconds": 34.788,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "bill_of_lading",
@@ -3167,9 +3167,9 @@
         "normalization_reason": "source field is missing"
       },
       "consignee": {
-        "value": "CO.쉼표 LTD.",
-        "normalized": "CO.쉼표 LTD.",
-        "raw_text": "CO.쉼표 LTD.",
+        "value": "CO., LTD.",
+        "normalized": "CO., LTD.",
+        "raw_text": "CO., LTD.",
         "bbox": [
           [
             402,
@@ -3188,7 +3188,7 @@
             424
           ]
         ],
-        "confidence": 0.8023283471390268,
+        "confidence": 0.8962110832027267,
         "status": "found",
         "source_indices": [
           122,

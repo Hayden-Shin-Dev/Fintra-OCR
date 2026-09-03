@@ -7,11 +7,11 @@
     "gt_boxes": 105,
     "predicted_boxes": 168,
     "geometric_recall": 1.0,
-    "exact_text_recall": 0.6952380952380952,
-    "segmentation_aware_recall": 0.6952380952380952,
-    "similarity_90_recall": 0.7142857142857143,
-    "mean_similarity": 0.9002292152292153,
-    "mean_cer": 0.14206005634577062
+    "exact_text_recall": 0.7428571428571429,
+    "segmentation_aware_recall": 0.7428571428571429,
+    "similarity_90_recall": 0.7619047619047619,
+    "mean_similarity": 0.9246217274788704,
+    "mean_cer": 0.1122490208204494
   },
   "fields": {
     "invoice_no": {
@@ -34,19 +34,22 @@
     },
     "amount": {
       "status": "found",
-      "value": "8",
+      "value": "$94,810.87",
       "normalized": {
-        "value": 8.0,
-        "symbol": null,
+        "value": 94810.87,
+        "symbol": "$",
         "currency_code": null
       },
-      "confidence": 0.9674732076772671
+      "confidence": 0.9973523348491297
     },
     "currency": {
-      "status": "missing",
-      "value": null,
-      "normalized": null,
-      "confidence": 0.0
+      "status": "ambiguous",
+      "value": "$",
+      "normalized": {
+        "code": null,
+        "symbol": "$"
+      },
+      "confidence": 0.9973523348491297
     },
     "goods_description": {
       "status": "found",
@@ -118,8 +121,8 @@
       "actual_status": "found",
       "oracle_status": "found",
       "actual_value": {
-        "value": 8.0,
-        "symbol": null,
+        "value": 94810.87,
+        "symbol": "$",
         "currency_code": null
       },
       "oracle_value": {
@@ -127,8 +130,8 @@
         "symbol": "$",
         "currency_code": null
       },
-      "classification": "ocr_or_extractor_value_mismatch",
-      "agreement_score": 0.0
+      "classification": "e2e_matches_oracle",
+      "agreement_score": 1.0
     },
     "buyer": {
       "field_name": "buyer",
@@ -141,15 +144,18 @@
     },
     "currency": {
       "field_name": "currency",
-      "actual_status": "missing",
+      "actual_status": "ambiguous",
       "oracle_status": "ambiguous",
-      "actual_value": null,
+      "actual_value": {
+        "code": null,
+        "symbol": "$"
+      },
       "oracle_value": {
         "code": null,
         "symbol": "$"
       },
-      "classification": "extractor_instability_or_ambiguity",
-      "agreement_score": 0.0
+      "classification": "e2e_matches_oracle",
+      "agreement_score": 1.0
     },
     "date": {
       "field_name": "date",
@@ -444,8 +450,8 @@
     },
     {
       "index": 11,
-      "text": "AlSSIuoaihh쉼표",
-      "confidence": 0.6713385881014122,
+      "text": "AlSSIuoaihh,",
+      "confidence": 0.652344705223953,
       "bbox": [
         [
           373,
@@ -490,8 +496,8 @@
     },
     {
       "index": 13,
-      "text": "63519쉼표",
-      "confidence": 0.9966352104852504,
+      "text": "63519,",
+      "confidence": 0.9961574889767528,
       "bbox": [
         [
           286,
@@ -559,8 +565,8 @@
     },
     {
       "index": 16,
-      "text": "Stroke쉼표",
-      "confidence": 0.8333011668069833,
+      "text": "Stroke,",
+      "confidence": 0.8522854746182962,
       "bbox": [
         [
           237,
@@ -697,8 +703,8 @@
     },
     {
       "index": 22,
-      "text": "3oa1t쉼표쉼표",
-      "confidence": 0.7900451233071194,
+      "text": "3oa1t,,",
+      "confidence": 0.7388397020650108,
       "bbox": [
         [
           527,
@@ -858,8 +864,8 @@
     },
     {
       "index": 29,
-      "text": "porkmorc쉼표",
-      "confidence": 0.7381038368284872,
+      "text": "porkmorc,",
+      "confidence": 0.7324592260044912,
       "bbox": [
         [
           1015,
@@ -1571,8 +1577,8 @@
     },
     {
       "index": 60,
-      "text": "SANU쉼표쉼표",
-      "confidence": 0.8532345053346865,
+      "text": "SANU,,",
+      "confidence": 0.815032075384307,
       "bbox": [
         [
           48,
@@ -1755,8 +1761,8 @@
     },
     {
       "index": 68,
-      "text": "IRAGO쉼표",
-      "confidence": 0.9659241519469038,
+      "text": "IRAGO,",
+      "confidence": 0.9629830491020681,
       "bbox": [
         [
           50,
@@ -1778,8 +1784,8 @@
     },
     {
       "index": 69,
-      "text": "Road쉼표",
-      "confidence": 0.9862616242443022,
+      "text": "Road,",
+      "confidence": 0.9924796347563912,
       "bbox": [
         [
           214,
@@ -2008,8 +2014,8 @@
     },
     {
       "index": 79,
-      "text": "$94쉼표810.87",
-      "confidence": 0.9817034725331973,
+      "text": "$94,810.87",
+      "confidence": 0.9973523348491297,
       "bbox": [
         [
           938,
@@ -2376,8 +2382,8 @@
     },
     {
       "index": 95,
-      "text": "$9쉼표406..2",
-      "confidence": 0.9726794245867256,
+      "text": "$9,406..2",
+      "confidence": 0.9697884878300108,
       "bbox": [
         [
           1438,
@@ -2560,8 +2566,8 @@
     },
     {
       "index": 103,
-      "text": "PACASAAO쉼표",
-      "confidence": 0.8547783089231545,
+      "text": "PACASAAO,",
+      "confidence": 0.8459735846119357,
       "bbox": [
         [
           440,
@@ -4054,7 +4060,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 27.809,
+  "elapsed_seconds": 31.268,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "commercial_invoice",
@@ -4139,51 +4145,73 @@
         "normalization_reason": "source field remains ambiguous"
       },
       "amount": {
-        "value": "8",
+        "value": "$94,810.87",
         "normalized": {
-          "value": 8.0,
-          "symbol": null,
+          "value": 94810.87,
+          "symbol": "$",
           "currency_code": null
         },
-        "raw_text": "8",
+        "raw_text": "$94,810.87",
         "bbox": [
           [
-            541,
-            1756
+            938,
+            1799
           ],
           [
-            557,
-            1756
+            1067,
+            1799
           ],
           [
-            557,
-            1781
+            1067,
+            1824
           ],
           [
-            541,
-            1781
+            938,
+            1824
           ]
         ],
-        "confidence": 0.9674732076772671,
+        "confidence": 0.9973523348491297,
         "status": "found",
         "source_indices": [
-          39
+          79
         ],
         "reason": null,
         "normalization_status": "normalized",
         "normalization_reason": null
       },
       "currency": {
-        "value": null,
-        "normalized": null,
-        "raw_text": "",
-        "bbox": null,
-        "confidence": 0.0,
-        "status": "missing",
-        "source_indices": [],
-        "reason": "currency code or symbol not found",
-        "normalization_status": "failed",
-        "normalization_reason": "source field is missing"
+        "value": "$",
+        "normalized": {
+          "code": null,
+          "symbol": "$"
+        },
+        "raw_text": "$94,810.87",
+        "bbox": [
+          [
+            938,
+            1799
+          ],
+          [
+            1067,
+            1799
+          ],
+          [
+            1067,
+            1824
+          ],
+          [
+            938,
+            1824
+          ]
+        ],
+        "confidence": 0.9973523348491297,
+        "status": "ambiguous",
+        "source_indices": [
+          79
+        ],
+        "reason": "currency symbol found but ISO code absent",
+        "normalization_status": "ambiguous",
+        "normalization_reason": "currency symbol does not identify an ISO currency code"
       },
       "goods_description": {
         "value": "Adjuster | Outppt | Coole",

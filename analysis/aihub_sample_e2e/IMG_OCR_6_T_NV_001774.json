@@ -7,11 +7,11 @@
     "gt_boxes": 104,
     "predicted_boxes": 175,
     "geometric_recall": 0.9807692307692307,
-    "exact_text_recall": 0.6634615384615384,
-    "segmentation_aware_recall": 0.6730769230769231,
-    "similarity_90_recall": 0.7019230769230769,
-    "mean_similarity": 0.86084711228942,
-    "mean_cer": 0.23446145200952892
+    "exact_text_recall": 0.7115384615384616,
+    "segmentation_aware_recall": 0.7211538461538461,
+    "similarity_90_recall": 0.75,
+    "mean_similarity": 0.8820305762613455,
+    "mean_cer": 0.2011979740345125
   },
   "fields": {
     "invoice_no": {
@@ -28,9 +28,9 @@
     },
     "buyer": {
       "status": "found",
-      "value": "Johannesuugg쉼표 South Africa",
-      "normalized": "Johannesuugg쉼표 South Africa",
-      "confidence": 0.7823352945363128
+      "value": "Johannesuugg, South Africa",
+      "normalized": "Johannesuugg, South Africa",
+      "confidence": 0.7715218664941512
     },
     "amount": {
       "status": "found",
@@ -137,7 +137,7 @@
       "field_name": "buyer",
       "actual_status": "found",
       "oracle_status": "found",
-      "actual_value": "Johannesuugg쉼표 South Africa",
+      "actual_value": "Johannesuugg, South Africa",
       "oracle_value": "Johannesburg, South Africa",
       "classification": "e2e_matches_oracle",
       "agreement_score": 0.92
@@ -404,8 +404,8 @@
     },
     {
       "index": 9,
-      "text": "LENS쉼표",
-      "confidence": 0.970937974046293,
+      "text": "LENS,",
+      "confidence": 0.9705109370218663,
       "bbox": [
         [
           237,
@@ -496,8 +496,8 @@
     },
     {
       "index": 13,
-      "text": "Johannesuugg쉼표",
-      "confidence": 0.7823352945363128,
+      "text": "Johannesuugg,",
+      "confidence": 0.7715218664941512,
       "bbox": [
         [
           1153,
@@ -542,8 +542,8 @@
     },
     {
       "index": 15,
-      "text": "VTT쉼표",
-      "confidence": 0.771404748311958,
+      "text": "VTT,",
+      "confidence": 0.7530617949448152,
       "bbox": [
         [
           367,
@@ -634,8 +634,8 @@
     },
     {
       "index": 19,
-      "text": "HARA쉼표",
-      "confidence": 0.9883008899763104,
+      "text": "HARA,",
+      "confidence": 0.986237990809356,
       "bbox": [
         [
           441,
@@ -1278,8 +1278,8 @@
     },
     {
       "index": 47,
-      "text": "Caroina쉼표쉼표",
-      "confidence": 0.8488869804498318,
+      "text": "Caroina,,",
+      "confidence": 0.8190333309012002,
       "bbox": [
         [
           248,
@@ -2405,8 +2405,8 @@
     },
     {
       "index": 96,
-      "text": "$8쉼표735.28",
-      "confidence": 0.9936876987566373,
+      "text": "$8,735.28",
+      "confidence": 0.9930030544962464,
       "bbox": [
         [
           1438,
@@ -2888,8 +2888,8 @@
     },
     {
       "index": 117,
-      "text": "TEL14-SS쉼표",
-      "confidence": 0.658181851888974,
+      "text": "TEL14-SS,",
+      "confidence": 0.647546997519552,
       "bbox": [
         [
           829,
@@ -2980,8 +2980,8 @@
     },
     {
       "index": 121,
-      "text": "GAOMING쉼표",
-      "confidence": 0.9690403461303105,
+      "text": "GAOMING,",
+      "confidence": 0.9664335459988294,
       "bbox": [
         [
           47,
@@ -3164,8 +3164,8 @@
     },
     {
       "index": 129,
-      "text": "412쉼표",
-      "confidence": 0.9739099411405284,
+      "text": "412,",
+      "confidence": 0.9675178457153063,
       "bbox": [
         [
           827,
@@ -4221,7 +4221,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 50.39,
+  "elapsed_seconds": 26.303,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "commercial_invoice",
@@ -4291,9 +4291,9 @@
         "normalization_reason": null
       },
       "buyer": {
-        "value": "Johannesuugg쉼표 South Africa",
-        "normalized": "Johannesuugg쉼표 South Africa",
-        "raw_text": "Johannesuugg쉼표 South Africa",
+        "value": "Johannesuugg, South Africa",
+        "normalized": "Johannesuugg, South Africa",
+        "raw_text": "Johannesuugg, South Africa",
         "bbox": [
           [
             1153,
@@ -4312,7 +4312,7 @@
             501
           ]
         ],
-        "confidence": 0.7823352945363128,
+        "confidence": 0.7715218664941512,
         "status": "found",
         "source_indices": [
           13,

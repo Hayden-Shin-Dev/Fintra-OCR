@@ -7,11 +7,11 @@
     "gt_boxes": 105,
     "predicted_boxes": 107,
     "geometric_recall": 0.9904761904761905,
-    "exact_text_recall": 0.5523809523809524,
-    "segmentation_aware_recall": 0.5619047619047619,
-    "similarity_90_recall": 0.5619047619047619,
-    "mean_similarity": 0.8477670456805795,
-    "mean_cer": 0.17122809938599412
+    "exact_text_recall": 0.6761904761904762,
+    "segmentation_aware_recall": 0.6857142857142857,
+    "similarity_90_recall": 0.6857142857142857,
+    "mean_similarity": 0.8880644070493695,
+    "mean_cer": 0.12047707792068695
   },
   "fields": {
     "invoice_no": {
@@ -549,8 +549,8 @@
     },
     {
       "index": 16,
-      "text": "69448쉼표",
-      "confidence": 0.9973640343328725,
+      "text": "69448,",
+      "confidence": 0.997244019547639,
       "bbox": [
         [
           696,
@@ -641,8 +641,8 @@
     },
     {
       "index": 20,
-      "text": "WREMCH쉼표TTOCND쉼표",
-      "confidence": 0.489271645289366,
+      "text": "WREMCH,TTOCND,",
+      "confidence": 0.4972712910807549,
       "bbox": [
         [
           181,
@@ -687,8 +687,8 @@
     },
     {
       "index": 22,
-      "text": "KAIGATA쉼표",
-      "confidence": 0.8983053151300429,
+      "text": "KAIGATA,",
+      "confidence": 0.9086038582571762,
       "bbox": [
         [
           1108,
@@ -825,8 +825,8 @@
     },
     {
       "index": 28,
-      "text": "MAYDI쉼표",
-      "confidence": 0.9724409360707029,
+      "text": "MAYDI,",
+      "confidence": 0.9682331749055624,
       "bbox": [
         [
           1109,
@@ -848,8 +848,8 @@
     },
     {
       "index": 29,
-      "text": "Co.쉼표",
-      "confidence": 0.9809087068371509,
+      "text": "Co.,",
+      "confidence": 0.976812807324609,
       "bbox": [
         [
           384,
@@ -894,8 +894,8 @@
     },
     {
       "index": 31,
-      "text": "SHAFT쉼표LE",
-      "confidence": 0.8193359741535,
+      "text": "SHAFT,LE",
+      "confidence": 0.8202651337241061,
       "bbox": [
         [
           385,
@@ -1124,8 +1124,8 @@
     },
     {
       "index": 41,
-      "text": "Songpa-ku쉼표",
-      "confidence": 0.8829077521565509,
+      "text": "Songpa-ku,",
+      "confidence": 0.8723474320167883,
       "bbox": [
         [
           428,
@@ -1285,8 +1285,8 @@
     },
     {
       "index": 48,
-      "text": "Co.쉼표",
-      "confidence": 0.9946645486229356,
+      "text": "Co.,",
+      "confidence": 0.9933925052214965,
       "bbox": [
         [
           394,
@@ -1377,8 +1377,8 @@
     },
     {
       "index": 52,
-      "text": "Co.쉼표",
-      "confidence": 0.9384604058397644,
+      "text": "Co.,",
+      "confidence": 0.9964784658671613,
       "bbox": [
         [
           1263,
@@ -1400,8 +1400,8 @@
     },
     {
       "index": 53,
-      "text": "LIEPRR쉼표",
-      "confidence": 0.7485905185155409,
+      "text": "LIEPRR,",
+      "confidence": 0.7193794837190369,
       "bbox": [
         [
           1108,
@@ -1423,8 +1423,8 @@
     },
     {
       "index": 54,
-      "text": "Ashford쉼표",
-      "confidence": 0.9584559034678172,
+      "text": "Ashford,",
+      "confidence": 0.9535580903309989,
       "bbox": [
         [
           515,
@@ -1469,8 +1469,8 @@
     },
     {
       "index": 56,
-      "text": "42751쉼표",
-      "confidence": 0.8834868806442124,
+      "text": "42751,",
+      "confidence": 0.8655439251664174,
       "bbox": [
         [
           677,
@@ -1515,8 +1515,8 @@
     },
     {
       "index": 58,
-      "text": "Oryun-dong쉼표",
-      "confidence": 0.9197553469758553,
+      "text": "Oryun-dong,",
+      "confidence": 0.9140242224492063,
       "bbox": [
         [
           254,
@@ -1630,8 +1630,8 @@
     },
     {
       "index": 63,
-      "text": "DIKILI쉼표",
-      "confidence": 0.8215993941905547,
+      "text": "DIKILI,",
+      "confidence": 0.7989018859510205,
       "bbox": [
         [
           804,
@@ -1814,8 +1814,8 @@
     },
     {
       "index": 71,
-      "text": "4el쉼표",
-      "confidence": 0.8208756992864636,
+      "text": "4el,",
+      "confidence": 0.7813855470959858,
       "bbox": [
         [
           603,
@@ -1952,8 +1952,8 @@
     },
     {
       "index": 77,
-      "text": "370쉼표",
-      "confidence": 0.6750740892770626,
+      "text": "370,",
+      "confidence": 0.7898324800955376,
       "bbox": [
         [
           181,
@@ -2412,8 +2412,8 @@
     },
     {
       "index": 97,
-      "text": "$2쉼표406.33",
-      "confidence": 0.9586489134256891,
+      "text": "$2,406.33",
+      "confidence": 0.9562720511700185,
       "bbox": [
         [
           1328,
@@ -2641,7 +2641,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 24.748,
+  "elapsed_seconds": 25.93,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "commercial_invoice",

@@ -7,11 +7,11 @@
     "gt_boxes": 102,
     "predicted_boxes": 107,
     "geometric_recall": 0.9705882352941176,
-    "exact_text_recall": 0.4803921568627451,
-    "segmentation_aware_recall": 0.5098039215686274,
-    "similarity_90_recall": 0.5,
-    "mean_similarity": 0.7989189971888934,
-    "mean_cer": 0.22983634333115302
+    "exact_text_recall": 0.5294117647058824,
+    "segmentation_aware_recall": 0.5588235294117647,
+    "similarity_90_recall": 0.5490196078431373,
+    "mean_similarity": 0.8330576526510782,
+    "mean_cer": 0.18487057924774186
   },
   "fields": {
     "invoice_no": {
@@ -193,8 +193,8 @@
   "ocr_predictions": [
     {
       "index": 0,
-      "text": "UOMA쉼표",
-      "confidence": 0.795237542579064,
+      "text": "UOMA,",
+      "confidence": 0.7625559310123251,
       "bbox": [
         [
           513,
@@ -354,8 +354,8 @@
     },
     {
       "index": 7,
-      "text": "Beach쉼표",
-      "confidence": 0.9925729842419281,
+      "text": "Beach,",
+      "confidence": 0.9916521434581141,
       "bbox": [
         [
           602,
@@ -469,8 +469,8 @@
     },
     {
       "index": 12,
-      "text": "99995쉼표",
-      "confidence": 0.9964362171462118,
+      "text": "99995,",
+      "confidence": 0.9959230302150811,
       "bbox": [
         [
           741,
@@ -492,8 +492,8 @@
     },
     {
       "index": 13,
-      "text": "42434쉼표",
-      "confidence": 0.9996384590385183,
+      "text": "42434,",
+      "confidence": 0.9995983542230477,
       "bbox": [
         [
           543,
@@ -561,8 +561,8 @@
     },
     {
       "index": 16,
-      "text": "Fairmonl쉼표",
-      "confidence": 0.8640344041318386,
+      "text": "Fairmonl,",
+      "confidence": 0.8676431278584921,
       "bbox": [
         [
           380,
@@ -630,8 +630,8 @@
     },
     {
       "index": 19,
-      "text": "70213쉼표",
-      "confidence": 0.9684558322565019,
+      "text": "70213,",
+      "confidence": 0.9633362782045056,
       "bbox": [
         [
           559,
@@ -676,8 +676,8 @@
     },
     {
       "index": 21,
-      "text": "O8쉼표쉼표",
-      "confidence": 0.9769060334020608,
+      "text": "O8,,",
+      "confidence": 0.9655825600264428,
       "bbox": [
         [
           566,
@@ -1159,8 +1159,8 @@
     },
     {
       "index": 42,
-      "text": "Stree쉼표쉼표",
-      "confidence": 0.9359322875576765,
+      "text": "Stree,,",
+      "confidence": 0.9187920727258938,
       "bbox": [
         [
           297,
@@ -1504,8 +1504,8 @@
     },
     {
       "index": 57,
-      "text": "3J쉼표",
-      "confidence": 0.7801920406694974,
+      "text": "3J,",
+      "confidence": 0.7301276580777569,
       "bbox": [
         [
           1280,
@@ -1688,8 +1688,8 @@
     },
     {
       "index": 65,
-      "text": "GULUUK쉼표",
-      "confidence": 0.7976913358954703,
+      "text": "GULUUK,",
+      "confidence": 0.7782234377458291,
       "bbox": [
         [
           125,
@@ -1711,8 +1711,8 @@
     },
     {
       "index": 66,
-      "text": "INC쉼표",
-      "confidence": 0.8929366458153365,
+      "text": "INC,",
+      "confidence": 0.8683067240617753,
       "bbox": [
         [
           403,
@@ -2033,8 +2033,8 @@
     },
     {
       "index": 80,
-      "text": "19쉼표",
-      "confidence": 0.9736286681743562,
+      "text": "19,",
+      "confidence": 0.9994339715429094,
       "bbox": [
         [
           1284,
@@ -2653,7 +2653,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 25.957,
+  "elapsed_seconds": 35.842,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "packing_list",

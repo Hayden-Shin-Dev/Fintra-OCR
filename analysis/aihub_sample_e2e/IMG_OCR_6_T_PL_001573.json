@@ -7,11 +7,11 @@
     "gt_boxes": 101,
     "predicted_boxes": 106,
     "geometric_recall": 1.0,
-    "exact_text_recall": 0.5445544554455446,
-    "segmentation_aware_recall": 0.5643564356435643,
-    "similarity_90_recall": 0.5544554455445545,
-    "mean_similarity": 0.797987966089842,
-    "mean_cer": 0.2735069935564985
+    "exact_text_recall": 0.6138613861386139,
+    "segmentation_aware_recall": 0.6435643564356436,
+    "similarity_90_recall": 0.6237623762376238,
+    "mean_similarity": 0.8487135743649553,
+    "mean_cer": 0.19763869244067264
   },
   "fields": {
     "invoice_no": {
@@ -210,8 +210,8 @@
     },
     {
       "index": 1,
-      "text": "12쉼표",
-      "confidence": 0.9935932205277344,
+      "text": "12,",
+      "confidence": 0.9931544230451985,
       "bbox": [
         [
           561,
@@ -348,8 +348,8 @@
     },
     {
       "index": 7,
-      "text": "LEMDIG쉼표",
-      "confidence": 0.7685616743607687,
+      "text": "LEMDIG,",
+      "confidence": 0.7402161880229097,
       "bbox": [
         [
           508,
@@ -509,8 +509,8 @@
     },
     {
       "index": 14,
-      "text": "Delh--44o8쉼표",
-      "confidence": 0.7816206657771774,
+      "text": "Delh--44o8,",
+      "confidence": 0.7671916250311112,
       "bbox": [
         [
           623,
@@ -716,8 +716,8 @@
     },
     {
       "index": 23,
-      "text": "11880쉼표",
-      "confidence": 0.9773535390384201,
+      "text": "11880,",
+      "confidence": 0.9736554053363558,
       "bbox": [
         [
           622,
@@ -969,8 +969,8 @@
     },
     {
       "index": 34,
-      "text": "(naun)쉼표",
-      "confidence": 0.7677225299491944,
+      "text": "(naun),",
+      "confidence": 0.7405148766752903,
       "bbox": [
         [
           526,
@@ -1130,8 +1130,8 @@
     },
     {
       "index": 41,
-      "text": "Shuwvakh쉼표",
-      "confidence": 0.8769048863095534,
+      "text": "Shuwvakh,",
+      "confidence": 0.8835537876080359,
       "bbox": [
         [
           500,
@@ -1245,8 +1245,8 @@
     },
     {
       "index": 46,
-      "text": "Qac쉼표",
-      "confidence": 0.8021682055834426,
+      "text": "Qac,",
+      "confidence": 0.759172499478131,
       "bbox": [
         [
           685,
@@ -1291,8 +1291,8 @@
     },
     {
       "index": 48,
-      "text": "Stuc쉼표쉼표",
-      "confidence": 0.9150101488009683,
+      "text": "Stuc,,",
+      "confidence": 0.8885012216762288,
       "bbox": [
         [
           127,
@@ -1383,8 +1383,8 @@
     },
     {
       "index": 52,
-      "text": "Songpa-ku쉼표",
-      "confidence": 0.9708491276808802,
+      "text": "Songpa-ku,",
+      "confidence": 0.9688972147028019,
       "bbox": [
         [
           404,
@@ -1521,8 +1521,8 @@
     },
     {
       "index": 58,
-      "text": "DINANT쉼표",
-      "confidence": 0.9776517963749201,
+      "text": "DINANT,",
+      "confidence": 0.9780470918867947,
       "bbox": [
         [
           122,
@@ -1636,8 +1636,8 @@
     },
     {
       "index": 63,
-      "text": "13005쉼표",
-      "confidence": 0.9619637796253466,
+      "text": "13005,",
+      "confidence": 0.9558150700068315,
       "bbox": [
         [
           369,
@@ -1728,8 +1728,8 @@
     },
     {
       "index": 67,
-      "text": "MTG쉼표",
-      "confidence": 0.7258635247301113,
+      "text": "MTG,",
+      "confidence": 0.6753091778571725,
       "bbox": [
         [
           307,
@@ -1751,8 +1751,8 @@
     },
     {
       "index": 68,
-      "text": "SaImhcenn-dong쉼표",
-      "confidence": 0.6556161566490556,
+      "text": "SaImhcenn-dong,",
+      "confidence": 0.6385931668055816,
       "bbox": [
         [
           190,
@@ -1820,8 +1820,8 @@
     },
     {
       "index": 71,
-      "text": "18쉼표쉼표",
-      "confidence": 0.839701920398801,
+      "text": "18,,",
+      "confidence": 0.7738894398375523,
       "bbox": [
         [
           1281,
@@ -1889,8 +1889,8 @@
     },
     {
       "index": 74,
-      "text": "1O쉼표",
-      "confidence": 0.9611614000658463,
+      "text": "1O,",
+      "confidence": 0.9785016979709975,
       "bbox": [
         [
           1284,
@@ -2027,8 +2027,8 @@
     },
     {
       "index": 80,
-      "text": "A쉼표",
-      "confidence": 0.9184826861367397,
+      "text": "A,",
+      "confidence": 0.9147849514990761,
       "bbox": [
         [
           339,
@@ -2073,8 +2073,8 @@
     },
     {
       "index": 82,
-      "text": "51-3쉼표",
-      "confidence": 0.931541195939893,
+      "text": "51-3,",
+      "confidence": 0.918479675120792,
       "bbox": [
         [
           124,
@@ -2211,8 +2211,8 @@
     },
     {
       "index": 88,
-      "text": "CO.쉼표",
-      "confidence": 0.9759151894609157,
+      "text": "CO.,",
+      "confidence": 0.9699955255568397,
       "bbox": [
         [
           385,
@@ -2624,7 +2624,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 23.61,
+  "elapsed_seconds": 19.645,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "packing_list",

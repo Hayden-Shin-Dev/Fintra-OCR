@@ -7,11 +7,11 @@
     "gt_boxes": 69,
     "predicted_boxes": 82,
     "geometric_recall": 1.0,
-    "exact_text_recall": 0.5942028985507246,
-    "segmentation_aware_recall": 0.6231884057971014,
-    "similarity_90_recall": 0.6376811594202898,
-    "mean_similarity": 0.8847999021912065,
-    "mean_cer": 0.1474208561165083
+    "exact_text_recall": 0.7246376811594203,
+    "segmentation_aware_recall": 0.7536231884057971,
+    "similarity_90_recall": 0.782608695652174,
+    "mean_similarity": 0.9252442002442003,
+    "mean_cer": 0.1007334855160942
   },
   "fields": {
     "invoice_no": {
@@ -33,16 +33,23 @@
       "confidence": 0.7696435933315965
     },
     "amount": {
-      "status": "missing",
-      "value": null,
-      "normalized": null,
-      "confidence": 0.0
+      "status": "found",
+      "value": "$8,095.52",
+      "normalized": {
+        "value": 8095.52,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "confidence": 0.9994327447552994
     },
     "currency": {
-      "status": "missing",
-      "value": null,
-      "normalized": null,
-      "confidence": 0.0
+      "status": "ambiguous",
+      "value": "$",
+      "normalized": {
+        "code": null,
+        "symbol": "$"
+      },
+      "confidence": 0.9994327447552994
     },
     "goods_description": {
       "status": "missing",
@@ -111,16 +118,20 @@
   "field_diagnostics": {
     "amount": {
       "field_name": "amount",
-      "actual_status": "missing",
+      "actual_status": "found",
       "oracle_status": "found",
-      "actual_value": null,
+      "actual_value": {
+        "value": 8095.52,
+        "symbol": "$",
+        "currency_code": null
+      },
       "oracle_value": {
         "value": 8095.52,
         "symbol": "$",
         "currency_code": null
       },
-      "classification": "ocr_value_degradation",
-      "agreement_score": 0.0
+      "classification": "e2e_matches_oracle",
+      "agreement_score": 1.0
     },
     "buyer": {
       "field_name": "buyer",
@@ -133,15 +144,18 @@
     },
     "currency": {
       "field_name": "currency",
-      "actual_status": "missing",
+      "actual_status": "ambiguous",
       "oracle_status": "ambiguous",
-      "actual_value": null,
+      "actual_value": {
+        "code": null,
+        "symbol": "$"
+      },
       "oracle_value": {
         "code": null,
         "symbol": "$"
       },
-      "classification": "extractor_instability_or_ambiguity",
-      "agreement_score": 0.0
+      "classification": "e2e_matches_oracle",
+      "agreement_score": 1.0
     },
     "date": {
       "field_name": "date",
@@ -206,8 +220,8 @@
     },
     {
       "index": 1,
-      "text": "87022쉼표",
-      "confidence": 0.9988297984235818,
+      "text": "87022,",
+      "confidence": 0.9986814626662068,
       "bbox": [
         [
           566,
@@ -229,8 +243,8 @@
     },
     {
       "index": 2,
-      "text": "41021쉼표",
-      "confidence": 0.9904380826428829,
+      "text": "41021,",
+      "confidence": 0.9888753287039915,
       "bbox": [
         [
           640,
@@ -321,8 +335,8 @@
     },
     {
       "index": 6,
-      "text": "84967쉼표",
-      "confidence": 0.9994407035434538,
+      "text": "84967,",
+      "confidence": 0.999618829510694,
       "bbox": [
         [
           681,
@@ -390,8 +404,8 @@
     },
     {
       "index": 9,
-      "text": "Chase쉼표",
-      "confidence": 0.9893031592258744,
+      "text": "Chase,",
+      "confidence": 0.9881328232659031,
       "bbox": [
         [
           541,
@@ -482,8 +496,8 @@
     },
     {
       "index": 13,
-      "text": "Sterligg쉼표",
-      "confidence": 0.9662485830863868,
+      "text": "Sterligg,",
+      "confidence": 0.9626281170359973,
       "bbox": [
         [
           414,
@@ -574,8 +588,8 @@
     },
     {
       "index": 17,
-      "text": "ARBATAX쉼표",
-      "confidence": 0.9892016332875361,
+      "text": "ARBATAX,",
+      "confidence": 0.9895074459081075,
       "bbox": [
         [
           524,
@@ -689,8 +703,8 @@
     },
     {
       "index": 22,
-      "text": "$3쉼표301.45",
-      "confidence": 0.9994229554653068,
+      "text": "$3,301.45",
+      "confidence": 0.9994387969725373,
       "bbox": [
         [
           1355,
@@ -781,8 +795,8 @@
     },
     {
       "index": 26,
-      "text": "Sasang-ku쉼표",
-      "confidence": 0.98457325835736,
+      "text": "Sasang-ku,",
+      "confidence": 0.9953397540899611,
       "bbox": [
         [
           417,
@@ -942,8 +956,8 @@
     },
     {
       "index": 33,
-      "text": "$8쉼표095.52",
-      "confidence": 0.9994676316500296,
+      "text": "$8,095.52",
+      "confidence": 0.9994327447552994,
       "bbox": [
         [
           336,
@@ -1333,8 +1347,8 @@
     },
     {
       "index": 50,
-      "text": "Usaa-dong쉼표",
-      "confidence": 0.8453890452593875,
+      "text": "Usaa-dong,",
+      "confidence": 0.8349882527762125,
       "bbox": [
         [
           274,
@@ -1540,8 +1554,8 @@
     },
     {
       "index": 59,
-      "text": "NEIIME쉼표",
-      "confidence": 0.885043323850293,
+      "text": "NEIIME,",
+      "confidence": 0.8855228767915777,
       "bbox": [
         [
           166,
@@ -1724,8 +1738,8 @@
     },
     {
       "index": 67,
-      "text": "42-210쉼표",
-      "confidence": 0.9608826330917166,
+      "text": "42-210,",
+      "confidence": 0.9555676128229145,
       "bbox": [
         [
           172,
@@ -2068,7 +2082,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 21.666,
+  "elapsed_seconds": 23.233,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "commercial_invoice",
@@ -2132,28 +2146,73 @@
         "normalization_reason": "source field remains ambiguous"
       },
       "amount": {
-        "value": null,
-        "normalized": null,
-        "raw_text": "",
-        "bbox": null,
-        "confidence": 0.0,
-        "status": "missing",
-        "source_indices": [],
-        "reason": "invoice-level total amount not recovered",
-        "normalization_status": "failed",
-        "normalization_reason": "source field is missing"
+        "value": "$8,095.52",
+        "normalized": {
+          "value": 8095.52,
+          "symbol": "$",
+          "currency_code": null
+        },
+        "raw_text": "$8,095.52",
+        "bbox": [
+          [
+            336,
+            1634
+          ],
+          [
+            456,
+            1634
+          ],
+          [
+            456,
+            1658
+          ],
+          [
+            336,
+            1658
+          ]
+        ],
+        "confidence": 0.9994327447552994,
+        "status": "found",
+        "source_indices": [
+          33
+        ],
+        "reason": null,
+        "normalization_status": "normalized",
+        "normalization_reason": null
       },
       "currency": {
-        "value": null,
-        "normalized": null,
-        "raw_text": "",
-        "bbox": null,
-        "confidence": 0.0,
-        "status": "missing",
-        "source_indices": [],
-        "reason": "currency code or symbol not found",
-        "normalization_status": "failed",
-        "normalization_reason": "source field is missing"
+        "value": "$",
+        "normalized": {
+          "code": null,
+          "symbol": "$"
+        },
+        "raw_text": "$8,095.52",
+        "bbox": [
+          [
+            336,
+            1634
+          ],
+          [
+            456,
+            1634
+          ],
+          [
+            456,
+            1658
+          ],
+          [
+            336,
+            1658
+          ]
+        ],
+        "confidence": 0.9994327447552994,
+        "status": "ambiguous",
+        "source_indices": [
+          33
+        ],
+        "reason": "currency symbol found but ISO code absent",
+        "normalization_status": "ambiguous",
+        "normalization_reason": "currency symbol does not identify an ISO currency code"
       },
       "goods_description": {
         "value": null,

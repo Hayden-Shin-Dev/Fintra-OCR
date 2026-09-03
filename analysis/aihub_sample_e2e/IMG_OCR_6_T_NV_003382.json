@@ -10,8 +10,8 @@
     "exact_text_recall": 0.23255813953488372,
     "segmentation_aware_recall": 0.2558139534883721,
     "similarity_90_recall": 0.23255813953488372,
-    "mean_similarity": 0.5803986710963456,
-    "mean_cer": 0.8323089700996678
+    "mean_similarity": 0.5850590623846438,
+    "mean_cer": 0.8264027316352898
   },
   "fields": {
     "invoice_no": {
@@ -49,8 +49,8 @@
     },
     "goods_description": {
       "status": "found",
-      "value": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO쉼표NN",
-      "normalized": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO쉼표NN",
+      "value": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO,NN",
+      "normalized": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO,NN",
       "confidence": 0.45640847838926096
     },
     "quantity": {
@@ -161,7 +161,7 @@
       "field_name": "goods_description",
       "actual_status": "found",
       "oracle_status": "missing",
-      "actual_value": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO쉼표NN",
+      "actual_value": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO,NN",
       "oracle_value": null,
       "classification": "oracle_unavailable_for_found_value",
       "agreement_score": 0.0
@@ -563,8 +563,8 @@
     },
     {
       "index": 16,
-      "text": "TAMOO쉼표NN",
-      "confidence": 0.7660232916015525,
+      "text": "TAMOO,NN",
+      "confidence": 0.8132769374172298,
       "bbox": [
         [
           238,
@@ -678,8 +678,8 @@
     },
     {
       "index": 21,
-      "text": "STATOO쉼표",
-      "confidence": 0.8600823376840712,
+      "text": "STATOO,",
+      "confidence": 0.8745383766832339,
       "bbox": [
         [
           96,
@@ -1229,7 +1229,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 19.032,
+  "elapsed_seconds": 16.954,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "commercial_invoice",
@@ -1319,9 +1319,9 @@
         "normalization_reason": null
       },
       "goods_description": {
-        "value": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO쉼표NN",
-        "normalized": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO쉼표NN",
-        "raw_text": "ITOO: JODLLCIAA USD:: UZB/EURU TAMOO쉼표NN",
+        "value": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO,NN",
+        "normalized": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO,NN",
+        "raw_text": "ITOO: JODLLCIAA USD:: UZB/EURU TAMOO,NN",
         "bbox": [
           [
             100,

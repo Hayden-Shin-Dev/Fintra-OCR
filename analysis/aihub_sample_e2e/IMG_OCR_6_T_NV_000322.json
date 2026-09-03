@@ -7,11 +7,11 @@
     "gt_boxes": 96,
     "predicted_boxes": 164,
     "geometric_recall": 0.9791666666666666,
-    "exact_text_recall": 0.6770833333333334,
-    "segmentation_aware_recall": 0.6770833333333334,
-    "similarity_90_recall": 0.6770833333333334,
-    "mean_similarity": 0.8416503533231474,
-    "mean_cer": 0.2662127224627225
+    "exact_text_recall": 0.71875,
+    "segmentation_aware_recall": 0.71875,
+    "similarity_90_recall": 0.7291666666666666,
+    "mean_similarity": 0.8613552144342586,
+    "mean_cer": 0.2403488005050505
   },
   "fields": {
     "invoice_no": {
@@ -34,13 +34,13 @@
     },
     "amount": {
       "status": "found",
-      "value": "1",
+      "value": "$39,583.7",
       "normalized": {
-        "value": 1.0,
-        "symbol": null,
+        "value": 39583.7,
+        "symbol": "$",
         "currency_code": null
       },
-      "confidence": 0.9435806882184516
+      "confidence": 0.8335585396652275
     },
     "currency": {
       "status": "found",
@@ -151,8 +151,8 @@
       "actual_status": "found",
       "oracle_status": "found",
       "actual_value": {
-        "value": 1.0,
-        "symbol": null,
+        "value": 39583.7,
+        "symbol": "$",
         "currency_code": null
       },
       "oracle_value": {
@@ -418,8 +418,8 @@
     },
     {
       "index": 7,
-      "text": "dunedi쉼표쉼표",
-      "confidence": 0.9645766909721749,
+      "text": "dunedi,,",
+      "confidence": 0.9596179818150776,
       "bbox": [
         [
           265,
@@ -855,8 +855,8 @@
     },
     {
       "index": 26,
-      "text": "Slaan쉼표",
-      "confidence": 0.9664849120665718,
+      "text": "Slaan,",
+      "confidence": 0.9639026421541875,
       "bbox": [
         [
           276,
@@ -1223,8 +1223,8 @@
     },
     {
       "index": 42,
-      "text": "Miami쉼표",
-      "confidence": 0.9778370515559589,
+      "text": "Miami,",
+      "confidence": 0.9770790281362398,
       "bbox": [
         [
           1006,
@@ -1292,8 +1292,8 @@
     },
     {
       "index": 45,
-      "text": "$39쉼표583.7",
-      "confidence": 0.8258030449753194,
+      "text": "$39,583.7",
+      "confidence": 0.8335585396652275,
       "bbox": [
         [
           937,
@@ -1315,8 +1315,8 @@
     },
     {
       "index": 46,
-      "text": "ARBRA쉼표",
-      "confidence": 0.9590802811975665,
+      "text": "ARBRA,",
+      "confidence": 0.9524415274109274,
       "bbox": [
         [
           49,
@@ -1453,8 +1453,8 @@
     },
     {
       "index": 52,
-      "text": "SHINGU쉼표",
-      "confidence": 0.9941418650291499,
+      "text": "SHINGU,",
+      "confidence": 0.9949568982714824,
       "bbox": [
         [
           47,
@@ -2948,8 +2948,8 @@
     },
     {
       "index": 117,
-      "text": "$4쉼표707.88",
-      "confidence": 0.9621952324037727,
+      "text": "$4,707.88",
+      "confidence": 0.9581010873919198,
       "bbox": [
         [
           1437,
@@ -3063,8 +3063,8 @@
     },
     {
       "index": 122,
-      "text": "1쉼표353",
-      "confidence": 0.8965801263386171,
+      "text": "1,353",
+      "confidence": 0.8784387385187719,
       "bbox": [
         [
           181,
@@ -3960,8 +3960,8 @@
     },
     {
       "index": 161,
-      "text": "ProdurC쉼표.ool",
-      "confidence": 0.5352401489290969,
+      "text": "ProdurC,.ool",
+      "confidence": 0.5229594794395689,
       "bbox": [
         [
           62,
@@ -4028,7 +4028,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 74.327,
+  "elapsed_seconds": 47.803,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "commercial_invoice",
@@ -4129,35 +4129,35 @@
         "normalization_reason": "source field remains ambiguous"
       },
       "amount": {
-        "value": "1",
+        "value": "$39,583.7",
         "normalized": {
-          "value": 1.0,
-          "symbol": null,
+          "value": 39583.7,
+          "symbol": "$",
           "currency_code": null
         },
-        "raw_text": "1",
+        "raw_text": "$39,583.7",
         "bbox": [
           [
-            541,
-            1756
+            937,
+            1799
           ],
           [
-            556,
-            1756
+            1065,
+            1799
           ],
           [
-            556,
-            1782
+            1065,
+            1825
           ],
           [
-            541,
-            1782
+            937,
+            1825
           ]
         ],
-        "confidence": 0.9435806882184516,
+        "confidence": 0.8335585396652275,
         "status": "found",
         "source_indices": [
-          19
+          45
         ],
         "reason": null,
         "normalization_status": "normalized",

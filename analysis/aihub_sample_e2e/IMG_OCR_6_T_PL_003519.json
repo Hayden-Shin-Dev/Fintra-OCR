@@ -7,11 +7,11 @@
     "gt_boxes": 97,
     "predicted_boxes": 101,
     "geometric_recall": 1.0,
-    "exact_text_recall": 0.6082474226804123,
-    "segmentation_aware_recall": 0.6185567010309279,
-    "similarity_90_recall": 0.6185567010309279,
-    "mean_similarity": 0.8552528227785959,
-    "mean_cer": 0.18210706818954242
+    "exact_text_recall": 0.7422680412371134,
+    "segmentation_aware_recall": 0.7525773195876289,
+    "similarity_90_recall": 0.7525773195876289,
+    "mean_similarity": 0.9107119669382284,
+    "mean_cer": 0.112333657179018
   },
   "fields": {
     "invoice_no": {
@@ -150,8 +150,8 @@
     },
     {
       "index": 1,
-      "text": "Coupling쉼표",
-      "confidence": 0.9549510252904939,
+      "text": "Coupling,",
+      "confidence": 0.9503417716328039,
       "bbox": [
         [
           507,
@@ -288,8 +288,8 @@
     },
     {
       "index": 7,
-      "text": "Shaft쉼표",
-      "confidence": 0.9857362873591433,
+      "text": "Shaft,",
+      "confidence": 0.98356196375601,
       "bbox": [
         [
           665,
@@ -380,8 +380,8 @@
     },
     {
       "index": 11,
-      "text": "County쉼표",
-      "confidence": 0.9735488056349596,
+      "text": "County,",
+      "confidence": 0.9698339606939679,
       "bbox": [
         [
           623,
@@ -426,8 +426,8 @@
     },
     {
       "index": 13,
-      "text": "SY04쉼표",
-      "confidence": 0.8963741642087107,
+      "text": "SY04,",
+      "confidence": 0.92016699235138,
       "bbox": [
         [
           1129,
@@ -449,8 +449,8 @@
     },
     {
       "index": 14,
-      "text": "Eanner쉼표",
-      "confidence": 0.9744867471474875,
+      "text": "Eanner,",
+      "confidence": 0.9791481858639987,
       "bbox": [
         [
           401,
@@ -518,8 +518,8 @@
     },
     {
       "index": 17,
-      "text": "Co.쉼표",
-      "confidence": 0.9998853391337025,
+      "text": "Co.,",
+      "confidence": 0.9999165343234359,
       "bbox": [
         [
           1073,
@@ -541,8 +541,8 @@
     },
     {
       "index": 18,
-      "text": "Gansu쉼표",
-      "confidence": 0.9955774412815178,
+      "text": "Gansu,",
+      "confidence": 0.9951130534612929,
       "bbox": [
         [
           849,
@@ -978,8 +978,8 @@
     },
     {
       "index": 37,
-      "text": "District쉼표",
-      "confidence": 0.8988089293601352,
+      "text": "District,",
+      "confidence": 0.9309962051227013,
       "bbox": [
         [
           1155,
@@ -1001,8 +1001,8 @@
     },
     {
       "index": 38,
-      "text": "OK쉼표",
-      "confidence": 0.6442475504215024,
+      "text": "OK,",
+      "confidence": 0.6912412662133423,
       "bbox": [
         [
           689,
@@ -1093,8 +1093,8 @@
     },
     {
       "index": 42,
-      "text": "Co.쉼표",
-      "confidence": 0.9996366873739903,
+      "text": "Co.,",
+      "confidence": 0.9995556805995908,
       "bbox": [
         [
           1043,
@@ -1208,8 +1208,8 @@
     },
     {
       "index": 47,
-      "text": "Secaan-yyong쉼표",
-      "confidence": 0.6674673274785166,
+      "text": "Secaan-yyong,",
+      "confidence": 0.6482752653579261,
       "bbox": [
         [
           388,
@@ -1277,8 +1277,8 @@
     },
     {
       "index": 50,
-      "text": "736쉼표",
-      "confidence": 0.9993936660634303,
+      "text": "736,",
+      "confidence": 0.9993319758807654,
       "bbox": [
         [
           923,
@@ -1438,8 +1438,8 @@
     },
     {
       "index": 57,
-      "text": "County쉼표",
-      "confidence": 0.9797465987801683,
+      "text": "County,",
+      "confidence": 0.976922435678126,
       "bbox": [
         [
           1304,
@@ -1576,8 +1576,8 @@
     },
     {
       "index": 63,
-      "text": "Co.쉼표",
-      "confidence": 0.9982943925657989,
+      "text": "Co.,",
+      "confidence": 0.9995649289591867,
       "bbox": [
         [
           346,
@@ -1622,8 +1622,8 @@
     },
     {
       "index": 65,
-      "text": "JIaMSSU쉼표",
-      "confidence": 0.7681420333510878,
+      "text": "JIaMSSU,",
+      "confidence": 0.7438742567942758,
       "bbox": [
         [
           141,
@@ -1875,8 +1875,8 @@
     },
     {
       "index": 76,
-      "text": "14056쉼표",
-      "confidence": 0.9678560227643812,
+      "text": "14056,",
+      "confidence": 0.9630247032045883,
       "bbox": [
         [
           314,
@@ -1898,8 +1898,8 @@
     },
     {
       "index": 77,
-      "text": "Taccho--oog쉼표쉼표",
-      "confidence": 0.9038712936663673,
+      "text": "Taccho--oog,,",
+      "confidence": 0.8900469757139405,
       "bbox": [
         [
           218,
@@ -1921,8 +1921,8 @@
     },
     {
       "index": 78,
-      "text": "166쉼표",
-      "confidence": 0.9940252149761408,
+      "text": "166,",
+      "confidence": 0.9934316910590645,
       "bbox": [
         [
           216,
@@ -2174,8 +2174,8 @@
     },
     {
       "index": 89,
-      "text": "Co.쉼표",
-      "confidence": 0.9903970147068785,
+      "text": "Co.,",
+      "confidence": 0.9881765269536145,
       "bbox": [
         [
           347,
@@ -2449,7 +2449,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 22.864,
+  "elapsed_seconds": 47.643,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "packing_list",

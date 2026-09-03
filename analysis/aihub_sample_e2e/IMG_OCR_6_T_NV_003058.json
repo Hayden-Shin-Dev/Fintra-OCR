@@ -7,11 +7,11 @@
     "gt_boxes": 74,
     "predicted_boxes": 77,
     "geometric_recall": 1.0,
-    "exact_text_recall": 0.5540540540540541,
-    "segmentation_aware_recall": 0.5675675675675675,
-    "similarity_90_recall": 0.5675675675675675,
-    "mean_similarity": 0.8584403781772203,
-    "mean_cer": 0.16682335958651748
+    "exact_text_recall": 0.6891891891891891,
+    "segmentation_aware_recall": 0.7027027027027027,
+    "similarity_90_recall": 0.7027027027027027,
+    "mean_similarity": 0.9065527762896184,
+    "mean_cer": 0.10146416922732712
   },
   "fields": {
     "invoice_no": {
@@ -192,8 +192,8 @@
     },
     {
       "index": 1,
-      "text": "street쉼표",
-      "confidence": 0.9231252341366206,
+      "text": "street,",
+      "confidence": 0.912677412329838,
       "bbox": [
         [
           307,
@@ -353,8 +353,8 @@
     },
     {
       "index": 8,
-      "text": "A3A쉼표",
-      "confidence": 0.8748948385278829,
+      "text": "A3A,",
+      "confidence": 0.8477831150808143,
       "bbox": [
         [
           527,
@@ -422,8 +422,8 @@
     },
     {
       "index": 11,
-      "text": "ARBRA쉼표",
-      "confidence": 0.9600997716074627,
+      "text": "ARBRA,",
+      "confidence": 0.9536174614466137,
       "bbox": [
         [
           141,
@@ -468,8 +468,8 @@
     },
     {
       "index": 13,
-      "text": "10022쉼표",
-      "confidence": 0.9995435686771496,
+      "text": "10022,",
+      "confidence": 0.9995156302739746,
       "bbox": [
         [
           675,
@@ -652,8 +652,8 @@
     },
     {
       "index": 21,
-      "text": "Starters쉼표",
-      "confidence": 0.8545907616504704,
+      "text": "Starters,",
+      "confidence": 0.8473179458245739,
       "bbox": [
         [
           393,
@@ -698,8 +698,8 @@
     },
     {
       "index": 23,
-      "text": "Daepyyng쉼표",
-      "confidence": 0.8954539577971581,
+      "text": "Daepyyng,",
+      "confidence": 0.9086195571561332,
       "bbox": [
         [
           356,
@@ -974,8 +974,8 @@
     },
     {
       "index": 35,
-      "text": "Co.쉼표",
-      "confidence": 0.9995638913941194,
+      "text": "Co.,",
+      "confidence": 0.999575414983957,
       "bbox": [
         [
           1118,
@@ -997,8 +997,8 @@
     },
     {
       "index": 36,
-      "text": "$3쉼표310.92",
-      "confidence": 0.9856924767834571,
+      "text": "$3,310.92",
+      "confidence": 0.984399527162375,
       "bbox": [
         [
           1172,
@@ -1066,8 +1066,8 @@
     },
     {
       "index": 39,
-      "text": "Co.쉼표",
-      "confidence": 0.9935705509573751,
+      "text": "Co.,",
+      "confidence": 0.9925432105076454,
       "bbox": [
         [
           379,
@@ -1342,8 +1342,8 @@
     },
     {
       "index": 51,
-      "text": "Youngdo-gu쉼표",
-      "confidence": 0.902548542053829,
+      "text": "Youngdo-gu,",
+      "confidence": 0.9202845353221102,
       "bbox": [
         [
           500,
@@ -1365,8 +1365,8 @@
     },
     {
       "index": 52,
-      "text": "6.쉼표",
-      "confidence": 0.8177153250078635,
+      "text": "6.,",
+      "confidence": 0.7662547240669972,
       "bbox": [
         [
           1246,
@@ -1503,8 +1503,8 @@
     },
     {
       "index": 58,
-      "text": "Co.쉼표",
-      "confidence": 0.9860604385152665,
+      "text": "Co.,",
+      "confidence": 0.999378997019658,
       "bbox": [
         [
           297,
@@ -1733,8 +1733,8 @@
     },
     {
       "index": 68,
-      "text": "968-10쉼표",
-      "confidence": 0.9594762135166893,
+      "text": "968-10,",
+      "confidence": 0.9552435688144276,
       "bbox": [
         [
           163,
@@ -1825,8 +1825,8 @@
     },
     {
       "index": 72,
-      "text": "Ree쉼표",
-      "confidence": 0.6447430643709319,
+      "text": "Ree,",
+      "confidence": 0.6414003838781904,
       "bbox": [
         [
           161,
@@ -1917,8 +1917,8 @@
     },
     {
       "index": 76,
-      "text": "94쉼표",
-      "confidence": 0.7798788937320136,
+      "text": "94,",
+      "confidence": 0.7178655220295252,
       "bbox": [
         [
           956,
@@ -1939,7 +1939,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 20.366,
+  "elapsed_seconds": 37.049,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "commercial_invoice",

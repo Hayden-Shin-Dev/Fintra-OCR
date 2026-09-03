@@ -7,11 +7,11 @@
     "gt_boxes": 81,
     "predicted_boxes": 98,
     "geometric_recall": 0.9876543209876543,
-    "exact_text_recall": 0.4567901234567901,
-    "segmentation_aware_recall": 0.48148148148148145,
-    "similarity_90_recall": 0.49382716049382713,
-    "mean_similarity": 0.7806352769315732,
-    "mean_cer": 0.33200256533589867
+    "exact_text_recall": 0.5802469135802469,
+    "segmentation_aware_recall": 0.6172839506172839,
+    "similarity_90_recall": 0.6172839506172839,
+    "mean_similarity": 0.8269048509789251,
+    "mean_cer": 0.25325877825877824
   },
   "fields": {
     "invoice_no": {
@@ -28,8 +28,8 @@
     },
     "buyer": {
       "status": "ambiguous",
-      "value": "Dominoon Strategies Co.쉼표 Ltd.",
-      "normalized": "Dominoon Strategies Co.쉼표 Ltd.",
+      "value": "Dominoon Strategies Co., Ltd.",
+      "normalized": "Dominoon Strategies Co., Ltd.",
       "confidence": 0.7780101390026215
     },
     "amount": {
@@ -115,7 +115,7 @@
       "field_name": "buyer",
       "actual_status": "ambiguous",
       "oracle_status": "ambiguous",
-      "actual_value": "Dominoon Strategies Co.쉼표 Ltd.",
+      "actual_value": "Dominoon Strategies Co., Ltd.",
       "oracle_value": "U&E Dominion Strategies Co., Ltd.",
       "classification": "e2e_matches_oracle",
       "agreement_score": 0.8928571428571429
@@ -215,8 +215,8 @@
     },
     {
       "index": 2,
-      "text": "City쉼표쉼표",
-      "confidence": 0.8957969330267844,
+      "text": "City,,",
+      "confidence": 0.8895329744322402,
       "bbox": [
         [
           672,
@@ -491,8 +491,8 @@
     },
     {
       "index": 14,
-      "text": "Banner쉼표",
-      "confidence": 0.9604330766930588,
+      "text": "Banner,",
+      "confidence": 0.9591244355247152,
       "bbox": [
         [
           398,
@@ -537,8 +537,8 @@
     },
     {
       "index": 16,
-      "text": "Co.쉼표",
-      "confidence": 0.9993081908928227,
+      "text": "Co.,",
+      "confidence": 0.9996801324636145,
       "bbox": [
         [
           513,
@@ -560,8 +560,8 @@
     },
     {
       "index": 17,
-      "text": "10401쉼표",
-      "confidence": 0.9246190313435504,
+      "text": "10401,",
+      "confidence": 0.9360471089794984,
       "bbox": [
         [
           675,
@@ -652,8 +652,8 @@
     },
     {
       "index": 21,
-      "text": "ALTO쉼표",
-      "confidence": 0.9760980647260196,
+      "text": "ALTO,",
+      "confidence": 0.9940660024014043,
       "bbox": [
         [
           615,
@@ -698,8 +698,8 @@
     },
     {
       "index": 23,
-      "text": "Kangnam-ku쉼표",
-      "confidence": 0.9757421172638119,
+      "text": "Kangnam-ku,",
+      "confidence": 0.9736309586587667,
       "bbox": [
         [
           402,
@@ -882,8 +882,8 @@
     },
     {
       "index": 31,
-      "text": "Co.쉼표",
-      "confidence": 0.9964958229724944,
+      "text": "Co.,",
+      "confidence": 0.99764365943266,
       "bbox": [
         [
           1058,
@@ -1066,8 +1066,8 @@
     },
     {
       "index": 39,
-      "text": "Co.쉼표",
-      "confidence": 0.9268604384469722,
+      "text": "Co.,",
+      "confidence": 0.9898182719974987,
       "bbox": [
         [
           388,
@@ -1227,8 +1227,8 @@
     },
     {
       "index": 46,
-      "text": "Sichuan쉼표",
-      "confidence": 0.9404595386325639,
+      "text": "Sichuan,",
+      "confidence": 0.9472418264098593,
       "bbox": [
         [
           160,
@@ -1273,8 +1273,8 @@
     },
     {
       "index": 48,
-      "text": "PHOOTE쉼표OO--쉼표IINN",
-      "confidence": 0.4320181153772725,
+      "text": "PHOOTE,OO--,IINN",
+      "confidence": 0.4449362400396322,
       "bbox": [
         [
           332,
@@ -1503,8 +1503,8 @@
     },
     {
       "index": 58,
-      "text": "479쉼표",
-      "confidence": 0.9226087925477999,
+      "text": "479,",
+      "confidence": 0.9046315729622241,
       "bbox": [
         [
           215,
@@ -1756,8 +1756,8 @@
     },
     {
       "index": 69,
-      "text": "HUACHO쉼표",
-      "confidence": 0.9896177718046109,
+      "text": "HUACHO,",
+      "confidence": 0.988188646604907,
       "bbox": [
         [
           144,
@@ -1779,8 +1779,8 @@
     },
     {
       "index": 70,
-      "text": "$1쉼표쉼표66..0",
-      "confidence": 0.8472541489408209,
+      "text": "$1,,66..0",
+      "confidence": 0.8393223133955713,
       "bbox": [
         [
           1172,
@@ -2124,8 +2124,8 @@
     },
     {
       "index": 85,
-      "text": "Voy쉼표",
-      "confidence": 0.9648155906364889,
+      "text": "Voy,",
+      "confidence": 0.9564242023052337,
       "bbox": [
         [
           238,
@@ -2193,8 +2193,8 @@
     },
     {
       "index": 88,
-      "text": "VessH1쉼표yo9쉼표",
-      "confidence": 0.6954334169848756,
+      "text": "VessH1,yo9,",
+      "confidence": 0.6548269289877364,
       "bbox": [
         [
           143,
@@ -2400,8 +2400,8 @@
     },
     {
       "index": 97,
-      "text": "Rep쉼표",
-      "confidence": 0.6264073169490384,
+      "text": "Rep,",
+      "confidence": 0.5578149095022988,
       "bbox": [
         [
           166,
@@ -2422,7 +2422,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 28.438,
+  "elapsed_seconds": 29.012,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "commercial_invoice",
@@ -2454,9 +2454,9 @@
         "normalization_reason": "source field is missing"
       },
       "buyer": {
-        "value": "Dominoon Strategies Co.쉼표 Ltd.",
-        "normalized": "Dominoon Strategies Co.쉼표 Ltd.",
-        "raw_text": "Dominoon Strategies Ltd. Co.쉼표",
+        "value": "Dominoon Strategies Co., Ltd.",
+        "normalized": "Dominoon Strategies Co., Ltd.",
+        "raw_text": "Dominoon Strategies Ltd. Co.,",
         "bbox": [
           [
             232,

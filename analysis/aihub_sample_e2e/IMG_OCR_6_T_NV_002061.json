@@ -7,11 +7,11 @@
     "gt_boxes": 111,
     "predicted_boxes": 183,
     "geometric_recall": 0.990990990990991,
-    "exact_text_recall": 0.5045045045045045,
-    "segmentation_aware_recall": 0.5675675675675675,
-    "similarity_90_recall": 0.5135135135135135,
-    "mean_similarity": 0.8156428318193024,
-    "mean_cer": 0.32508222508222506
+    "exact_text_recall": 0.5765765765765766,
+    "segmentation_aware_recall": 0.6396396396396397,
+    "similarity_90_recall": 0.5855855855855856,
+    "mean_similarity": 0.8417874829639536,
+    "mean_cer": 0.28758758758758757
   },
   "fields": {
     "invoice_no": {
@@ -34,27 +34,27 @@
     },
     "amount": {
       "status": "found",
-      "value": "6",
+      "value": "$52,831.26",
       "normalized": {
-        "value": 6.0,
-        "symbol": null,
+        "value": 52831.26,
+        "symbol": "$",
         "currency_code": null
       },
-      "confidence": 0.9997799992600117
+      "confidence": 0.8291961542787004
     },
     "currency": {
-      "status": "found",
-      "value": "EUR",
+      "status": "ambiguous",
+      "value": "$",
       "normalized": {
-        "code": "EUR",
-        "symbol": null
+        "code": null,
+        "symbol": "$"
       },
-      "confidence": 0.9916122599150695
+      "confidence": 0.8291961542787004
     },
     "goods_description": {
       "status": "found",
-      "value": "05-597 LO0 | 96-222 Mounting | 77-235 Watch쉼표",
-      "normalized": "05-597 LO0 | 96-222 Mounting | 77-235 Watch쉼표",
+      "value": "05-597 LO0 | 96-222 Mounting | 77-235 Watch,",
+      "normalized": "05-597 LO0 | 96-222 Mounting | 77-235 Watch,",
       "confidence": 0.49801307287474456
     },
     "quantity": {
@@ -121,8 +121,8 @@
       "actual_status": "found",
       "oracle_status": "found",
       "actual_value": {
-        "value": 6.0,
-        "symbol": null,
+        "value": 52831.26,
+        "symbol": "$",
         "currency_code": null
       },
       "oracle_value": {
@@ -130,8 +130,8 @@
         "symbol": "$",
         "currency_code": null
       },
-      "classification": "ocr_or_extractor_value_mismatch",
-      "agreement_score": 0.0
+      "classification": "e2e_matches_oracle",
+      "agreement_score": 1.0
     },
     "buyer": {
       "field_name": "buyer",
@@ -144,18 +144,18 @@
     },
     "currency": {
       "field_name": "currency",
-      "actual_status": "found",
+      "actual_status": "ambiguous",
       "oracle_status": "ambiguous",
       "actual_value": {
-        "code": "EUR",
-        "symbol": null
+        "code": null,
+        "symbol": "$"
       },
       "oracle_value": {
         "code": null,
         "symbol": "$"
       },
-      "classification": "extractor_instability_or_ambiguity",
-      "agreement_score": 0.0
+      "classification": "e2e_matches_oracle",
+      "agreement_score": 1.0
     },
     "date": {
       "field_name": "date",
@@ -170,7 +170,7 @@
       "field_name": "goods_description",
       "actual_status": "found",
       "oracle_status": "found",
-      "actual_value": "05-597 LO0 | 96-222 Mounting | 77-235 Watch쉼표",
+      "actual_value": "05-597 LO0 | 96-222 Mounting | 77-235 Watch,",
       "oracle_value": "65-507 Log | 96-222 Mounting | 77-235 Watch,",
       "classification": "e2e_matches_oracle",
       "agreement_score": 0.9
@@ -220,8 +220,8 @@
     },
     {
       "index": 1,
-      "text": "Watch쉼표",
-      "confidence": 0.9719550226246013,
+      "text": "Watch,",
+      "confidence": 0.9864206525821163,
       "bbox": [
         [
           235,
@@ -381,8 +381,8 @@
     },
     {
       "index": 8,
-      "text": "Exete쉼표",
-      "confidence": 0.8627067132905784,
+      "text": "Exete,",
+      "confidence": 0.845853042130363,
       "bbox": [
         [
           488,
@@ -588,8 +588,8 @@
     },
     {
       "index": 17,
-      "text": "Mans쉼표",
-      "confidence": 0.9108531789539863,
+      "text": "Mans,",
+      "confidence": 0.898581252066968,
       "bbox": [
         [
           1027,
@@ -979,8 +979,8 @@
     },
     {
       "index": 34,
-      "text": "NYANGA쉼표",
-      "confidence": 0.986933783765672,
+      "text": "NYANGA,",
+      "confidence": 0.9852688669347526,
       "bbox": [
         [
           440,
@@ -1025,8 +1025,8 @@
     },
     {
       "index": 36,
-      "text": "KURE쉼표",
-      "confidence": 0.9802154873342066,
+      "text": "KURE,",
+      "confidence": 0.9868497417669976,
       "bbox": [
         [
           49,
@@ -1347,8 +1347,8 @@
     },
     {
       "index": 50,
-      "text": "Road쉼표",
-      "confidence": 0.9991506430874278,
+      "text": "Road,",
+      "confidence": 0.9990832815622688,
       "bbox": [
         [
           210,
@@ -1577,8 +1577,8 @@
     },
     {
       "index": 60,
-      "text": "$52쉼표831.26",
-      "confidence": 0.8428384497485166,
+      "text": "$52,831.26",
+      "confidence": 0.8291961542787004,
       "bbox": [
         [
           938,
@@ -1669,8 +1669,8 @@
     },
     {
       "index": 64,
-      "text": "21쉼표",
-      "confidence": 0.9983533400293721,
+      "text": "21,",
+      "confidence": 0.9982289291123935,
       "bbox": [
         [
           496,
@@ -1899,8 +1899,8 @@
     },
     {
       "index": 74,
-      "text": "$4쉼표559.55",
-      "confidence": 0.8666339301333504,
+      "text": "$4,559.55",
+      "confidence": 0.8719588358035427,
       "bbox": [
         [
           1438,
@@ -2359,8 +2359,8 @@
     },
     {
       "index": 94,
-      "text": "Fung쉼표",
-      "confidence": 0.8922571381453033,
+      "text": "Fung,",
+      "confidence": 0.8722140465830959,
       "bbox": [
         [
           894,
@@ -3003,8 +3003,8 @@
     },
     {
       "index": 122,
-      "text": "DE쉼표쉼표",
-      "confidence": 0.8318450390414852,
+      "text": "DE,,",
+      "confidence": 0.7702243290657056,
       "bbox": [
         [
           296,
@@ -3325,8 +3325,8 @@
     },
     {
       "index": 136,
-      "text": "0272-966쉼표",
-      "confidence": 0.7815614660359017,
+      "text": "0272-966,",
+      "confidence": 0.7613485724495077,
       "bbox": [
         [
           225,
@@ -3555,8 +3555,8 @@
     },
     {
       "index": 146,
-      "text": "Dird쉼표",
-      "confidence": 0.8664651883468054,
+      "text": "Dird,",
+      "confidence": 0.8423029293378107,
       "bbox": [
         [
           47,
@@ -4405,7 +4405,7 @@
       ]
     }
   ],
-  "elapsed_seconds": 30.229,
+  "elapsed_seconds": 33.23,
   "common_json": {
     "schema_version": "1.0",
     "document_type": "commercial_invoice",
@@ -4488,78 +4488,78 @@
         "normalization_reason": "source field remains ambiguous"
       },
       "amount": {
-        "value": "6",
+        "value": "$52,831.26",
         "normalized": {
-          "value": 6.0,
-          "symbol": null,
+          "value": 52831.26,
+          "symbol": "$",
           "currency_code": null
         },
-        "raw_text": "6",
+        "raw_text": "$52,831.26",
         "bbox": [
           [
-            540,
-            1757
+            938,
+            1798
           ],
           [
-            558,
-            1757
+            1078,
+            1798
           ],
           [
-            558,
-            1781
+            1078,
+            1826
           ],
           [
-            540,
-            1781
+            938,
+            1826
           ]
         ],
-        "confidence": 0.9997799992600117,
+        "confidence": 0.8291961542787004,
         "status": "found",
         "source_indices": [
-          103
+          60
         ],
         "reason": null,
         "normalization_status": "normalized",
         "normalization_reason": null
       },
       "currency": {
-        "value": "EUR",
+        "value": "$",
         "normalized": {
-          "code": "EUR",
-          "symbol": null
+          "code": null,
+          "symbol": "$"
         },
-        "raw_text": "EUR",
+        "raw_text": "$52,831.26",
         "bbox": [
           [
-            1378,
-            1869
+            938,
+            1798
           ],
           [
-            1441,
-            1869
+            1078,
+            1798
           ],
           [
-            1441,
-            1891
+            1078,
+            1826
           ],
           [
-            1378,
-            1891
+            938,
+            1826
           ]
         ],
-        "confidence": 0.9916122599150695,
-        "status": "found",
+        "confidence": 0.8291961542787004,
+        "status": "ambiguous",
         "source_indices": [
-          106
+          60
         ],
-        "reason": null,
-        "normalization_status": "normalized",
-        "normalization_reason": null
+        "reason": "currency symbol found but ISO code absent",
+        "normalization_status": "ambiguous",
+        "normalization_reason": "currency symbol does not identify an ISO currency code"
       },
       "goods_description": {
-        "value": "05-597 LO0 | 96-222 Mounting | 77-235 Watch쉼표",
-        "normalized": "05-597 LO0 | 96-222 Mounting | 77-235 Watch쉼표",
-        "raw_text": "LO0 05-597 Mounting 96-222 Watch쉼표 77-235",
+        "value": "05-597 LO0 | 96-222 Mounting | 77-235 Watch,",
+        "normalized": "05-597 LO0 | 96-222 Mounting | 77-235 Watch,",
+        "raw_text": "LO0 05-597 Mounting 96-222 Watch, 77-235",
         "bbox": [
           [
             49,
