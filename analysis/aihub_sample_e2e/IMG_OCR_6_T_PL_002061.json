@@ -1,0 +1,2498 @@
+{
+  "document_id": "IMG_OCR_6_T_PL_002061",
+  "form_type": "포장명세서",
+  "document_type": "packing_list",
+  "backend": "aihub-logistics",
+  "gt_recall": {
+    "gt_boxes": 96,
+    "predicted_boxes": 100,
+    "geometric_recall": 1.0,
+    "exact_text_recall": 0.6979166666666666,
+    "segmentation_aware_recall": 0.71875,
+    "similarity_90_recall": 0.7395833333333334,
+    "mean_similarity": 0.9101043480155322,
+    "mean_cer": 0.09854744579251158
+  },
+  "fields": {
+    "invoice_no": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "goods_description": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "quantity": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "number_of_packages": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "gross_weight": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    }
+  },
+  "oracle_fields": {
+    "invoice_no": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "goods_description": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "quantity": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "number_of_packages": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "gross_weight": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    }
+  },
+  "field_diagnostics": {
+    "goods_description": {
+      "field_name": "goods_description",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "gross_weight": {
+      "field_name": "gross_weight",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "invoice_no": {
+      "field_name": "invoice_no",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "number_of_packages": {
+      "field_name": "number_of_packages",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "quantity": {
+      "field_name": "quantity",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    }
+  },
+  "ocr_predictions": [
+    {
+      "index": 0,
+      "text": "83639쉼표",
+      "confidence": 0.9994183339531505,
+      "bbox": [
+        [
+          570,
+          635
+        ],
+        [
+          650,
+          635
+        ],
+        [
+          650,
+          662
+        ],
+        [
+          570,
+          662
+        ]
+      ]
+    },
+    {
+      "index": 1,
+      "text": "Tampa",
+      "confidence": 0.97626852330924,
+      "bbox": [
+        [
+          1083,
+          435
+        ],
+        [
+          1165,
+          435
+        ],
+        [
+          1165,
+          463
+        ],
+        [
+          1083,
+          463
+        ]
+      ]
+    },
+    {
+      "index": 2,
+      "text": "street쉼표",
+      "confidence": 0.9761812365484329,
+      "bbox": [
+        [
+          1060,
+          472
+        ],
+        [
+          1136,
+          472
+        ],
+        [
+          1136,
+          499
+        ],
+        [
+          1060,
+          499
+        ]
+      ]
+    },
+    {
+      "index": 3,
+      "text": "10455쉼표",
+      "confidence": 0.9995866923572391,
+      "bbox": [
+        [
+          622,
+          350
+        ],
+        [
+          701,
+          350
+        ],
+        [
+          701,
+          377
+        ],
+        [
+          622,
+          377
+        ]
+      ]
+    },
+    {
+      "index": 4,
+      "text": "ADEN쉼표",
+      "confidence": 0.9644985464363052,
+      "bbox": [
+        [
+          697,
+          1122
+        ],
+        [
+          771,
+          1122
+        ],
+        [
+          771,
+          1150
+        ],
+        [
+          697,
+          1150
+        ]
+      ]
+    },
+    {
+      "index": 5,
+      "text": "Speed",
+      "confidence": 0.990633327826134,
+      "bbox": [
+        [
+          515,
+          1341
+        ],
+        [
+          589,
+          1341
+        ],
+        [
+          589,
+          1369
+        ],
+        [
+          515,
+          1369
+        ]
+      ]
+    },
+    {
+      "index": 6,
+      "text": "Sensor",
+      "confidence": 0.987452240785327,
+      "bbox": [
+        [
+          601,
+          1342
+        ],
+        [
+          683,
+          1342
+        ],
+        [
+          683,
+          1365
+        ],
+        [
+          601,
+          1365
+        ]
+      ]
+    },
+    {
+      "index": 7,
+      "text": "FLT",
+      "confidence": 0.7068317836676221,
+      "bbox": [
+        [
+          1297,
+          1122
+        ],
+        [
+          1344,
+          1122
+        ],
+        [
+          1344,
+          1146
+        ],
+        [
+          1297,
+          1146
+        ]
+      ]
+    },
+    {
+      "index": 8,
+      "text": "277KG",
+      "confidence": 0.9999328837480207,
+      "bbox": [
+        [
+          1206,
+          1341
+        ],
+        [
+          1282,
+          1341
+        ],
+        [
+          1282,
+          1365
+        ],
+        [
+          1206,
+          1365
+        ]
+      ]
+    },
+    {
+      "index": 9,
+      "text": "11-10-2205",
+      "confidence": 0.9437592130365733,
+      "bbox": [
+        [
+          378,
+          989
+        ],
+        [
+          508,
+          989
+        ],
+        [
+          508,
+          1011
+        ],
+        [
+          378,
+          1011
+        ]
+      ]
+    },
+    {
+      "index": 10,
+      "text": "ME",
+      "confidence": 0.9849122738222206,
+      "bbox": [
+        [
+          529,
+          635
+        ],
+        [
+          560,
+          635
+        ],
+        [
+          560,
+          658
+        ],
+        [
+          529,
+          658
+        ]
+      ]
+    },
+    {
+      "index": 11,
+      "text": "YEMEN",
+      "confidence": 0.9871729682679071,
+      "bbox": [
+        [
+          782,
+          1122
+        ],
+        [
+          867,
+          1122
+        ],
+        [
+          867,
+          1146
+        ],
+        [
+          782,
+          1146
+        ]
+      ]
+    },
+    {
+      "index": 12,
+      "text": "TOTAL",
+      "confidence": 0.9902310022293028,
+      "bbox": [
+        [
+          819,
+          1713
+        ],
+        [
+          913,
+          1713
+        ],
+        [
+          913,
+          1736
+        ],
+        [
+          819,
+          1736
+        ]
+      ]
+    },
+    {
+      "index": 13,
+      "text": "Manager",
+      "confidence": 0.988796933086545,
+      "bbox": [
+        [
+          992,
+          1937
+        ],
+        [
+          1097,
+          1937
+        ],
+        [
+          1097,
+          1964
+        ],
+        [
+          992,
+          1964
+        ]
+      ]
+    },
+    {
+      "index": 14,
+      "text": "above.",
+      "confidence": 0.9959269453083367,
+      "bbox": [
+        [
+          510,
+          866
+        ],
+        [
+          599,
+          866
+        ],
+        [
+          599,
+          890
+        ],
+        [
+          510,
+          890
+        ]
+      ]
+    },
+    {
+      "index": 15,
+      "text": "93",
+      "confidence": 0.9999471892199937,
+      "bbox": [
+        [
+          340,
+          1342
+        ],
+        [
+          370,
+          1342
+        ],
+        [
+          370,
+          1365
+        ],
+        [
+          340,
+          1365
+        ]
+      ]
+    },
+    {
+      "index": 16,
+      "text": "2S",
+      "confidence": 0.7912021439739986,
+      "bbox": [
+        [
+          470,
+          872
+        ],
+        [
+          503,
+          872
+        ],
+        [
+          503,
+          890
+        ],
+        [
+          470,
+          890
+        ]
+      ]
+    },
+    {
+      "index": 17,
+      "text": "417KG",
+      "confidence": 0.9999176096789945,
+      "bbox": [
+        [
+          1016,
+          1341
+        ],
+        [
+          1094,
+          1341
+        ],
+        [
+          1094,
+          1365
+        ],
+        [
+          1016,
+          1365
+        ]
+      ]
+    },
+    {
+      "index": 18,
+      "text": "FAX)+3-8478-7473113",
+      "confidence": 0.9922533346590476,
+      "bbox": [
+        [
+          856,
+          568
+        ],
+        [
+          1121,
+          568
+        ],
+        [
+          1121,
+          597
+        ],
+        [
+          856,
+          597
+        ]
+      ]
+    },
+    {
+      "index": 19,
+      "text": "Telescopgc",
+      "confidence": 0.9378772592626352,
+      "bbox": [
+        [
+          514,
+          1547
+        ],
+        [
+          638,
+          1547
+        ],
+        [
+          638,
+          1576
+        ],
+        [
+          514,
+          1576
+        ]
+      ]
+    },
+    {
+      "index": 20,
+      "text": "PKG",
+      "confidence": 0.9997088680512619,
+      "bbox": [
+        [
+          382,
+          1342
+        ],
+        [
+          429,
+          1342
+        ],
+        [
+          429,
+          1365
+        ],
+        [
+          382,
+          1365
+        ]
+      ]
+    },
+    {
+      "index": 21,
+      "text": "Moat",
+      "confidence": 0.9276374422285988,
+      "bbox": [
+        [
+          993,
+          472
+        ],
+        [
+          1052,
+          472
+        ],
+        [
+          1052,
+          495
+        ],
+        [
+          993,
+          495
+        ]
+      ]
+    },
+    {
+      "index": 22,
+      "text": "States",
+      "confidence": 0.996526048690221,
+      "bbox": [
+        [
+          943,
+          504
+        ],
+        [
+          1017,
+          504
+        ],
+        [
+          1017,
+          527
+        ],
+        [
+          943,
+          527
+        ]
+      ]
+    },
+    {
+      "index": 23,
+      "text": "Door",
+      "confidence": 0.9996461255328479,
+      "bbox": [
+        [
+          1017,
+          435
+        ],
+        [
+          1075,
+          435
+        ],
+        [
+          1075,
+          458
+        ],
+        [
+          1017,
+          458
+        ]
+      ]
+    },
+    {
+      "index": 24,
+      "text": "Same",
+      "confidence": 0.9485728562547716,
+      "bbox": [
+        [
+          386,
+          865
+        ],
+        [
+          464,
+          865
+        ],
+        [
+          464,
+          890
+        ],
+        [
+          386,
+          890
+        ]
+      ]
+    },
+    {
+      "index": 25,
+      "text": "SINGATOK쉼표",
+      "confidence": 0.949058989484121,
+      "bbox": [
+        [
+          1133,
+          1121
+        ],
+        [
+          1284,
+          1121
+        ],
+        [
+          1284,
+          1149
+        ],
+        [
+          1133,
+          1149
+        ]
+      ]
+    },
+    {
+      "index": 26,
+      "text": "TEL)+4-7062-3643066",
+      "confidence": 0.9904493537245543,
+      "bbox": [
+        [
+          857,
+          536
+        ],
+        [
+          1117,
+          536
+        ],
+        [
+          1117,
+          564
+        ],
+        [
+          857,
+          564
+        ]
+      ]
+    },
+    {
+      "index": 27,
+      "text": "Ltd.",
+      "confidence": 0.9933778529676474,
+      "bbox": [
+        [
+          421,
+          600
+        ],
+        [
+          466,
+          600
+        ],
+        [
+          466,
+          623
+        ],
+        [
+          421,
+          623
+        ]
+      ]
+    },
+    {
+      "index": 28,
+      "text": "Pascagoua쉼표쉼표",
+      "confidence": 0.8667819871771093,
+      "bbox": [
+        [
+          1148,
+          471
+        ],
+        [
+          1288,
+          471
+        ],
+        [
+          1288,
+          499
+        ],
+        [
+          1148,
+          499
+        ]
+      ]
+    },
+    {
+      "index": 29,
+      "text": "Station",
+      "confidence": 0.9271512947393221,
+      "bbox": [
+        [
+          896,
+          471
+        ],
+        [
+          979,
+          471
+        ],
+        [
+          979,
+          495
+        ],
+        [
+          896,
+          495
+        ]
+      ]
+    },
+    {
+      "index": 30,
+      "text": "United",
+      "confidence": 0.9974885988493293,
+      "bbox": [
+        [
+          856,
+          503
+        ],
+        [
+          933,
+          503
+        ],
+        [
+          933,
+          528
+        ],
+        [
+          856,
+          528
+        ]
+      ]
+    },
+    {
+      "index": 31,
+      "text": "Mounndsille",
+      "confidence": 0.7176681247913695,
+      "bbox": [
+        [
+          373,
+          635
+        ],
+        [
+          516,
+          635
+        ],
+        [
+          516,
+          661
+        ],
+        [
+          373,
+          661
+        ]
+      ]
+    },
+    {
+      "index": 32,
+      "text": "578KG",
+      "confidence": 0.9995370250710264,
+      "bbox": [
+        [
+          1207,
+          1720
+        ],
+        [
+          1281,
+          1720
+        ],
+        [
+          1281,
+          1743
+        ],
+        [
+          1207,
+          1743
+        ]
+      ]
+    },
+    {
+      "index": 33,
+      "text": "Shower",
+      "confidence": 0.9826538316430263,
+      "bbox": [
+        [
+          917,
+          435
+        ],
+        [
+          1006,
+          435
+        ],
+        [
+          1006,
+          459
+        ],
+        [
+          917,
+          459
+        ]
+      ]
+    },
+    {
+      "index": 34,
+      "text": "86",
+      "confidence": 0.9999924302082964,
+      "bbox": [
+        [
+          856,
+          472
+        ],
+        [
+          885,
+          472
+        ],
+        [
+          885,
+          494
+        ],
+        [
+          856,
+          494
+        ]
+      ]
+    },
+    {
+      "index": 35,
+      "text": "Health",
+      "confidence": 0.9643069739481588,
+      "bbox": [
+        [
+          987,
+          1895
+        ],
+        [
+          1063,
+          1895
+        ],
+        [
+          1063,
+          1919
+        ],
+        [
+          987,
+          1919
+        ]
+      ]
+    },
+    {
+      "index": 36,
+      "text": "A",
+      "confidence": 0.999822080132479,
+      "bbox": [
+        [
+          201,
+          1378
+        ],
+        [
+          221,
+          1378
+        ],
+        [
+          221,
+          1401
+        ],
+        [
+          201,
+          1401
+        ]
+      ]
+    },
+    {
+      "index": 37,
+      "text": "DRAGON",
+      "confidence": 0.9955785525358274,
+      "bbox": [
+        [
+          316,
+          1108
+        ],
+        [
+          418,
+          1108
+        ],
+        [
+          418,
+          1130
+        ],
+        [
+          316,
+          1130
+        ]
+      ]
+    },
+    {
+      "index": 38,
+      "text": "Mast",
+      "confidence": 0.9822053535872689,
+      "bbox": [
+        [
+          651,
+          1547
+        ],
+        [
+          708,
+          1547
+        ],
+        [
+          708,
+          1572
+        ],
+        [
+          651,
+          1572
+        ]
+      ]
+    },
+    {
+      "index": 39,
+      "text": "P&Y",
+      "confidence": 0.957162846256114,
+      "bbox": [
+        [
+          856,
+          435
+        ],
+        [
+          905,
+          435
+        ],
+        [
+          905,
+          459
+        ],
+        [
+          856,
+          459
+        ]
+      ]
+    },
+    {
+      "index": 40,
+      "text": "211.14",
+      "confidence": 0.9994582116693531,
+      "bbox": [
+        [
+          1361,
+          1344
+        ],
+        [
+          1441,
+          1344
+        ],
+        [
+          1441,
+          1368
+        ],
+        [
+          1361,
+          1368
+        ]
+      ]
+    },
+    {
+      "index": 41,
+      "text": "Ltd.",
+      "confidence": 0.8662443422468077,
+      "bbox": [
+        [
+          1133,
+          1895
+        ],
+        [
+          1179,
+          1895
+        ],
+        [
+          1179,
+          1920
+        ],
+        [
+          1133,
+          1920
+        ]
+      ]
+    },
+    {
+      "index": 42,
+      "text": "SUNRISE",
+      "confidence": 0.998119375585745,
+      "bbox": [
+        [
+          197,
+          1108
+        ],
+        [
+          302,
+          1108
+        ],
+        [
+          302,
+          1130
+        ],
+        [
+          197,
+          1130
+        ]
+      ]
+    },
+    {
+      "index": 43,
+      "text": "V.755",
+      "confidence": 0.9999288173146224,
+      "bbox": [
+        [
+          317,
+          1163
+        ],
+        [
+          385,
+          1163
+        ],
+        [
+          385,
+          1186
+        ],
+        [
+          317,
+          1186
+        ]
+      ]
+    },
+    {
+      "index": 44,
+      "text": "Court",
+      "confidence": 0.9907826672946779,
+      "bbox": [
+        [
+          296,
+          636
+        ],
+        [
+          362,
+          636
+        ],
+        [
+          362,
+          659
+        ],
+        [
+          296,
+          659
+        ]
+      ]
+    },
+    {
+      "index": 45,
+      "text": "Co.쉼표",
+      "confidence": 0.9995507437698483,
+      "bbox": [
+        [
+          1073,
+          1896
+        ],
+        [
+          1121,
+          1896
+        ],
+        [
+          1121,
+          1923
+        ],
+        [
+          1073,
+          1923
+        ]
+      ]
+    },
+    {
+      "index": 46,
+      "text": "Brands",
+      "confidence": 0.9799051004487703,
+      "bbox": [
+        [
+          271,
+          600
+        ],
+        [
+          352,
+          600
+        ],
+        [
+          352,
+          624
+        ],
+        [
+          271,
+          624
+        ]
+      ]
+    },
+    {
+      "index": 47,
+      "text": "Kangso-ku쉼표",
+      "confidence": 0.9907396224897081,
+      "bbox": [
+        [
+          406,
+          350
+        ],
+        [
+          535,
+          350
+        ],
+        [
+          535,
+          378
+        ],
+        [
+          406,
+          378
+        ]
+      ]
+    },
+    {
+      "index": 48,
+      "text": "seoUl",
+      "confidence": 0.9278428037657998,
+      "bbox": [
+        [
+          548,
+          351
+        ],
+        [
+          610,
+          351
+        ],
+        [
+          610,
+          374
+        ],
+        [
+          548,
+          374
+        ]
+      ]
+    },
+    {
+      "index": 49,
+      "text": "2",
+      "confidence": 0.9998865127572896,
+      "bbox": [
+        [
+          229,
+          1381
+        ],
+        [
+          244,
+          1381
+        ],
+        [
+          244,
+          1405
+        ],
+        [
+          229,
+          1405
+        ]
+      ]
+    },
+    {
+      "index": 50,
+      "text": "Co.쉼표",
+      "confidence": 0.9999055541340045,
+      "bbox": [
+        [
+          363,
+          601
+        ],
+        [
+          409,
+          601
+        ],
+        [
+          409,
+          627
+        ],
+        [
+          363,
+          627
+        ]
+      ]
+    },
+    {
+      "index": 51,
+      "text": "343KG",
+      "confidence": 0.9999334667970233,
+      "bbox": [
+        [
+          1016,
+          1548
+        ],
+        [
+          1093,
+          1548
+        ],
+        [
+          1093,
+          1572
+        ],
+        [
+          1016,
+          1572
+        ]
+      ]
+    },
+    {
+      "index": 52,
+      "text": "Giametrr",
+      "confidence": 0.8017728421293109,
+      "bbox": [
+        [
+          867,
+          1896
+        ],
+        [
+          977,
+          1896
+        ],
+        [
+          977,
+          1919
+        ],
+        [
+          867,
+          1919
+        ]
+      ]
+    },
+    {
+      "index": 53,
+      "text": "A1",
+      "confidence": 0.9970170606944495,
+      "bbox": [
+        [
+          137,
+          1378
+        ],
+        [
+          167,
+          1378
+        ],
+        [
+          167,
+          1400
+        ],
+        [
+          137,
+          1400
+        ]
+      ]
+    },
+    {
+      "index": 54,
+      "text": "108KG",
+      "confidence": 0.9999146122577571,
+      "bbox": [
+        [
+          1207,
+          1548
+        ],
+        [
+          1282,
+          1548
+        ],
+        [
+          1282,
+          1572
+        ],
+        [
+          1207,
+          1572
+        ]
+      ]
+    },
+    {
+      "index": 55,
+      "text": "F)L)+8-4899-7778532",
+      "confidence": 0.8888570502654904,
+      "bbox": [
+        [
+          153,
+          733
+        ],
+        [
+          413,
+          733
+        ],
+        [
+          413,
+          759
+        ],
+        [
+          153,
+          759
+        ]
+      ]
+    },
+    {
+      "index": 56,
+      "text": "TEL)+2-6256-3234442",
+      "confidence": 0.9641225545163445,
+      "bbox": [
+        [
+          145,
+          700
+        ],
+        [
+          413,
+          700
+        ],
+        [
+          413,
+          728
+        ],
+        [
+          145,
+          728
+        ]
+      ]
+    },
+    {
+      "index": 57,
+      "text": "Namn",
+      "confidence": 0.7547797200837906,
+      "bbox": [
+        [
+          964,
+          2023
+        ],
+        [
+          1019,
+          2023
+        ],
+        [
+          1019,
+          2047
+        ],
+        [
+          964,
+          2047
+        ]
+      ]
+    },
+    {
+      "index": 58,
+      "text": "32704쉼표",
+      "confidence": 0.9971618449889786,
+      "bbox": [
+        [
+          1343,
+          471
+        ],
+        [
+          1423,
+          471
+        ],
+        [
+          1423,
+          499
+        ],
+        [
+          1343,
+          499
+        ]
+      ]
+    },
+    {
+      "index": 59,
+      "text": "Co.쉼표",
+      "confidence": 0.9997145931902266,
+      "bbox": [
+        [
+          1178,
+          435
+        ],
+        [
+          1226,
+          435
+        ],
+        [
+          1226,
+          462
+        ],
+        [
+          1178,
+          462
+        ]
+      ]
+    },
+    {
+      "index": 60,
+      "text": "PKG",
+      "confidence": 0.9999374523166364,
+      "bbox": [
+        [
+          377,
+          1546
+        ],
+        [
+          426,
+          1546
+        ],
+        [
+          426,
+          1570
+        ],
+        [
+          377,
+          1570
+        ]
+      ]
+    },
+    {
+      "index": 61,
+      "text": "465.57",
+      "confidence": 0.9995572669566662,
+      "bbox": [
+        [
+          1360,
+          1551
+        ],
+        [
+          1440,
+          1551
+        ],
+        [
+          1440,
+          1575
+        ],
+        [
+          1360,
+          1575
+        ]
+      ]
+    },
+    {
+      "index": 62,
+      "text": "Ltd.",
+      "confidence": 0.9936086009854648,
+      "bbox": [
+        [
+          1238,
+          434
+        ],
+        [
+          1283,
+          434
+        ],
+        [
+          1283,
+          459
+        ],
+        [
+          1238,
+          459
+        ]
+      ]
+    },
+    {
+      "index": 63,
+      "text": "365KG",
+      "confidence": 0.9999940156837401,
+      "bbox": [
+        [
+          1017,
+          1720
+        ],
+        [
+          1095,
+          1720
+        ],
+        [
+          1095,
+          1743
+        ],
+        [
+          1017,
+          1743
+        ]
+      ]
+    },
+    {
+      "index": 64,
+      "text": "(XT-10)",
+      "confidence": 0.8128993678364813,
+      "bbox": [
+        [
+          718,
+          1547
+        ],
+        [
+          808,
+          1547
+        ],
+        [
+          808,
+          1575
+        ],
+        [
+          718,
+          1575
+        ]
+      ]
+    },
+    {
+      "index": 65,
+      "text": "States",
+      "confidence": 0.9814093333788699,
+      "bbox": [
+        [
+          235,
+          667
+        ],
+        [
+          311,
+          667
+        ],
+        [
+          311,
+          692
+        ],
+        [
+          235,
+          692
+        ]
+      ]
+    },
+    {
+      "index": 66,
+      "text": "Associate",
+      "confidence": 0.9323343423788469,
+      "bbox": [
+        [
+          868,
+          1937
+        ],
+        [
+          981,
+          1937
+        ],
+        [
+          981,
+          1961
+        ],
+        [
+          868,
+          1961
+        ]
+      ]
+    },
+    {
+      "index": 67,
+      "text": "Abrasie",
+      "confidence": 0.9147105886480392,
+      "bbox": [
+        [
+          141,
+          1339
+        ],
+        [
+          243,
+          1339
+        ],
+        [
+          243,
+          1363
+        ],
+        [
+          141,
+          1363
+        ]
+      ]
+    },
+    {
+      "index": 68,
+      "text": "Hamhln",
+      "confidence": 0.8721744976023602,
+      "bbox": [
+        [
+          204,
+          635
+        ],
+        [
+          285,
+          635
+        ],
+        [
+          285,
+          659
+        ],
+        [
+          204,
+          659
+        ]
+      ]
+    },
+    {
+      "index": 69,
+      "text": "CBM",
+      "confidence": 0.9964461414975258,
+      "bbox": [
+        [
+          1451,
+          1344
+        ],
+        [
+          1504,
+          1344
+        ],
+        [
+          1504,
+          1368
+        ],
+        [
+          1451,
+          1368
+        ]
+      ]
+    },
+    {
+      "index": 70,
+      "text": "B",
+      "confidence": 0.9904862044799393,
+      "bbox": [
+        [
+          216,
+          1582
+        ],
+        [
+          235,
+          1582
+        ],
+        [
+          235,
+          1604
+        ],
+        [
+          216,
+          1604
+        ]
+      ]
+    },
+    {
+      "index": 71,
+      "text": "SC",
+      "confidence": 0.9974994053101746,
+      "bbox": [
+        [
+          1298,
+          471
+        ],
+        [
+          1334,
+          471
+        ],
+        [
+          1334,
+          494
+        ],
+        [
+          1298,
+          494
+        ]
+      ]
+    },
+    {
+      "index": 72,
+      "text": "United",
+      "confidence": 0.9945667031736639,
+      "bbox": [
+        [
+          149,
+          668
+        ],
+        [
+          226,
+          668
+        ],
+        [
+          226,
+          692
+        ],
+        [
+          149,
+          692
+        ]
+      ]
+    },
+    {
+      "index": 73,
+      "text": "Greestyle",
+      "confidence": 0.9645489329113257,
+      "bbox": [
+        [
+          147,
+          600
+        ],
+        [
+          261,
+          600
+        ],
+        [
+          261,
+          629
+        ],
+        [
+          147,
+          629
+        ]
+      ]
+    },
+    {
+      "index": 74,
+      "text": "94",
+      "confidence": 0.9995847922571139,
+      "bbox": [
+        [
+          241,
+          1585
+        ],
+        [
+          271,
+          1585
+        ],
+        [
+          271,
+          1608
+        ],
+        [
+          241,
+          1608
+        ]
+      ]
+    },
+    {
+      "index": 75,
+      "text": "Pedestall",
+      "confidence": 0.8719993235521029,
+      "bbox": [
+        [
+          140,
+          1545
+        ],
+        [
+          239,
+          1545
+        ],
+        [
+          239,
+          1571
+        ],
+        [
+          140,
+          1571
+        ]
+      ]
+    },
+    {
+      "index": 76,
+      "text": "Fhang",
+      "confidence": 0.8802851802480417,
+      "bbox": [
+        [
+          147,
+          314
+        ],
+        [
+          222,
+          314
+        ],
+        [
+          222,
+          342
+        ],
+        [
+          147,
+          342
+        ]
+      ]
+    },
+    {
+      "index": 77,
+      "text": "Ltd.",
+      "confidence": 0.9725188328686009,
+      "bbox": [
+        [
+          343,
+          314
+        ],
+        [
+          390,
+          314
+        ],
+        [
+          390,
+          338
+        ],
+        [
+          343,
+          338
+        ]
+      ]
+    },
+    {
+      "index": 78,
+      "text": "Kongnang-ro",
+      "confidence": 0.9438888732524886,
+      "bbox": [
+        [
+          239,
+          350
+        ],
+        [
+          393,
+          350
+        ],
+        [
+          393,
+          378
+        ],
+        [
+          239,
+          378
+        ]
+      ]
+    },
+    {
+      "index": 79,
+      "text": "133",
+      "confidence": 0.932823033823313,
+      "bbox": [
+        [
+          150,
+          635
+        ],
+        [
+          193,
+          635
+        ],
+        [
+          193,
+          659
+        ],
+        [
+          150,
+          659
+        ]
+      ]
+    },
+    {
+      "index": 80,
+      "text": "B10",
+      "confidence": 0.9896310040705242,
+      "bbox": [
+        [
+          136,
+          1581
+        ],
+        [
+          184,
+          1581
+        ],
+        [
+          184,
+          1604
+        ],
+        [
+          136,
+          1604
+        ]
+      ]
+    },
+    {
+      "index": 81,
+      "text": "CBM",
+      "confidence": 0.9996999612164642,
+      "bbox": [
+        [
+          1452,
+          1551
+        ],
+        [
+          1505,
+          1551
+        ],
+        [
+          1505,
+          1574
+        ],
+        [
+          1452,
+          1574
+        ]
+      ]
+    },
+    {
+      "index": 82,
+      "text": "Kenedi",
+      "confidence": 0.9850289355920034,
+      "bbox": [
+        [
+          871,
+          2022
+        ],
+        [
+          954,
+          2022
+        ],
+        [
+          954,
+          2048
+        ],
+        [
+          871,
+          2048
+        ]
+      ]
+    },
+    {
+      "index": 83,
+      "text": "Co.쉼표",
+      "confidence": 0.9986613260887987,
+      "bbox": [
+        [
+          283,
+          314
+        ],
+        [
+          332,
+          314
+        ],
+        [
+          332,
+          341
+        ],
+        [
+          283,
+          341
+        ]
+      ]
+    },
+    {
+      "index": 84,
+      "text": "Korea",
+      "confidence": 0.9983190639461834,
+      "bbox": [
+        [
+          252,
+          383
+        ],
+        [
+          320,
+          383
+        ],
+        [
+          320,
+          407
+        ],
+        [
+          252,
+          407
+        ]
+      ]
+    },
+    {
+      "index": 85,
+      "text": "Rep.",
+      "confidence": 0.9613352971466317,
+      "bbox": [
+        [
+          147,
+          384
+        ],
+        [
+          203,
+          384
+        ],
+        [
+          203,
+          411
+        ],
+        [
+          147,
+          411
+        ]
+      ]
+    },
+    {
+      "index": 86,
+      "text": "178--8",
+      "confidence": 0.947320432594981,
+      "bbox": [
+        [
+          149,
+          347
+        ],
+        [
+          228,
+          347
+        ],
+        [
+          228,
+          375
+        ],
+        [
+          149,
+          375
+        ]
+      ]
+    },
+    {
+      "index": 87,
+      "text": "Jun",
+      "confidence": 0.8500573248601729,
+      "bbox": [
+        [
+          229,
+          314
+        ],
+        [
+          274,
+          314
+        ],
+        [
+          274,
+          339
+        ],
+        [
+          229,
+          339
+        ]
+      ]
+    },
+    {
+      "index": 88,
+      "text": "62",
+      "confidence": 0.9975541247730051,
+      "bbox": [
+        [
+          334,
+          1547
+        ],
+        [
+          367,
+          1547
+        ],
+        [
+          367,
+          1570
+        ],
+        [
+          334,
+          1570
+        ]
+      ]
+    },
+    {
+      "index": 89,
+      "text": "X)L)+222003-3275",
+      "confidence": 0.5640500526355657,
+      "bbox": [
+        [
+          176,
+          448
+        ],
+        [
+          415,
+          448
+        ],
+        [
+          415,
+          475
+        ],
+        [
+          176,
+          475
+        ]
+      ]
+    },
+    {
+      "index": 90,
+      "text": "799.66",
+      "confidence": 0.9035171758111338,
+      "bbox": [
+        [
+          1360,
+          1723
+        ],
+        [
+          1442,
+          1723
+        ],
+        [
+          1442,
+          1747
+        ],
+        [
+          1360,
+          1747
+        ]
+      ]
+    },
+    {
+      "index": 91,
+      "text": "Seller",
+      "confidence": 0.9368364069247135,
+      "bbox": [
+        [
+          145,
+          279
+        ],
+        [
+          225,
+          279
+        ],
+        [
+          225,
+          303
+        ],
+        [
+          145,
+          303
+        ]
+      ]
+    },
+    {
+      "index": 92,
+      "text": "J4L)+77-)4122-33-",
+      "confidence": 0.6912268253470485,
+      "bbox": [
+        [
+          186,
+          414
+        ],
+        [
+          413,
+          414
+        ],
+        [
+          413,
+          441
+        ],
+        [
+          186,
+          441
+        ]
+      ]
+    },
+    {
+      "index": 93,
+      "text": "523695",
+      "confidence": 0.9983588405600431,
+      "bbox": [
+        [
+          860,
+          334
+        ],
+        [
+          945,
+          334
+        ],
+        [
+          945,
+          357
+        ],
+        [
+          860,
+          357
+        ]
+      ]
+    },
+    {
+      "index": 94,
+      "text": "CBM",
+      "confidence": 0.9996692504445938,
+      "bbox": [
+        [
+          1451,
+          1723
+        ],
+        [
+          1506,
+          1723
+        ],
+        [
+          1506,
+          1747
+        ],
+        [
+          1451,
+          1747
+        ]
+      ]
+    },
+    {
+      "index": 95,
+      "text": "InRoice",
+      "confidence": 0.8917933130754324,
+      "bbox": [
+        [
+          1129,
+          280
+        ],
+        [
+          1223,
+          280
+        ],
+        [
+          1223,
+          302
+        ],
+        [
+          1129,
+          302
+        ]
+      ]
+    },
+    {
+      "index": 96,
+      "text": "06-28-2002",
+      "confidence": 0.9997084986275773,
+      "bbox": [
+        [
+          1137,
+          334
+        ],
+        [
+          1271,
+          334
+        ],
+        [
+          1271,
+          357
+        ],
+        [
+          1137,
+          357
+        ]
+      ]
+    },
+    {
+      "index": 97,
+      "text": "Of",
+      "confidence": 0.6821437513756374,
+      "bbox": [
+        [
+          212,
+          382
+        ],
+        [
+          242,
+          382
+        ],
+        [
+          242,
+          406
+        ],
+        [
+          212,
+          406
+        ]
+      ]
+    },
+    {
+      "index": 98,
+      "text": "Remark",
+      "confidence": 0.9161271039940493,
+      "bbox": [
+        [
+          143,
+          1827
+        ],
+        [
+          243,
+          1827
+        ],
+        [
+          243,
+          1850
+        ],
+        [
+          143,
+          1850
+        ]
+      ]
+    },
+    {
+      "index": 99,
+      "text": "Fharg--uy",
+      "confidence": 0.5626990060762939,
+      "bbox": [
+        [
+          146,
+          314
+        ],
+        [
+          279,
+          314
+        ],
+        [
+          279,
+          342
+        ],
+        [
+          146,
+          342
+        ]
+      ]
+    }
+  ],
+  "elapsed_seconds": 21.368,
+  "common_json": {
+    "schema_version": "1.0",
+    "document_type": "packing_list",
+    "document_id": "IMG_OCR_6_T_PL_002061",
+    "processing_status": "failed",
+    "fields": {
+      "invoice_no": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice number label/value not recovered",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "goods_description": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "table header not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "quantity": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "table header not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "number_of_packages": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "semantic label and compatible neighboring value not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "gross_weight": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "table header not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      }
+    }
+  }
+}

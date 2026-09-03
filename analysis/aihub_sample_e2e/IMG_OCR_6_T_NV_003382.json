@@ -1,0 +1,1370 @@
+{
+  "document_id": "IMG_OCR_6_T_NV_003382",
+  "form_type": "상업송장",
+  "document_type": "commercial_invoice",
+  "backend": "aihub-logistics",
+  "gt_recall": {
+    "gt_boxes": 43,
+    "predicted_boxes": 45,
+    "geometric_recall": 0.9534883720930233,
+    "exact_text_recall": 0.23255813953488372,
+    "segmentation_aware_recall": 0.2558139534883721,
+    "similarity_90_recall": 0.23255813953488372,
+    "mean_similarity": 0.5803986710963456,
+    "mean_cer": 0.8323089700996678
+  },
+  "fields": {
+    "invoice_no": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "date": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "buyer": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "amount": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "currency": {
+      "status": "found",
+      "value": "USD",
+      "normalized": {
+        "code": "USD",
+        "symbol": null
+      },
+      "confidence": 0.675771182263857
+    },
+    "goods_description": {
+      "status": "found",
+      "value": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO쉼표NN",
+      "normalized": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO쉼표NN",
+      "confidence": 0.45640847838926096
+    },
+    "quantity": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    }
+  },
+  "oracle_fields": {
+    "invoice_no": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "date": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "buyer": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "amount": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "currency": {
+      "status": "found",
+      "value": "USD",
+      "normalized": {
+        "code": "USD",
+        "symbol": null
+      },
+      "confidence": 1.0
+    },
+    "goods_description": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "quantity": {
+      "status": "found",
+      "value": "30",
+      "normalized": {
+        "items": [
+          {
+            "value": 30,
+            "unit": null
+          }
+        ]
+      },
+      "confidence": 1.0
+    }
+  },
+  "field_diagnostics": {
+    "amount": {
+      "field_name": "amount",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "buyer": {
+      "field_name": "buyer",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "currency": {
+      "field_name": "currency",
+      "actual_status": "found",
+      "oracle_status": "found",
+      "actual_value": {
+        "code": "USD",
+        "symbol": null
+      },
+      "oracle_value": {
+        "code": "USD",
+        "symbol": null
+      },
+      "classification": "e2e_matches_oracle",
+      "agreement_score": 1.0
+    },
+    "date": {
+      "field_name": "date",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "goods_description": {
+      "field_name": "goods_description",
+      "actual_status": "found",
+      "oracle_status": "missing",
+      "actual_value": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO쉼표NN",
+      "oracle_value": null,
+      "classification": "oracle_unavailable_for_found_value",
+      "agreement_score": 0.0
+    },
+    "invoice_no": {
+      "field_name": "invoice_no",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "quantity": {
+      "field_name": "quantity",
+      "actual_status": "missing",
+      "oracle_status": "found",
+      "actual_value": null,
+      "oracle_value": {
+        "items": [
+          {
+            "value": 30,
+            "unit": null
+          }
+        ]
+      },
+      "classification": "ocr_value_degradation",
+      "agreement_score": 0.0
+    }
+  },
+  "ocr_predictions": [
+    {
+      "index": 0,
+      "text": "AAddrssyA..pepc",
+      "confidence": 0.5790041649183697,
+      "bbox": [
+        [
+          9,
+          153
+        ],
+        [
+          123,
+          153
+        ],
+        [
+          123,
+          172
+        ],
+        [
+          9,
+          172
+        ]
+      ]
+    },
+    {
+      "index": 1,
+      "text": "Consiinorlumyyrrnr",
+      "confidence": 0.38980784774359833,
+      "bbox": [
+        [
+          7,
+          114
+        ],
+        [
+          181,
+          114
+        ],
+        [
+          181,
+          130
+        ],
+        [
+          7,
+          130
+        ]
+      ]
+    },
+    {
+      "index": 2,
+      "text": "NoV/prpoc",
+      "confidence": 0.5908520183643319,
+      "bbox": [
+        [
+          64,
+          234
+        ],
+        [
+          148,
+          234
+        ],
+        [
+          148,
+          249
+        ],
+        [
+          64,
+          249
+        ]
+      ]
+    },
+    {
+      "index": 3,
+      "text": "Dete/la:aac",
+      "confidence": 0.5505053946554694,
+      "bbox": [
+        [
+          9,
+          255
+        ],
+        [
+          88,
+          255
+        ],
+        [
+          88,
+          271
+        ],
+        [
+          9,
+          271
+        ]
+      ]
+    },
+    {
+      "index": 4,
+      "text": "InV0ice",
+      "confidence": 0.8640464038232132,
+      "bbox": [
+        [
+          10,
+          234
+        ],
+        [
+          61,
+          234
+        ],
+        [
+          61,
+          248
+        ],
+        [
+          10,
+          248
+        ]
+      ]
+    },
+    {
+      "index": 5,
+      "text": "OF",
+      "confidence": 0.88316596355552,
+      "bbox": [
+        [
+          65,
+          806
+        ],
+        [
+          88,
+          806
+        ],
+        [
+          88,
+          820
+        ],
+        [
+          65,
+          820
+        ]
+      ]
+    },
+    {
+      "index": 6,
+      "text": "Containee",
+      "confidence": 0.8471386626660378,
+      "bbox": [
+        [
+          8,
+          337
+        ],
+        [
+          79,
+          337
+        ],
+        [
+          79,
+          351
+        ],
+        [
+          8,
+          351
+        ]
+      ]
+    },
+    {
+      "index": 7,
+      "text": "TeUTer::",
+      "confidence": 0.4830662224685211,
+      "bbox": [
+        [
+          11,
+          194
+        ],
+        [
+          72,
+          194
+        ],
+        [
+          72,
+          208
+        ],
+        [
+          11,
+          208
+        ]
+      ]
+    },
+    {
+      "index": 8,
+      "text": "3AO0",
+      "confidence": 0.8165570689154136,
+      "bbox": [
+        [
+          445,
+          807
+        ],
+        [
+          480,
+          807
+        ],
+        [
+          480,
+          821
+        ],
+        [
+          445,
+          821
+        ]
+      ]
+    },
+    {
+      "index": 9,
+      "text": "TDOIISSRO.",
+      "confidence": 0.5358974308046639,
+      "bbox": [
+        [
+          78,
+          685
+        ],
+        [
+          161,
+          685
+        ],
+        [
+          161,
+          698
+        ],
+        [
+          78,
+          698
+        ]
+      ]
+    },
+    {
+      "index": 10,
+      "text": "Cyo0a",
+      "confidence": 0.6735938459883166,
+      "bbox": [
+        [
+          10,
+          681
+        ],
+        [
+          60,
+          681
+        ],
+        [
+          60,
+          697
+        ],
+        [
+          10,
+          697
+        ]
+      ]
+    },
+    {
+      "index": 11,
+      "text": "STATION",
+      "confidence": 0.8223137405079078,
+      "bbox": [
+        [
+          431,
+          765
+        ],
+        [
+          513,
+          765
+        ],
+        [
+          513,
+          779
+        ],
+        [
+          431,
+          779
+        ]
+      ]
+    },
+    {
+      "index": 12,
+      "text": "CODE",
+      "confidence": 0.9208476319686627,
+      "bbox": [
+        [
+          14,
+          806
+        ],
+        [
+          61,
+          806
+        ],
+        [
+          61,
+          819
+        ],
+        [
+          14,
+          819
+        ]
+      ]
+    },
+    {
+      "index": 13,
+      "text": "720000",
+      "confidence": 0.9985120507737472,
+      "bbox": [
+        [
+          183,
+          806
+        ],
+        [
+          236,
+          806
+        ],
+        [
+          236,
+          821
+        ],
+        [
+          183,
+          821
+        ]
+      ]
+    },
+    {
+      "index": 14,
+      "text": "SAY0NG",
+      "confidence": 0.9618580586515167,
+      "bbox": [
+        [
+          9,
+          721
+        ],
+        [
+          75,
+          721
+        ],
+        [
+          75,
+          735
+        ],
+        [
+          9,
+          735
+        ]
+      ]
+    },
+    {
+      "index": 15,
+      "text": "SHUSSTTANSS",
+      "confidence": 0.6836510552975913,
+      "bbox": [
+        [
+          482,
+          808
+        ],
+        [
+          600,
+          808
+        ],
+        [
+          600,
+          822
+        ],
+        [
+          482,
+          822
+        ]
+      ]
+    },
+    {
+      "index": 16,
+      "text": "TAMOO쉼표NN",
+      "confidence": 0.7660232916015525,
+      "bbox": [
+        [
+          238,
+          806
+        ],
+        [
+          346,
+          806
+        ],
+        [
+          346,
+          821
+        ],
+        [
+          238,
+          821
+        ]
+      ]
+    },
+    {
+      "index": 17,
+      "text": "(KOMD1.7",
+      "confidence": 0.5046284913053289,
+      "bbox": [
+        [
+          343,
+          398
+        ],
+        [
+          417,
+          398
+        ],
+        [
+          417,
+          416
+        ],
+        [
+          343,
+          416
+        ]
+      ]
+    },
+    {
+      "index": 18,
+      "text": "KODL.",
+      "confidence": 0.645424186484457,
+      "bbox": [
+        [
+          359,
+          379
+        ],
+        [
+          399,
+          379
+        ],
+        [
+          399,
+          392
+        ],
+        [
+          359,
+          392
+        ]
+      ]
+    },
+    {
+      "index": 19,
+      "text": "COTA:A",
+      "confidence": 0.5528429311225992,
+      "bbox": [
+        [
+          513,
+          419
+        ],
+        [
+          584,
+          419
+        ],
+        [
+          584,
+          433
+        ],
+        [
+          513,
+          433
+        ]
+      ]
+    },
+    {
+      "index": 20,
+      "text": "STATION",
+      "confidence": 0.9252898448225021,
+      "bbox": [
+        [
+          91,
+          806
+        ],
+        [
+          172,
+          806
+        ],
+        [
+          172,
+          821
+        ],
+        [
+          91,
+          821
+        ]
+      ]
+    },
+    {
+      "index": 21,
+      "text": "STATOO쉼표",
+      "confidence": 0.8600823376840712,
+      "bbox": [
+        [
+          96,
+          763
+        ],
+        [
+          177,
+          763
+        ],
+        [
+          177,
+          778
+        ],
+        [
+          96,
+          778
+        ]
+      ]
+    },
+    {
+      "index": 22,
+      "text": "Ne.",
+      "confidence": 0.8343899431006377,
+      "bbox": [
+        [
+          151,
+          235
+        ],
+        [
+          173,
+          235
+        ],
+        [
+          173,
+          249
+        ],
+        [
+          151,
+          249
+        ]
+      ]
+    },
+    {
+      "index": 23,
+      "text": "B",
+      "confidence": 0.8601914106791002,
+      "bbox": [
+        [
+          153,
+          685
+        ],
+        [
+          163,
+          685
+        ],
+        [
+          163,
+          696
+        ],
+        [
+          153,
+          696
+        ]
+      ]
+    },
+    {
+      "index": 24,
+      "text": "AMOUNT",
+      "confidence": 0.9161113641138922,
+      "bbox": [
+        [
+          571,
+          419
+        ],
+        [
+          650,
+          419
+        ],
+        [
+          650,
+          434
+        ],
+        [
+          571,
+          434
+        ]
+      ]
+    },
+    {
+      "index": 25,
+      "text": "LN",
+      "confidence": 0.8088936413562381,
+      "bbox": [
+        [
+          78,
+          722
+        ],
+        [
+          97,
+          722
+        ],
+        [
+          97,
+          735
+        ],
+        [
+          78,
+          735
+        ]
+      ]
+    },
+    {
+      "index": 26,
+      "text": "JODLLCIAA",
+      "confidence": 0.7075237989854579,
+      "bbox": [
+        [
+          165,
+          681
+        ],
+        [
+          266,
+          681
+        ],
+        [
+          266,
+          698
+        ],
+        [
+          165,
+          698
+        ]
+      ]
+    },
+    {
+      "index": 27,
+      "text": "220",
+      "confidence": 0.9998295687423426,
+      "bbox": [
+        [
+          448,
+          500
+        ],
+        [
+          475,
+          500
+        ],
+        [
+          475,
+          514
+        ],
+        [
+          448,
+          514
+        ]
+      ]
+    },
+    {
+      "index": 28,
+      "text": "SETS",
+      "confidence": 0.9868844347175221,
+      "bbox": [
+        [
+          358,
+          437
+        ],
+        [
+          400,
+          437
+        ],
+        [
+          400,
+          453
+        ],
+        [
+          358,
+          453
+        ]
+      ]
+    },
+    {
+      "index": 29,
+      "text": "USD::",
+      "confidence": 0.675771182263857,
+      "bbox": [
+        [
+          100,
+          722
+        ],
+        [
+          141,
+          722
+        ],
+        [
+          141,
+          735
+        ],
+        [
+          100,
+          735
+        ]
+      ]
+    },
+    {
+      "index": 30,
+      "text": "1OTAA.",
+      "confidence": 0.5405401328808443,
+      "bbox": [
+        [
+          150,
+          641
+        ],
+        [
+          208,
+          641
+        ],
+        [
+          208,
+          655
+        ],
+        [
+          150,
+          655
+        ]
+      ]
+    },
+    {
+      "index": 31,
+      "text": "TERMNNAL",
+      "confidence": 0.7695956561465718,
+      "bbox": [
+        [
+          349,
+          807
+        ],
+        [
+          441,
+          807
+        ],
+        [
+          441,
+          822
+        ],
+        [
+          349,
+          822
+        ]
+      ]
+    },
+    {
+      "index": 32,
+      "text": "CAROOAD",
+      "confidence": 0.8708196612428839,
+      "bbox": [
+        [
+          8,
+          762
+        ],
+        [
+          100,
+          762
+        ],
+        [
+          100,
+          777
+        ],
+        [
+          8,
+          777
+        ]
+      ]
+    },
+    {
+      "index": 33,
+      "text": "DOJJLCUAA/",
+      "confidence": 0.7167603221732597,
+      "bbox": [
+        [
+          529,
+          398
+        ],
+        [
+          629,
+          398
+        ],
+        [
+          629,
+          415
+        ],
+        [
+          529,
+          415
+        ]
+      ]
+    },
+    {
+      "index": 34,
+      "text": "C",
+      "confidence": 0.9988369346132558,
+      "bbox": [
+        [
+          63,
+          685
+        ],
+        [
+          72,
+          685
+        ],
+        [
+          72,
+          695
+        ],
+        [
+          63,
+          695
+        ]
+      ]
+    },
+    {
+      "index": 35,
+      "text": "Q-DYOO",
+      "confidence": 0.39828422818101067,
+      "bbox": [
+        [
+          344,
+          418
+        ],
+        [
+          413,
+          418
+        ],
+        [
+          413,
+          434
+        ],
+        [
+          344,
+          434
+        ]
+      ]
+    },
+    {
+      "index": 36,
+      "text": "NoV:&nmeNg9..-",
+      "confidence": 0.398388054938512,
+      "bbox": [
+        [
+          80,
+          337
+        ],
+        [
+          206,
+          337
+        ],
+        [
+          206,
+          352
+        ],
+        [
+          80,
+          352
+        ]
+      ]
+    },
+    {
+      "index": 37,
+      "text": "ITOO:",
+      "confidence": 0.45640847838926096,
+      "bbox": [
+        [
+          212,
+          640
+        ],
+        [
+          279,
+          640
+        ],
+        [
+          279,
+          655
+        ],
+        [
+          212,
+          655
+        ]
+      ]
+    },
+    {
+      "index": 38,
+      "text": "OF",
+      "confidence": 0.9825878722299582,
+      "bbox": [
+        [
+          393,
+          418
+        ],
+        [
+          416,
+          418
+        ],
+        [
+          416,
+          433
+        ],
+        [
+          393,
+          433
+        ]
+      ]
+    },
+    {
+      "index": 39,
+      "text": "GOODS",
+      "confidence": 0.9330261092633516,
+      "bbox": [
+        [
+          204,
+          378
+        ],
+        [
+          270,
+          378
+        ],
+        [
+          270,
+          392
+        ],
+        [
+          204,
+          392
+        ]
+      ]
+    },
+    {
+      "index": 40,
+      "text": "PER",
+      "confidence": 0.9997389360240048,
+      "bbox": [
+        [
+          445,
+          459
+        ],
+        [
+          477,
+          459
+        ],
+        [
+          477,
+          473
+        ],
+        [
+          445,
+          473
+        ]
+      ]
+    },
+    {
+      "index": 41,
+      "text": "LIEE",
+      "confidence": 0.7282987383406497,
+      "bbox": [
+        [
+          436,
+          378
+        ],
+        [
+          486,
+          378
+        ],
+        [
+          486,
+          394
+        ],
+        [
+          436,
+          394
+        ]
+      ]
+    },
+    {
+      "index": 42,
+      "text": "CO",
+      "confidence": 0.25900070587963314,
+      "bbox": [
+        [
+          79,
+          807
+        ],
+        [
+          99,
+          807
+        ],
+        [
+          99,
+          821
+        ],
+        [
+          79,
+          821
+        ]
+      ]
+    },
+    {
+      "index": 43,
+      "text": "UZB/EURU",
+      "confidence": 0.6213330590551067,
+      "bbox": [
+        [
+          187,
+          763
+        ],
+        [
+          288,
+          763
+        ],
+        [
+          288,
+          778
+        ],
+        [
+          187,
+          778
+        ]
+      ]
+    },
+    {
+      "index": 44,
+      "text": "1e",
+      "confidence": 0.07031347415923771,
+      "bbox": [
+        [
+          0,
+          336
+        ],
+        [
+          1,
+          336
+        ],
+        [
+          1,
+          347
+        ],
+        [
+          0,
+          347
+        ]
+      ]
+    }
+  ],
+  "elapsed_seconds": 19.032,
+  "common_json": {
+    "schema_version": "1.0",
+    "document_type": "commercial_invoice",
+    "document_id": "IMG_OCR_6_T_NV_003382",
+    "processing_status": "partial",
+    "fields": {
+      "invoice_no": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice number label/value not recovered",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "date": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice date not printed or not recoverable",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "buyer": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "buyer/sold-to/bill-to label and consignee proxy not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "amount": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice-level total amount not recovered",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "currency": {
+        "value": "USD",
+        "normalized": {
+          "code": "USD",
+          "symbol": null
+        },
+        "raw_text": "USD::",
+        "bbox": [
+          [
+            100,
+            722
+          ],
+          [
+            141,
+            722
+          ],
+          [
+            141,
+            735
+          ],
+          [
+            100,
+            735
+          ]
+        ],
+        "confidence": 0.675771182263857,
+        "status": "found",
+        "source_indices": [
+          29
+        ],
+        "reason": null,
+        "normalization_status": "normalized",
+        "normalization_reason": null
+      },
+      "goods_description": {
+        "value": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO쉼표NN",
+        "normalized": "ITOO: | JODLLCIAA | USD:: | UZB/EURU | TAMOO쉼표NN",
+        "raw_text": "ITOO: JODLLCIAA USD:: UZB/EURU TAMOO쉼표NN",
+        "bbox": [
+          [
+            100,
+            640
+          ],
+          [
+            346,
+            640
+          ],
+          [
+            346,
+            821
+          ],
+          [
+            100,
+            821
+          ]
+        ],
+        "confidence": 0.45640847838926096,
+        "status": "found",
+        "source_indices": [
+          37,
+          26,
+          29,
+          43,
+          16
+        ],
+        "reason": null,
+        "normalization_status": "normalized",
+        "normalization_reason": null
+      },
+      "quantity": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "table header not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      }
+    }
+  }
+}

@@ -1,0 +1,2184 @@
+{
+  "document_id": "IMG_OCR_6_T_NV_004131",
+  "form_type": "상업송장",
+  "document_type": "commercial_invoice",
+  "backend": "aihub-logistics",
+  "gt_recall": {
+    "gt_boxes": 69,
+    "predicted_boxes": 82,
+    "geometric_recall": 1.0,
+    "exact_text_recall": 0.5942028985507246,
+    "segmentation_aware_recall": 0.6231884057971014,
+    "similarity_90_recall": 0.6376811594202898,
+    "mean_similarity": 0.8847999021912065,
+    "mean_cer": 0.1474208561165083
+  },
+  "fields": {
+    "invoice_no": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "date": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "buyer": {
+      "status": "ambiguous",
+      "value": "Koneywell Iuternatonaal",
+      "normalized": "Koneywell Iuternatonaal",
+      "confidence": 0.7696435933315965
+    },
+    "amount": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "currency": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "goods_description": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "quantity": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    }
+  },
+  "oracle_fields": {
+    "invoice_no": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "date": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "buyer": {
+      "status": "ambiguous",
+      "value": "Koneywell International",
+      "normalized": "Koneywell International",
+      "confidence": 1.0
+    },
+    "amount": {
+      "status": "found",
+      "value": "$8,095.52",
+      "normalized": {
+        "value": 8095.52,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "confidence": 1.0
+    },
+    "currency": {
+      "status": "ambiguous",
+      "value": "$",
+      "normalized": {
+        "code": null,
+        "symbol": "$"
+      },
+      "confidence": 1.0
+    },
+    "goods_description": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "quantity": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    }
+  },
+  "field_diagnostics": {
+    "amount": {
+      "field_name": "amount",
+      "actual_status": "missing",
+      "oracle_status": "found",
+      "actual_value": null,
+      "oracle_value": {
+        "value": 8095.52,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "classification": "ocr_value_degradation",
+      "agreement_score": 0.0
+    },
+    "buyer": {
+      "field_name": "buyer",
+      "actual_status": "ambiguous",
+      "oracle_status": "ambiguous",
+      "actual_value": "Koneywell Iuternatonaal",
+      "oracle_value": "Koneywell International",
+      "classification": "e2e_matches_oracle",
+      "agreement_score": 0.9130434782608695
+    },
+    "currency": {
+      "field_name": "currency",
+      "actual_status": "missing",
+      "oracle_status": "ambiguous",
+      "actual_value": null,
+      "oracle_value": {
+        "code": null,
+        "symbol": "$"
+      },
+      "classification": "extractor_instability_or_ambiguity",
+      "agreement_score": 0.0
+    },
+    "date": {
+      "field_name": "date",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "goods_description": {
+      "field_name": "goods_description",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "invoice_no": {
+      "field_name": "invoice_no",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "quantity": {
+      "field_name": "quantity",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    }
+  },
+  "ocr_predictions": [
+    {
+      "index": 0,
+      "text": "Support",
+      "confidence": 0.9281868568064391,
+      "bbox": [
+        [
+          521,
+          1376
+        ],
+        [
+          615,
+          1376
+        ],
+        [
+          615,
+          1400
+        ],
+        [
+          521,
+          1400
+        ]
+      ]
+    },
+    {
+      "index": 1,
+      "text": "87022쉼표",
+      "confidence": 0.9988297984235818,
+      "bbox": [
+        [
+          566,
+          969
+        ],
+        [
+          647,
+          969
+        ],
+        [
+          647,
+          993
+        ],
+        [
+          566,
+          993
+        ]
+      ]
+    },
+    {
+      "index": 2,
+      "text": "41021쉼표",
+      "confidence": 0.9904380826428829,
+      "bbox": [
+        [
+          640,
+          546
+        ],
+        [
+          722,
+          546
+        ],
+        [
+          722,
+          570
+        ],
+        [
+          640,
+          570
+        ]
+      ]
+    },
+    {
+      "index": 3,
+      "text": "Habana",
+      "confidence": 0.9069869450343632,
+      "bbox": [
+        [
+          930,
+          805
+        ],
+        [
+          1015,
+          805
+        ],
+        [
+          1015,
+          827
+        ],
+        [
+          930,
+          827
+        ]
+      ]
+    },
+    {
+      "index": 4,
+      "text": "BRG",
+      "confidence": 0.999370459281221,
+      "bbox": [
+        [
+          625,
+          1375
+        ],
+        [
+          669,
+          1375
+        ],
+        [
+          669,
+          1397
+        ],
+        [
+          625,
+          1397
+        ]
+      ]
+    },
+    {
+      "index": 5,
+      "text": "ITALY",
+      "confidence": 0.9889298014178144,
+      "bbox": [
+        [
+          654,
+          1152
+        ],
+        [
+          720,
+          1152
+        ],
+        [
+          720,
+          1173
+        ],
+        [
+          654,
+          1173
+        ]
+      ]
+    },
+    {
+      "index": 6,
+      "text": "84967쉼표",
+      "confidence": 0.9994407035434538,
+      "bbox": [
+        [
+          681,
+          758
+        ],
+        [
+          761,
+          758
+        ],
+        [
+          761,
+          782
+        ],
+        [
+          681,
+          782
+        ]
+      ]
+    },
+    {
+      "index": 7,
+      "text": "Jeju",
+      "confidence": 0.999629040909865,
+      "bbox": [
+        [
+          889,
+          765
+        ],
+        [
+          935,
+          765
+        ],
+        [
+          935,
+          791
+        ],
+        [
+          889,
+          791
+        ]
+      ]
+    },
+    {
+      "index": 8,
+      "text": "La",
+      "confidence": 0.996693457199091,
+      "bbox": [
+        [
+          893,
+          807
+        ],
+        [
+          919,
+          807
+        ],
+        [
+          919,
+          827
+        ],
+        [
+          893,
+          827
+        ]
+      ]
+    },
+    {
+      "index": 9,
+      "text": "Chase쉼표",
+      "confidence": 0.9893031592258744,
+      "bbox": [
+        [
+          541,
+          756
+        ],
+        [
+          619,
+          756
+        ],
+        [
+          619,
+          783
+        ],
+        [
+          541,
+          783
+        ]
+      ]
+    },
+    {
+      "index": 10,
+      "text": "2003-06-21",
+      "confidence": 0.9822735688648683,
+      "bbox": [
+        [
+          526,
+          1252
+        ],
+        [
+          654,
+          1252
+        ],
+        [
+          654,
+          1273
+        ],
+        [
+          526,
+          1273
+        ]
+      ]
+    },
+    {
+      "index": 11,
+      "text": "DE",
+      "confidence": 0.9993074993991021,
+      "bbox": [
+        [
+          523,
+          969
+        ],
+        [
+          555,
+          969
+        ],
+        [
+          555,
+          990
+        ],
+        [
+          523,
+          990
+        ]
+      ]
+    },
+    {
+      "index": 12,
+      "text": "Bank",
+      "confidence": 0.9924507779464509,
+      "bbox": [
+        [
+          952,
+          765
+        ],
+        [
+          1006,
+          765
+        ],
+        [
+          1006,
+          786
+        ],
+        [
+          952,
+          786
+        ]
+      ]
+    },
+    {
+      "index": 13,
+      "text": "Sterligg쉼표",
+      "confidence": 0.9662485830863868,
+      "bbox": [
+        [
+          414,
+          967
+        ],
+        [
+          510,
+          967
+        ],
+        [
+          510,
+          994
+        ],
+        [
+          414,
+          994
+        ]
+      ]
+    },
+    {
+      "index": 14,
+      "text": "WV",
+      "confidence": 0.9708137588579986,
+      "bbox": [
+        [
+          631,
+          758
+        ],
+        [
+          668,
+          758
+        ],
+        [
+          668,
+          778
+        ],
+        [
+          631,
+          778
+        ]
+      ]
+    },
+    {
+      "index": 15,
+      "text": "$45.10",
+      "confidence": 0.9625331410931742,
+      "bbox": [
+        [
+          1142,
+          1373
+        ],
+        [
+          1223,
+          1373
+        ],
+        [
+          1223,
+          1395
+        ],
+        [
+          1142,
+          1395
+        ]
+      ]
+    },
+    {
+      "index": 16,
+      "text": "M/T",
+      "confidence": 0.998985064125087,
+      "bbox": [
+        [
+          932,
+          1417
+        ],
+        [
+          981,
+          1417
+        ],
+        [
+          981,
+          1442
+        ],
+        [
+          932,
+          1442
+        ]
+      ]
+    },
+    {
+      "index": 17,
+      "text": "ARBATAX쉼표",
+      "confidence": 0.9892016332875361,
+      "bbox": [
+        [
+          524,
+          1152
+        ],
+        [
+          641,
+          1152
+        ],
+        [
+          641,
+          1176
+        ],
+        [
+          524,
+          1176
+        ]
+      ]
+    },
+    {
+      "index": 18,
+      "text": "Total",
+      "confidence": 0.9868517729258153,
+      "bbox": [
+        [
+          264,
+          1633
+        ],
+        [
+          324,
+          1633
+        ],
+        [
+          324,
+          1654
+        ],
+        [
+          264,
+          1654
+        ]
+      ]
+    },
+    {
+      "index": 19,
+      "text": "FT",
+      "confidence": 0.9134622424850092,
+      "bbox": [
+        [
+          855,
+          1885
+        ],
+        [
+          876,
+          1885
+        ],
+        [
+          876,
+          1902
+        ],
+        [
+          855,
+          1902
+        ]
+      ]
+    },
+    {
+      "index": 20,
+      "text": "Daegu",
+      "confidence": 0.9966265888081748,
+      "bbox": [
+        [
+          554,
+          546
+        ],
+        [
+          629,
+          546
+        ],
+        [
+          629,
+          571
+        ],
+        [
+          554,
+          571
+        ]
+      ]
+    },
+    {
+      "index": 21,
+      "text": "FAX:+(27)4536-6381",
+      "confidence": 0.9872824463331327,
+      "bbox": [
+        [
+          414,
+          822
+        ],
+        [
+          650,
+          822
+        ],
+        [
+          650,
+          847
+        ],
+        [
+          414,
+          847
+        ]
+      ]
+    },
+    {
+      "index": 22,
+      "text": "$3쉼표301.45",
+      "confidence": 0.9994229554653068,
+      "bbox": [
+        [
+          1355,
+          1373
+        ],
+        [
+          1472,
+          1373
+        ],
+        [
+          1472,
+          1399
+        ],
+        [
+          1355,
+          1399
+        ]
+      ]
+    },
+    {
+      "index": 23,
+      "text": "M2976648NS19655",
+      "confidence": 0.9825463089823963,
+      "bbox": [
+        [
+          890,
+          641
+        ],
+        [
+          1118,
+          641
+        ],
+        [
+          1118,
+          663
+        ],
+        [
+          890,
+          663
+        ]
+      ]
+    },
+    {
+      "index": 24,
+      "text": "76",
+      "confidence": 0.9999789594434179,
+      "bbox": [
+        [
+          933,
+          1375
+        ],
+        [
+          962,
+          1375
+        ],
+        [
+          962,
+          1396
+        ],
+        [
+          933,
+          1396
+        ]
+      ]
+    },
+    {
+      "index": 25,
+      "text": "FAX:+(57)3429-9533",
+      "confidence": 0.9998644493372162,
+      "bbox": [
+        [
+          417,
+          1033
+        ],
+        [
+          655,
+          1033
+        ],
+        [
+          655,
+          1057
+        ],
+        [
+          417,
+          1057
+        ]
+      ]
+    },
+    {
+      "index": 26,
+      "text": "Sasang-ku쉼표",
+      "confidence": 0.98457325835736,
+      "bbox": [
+        [
+          417,
+          544
+        ],
+        [
+          543,
+          544
+        ],
+        [
+          543,
+          570
+        ],
+        [
+          417,
+          570
+        ]
+      ]
+    },
+    {
+      "index": 27,
+      "text": "2004-03-12",
+      "confidence": 0.9921465929973657,
+      "bbox": [
+        [
+          894,
+          552
+        ],
+        [
+          1029,
+          552
+        ],
+        [
+          1029,
+          573
+        ],
+        [
+          894,
+          573
+        ]
+      ]
+    },
+    {
+      "index": 28,
+      "text": "Engineer",
+      "confidence": 0.9404942973475315,
+      "bbox": [
+        [
+          1025,
+          1839
+        ],
+        [
+          1128,
+          1839
+        ],
+        [
+          1128,
+          1864
+        ],
+        [
+          1025,
+          1864
+        ]
+      ]
+    },
+    {
+      "index": 29,
+      "text": "PKGS",
+      "confidence": 0.9655728695540947,
+      "bbox": [
+        [
+          300,
+          1337
+        ],
+        [
+          368,
+          1337
+        ],
+        [
+          368,
+          1358
+        ],
+        [
+          300,
+          1358
+        ]
+      ]
+    },
+    {
+      "index": 30,
+      "text": "DethessaaC..eyy",
+      "confidence": 0.48285015061919095,
+      "bbox": [
+        [
+          350,
+          757
+        ],
+        [
+          532,
+          757
+        ],
+        [
+          532,
+          783
+        ],
+        [
+          350,
+          783
+        ]
+      ]
+    },
+    {
+      "index": 31,
+      "text": "Research",
+      "confidence": 0.905090813624552,
+      "bbox": [
+        [
+          1102,
+          1800
+        ],
+        [
+          1204,
+          1800
+        ],
+        [
+          1204,
+          1822
+        ],
+        [
+          1102,
+          1822
+        ]
+      ]
+    },
+    {
+      "index": 32,
+      "text": "37189-2611-5044",
+      "confidence": 0.991333013850751,
+      "bbox": [
+        [
+          891,
+          509
+        ],
+        [
+          1101,
+          509
+        ],
+        [
+          1101,
+          531
+        ],
+        [
+          891,
+          531
+        ]
+      ]
+    },
+    {
+      "index": 33,
+      "text": "$8쉼표095.52",
+      "confidence": 0.9994676316500296,
+      "bbox": [
+        [
+          336,
+          1634
+        ],
+        [
+          456,
+          1634
+        ],
+        [
+          456,
+          1658
+        ],
+        [
+          336,
+          1658
+        ]
+      ]
+    },
+    {
+      "index": 34,
+      "text": "2004-06-07",
+      "confidence": 0.9996941168720813,
+      "bbox": [
+        [
+          890,
+          681
+        ],
+        [
+          1025,
+          681
+        ],
+        [
+          1025,
+          702
+        ],
+        [
+          890,
+          702
+        ]
+      ]
+    },
+    {
+      "index": 35,
+      "text": "Cluewhale",
+      "confidence": 0.9729161865751248,
+      "bbox": [
+        [
+          971,
+          1800
+        ],
+        [
+          1091,
+          1800
+        ],
+        [
+          1091,
+          1822
+        ],
+        [
+          971,
+          1822
+        ]
+      ]
+    },
+    {
+      "index": 36,
+      "text": "FAX:+(44)9251-0777",
+      "confidence": 0.9943184921171523,
+      "bbox": [
+        [
+          418,
+          609
+        ],
+        [
+          661,
+          609
+        ],
+        [
+          661,
+          634
+        ],
+        [
+          418,
+          634
+        ]
+      ]
+    },
+    {
+      "index": 37,
+      "text": "States",
+      "confidence": 0.9728097185423445,
+      "bbox": [
+        [
+          256,
+          790
+        ],
+        [
+          327,
+          790
+        ],
+        [
+          327,
+          812
+        ],
+        [
+          256,
+          812
+        ]
+      ]
+    },
+    {
+      "index": 38,
+      "text": "JAPAN",
+      "confidence": 0.9997656379786012,
+      "bbox": [
+        [
+          263,
+          1151
+        ],
+        [
+          340,
+          1151
+        ],
+        [
+          340,
+          1177
+        ],
+        [
+          263,
+          1177
+        ]
+      ]
+    },
+    {
+      "index": 39,
+      "text": "Paln",
+      "confidence": 0.8901352900058244,
+      "bbox": [
+        [
+          289,
+          967
+        ],
+        [
+          344,
+          967
+        ],
+        [
+          344,
+          991
+        ],
+        [
+          289,
+          991
+        ]
+      ]
+    },
+    {
+      "index": 40,
+      "text": "KTDy",
+      "confidence": 0.42167309827121363,
+      "bbox": [
+        [
+          1022,
+          1880
+        ],
+        [
+          1083,
+          1880
+        ],
+        [
+          1083,
+          1902
+        ],
+        [
+          1022,
+          1902
+        ]
+      ]
+    },
+    {
+      "index": 41,
+      "text": "Technoloyy",
+      "confidence": 0.9578720432172622,
+      "bbox": [
+        [
+          271,
+          929
+        ],
+        [
+          411,
+          929
+        ],
+        [
+          411,
+          957
+        ],
+        [
+          271,
+          957
+        ]
+      ]
+    },
+    {
+      "index": 42,
+      "text": "Statss",
+      "confidence": 0.7891507953317318,
+      "bbox": [
+        [
+          256,
+          1000
+        ],
+        [
+          330,
+          1000
+        ],
+        [
+          330,
+          1022
+        ],
+        [
+          256,
+          1022
+        ]
+      ]
+    },
+    {
+      "index": 43,
+      "text": "Iuternatonaal",
+      "confidence": 0.7696435933315965,
+      "bbox": [
+        [
+          300,
+          718
+        ],
+        [
+          449,
+          718
+        ],
+        [
+          449,
+          743
+        ],
+        [
+          300,
+          743
+        ]
+      ]
+    },
+    {
+      "index": 44,
+      "text": "Rd",
+      "confidence": 0.997712741566597,
+      "bbox": [
+        [
+          306,
+          757
+        ],
+        [
+          337,
+          757
+        ],
+        [
+          337,
+          779
+        ],
+        [
+          306,
+          779
+        ]
+      ]
+    },
+    {
+      "index": 45,
+      "text": "Blvd",
+      "confidence": 0.941699337996732,
+      "bbox": [
+        [
+          355,
+          967
+        ],
+        [
+          403,
+          967
+        ],
+        [
+          403,
+          990
+        ],
+        [
+          355,
+          990
+        ]
+      ]
+    },
+    {
+      "index": 46,
+      "text": "Ttorace",
+      "confidence": 0.8235542935303221,
+      "bbox": [
+        [
+          168,
+          929
+        ],
+        [
+          262,
+          929
+        ],
+        [
+          262,
+          958
+        ],
+        [
+          168,
+          958
+        ]
+      ]
+    },
+    {
+      "index": 47,
+      "text": "Exporter",
+      "confidence": 0.9499692883658843,
+      "bbox": [
+        [
+          286,
+          473
+        ],
+        [
+          389,
+          473
+        ],
+        [
+          389,
+          498
+        ],
+        [
+          286,
+          498
+        ]
+      ]
+    },
+    {
+      "index": 48,
+      "text": "Ioadnng",
+      "confidence": 0.842092821821167,
+      "bbox": [
+        [
+          259,
+          1107
+        ],
+        [
+          346,
+          1107
+        ],
+        [
+          346,
+          1133
+        ],
+        [
+          259,
+          1133
+        ]
+      ]
+    },
+    {
+      "index": 49,
+      "text": "Sinne-by",
+      "confidence": 0.7243161869767852,
+      "bbox": [
+        [
+          910,
+          2059
+        ],
+        [
+          1027,
+          2059
+        ],
+        [
+          1027,
+          2084
+        ],
+        [
+          910,
+          2084
+        ]
+      ]
+    },
+    {
+      "index": 50,
+      "text": "Usaa-dong쉼표",
+      "confidence": 0.8453890452593875,
+      "bbox": [
+        [
+          274,
+          545
+        ],
+        [
+          408,
+          545
+        ],
+        [
+          408,
+          570
+        ],
+        [
+          274,
+          570
+        ]
+      ]
+    },
+    {
+      "index": 51,
+      "text": "Urited",
+      "confidence": 0.9100261721316791,
+      "bbox": [
+        [
+          169,
+          1000
+        ],
+        [
+          250,
+          1000
+        ],
+        [
+          250,
+          1023
+        ],
+        [
+          169,
+          1023
+        ]
+      ]
+    },
+    {
+      "index": 52,
+      "text": "United",
+      "confidence": 0.9850440559600102,
+      "bbox": [
+        [
+          168,
+          790
+        ],
+        [
+          248,
+          790
+        ],
+        [
+          248,
+          812
+        ],
+        [
+          168,
+          812
+        ]
+      ]
+    },
+    {
+      "index": 53,
+      "text": "TEL:+(26)6543-4317",
+      "confidence": 0.987478436060643,
+      "bbox": [
+        [
+          163,
+          823
+        ],
+        [
+          407,
+          823
+        ],
+        [
+          407,
+          847
+        ],
+        [
+          163,
+          847
+        ]
+      ]
+    },
+    {
+      "index": 54,
+      "text": "Royal",
+      "confidence": 0.9876819632878093,
+      "bbox": [
+        [
+          211,
+          969
+        ],
+        [
+          275,
+          969
+        ],
+        [
+          275,
+          994
+        ],
+        [
+          211,
+          994
+        ]
+      ]
+    },
+    {
+      "index": 55,
+      "text": "Consjgnee",
+      "confidence": 0.9620608640946093,
+      "bbox": [
+        [
+          173,
+          684
+        ],
+        [
+          301,
+          684
+        ],
+        [
+          301,
+          710
+        ],
+        [
+          173,
+          710
+        ]
+      ]
+    },
+    {
+      "index": 56,
+      "text": "DaT3:",
+      "confidence": 0.6765852899579109,
+      "bbox": [
+        [
+          247,
+          897
+        ],
+        [
+          312,
+          897
+        ],
+        [
+          312,
+          922
+        ],
+        [
+          247,
+          922
+        ]
+      ]
+    },
+    {
+      "index": 57,
+      "text": "E592449",
+      "confidence": 0.9535035217562782,
+      "bbox": [
+        [
+          195,
+          1416
+        ],
+        [
+          301,
+          1416
+        ],
+        [
+          301,
+          1439
+        ],
+        [
+          195,
+          1439
+        ]
+      ]
+    },
+    {
+      "index": 58,
+      "text": "Abbb",
+      "confidence": 0.8278581920194104,
+      "bbox": [
+        [
+          240,
+          756
+        ],
+        [
+          296,
+          756
+        ],
+        [
+          296,
+          780
+        ],
+        [
+          240,
+          780
+        ]
+      ]
+    },
+    {
+      "index": 59,
+      "text": "NEIIME쉼표",
+      "confidence": 0.885043323850293,
+      "bbox": [
+        [
+          166,
+          1152
+        ],
+        [
+          253,
+          1152
+        ],
+        [
+          253,
+          1176
+        ],
+        [
+          166,
+          1176
+        ]
+      ]
+    },
+    {
+      "index": 60,
+      "text": "TEXTILE",
+      "confidence": 0.9776513939299417,
+      "bbox": [
+        [
+          317,
+          508
+        ],
+        [
+          411,
+          508
+        ],
+        [
+          411,
+          530
+        ],
+        [
+          317,
+          530
+        ]
+      ]
+    },
+    {
+      "index": 61,
+      "text": "35822",
+      "confidence": 0.9087260514576564,
+      "bbox": [
+        [
+          171,
+          758
+        ],
+        [
+          230,
+          758
+        ],
+        [
+          230,
+          781
+        ],
+        [
+          171,
+          781
+        ]
+      ]
+    },
+    {
+      "index": 62,
+      "text": "Koneywell",
+      "confidence": 0.8442579749052181,
+      "bbox": [
+        [
+          169,
+          721
+        ],
+        [
+          291,
+          721
+        ],
+        [
+          291,
+          745
+        ],
+        [
+          169,
+          745
+        ]
+      ]
+    },
+    {
+      "index": 63,
+      "text": "Rep.",
+      "confidence": 0.9985201996108143,
+      "bbox": [
+        [
+          173,
+          578
+        ],
+        [
+          226,
+          578
+        ],
+        [
+          226,
+          602
+        ],
+        [
+          173,
+          602
+        ]
+      ]
+    },
+    {
+      "index": 64,
+      "text": "Noti5yr",
+      "confidence": 0.8216354744701819,
+      "bbox": [
+        [
+          172,
+          896
+        ],
+        [
+          258,
+          896
+        ],
+        [
+          258,
+          920
+        ],
+        [
+          172,
+          920
+        ]
+      ]
+    },
+    {
+      "index": 65,
+      "text": "Korea",
+      "confidence": 0.9683319454384671,
+      "bbox": [
+        [
+          274,
+          579
+        ],
+        [
+          342,
+          579
+        ],
+        [
+          342,
+          601
+        ],
+        [
+          274,
+          601
+        ]
+      ]
+    },
+    {
+      "index": 66,
+      "text": "Carrie",
+      "confidence": 0.9147542269340783,
+      "bbox": [
+        [
+          171,
+          1211
+        ],
+        [
+          257,
+          1211
+        ],
+        [
+          257,
+          1232
+        ],
+        [
+          171,
+          1232
+        ]
+      ]
+    },
+    {
+      "index": 67,
+      "text": "42-210쉼표",
+      "confidence": 0.9608826330917166,
+      "bbox": [
+        [
+          172,
+          545
+        ],
+        [
+          266,
+          545
+        ],
+        [
+          266,
+          571
+        ],
+        [
+          172,
+          571
+        ]
+      ]
+    },
+    {
+      "index": 68,
+      "text": "Shipperr",
+      "confidence": 0.9315911273987644,
+      "bbox": [
+        [
+          171,
+          473
+        ],
+        [
+          276,
+          473
+        ],
+        [
+          276,
+          499
+        ],
+        [
+          171,
+          499
+        ]
+      ]
+    },
+    {
+      "index": 69,
+      "text": "CO.",
+      "confidence": 0.8709457084294828,
+      "bbox": [
+        [
+          420,
+          508
+        ],
+        [
+          465,
+          508
+        ],
+        [
+          465,
+          529
+        ],
+        [
+          420,
+          529
+        ]
+      ]
+    },
+    {
+      "index": 70,
+      "text": "TEL:+(61)7736-9044",
+      "confidence": 0.9992538035343745,
+      "bbox": [
+        [
+          166,
+          1033
+        ],
+        [
+          409,
+          1033
+        ],
+        [
+          409,
+          1058
+        ],
+        [
+          166,
+          1058
+        ]
+      ]
+    },
+    {
+      "index": 71,
+      "text": "DLSU1682802",
+      "confidence": 0.9581443971004273,
+      "bbox": [
+        [
+          191,
+          1374
+        ],
+        [
+          363,
+          1374
+        ],
+        [
+          363,
+          1397
+        ],
+        [
+          191,
+          1397
+        ]
+      ]
+    },
+    {
+      "index": 72,
+      "text": "Rorcfflddingg",
+      "confidence": 0.5655499152406949,
+      "bbox": [
+        [
+          177,
+          1104
+        ],
+        [
+          348,
+          1104
+        ],
+        [
+          348,
+          1132
+        ],
+        [
+          177,
+          1132
+        ]
+      ]
+    },
+    {
+      "index": 73,
+      "text": "Markss",
+      "confidence": 0.8072729324504517,
+      "bbox": [
+        [
+          210,
+          1308
+        ],
+        [
+          295,
+          1308
+        ],
+        [
+          295,
+          1328
+        ],
+        [
+          210,
+          1328
+        ]
+      ]
+    },
+    {
+      "index": 74,
+      "text": "13",
+      "confidence": 0.8996074774949037,
+      "bbox": [
+        [
+          172,
+          968
+        ],
+        [
+          201,
+          968
+        ],
+        [
+          201,
+          991
+        ],
+        [
+          172,
+          991
+        ]
+      ]
+    },
+    {
+      "index": 75,
+      "text": "PKG",
+      "confidence": 0.9977570018406582,
+      "bbox": [
+        [
+          236,
+          1459
+        ],
+        [
+          286,
+          1459
+        ],
+        [
+          286,
+          1482
+        ],
+        [
+          236,
+          1482
+        ]
+      ]
+    },
+    {
+      "index": 76,
+      "text": "Portoi",
+      "confidence": 0.7084462310656195,
+      "bbox": [
+        [
+          171,
+          1108
+        ],
+        [
+          272,
+          1108
+        ],
+        [
+          272,
+          1129
+        ],
+        [
+          171,
+          1129
+        ]
+      ]
+    },
+    {
+      "index": 77,
+      "text": "Crrt",
+      "confidence": 0.4199539001191523,
+      "bbox": [
+        [
+          179,
+          1110
+        ],
+        [
+          227,
+          1110
+        ],
+        [
+          227,
+          1128
+        ],
+        [
+          179,
+          1128
+        ]
+      ]
+    },
+    {
+      "index": 78,
+      "text": "CHODZHEZ",
+      "confidence": 0.824860839726543,
+      "bbox": [
+        [
+          162,
+          1249
+        ],
+        [
+          287,
+          1249
+        ],
+        [
+          287,
+          1273
+        ],
+        [
+          162,
+          1273
+        ]
+      ]
+    },
+    {
+      "index": 79,
+      "text": "TEL:+(56)6122-8132",
+      "confidence": 0.9672566460183214,
+      "bbox": [
+        [
+          168,
+          610
+        ],
+        [
+          405,
+          610
+        ],
+        [
+          405,
+          635
+        ],
+        [
+          168,
+          635
+        ]
+      ]
+    },
+    {
+      "index": 80,
+      "text": "of",
+      "confidence": 0.9523775001682692,
+      "bbox": [
+        [
+          225,
+          1109
+        ],
+        [
+          250,
+          1109
+        ],
+        [
+          250,
+          1129
+        ],
+        [
+          225,
+          1129
+        ]
+      ]
+    },
+    {
+      "index": 81,
+      "text": "TAMKYUNGG",
+      "confidence": 0.8702044941756055,
+      "bbox": [
+        [
+          170,
+          508
+        ],
+        [
+          311,
+          508
+        ],
+        [
+          311,
+          531
+        ],
+        [
+          170,
+          531
+        ]
+      ]
+    }
+  ],
+  "elapsed_seconds": 21.666,
+  "common_json": {
+    "schema_version": "1.0",
+    "document_type": "commercial_invoice",
+    "document_id": "IMG_OCR_6_T_NV_004131",
+    "processing_status": "partial",
+    "fields": {
+      "invoice_no": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice number label/value not recovered",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "date": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice date not printed or not recoverable",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "buyer": {
+        "value": "Koneywell Iuternatonaal",
+        "normalized": "Koneywell Iuternatonaal",
+        "raw_text": "Iuternatonaal Koneywell",
+        "bbox": [
+          [
+            169,
+            718
+          ],
+          [
+            449,
+            718
+          ],
+          [
+            449,
+            745
+          ],
+          [
+            169,
+            745
+          ]
+        ],
+        "confidence": 0.7696435933315965,
+        "status": "ambiguous",
+        "source_indices": [
+          43,
+          62
+        ],
+        "reason": "buyer label absent; consignee retained as a counterparty proxy requiring review",
+        "normalization_status": "ambiguous",
+        "normalization_reason": "source field remains ambiguous"
+      },
+      "amount": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice-level total amount not recovered",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "currency": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "currency code or symbol not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "goods_description": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "table header not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "quantity": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "table header not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      }
+    }
+  }
+}

@@ -1,0 +1,539 @@
+{
+  "dataset": {
+    "target_labels": 31,
+    "paired_documents": 31,
+    "by_form": {
+      "상업송장": {
+        "labels": 15,
+        "images": 15,
+        "paired": 15
+      },
+      "포장명세서": {
+        "labels": 11,
+        "images": 11,
+        "paired": 11
+      },
+      "선하증권": {
+        "labels": 5,
+        "images": 5,
+        "paired": 5
+      }
+    }
+  },
+  "evaluated_documents": 31,
+  "aihub": {
+    "backend": "aihub-logistics",
+    "elapsed_seconds": 950.697,
+    "real_pretrained_inference": true,
+    "detector": "AI-Hub OCRMaskRCNN / ResNet-50 + FPN + mask head",
+    "recognizer": "AI-Hub vitstr_small_patch16_224"
+  },
+  "paddle": {
+    "backend": "paddleocr",
+    "elapsed_seconds": 415.268
+  },
+  "by_form": {
+    "상업송장": {
+      "documents": 15,
+      "aihub": {
+        "exact_text_recall": 0.5168113465066856,
+        "segmentation_aware_recall": 0.5329756039635155,
+        "similarity_90_recall": 0.5381593206240565,
+        "mean_cer": 0.3490150420897962
+      },
+      "paddle": {
+        "exact_text_recall": 0.32231141366758465,
+        "segmentation_aware_recall": 0.9316998656788021,
+        "similarity_90_recall": 0.3248134187782854,
+        "mean_cer": 2.1367821094044492
+      },
+      "delta_aihub_minus_paddle": {
+        "exact_text_recall": 0.19449993283910094,
+        "segmentation_aware_recall": -0.39872426171528663,
+        "similarity_90_recall": 0.21334590184577107,
+        "mean_cer": -1.787767067314653
+      }
+    },
+    "선하증권": {
+      "documents": 5,
+      "aihub": {
+        "exact_text_recall": 0.4258721839025128,
+        "segmentation_aware_recall": 0.44920412994892517,
+        "similarity_90_recall": 0.4438989664468637,
+        "mean_cer": 0.34983084543564325
+      },
+      "paddle": {
+        "exact_text_recall": 0.2005436716850779,
+        "segmentation_aware_recall": 0.9530649097651397,
+        "similarity_90_recall": 0.21020448806828654,
+        "mean_cer": 2.327192295952208
+      },
+      "delta_aihub_minus_paddle": {
+        "exact_text_recall": 0.2253285122174349,
+        "segmentation_aware_recall": -0.5038607798162145,
+        "similarity_90_recall": 0.23369447837857718,
+        "mean_cer": -1.9773614505165646
+      }
+    },
+    "포장명세서": {
+      "documents": 11,
+      "aihub": {
+        "exact_text_recall": 0.5628408153128022,
+        "segmentation_aware_recall": 0.5804501697553246,
+        "similarity_90_recall": 0.5947321286387625,
+        "mean_cer": 0.21243366936918423
+      },
+      "paddle": {
+        "exact_text_recall": 0.22532731722259286,
+        "segmentation_aware_recall": 0.9142337942677793,
+        "similarity_90_recall": 0.2327632012553621,
+        "mean_cer": 2.20586736088062
+      },
+      "delta_aihub_minus_paddle": {
+        "exact_text_recall": 0.3375134980902093,
+        "segmentation_aware_recall": -0.3337836245124547,
+        "similarity_90_recall": 0.36196892738340036,
+        "mean_cer": -1.993433691511436
+      }
+    }
+  },
+  "field_quality": {
+    "aihub": {
+      "amount": {
+        "documents": 15,
+        "evaluable_documents": 10,
+        "status_counts": {
+          "found": 8,
+          "missing": 7
+        },
+        "diagnostic_counts": {
+          "ocr_or_extractor_value_mismatch": 8,
+          "both_missing_or_oracle_unavailable": 5,
+          "ocr_value_degradation": 2
+        },
+        "coverage_rate": 0.5333333333333333,
+        "oracle_agreement_rate": 0.0,
+        "mean_agreement_score": 0.0,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "bl_no": {
+        "documents": 5,
+        "evaluable_documents": 0,
+        "status_counts": {
+          "missing": 5
+        },
+        "diagnostic_counts": {
+          "both_missing_or_oracle_unavailable": 5
+        },
+        "coverage_rate": 0.0,
+        "oracle_agreement_rate": null,
+        "mean_agreement_score": null,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "buyer": {
+        "documents": 15,
+        "evaluable_documents": 11,
+        "status_counts": {
+          "ambiguous": 11,
+          "found": 1,
+          "missing": 3
+        },
+        "diagnostic_counts": {
+          "oracle_semantically_invalid": 1,
+          "e2e_matches_oracle": 8,
+          "extractor_instability_or_ambiguity": 3,
+          "both_missing_or_oracle_unavailable": 3
+        },
+        "coverage_rate": 0.8,
+        "oracle_agreement_rate": 0.7272727272727273,
+        "mean_agreement_score": 0.8495581230363839,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "consignee": {
+        "documents": 5,
+        "evaluable_documents": 3,
+        "status_counts": {
+          "found": 3,
+          "missing": 2
+        },
+        "diagnostic_counts": {
+          "e2e_matches_oracle": 2,
+          "both_missing_or_oracle_unavailable": 2,
+          "ocr_or_extractor_value_mismatch": 1
+        },
+        "coverage_rate": 0.6,
+        "oracle_agreement_rate": 0.6666666666666666,
+        "mean_agreement_score": 0.8095238095238095,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "currency": {
+        "documents": 15,
+        "evaluable_documents": 12,
+        "status_counts": {
+          "found": 4,
+          "missing": 10,
+          "ambiguous": 1
+        },
+        "diagnostic_counts": {
+          "e2e_matches_oracle": 4,
+          "extractor_instability_or_ambiguity": 6,
+          "ocr_value_degradation": 2,
+          "both_missing_or_oracle_unavailable": 3
+        },
+        "coverage_rate": 0.3333333333333333,
+        "oracle_agreement_rate": 0.3333333333333333,
+        "mean_agreement_score": 0.3333333333333333,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "date": {
+        "documents": 15,
+        "evaluable_documents": 6,
+        "status_counts": {
+          "found": 6,
+          "missing": 9
+        },
+        "diagnostic_counts": {
+          "ocr_or_extractor_value_mismatch": 1,
+          "both_missing_or_oracle_unavailable": 9,
+          "e2e_matches_oracle": 5
+        },
+        "coverage_rate": 0.4,
+        "oracle_agreement_rate": 0.8333333333333334,
+        "mean_agreement_score": 0.8333333333333334,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "goods_description": {
+        "documents": 31,
+        "evaluable_documents": 9,
+        "status_counts": {
+          "found": 10,
+          "missing": 21
+        },
+        "diagnostic_counts": {
+          "e2e_matches_oracle": 9,
+          "both_missing_or_oracle_unavailable": 21,
+          "oracle_unavailable_for_found_value": 1
+        },
+        "coverage_rate": 0.3225806451612903,
+        "oracle_agreement_rate": 1.0,
+        "mean_agreement_score": 0.940482202982203,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "gross_weight": {
+        "documents": 16,
+        "evaluable_documents": 0,
+        "status_counts": {
+          "missing": 16
+        },
+        "diagnostic_counts": {
+          "both_missing_or_oracle_unavailable": 16
+        },
+        "coverage_rate": 0.0,
+        "oracle_agreement_rate": null,
+        "mean_agreement_score": null,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "invoice_no": {
+        "documents": 26,
+        "evaluable_documents": 7,
+        "status_counts": {
+          "found": 7,
+          "missing": 19
+        },
+        "diagnostic_counts": {
+          "e2e_matches_oracle": 3,
+          "ocr_or_extractor_value_mismatch": 4,
+          "both_missing_or_oracle_unavailable": 19
+        },
+        "coverage_rate": 0.2692307692307692,
+        "oracle_agreement_rate": 0.42857142857142855,
+        "mean_agreement_score": 0.42857142857142855,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "number_of_packages": {
+        "documents": 16,
+        "evaluable_documents": 0,
+        "status_counts": {
+          "missing": 13,
+          "ambiguous": 2,
+          "found": 1
+        },
+        "diagnostic_counts": {
+          "both_missing_or_oracle_unavailable": 13,
+          "oracle_semantically_invalid": 3
+        },
+        "coverage_rate": 0.1875,
+        "oracle_agreement_rate": null,
+        "mean_agreement_score": null,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "on_board_date": {
+        "documents": 5,
+        "evaluable_documents": 2,
+        "status_counts": {
+          "missing": 3,
+          "found": 2
+        },
+        "diagnostic_counts": {
+          "both_missing_or_oracle_unavailable": 3,
+          "e2e_matches_oracle": 2
+        },
+        "coverage_rate": 0.4,
+        "oracle_agreement_rate": 1.0,
+        "mean_agreement_score": 1.0,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "quantity": {
+        "documents": 26,
+        "evaluable_documents": 9,
+        "status_counts": {
+          "found": 8,
+          "missing": 18
+        },
+        "diagnostic_counts": {
+          "e2e_matches_oracle": 7,
+          "both_missing_or_oracle_unavailable": 17,
+          "ocr_value_degradation": 1,
+          "ocr_or_extractor_value_mismatch": 1
+        },
+        "coverage_rate": 0.3076923076923077,
+        "oracle_agreement_rate": 0.7777777777777778,
+        "mean_agreement_score": 0.7777777777777778,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "shipper": {
+        "documents": 5,
+        "evaluable_documents": 0,
+        "status_counts": {
+          "missing": 5
+        },
+        "diagnostic_counts": {
+          "both_missing_or_oracle_unavailable": 5
+        },
+        "coverage_rate": 0.0,
+        "oracle_agreement_rate": null,
+        "mean_agreement_score": null,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      }
+    },
+    "paddle": {
+      "amount": {
+        "documents": 15,
+        "evaluable_documents": 14,
+        "status_counts": {
+          "found": 14,
+          "missing": 1
+        },
+        "diagnostic_counts": {
+          "ocr_or_extractor_value_mismatch": 8,
+          "e2e_matches_oracle": 6,
+          "both_missing_or_oracle_unavailable": 1
+        },
+        "coverage_rate": 0.9333333333333333,
+        "oracle_agreement_rate": 0.42857142857142855,
+        "mean_agreement_score": 0.42857142857142855,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "bl_no": {
+        "documents": 5,
+        "evaluable_documents": 4,
+        "status_counts": {
+          "found": 5
+        },
+        "diagnostic_counts": {
+          "e2e_matches_oracle": 4,
+          "oracle_unavailable_for_found_value": 1
+        },
+        "coverage_rate": 1.0,
+        "oracle_agreement_rate": 1.0,
+        "mean_agreement_score": 1.0,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "buyer": {
+        "documents": 15,
+        "evaluable_documents": 13,
+        "status_counts": {
+          "found": 11,
+          "ambiguous": 3,
+          "missing": 1
+        },
+        "diagnostic_counts": {
+          "ocr_or_extractor_value_mismatch": 5,
+          "e2e_matches_oracle": 8,
+          "oracle_semantically_invalid": 1,
+          "both_missing_or_oracle_unavailable": 1
+        },
+        "coverage_rate": 0.9333333333333333,
+        "oracle_agreement_rate": 0.6153846153846154,
+        "mean_agreement_score": 0.8543939936308792,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "consignee": {
+        "documents": 5,
+        "evaluable_documents": 5,
+        "status_counts": {
+          "found": 5
+        },
+        "diagnostic_counts": {
+          "e2e_matches_oracle": 5
+        },
+        "coverage_rate": 1.0,
+        "oracle_agreement_rate": 1.0,
+        "mean_agreement_score": 1.0,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "currency": {
+        "documents": 15,
+        "evaluable_documents": 11,
+        "status_counts": {
+          "found": 5,
+          "ambiguous": 10
+        },
+        "diagnostic_counts": {
+          "e2e_matches_oracle": 11,
+          "oracle_unavailable_for_found_value": 4
+        },
+        "coverage_rate": 1.0,
+        "oracle_agreement_rate": 1.0,
+        "mean_agreement_score": 1.0,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "date": {
+        "documents": 15,
+        "evaluable_documents": 6,
+        "status_counts": {
+          "missing": 9,
+          "found": 6
+        },
+        "diagnostic_counts": {
+          "both_missing_or_oracle_unavailable": 9,
+          "e2e_matches_oracle": 6
+        },
+        "coverage_rate": 0.4,
+        "oracle_agreement_rate": 1.0,
+        "mean_agreement_score": 1.0,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "goods_description": {
+        "documents": 31,
+        "evaluable_documents": 30,
+        "status_counts": {
+          "found": 30,
+          "missing": 1
+        },
+        "diagnostic_counts": {
+          "e2e_matches_oracle": 14,
+          "ocr_or_extractor_value_mismatch": 16,
+          "both_missing_or_oracle_unavailable": 1
+        },
+        "coverage_rate": 0.967741935483871,
+        "oracle_agreement_rate": 0.4666666666666667,
+        "mean_agreement_score": 0.6691503236164207,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "gross_weight": {
+        "documents": 16,
+        "evaluable_documents": 15,
+        "status_counts": {
+          "found": 13,
+          "missing": 1,
+          "ambiguous": 2
+        },
+        "diagnostic_counts": {
+          "e2e_matches_oracle": 15,
+          "both_missing_or_oracle_unavailable": 1
+        },
+        "coverage_rate": 0.9375,
+        "oracle_agreement_rate": 1.0,
+        "mean_agreement_score": 1.0,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "invoice_no": {
+        "documents": 26,
+        "evaluable_documents": 25,
+        "status_counts": {
+          "found": 25,
+          "missing": 1
+        },
+        "diagnostic_counts": {
+          "e2e_matches_oracle": 25,
+          "both_missing_or_oracle_unavailable": 1
+        },
+        "coverage_rate": 0.9615384615384616,
+        "oracle_agreement_rate": 1.0,
+        "mean_agreement_score": 1.0,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "number_of_packages": {
+        "documents": 16,
+        "evaluable_documents": 10,
+        "status_counts": {
+          "ambiguous": 2,
+          "found": 12,
+          "missing": 2
+        },
+        "diagnostic_counts": {
+          "oracle_semantically_invalid": 5,
+          "e2e_matches_oracle": 9,
+          "oracle_unavailable_for_found_value": 1,
+          "extractor_instability_or_ambiguity": 1
+        },
+        "coverage_rate": 0.875,
+        "oracle_agreement_rate": 0.9,
+        "mean_agreement_score": 1.0,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "on_board_date": {
+        "documents": 5,
+        "evaluable_documents": 3,
+        "status_counts": {
+          "missing": 2,
+          "found": 3
+        },
+        "diagnostic_counts": {
+          "both_missing_or_oracle_unavailable": 2,
+          "e2e_matches_oracle": 3
+        },
+        "coverage_rate": 0.6,
+        "oracle_agreement_rate": 1.0,
+        "mean_agreement_score": 1.0,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "quantity": {
+        "documents": 26,
+        "evaluable_documents": 15,
+        "status_counts": {
+          "found": 15,
+          "missing": 11
+        },
+        "diagnostic_counts": {
+          "e2e_matches_oracle": 14,
+          "both_missing_or_oracle_unavailable": 11,
+          "ocr_or_extractor_value_mismatch": 1
+        },
+        "coverage_rate": 0.5769230769230769,
+        "oracle_agreement_rate": 0.9333333333333333,
+        "mean_agreement_score": 0.9333333333333333,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      },
+      "shipper": {
+        "documents": 5,
+        "evaluable_documents": 3,
+        "status_counts": {
+          "missing": 2,
+          "found": 3
+        },
+        "diagnostic_counts": {
+          "both_missing_or_oracle_unavailable": 2,
+          "e2e_matches_oracle": 3
+        },
+        "coverage_rate": 0.6,
+        "oracle_agreement_rate": 1.0,
+        "mean_agreement_score": 1.0,
+        "note": "oracle agreement excludes unavailable/semantically-invalid oracle cases; coverage is not accuracy"
+      }
+    },
+    "note": "Field coverage/agreement is extractor-dependent and is not an OCR-only metric."
+  },
+  "metric_note": "Both backends use the same lightweight target labels and evaluator. AI-Hub confidence comes from recognizer token probabilities; no fake score is inserted."
+}

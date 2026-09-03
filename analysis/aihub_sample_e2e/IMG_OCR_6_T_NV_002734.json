@@ -1,0 +1,2540 @@
+{
+  "document_id": "IMG_OCR_6_T_NV_002734",
+  "form_type": "상업송장",
+  "document_type": "commercial_invoice",
+  "backend": "aihub-logistics",
+  "gt_recall": {
+    "gt_boxes": 81,
+    "predicted_boxes": 98,
+    "geometric_recall": 0.9876543209876543,
+    "exact_text_recall": 0.4567901234567901,
+    "segmentation_aware_recall": 0.48148148148148145,
+    "similarity_90_recall": 0.49382716049382713,
+    "mean_similarity": 0.7806352769315732,
+    "mean_cer": 0.33200256533589867
+  },
+  "fields": {
+    "invoice_no": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "date": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "buyer": {
+      "status": "ambiguous",
+      "value": "Dominoon Strategies Co.쉼표 Ltd.",
+      "normalized": "Dominoon Strategies Co.쉼표 Ltd.",
+      "confidence": 0.7780101390026215
+    },
+    "amount": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "currency": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "goods_description": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "quantity": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    }
+  },
+  "oracle_fields": {
+    "invoice_no": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "date": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "buyer": {
+      "status": "ambiguous",
+      "value": "U&E Dominion Strategies Co., Ltd.",
+      "normalized": "U&E Dominion Strategies Co., Ltd.",
+      "confidence": 1.0
+    },
+    "amount": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "currency": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "goods_description": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "quantity": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    }
+  },
+  "field_diagnostics": {
+    "amount": {
+      "field_name": "amount",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "buyer": {
+      "field_name": "buyer",
+      "actual_status": "ambiguous",
+      "oracle_status": "ambiguous",
+      "actual_value": "Dominoon Strategies Co.쉼표 Ltd.",
+      "oracle_value": "U&E Dominion Strategies Co., Ltd.",
+      "classification": "e2e_matches_oracle",
+      "agreement_score": 0.8928571428571429
+    },
+    "currency": {
+      "field_name": "currency",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "date": {
+      "field_name": "date",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "goods_description": {
+      "field_name": "goods_description",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "invoice_no": {
+      "field_name": "invoice_no",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "quantity": {
+      "field_name": "quantity",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    }
+  },
+  "ocr_predictions": [
+    {
+      "index": 0,
+      "text": "Ea",
+      "confidence": 0.7382512548422449,
+      "bbox": [
+        [
+          683,
+          1244
+        ],
+        [
+          719,
+          1244
+        ],
+        [
+          719,
+          1266
+        ],
+        [
+          683,
+          1266
+        ]
+      ]
+    },
+    {
+      "index": 1,
+      "text": "drum",
+      "confidence": 0.985431761379122,
+      "bbox": [
+        [
+          683,
+          1432
+        ],
+        [
+          754,
+          1432
+        ],
+        [
+          754,
+          1454
+        ],
+        [
+          683,
+          1454
+        ]
+      ]
+    },
+    {
+      "index": 2,
+      "text": "City쉼표쉼표",
+      "confidence": 0.8957969330267844,
+      "bbox": [
+        [
+          672,
+          674
+        ],
+        [
+          732,
+          674
+        ],
+        [
+          732,
+          701
+        ],
+        [
+          672,
+          701
+        ]
+      ]
+    },
+    {
+      "index": 3,
+      "text": "Prism",
+      "confidence": 0.9711135712071695,
+      "bbox": [
+        [
+          422,
+          1385
+        ],
+        [
+          498,
+          1385
+        ],
+        [
+          498,
+          1408
+        ],
+        [
+          422,
+          1408
+        ]
+      ]
+    },
+    {
+      "index": 4,
+      "text": "Rongchang",
+      "confidence": 0.9227194013736498,
+      "bbox": [
+        [
+          514,
+          674
+        ],
+        [
+          661,
+          674
+        ],
+        [
+          661,
+          700
+        ],
+        [
+          514,
+          700
+        ]
+      ]
+    },
+    {
+      "index": 5,
+      "text": "12-Jun-2011",
+      "confidence": 0.9976601968878089,
+      "bbox": [
+        [
+          566,
+          936
+        ],
+        [
+          735,
+          936
+        ],
+        [
+          735,
+          957
+        ],
+        [
+          566,
+          957
+        ]
+      ]
+    },
+    {
+      "index": 6,
+      "text": "I",
+      "confidence": 0.6519325419863088,
+      "bbox": [
+        [
+          686,
+          1388
+        ],
+        [
+          698,
+          1388
+        ],
+        [
+          698,
+          1410
+        ],
+        [
+          686,
+          1410
+        ]
+      ]
+    },
+    {
+      "index": 7,
+      "text": "2",
+      "confidence": 0.9996286630496093,
+      "bbox": [
+        [
+          683,
+          1200
+        ],
+        [
+          700,
+          1200
+        ],
+        [
+          700,
+          1221
+        ],
+        [
+          683,
+          1221
+        ]
+      ]
+    },
+    {
+      "index": 8,
+      "text": "Pecan",
+      "confidence": 0.9987023566459259,
+      "bbox": [
+        [
+          334,
+          1386
+        ],
+        [
+          411,
+          1386
+        ],
+        [
+          411,
+          1408
+        ],
+        [
+          334,
+          1408
+        ]
+      ]
+    },
+    {
+      "index": 9,
+      "text": "2804.64",
+      "confidence": 0.9989735300711702,
+      "bbox": [
+        [
+          847,
+          1390
+        ],
+        [
+          953,
+          1390
+        ],
+        [
+          953,
+          1412
+        ],
+        [
+          847,
+          1412
+        ]
+      ]
+    },
+    {
+      "index": 10,
+      "text": "Ltd.",
+      "confidence": 0.9197122992506267,
+      "bbox": [
+        [
+          577,
+          634
+        ],
+        [
+          626,
+          634
+        ],
+        [
+          626,
+          656
+        ],
+        [
+          577,
+          656
+        ]
+      ]
+    },
+    {
+      "index": 11,
+      "text": "$9.77",
+      "confidence": 0.9921682575376415,
+      "bbox": [
+        [
+          1023,
+          1199
+        ],
+        [
+          1098,
+          1199
+        ],
+        [
+          1098,
+          1227
+        ],
+        [
+          1023,
+          1227
+        ]
+      ]
+    },
+    {
+      "index": 12,
+      "text": "0559.40",
+      "confidence": 0.9879505427957721,
+      "bbox": [
+        [
+          847,
+          1201
+        ],
+        [
+          954,
+          1201
+        ],
+        [
+          954,
+          1224
+        ],
+        [
+          847,
+          1224
+        ]
+      ]
+    },
+    {
+      "index": 13,
+      "text": "Combinatino",
+      "confidence": 0.8071157488091071,
+      "bbox": [
+        [
+          332,
+          1418
+        ],
+        [
+          502,
+          1418
+        ],
+        [
+          502,
+          1440
+        ],
+        [
+          332,
+          1440
+        ]
+      ]
+    },
+    {
+      "index": 14,
+      "text": "Banner쉼표",
+      "confidence": 0.9604330766930588,
+      "bbox": [
+        [
+          398,
+          673
+        ],
+        [
+          503,
+          673
+        ],
+        [
+          503,
+          700
+        ],
+        [
+          398,
+          700
+        ]
+      ]
+    },
+    {
+      "index": 15,
+      "text": "Drookly",
+      "confidence": 0.7584984350668993,
+      "bbox": [
+        [
+          951,
+          2061
+        ],
+        [
+          1069,
+          2061
+        ],
+        [
+          1069,
+          2088
+        ],
+        [
+          951,
+          2088
+        ]
+      ]
+    },
+    {
+      "index": 16,
+      "text": "Co.쉼표",
+      "confidence": 0.9993081908928227,
+      "bbox": [
+        [
+          513,
+          635
+        ],
+        [
+          565,
+          635
+        ],
+        [
+          565,
+          659
+        ],
+        [
+          513,
+          659
+        ]
+      ]
+    },
+    {
+      "index": 17,
+      "text": "10401쉼표",
+      "confidence": 0.9246190313435504,
+      "bbox": [
+        [
+          675,
+          382
+        ],
+        [
+          764,
+          382
+        ],
+        [
+          764,
+          407
+        ],
+        [
+          675,
+          407
+        ]
+      ]
+    },
+    {
+      "index": 18,
+      "text": "Strategies",
+      "confidence": 0.875560706258738,
+      "bbox": [
+        [
+          371,
+          634
+        ],
+        [
+          500,
+          634
+        ],
+        [
+          500,
+          661
+        ],
+        [
+          371,
+          661
+        ]
+      ]
+    },
+    {
+      "index": 19,
+      "text": "Signature",
+      "confidence": 0.9439300354902785,
+      "bbox": [
+        [
+          834,
+          1744
+        ],
+        [
+          960,
+          1744
+        ],
+        [
+          960,
+          1772
+        ],
+        [
+          834,
+          1772
+        ]
+      ]
+    },
+    {
+      "index": 20,
+      "text": "CUEA",
+      "confidence": 0.8658968886098867,
+      "bbox": [
+        [
+          709,
+          1055
+        ],
+        [
+          785,
+          1055
+        ],
+        [
+          785,
+          1076
+        ],
+        [
+          709,
+          1076
+        ]
+      ]
+    },
+    {
+      "index": 21,
+      "text": "ALTO쉼표",
+      "confidence": 0.9760980647260196,
+      "bbox": [
+        [
+          615,
+          1054
+        ],
+        [
+          695,
+          1054
+        ],
+        [
+          695,
+          1080
+        ],
+        [
+          615,
+          1080
+        ]
+      ]
+    },
+    {
+      "index": 22,
+      "text": "SeOul",
+      "confidence": 0.9232201254037332,
+      "bbox": [
+        [
+          593,
+          383
+        ],
+        [
+          662,
+          383
+        ],
+        [
+          662,
+          405
+        ],
+        [
+          593,
+          405
+        ]
+      ]
+    },
+    {
+      "index": 23,
+      "text": "Kangnam-ku쉼표",
+      "confidence": 0.9757421172638119,
+      "bbox": [
+        [
+          402,
+          382
+        ],
+        [
+          581,
+          382
+        ],
+        [
+          581,
+          408
+        ],
+        [
+          402,
+          408
+        ]
+      ]
+    },
+    {
+      "index": 24,
+      "text": "$8.70",
+      "confidence": 0.8904650024754264,
+      "bbox": [
+        [
+          1024,
+          1388
+        ],
+        [
+          1098,
+          1388
+        ],
+        [
+          1098,
+          1414
+        ],
+        [
+          1024,
+          1414
+        ]
+      ]
+    },
+    {
+      "index": 25,
+      "text": "Deoartment",
+      "confidence": 0.9133428761307563,
+      "bbox": [
+        [
+          874,
+          1880
+        ],
+        [
+          1029,
+          1880
+        ],
+        [
+          1029,
+          1906
+        ],
+        [
+          874,
+          1906
+        ]
+      ]
+    },
+    {
+      "index": 26,
+      "text": "PERU",
+      "confidence": 0.9854430314730659,
+      "bbox": [
+        [
+          287,
+          1054
+        ],
+        [
+          364,
+          1054
+        ],
+        [
+          364,
+          1077
+        ],
+        [
+          287,
+          1077
+        ]
+      ]
+    },
+    {
+      "index": 27,
+      "text": "Hu1eer",
+      "confidence": 0.7271213703311975,
+      "bbox": [
+        [
+          283,
+          672
+        ],
+        [
+          387,
+          672
+        ],
+        [
+          387,
+          700
+        ],
+        [
+          283,
+          700
+        ]
+      ]
+    },
+    {
+      "index": 28,
+      "text": "Alaactt",
+      "confidence": 0.6951041248335215,
+      "bbox": [
+        [
+          963,
+          1840
+        ],
+        [
+          1047,
+          1840
+        ],
+        [
+          1047,
+          1862
+        ],
+        [
+          963,
+          1862
+        ]
+      ]
+    },
+    {
+      "index": 29,
+      "text": "Head",
+      "confidence": 0.9979535664232947,
+      "bbox": [
+        [
+          1037,
+          1878
+        ],
+        [
+          1107,
+          1878
+        ],
+        [
+          1107,
+          1901
+        ],
+        [
+          1037,
+          1901
+        ]
+      ]
+    },
+    {
+      "index": 30,
+      "text": "$46.37",
+      "confidence": 0.8059811297012757,
+      "bbox": [
+        [
+          1192,
+          1388
+        ],
+        [
+          1283,
+          1388
+        ],
+        [
+          1283,
+          1415
+        ],
+        [
+          1192,
+          1415
+        ]
+      ]
+    },
+    {
+      "index": 31,
+      "text": "Co.쉼표",
+      "confidence": 0.9964958229724944,
+      "bbox": [
+        [
+          1058,
+          1841
+        ],
+        [
+          1112,
+          1841
+        ],
+        [
+          1112,
+          1865
+        ],
+        [
+          1058,
+          1865
+        ]
+      ]
+    },
+    {
+      "index": 32,
+      "text": "640214",
+      "confidence": 0.9320352283765043,
+      "bbox": [
+        [
+          378,
+          705
+        ],
+        [
+          477,
+          705
+        ],
+        [
+          477,
+          728
+        ],
+        [
+          378,
+          728
+        ]
+      ]
+    },
+    {
+      "index": 33,
+      "text": "Ltd.",
+      "confidence": 0.9581942338849536,
+      "bbox": [
+        [
+          1122,
+          1839
+        ],
+        [
+          1175,
+          1839
+        ],
+        [
+          1175,
+          1862
+        ],
+        [
+          1122,
+          1862
+        ]
+      ]
+    },
+    {
+      "index": 34,
+      "text": "Jloba",
+      "confidence": 0.8303771641314112,
+      "bbox": [
+        [
+          871,
+          1840
+        ],
+        [
+          953,
+          1840
+        ],
+        [
+          953,
+          1862
+        ],
+        [
+          871,
+          1862
+        ]
+      ]
+    },
+    {
+      "index": 35,
+      "text": "Ltd.",
+      "confidence": 0.9490625957216237,
+      "bbox": [
+        [
+          450,
+          341
+        ],
+        [
+          503,
+          341
+        ],
+        [
+          503,
+          364
+        ],
+        [
+          450,
+          364
+        ]
+      ]
+    },
+    {
+      "index": 36,
+      "text": "PALO",
+      "confidence": 0.9986570075235043,
+      "bbox": [
+        [
+          529,
+          1055
+        ],
+        [
+          602,
+          1055
+        ],
+        [
+          602,
+          1077
+        ],
+        [
+          529,
+          1077
+        ]
+      ]
+    },
+    {
+      "index": 37,
+      "text": "87",
+      "confidence": 0.9997839458828441,
+      "bbox": [
+        [
+          915,
+          992
+        ],
+        [
+          949,
+          992
+        ],
+        [
+          949,
+          1014
+        ],
+        [
+          915,
+          1014
+        ]
+      ]
+    },
+    {
+      "index": 38,
+      "text": "32-222",
+      "confidence": 0.8633056067283343,
+      "bbox": [
+        [
+          1364,
+          1202
+        ],
+        [
+          1458,
+          1202
+        ],
+        [
+          1458,
+          1224
+        ],
+        [
+          1364,
+          1224
+        ]
+      ]
+    },
+    {
+      "index": 39,
+      "text": "Co.쉼표",
+      "confidence": 0.9268604384469722,
+      "bbox": [
+        [
+          388,
+          342
+        ],
+        [
+          439,
+          342
+        ],
+        [
+          439,
+          368
+        ],
+        [
+          388,
+          368
+        ]
+      ]
+    },
+    {
+      "index": 40,
+      "text": "$42.03",
+      "confidence": 0.9387101820044337,
+      "bbox": [
+        [
+          1192,
+          1199
+        ],
+        [
+          1284,
+          1199
+        ],
+        [
+          1284,
+          1227
+        ],
+        [
+          1192,
+          1227
+        ]
+      ]
+    },
+    {
+      "index": 41,
+      "text": "FAX:+(9)(857)863-1233",
+      "confidence": 0.9091690676091808,
+      "bbox": [
+        [
+          157,
+          768
+        ],
+        [
+          462,
+          768
+        ],
+        [
+          462,
+          796
+        ],
+        [
+          157,
+          796
+        ]
+      ]
+    },
+    {
+      "index": 42,
+      "text": "TEL:+(8999413220-6222",
+      "confidence": 0.8555304649958687,
+      "bbox": [
+        [
+          153,
+          735
+        ],
+        [
+          461,
+          735
+        ],
+        [
+          461,
+          764
+        ],
+        [
+          153,
+          764
+        ]
+      ]
+    },
+    {
+      "index": 43,
+      "text": "DES:",
+      "confidence": 0.8563851107065735,
+      "bbox": [
+        [
+          930,
+          899
+        ],
+        [
+          995,
+          899
+        ],
+        [
+          995,
+          922
+        ],
+        [
+          930,
+          922
+        ]
+      ]
+    },
+    {
+      "index": 44,
+      "text": "86",
+      "confidence": 0.9999098167167598,
+      "bbox": [
+        [
+          915,
+          1034
+        ],
+        [
+          949,
+          1034
+        ],
+        [
+          949,
+          1056
+        ],
+        [
+          915,
+          1056
+        ]
+      ]
+    },
+    {
+      "index": 45,
+      "text": "Chiga",
+      "confidence": 0.892575719311511,
+      "bbox": [
+        [
+          287,
+          704
+        ],
+        [
+          368,
+          704
+        ],
+        [
+          368,
+          728
+        ],
+        [
+          287,
+          728
+        ]
+      ]
+    },
+    {
+      "index": 46,
+      "text": "Sichuan쉼표",
+      "confidence": 0.9404595386325639,
+      "bbox": [
+        [
+          160,
+          704
+        ],
+        [
+          277,
+          704
+        ],
+        [
+          277,
+          730
+        ],
+        [
+          160,
+          730
+        ]
+      ]
+    },
+    {
+      "index": 47,
+      "text": "236622",
+      "confidence": 0.9904280901461905,
+      "bbox": [
+        [
+          923,
+          341
+        ],
+        [
+          1020,
+          341
+        ],
+        [
+          1020,
+          362
+        ],
+        [
+          923,
+          362
+        ]
+      ]
+    },
+    {
+      "index": 48,
+      "text": "PHOOTE쉼표OO--쉼표IINN",
+      "confidence": 0.4320181153772725,
+      "bbox": [
+        [
+          332,
+          1198
+        ],
+        [
+          621,
+          1198
+        ],
+        [
+          621,
+          1222
+        ],
+        [
+          332,
+          1222
+        ]
+      ]
+    },
+    {
+      "index": 49,
+      "text": "LEGJON",
+      "confidence": 0.886545860347106,
+      "bbox": [
+        [
+          234,
+          919
+        ],
+        [
+          344,
+          919
+        ],
+        [
+          344,
+          942
+        ],
+        [
+          234,
+          942
+        ]
+      ]
+    },
+    {
+      "index": 50,
+      "text": "7",
+      "confidence": 0.9921969176256128,
+      "bbox": [
+        [
+          926,
+          948
+        ],
+        [
+          944,
+          948
+        ],
+        [
+          944,
+          971
+        ],
+        [
+          926,
+          971
+        ]
+      ]
+    },
+    {
+      "index": 51,
+      "text": "paynent",
+      "confidence": 0.8584957443716835,
+      "bbox": [
+        [
+          1171,
+          847
+        ],
+        [
+          1274,
+          847
+        ],
+        [
+          1274,
+          871
+        ],
+        [
+          1171,
+          871
+        ]
+      ]
+    },
+    {
+      "index": 52,
+      "text": "a03",
+      "confidence": 0.5406010296588032,
+      "bbox": [
+        [
+          1049,
+          300
+        ],
+        [
+          1092,
+          300
+        ],
+        [
+          1092,
+          318
+        ],
+        [
+          1049,
+          318
+        ]
+      ]
+    },
+    {
+      "index": 53,
+      "text": "Tacchn--o",
+      "confidence": 0.8078658820373326,
+      "bbox": [
+        [
+          266,
+          382
+        ],
+        [
+          392,
+          382
+        ],
+        [
+          392,
+          405
+        ],
+        [
+          266,
+          405
+        ]
+      ]
+    },
+    {
+      "index": 54,
+      "text": "EVER",
+      "confidence": 0.8324950503329085,
+      "bbox": [
+        [
+          146,
+          919
+        ],
+        [
+          225,
+          919
+        ],
+        [
+          225,
+          942
+        ],
+        [
+          146,
+          942
+        ]
+      ]
+    },
+    {
+      "index": 55,
+      "text": "61",
+      "confidence": 0.9664169490095297,
+      "bbox": [
+        [
+          1248,
+          1038
+        ],
+        [
+          1280,
+          1038
+        ],
+        [
+          1280,
+          1060
+        ],
+        [
+          1248,
+          1060
+        ]
+      ]
+    },
+    {
+      "index": 56,
+      "text": "FAL:+(88)661124444444",
+      "confidence": 0.6992498666904676,
+      "bbox": [
+        [
+          179,
+          479
+        ],
+        [
+          465,
+          479
+        ],
+        [
+          465,
+          507
+        ],
+        [
+          179,
+          507
+        ]
+      ]
+    },
+    {
+      "index": 57,
+      "text": "M7792186NS48088",
+      "confidence": 0.8589687268799701,
+      "bbox": [
+        [
+          919,
+          453
+        ],
+        [
+          1175,
+          453
+        ],
+        [
+          1175,
+          476
+        ],
+        [
+          919,
+          476
+        ]
+      ]
+    },
+    {
+      "index": 58,
+      "text": "479쉼표",
+      "confidence": 0.9226087925477999,
+      "bbox": [
+        [
+          215,
+          672
+        ],
+        [
+          274,
+          672
+        ],
+        [
+          274,
+          697
+        ],
+        [
+          215,
+          697
+        ]
+      ]
+    },
+    {
+      "index": 59,
+      "text": "Dominoon",
+      "confidence": 0.7780101390026215,
+      "bbox": [
+        [
+          232,
+          634
+        ],
+        [
+          362,
+          634
+        ],
+        [
+          362,
+          657
+        ],
+        [
+          232,
+          657
+        ]
+      ]
+    },
+    {
+      "index": 60,
+      "text": "PKG",
+      "confidence": 0.9940765593104881,
+      "bbox": [
+        [
+          186,
+          1237
+        ],
+        [
+          246,
+          1237
+        ],
+        [
+          246,
+          1259
+        ],
+        [
+          186,
+          1259
+        ]
+      ]
+    },
+    {
+      "index": 61,
+      "text": "Shipper3Sllle",
+      "confidence": 0.7562294889564335,
+      "bbox": [
+        [
+          146,
+          294
+        ],
+        [
+          317,
+          294
+        ],
+        [
+          317,
+          320
+        ],
+        [
+          146,
+          320
+        ]
+      ]
+    },
+    {
+      "index": 62,
+      "text": "contactt",
+      "confidence": 0.9466605796057171,
+      "bbox": [
+        [
+          1190,
+          947
+        ],
+        [
+          1279,
+          947
+        ],
+        [
+          1279,
+          967
+        ],
+        [
+          1190,
+          967
+        ]
+      ]
+    },
+    {
+      "index": 63,
+      "text": "Spinning",
+      "confidence": 0.955877476672591,
+      "bbox": [
+        [
+          258,
+          340
+        ],
+        [
+          378,
+          340
+        ],
+        [
+          378,
+          368
+        ],
+        [
+          258,
+          368
+        ]
+      ]
+    },
+    {
+      "index": 64,
+      "text": "Consigpee",
+      "confidence": 0.9137278511538642,
+      "bbox": [
+        [
+          147,
+          586
+        ],
+        [
+          277,
+          586
+        ],
+        [
+          277,
+          613
+        ],
+        [
+          147,
+          613
+        ]
+      ]
+    },
+    {
+      "index": 65,
+      "text": "InVo6ee",
+      "confidence": 0.7106941593940785,
+      "bbox": [
+        [
+          916,
+          299
+        ],
+        [
+          1004,
+          299
+        ],
+        [
+          1004,
+          319
+        ],
+        [
+          916,
+          319
+        ]
+      ]
+    },
+    {
+      "index": 66,
+      "text": "38-7004",
+      "confidence": 0.8535543270100397,
+      "bbox": [
+        [
+          1363,
+          1390
+        ],
+        [
+          1460,
+          1390
+        ],
+        [
+          1460,
+          1413
+        ],
+        [
+          1363,
+          1413
+        ]
+      ]
+    },
+    {
+      "index": 67,
+      "text": "Kar",
+      "confidence": 0.6011815064113957,
+      "bbox": [
+        [
+          204,
+          1196
+        ],
+        [
+          270,
+          1196
+        ],
+        [
+          270,
+          1218
+        ],
+        [
+          204,
+          1218
+        ]
+      ]
+    },
+    {
+      "index": 68,
+      "text": "gayN5r0m1-.G0",
+      "confidence": 0.4189343172981098,
+      "bbox": [
+        [
+          1288,
+          1034
+        ],
+        [
+          1465,
+          1034
+        ],
+        [
+          1465,
+          1060
+        ],
+        [
+          1288,
+          1060
+        ]
+      ]
+    },
+    {
+      "index": 69,
+      "text": "HUACHO쉼표",
+      "confidence": 0.9896177718046109,
+      "bbox": [
+        [
+          144,
+          1053
+        ],
+        [
+          279,
+          1053
+        ],
+        [
+          279,
+          1081
+        ],
+        [
+          144,
+          1081
+        ]
+      ]
+    },
+    {
+      "index": 70,
+      "text": "$1쉼표쉼표66..0",
+      "confidence": 0.8472541489408209,
+      "bbox": [
+        [
+          1172,
+          1682
+        ],
+        [
+          1309,
+          1682
+        ],
+        [
+          1309,
+          1708
+        ],
+        [
+          1172,
+          1708
+        ]
+      ]
+    },
+    {
+      "index": 71,
+      "text": "HARNESS",
+      "confidence": 0.997064051492409,
+      "bbox": [
+        [
+          139,
+          1385
+        ],
+        [
+          275,
+          1385
+        ],
+        [
+          275,
+          1410
+        ],
+        [
+          139,
+          1410
+        ]
+      ]
+    },
+    {
+      "index": 72,
+      "text": "Loading",
+      "confidence": 0.9969137703449168,
+      "bbox": [
+        [
+          229,
+          1000
+        ],
+        [
+          325,
+          1000
+        ],
+        [
+          325,
+          1025
+        ],
+        [
+          229,
+          1025
+        ]
+      ]
+    },
+    {
+      "index": 73,
+      "text": "PKG",
+      "confidence": 0.9979833425898368,
+      "bbox": [
+        [
+          185,
+          1426
+        ],
+        [
+          246,
+          1426
+        ],
+        [
+          246,
+          1449
+        ],
+        [
+          185,
+          1449
+        ]
+      ]
+    },
+    {
+      "index": 74,
+      "text": "2X",
+      "confidence": 0.6523251863632098,
+      "bbox": [
+        [
+          141,
+          1237
+        ],
+        [
+          175,
+          1237
+        ],
+        [
+          175,
+          1260
+        ],
+        [
+          141,
+          1260
+        ]
+      ]
+    },
+    {
+      "index": 75,
+      "text": "D/P",
+      "confidence": 0.8387338086007343,
+      "bbox": [
+        [
+          1218,
+          897
+        ],
+        [
+          1278,
+          897
+        ],
+        [
+          1278,
+          926
+        ],
+        [
+          1218,
+          926
+        ]
+      ]
+    },
+    {
+      "index": 76,
+      "text": "22-Jan-2011",
+      "confidence": 0.9736747454870918,
+      "bbox": [
+        [
+          1208,
+          340
+        ],
+        [
+          1379,
+          340
+        ],
+        [
+          1379,
+          364
+        ],
+        [
+          1208,
+          364
+        ]
+      ]
+    },
+    {
+      "index": 77,
+      "text": "After",
+      "confidence": 0.9973396574284277,
+      "bbox": [
+        [
+          998,
+          1032
+        ],
+        [
+          1053,
+          1032
+        ],
+        [
+          1053,
+          1054
+        ],
+        [
+          998,
+          1054
+        ]
+      ]
+    },
+    {
+      "index": 78,
+      "text": "daae",
+      "confidence": 0.8506789872962884,
+      "bbox": [
+        [
+          1053,
+          404
+        ],
+        [
+          1106,
+          404
+        ],
+        [
+          1106,
+          426
+        ],
+        [
+          1053,
+          426
+        ]
+      ]
+    },
+    {
+      "index": 79,
+      "text": "Vessel",
+      "confidence": 0.9799118008377128,
+      "bbox": [
+        [
+          143,
+          881
+        ],
+        [
+          227,
+          881
+        ],
+        [
+          227,
+          903
+        ],
+        [
+          143,
+          903
+        ]
+      ]
+    },
+    {
+      "index": 80,
+      "text": "Remark",
+      "confidence": 0.9577256057009079,
+      "bbox": [
+        [
+          150,
+          1743
+        ],
+        [
+          248,
+          1743
+        ],
+        [
+          248,
+          1766
+        ],
+        [
+          150,
+          1766
+        ]
+      ]
+    },
+    {
+      "index": 81,
+      "text": "And.",
+      "confidence": 0.6110284087048367,
+      "bbox": [
+        [
+          139,
+          1196
+        ],
+        [
+          196,
+          1196
+        ],
+        [
+          196,
+          1219
+        ],
+        [
+          139,
+          1219
+        ]
+      ]
+    },
+    {
+      "index": 82,
+      "text": "KOrea",
+      "confidence": 0.7655039647819167,
+      "bbox": [
+        [
+          272,
+          415
+        ],
+        [
+          351,
+          415
+        ],
+        [
+          351,
+          437
+        ],
+        [
+          272,
+          437
+        ]
+      ]
+    },
+    {
+      "index": 83,
+      "text": "and",
+      "confidence": 0.7902891361318063,
+      "bbox": [
+        [
+          1005,
+          405
+        ],
+        [
+          1048,
+          405
+        ],
+        [
+          1048,
+          424
+        ],
+        [
+          1005,
+          424
+        ]
+      ]
+    },
+    {
+      "index": 84,
+      "text": "No.and",
+      "confidence": 0.7755758012337736,
+      "bbox": [
+        [
+          1005,
+          299
+        ],
+        [
+          1093,
+          299
+        ],
+        [
+          1093,
+          319
+        ],
+        [
+          1005,
+          319
+        ]
+      ]
+    },
+    {
+      "index": 85,
+      "text": "Voy쉼표",
+      "confidence": 0.9648155906364889,
+      "bbox": [
+        [
+          238,
+          880
+        ],
+        [
+          294,
+          880
+        ],
+        [
+          294,
+          906
+        ],
+        [
+          238,
+          906
+        ]
+      ]
+    },
+    {
+      "index": 86,
+      "text": "19-Jun-2011",
+      "confidence": 0.9925721647566779,
+      "bbox": [
+        [
+          1210,
+          454
+        ],
+        [
+          1380,
+          454
+        ],
+        [
+          1380,
+          477
+        ],
+        [
+          1210,
+          477
+        ]
+      ]
+    },
+    {
+      "index": 87,
+      "text": "96",
+      "confidence": 0.8401058845865744,
+      "bbox": [
+        [
+          959,
+          1032
+        ],
+        [
+          983,
+          1032
+        ],
+        [
+          983,
+          1054
+        ],
+        [
+          959,
+          1054
+        ]
+      ]
+    },
+    {
+      "index": 88,
+      "text": "VessH1쉼표yo9쉼표",
+      "confidence": 0.6954334169848756,
+      "bbox": [
+        [
+          143,
+          880
+        ],
+        [
+          299,
+          880
+        ],
+        [
+          299,
+          906
+        ],
+        [
+          143,
+          906
+        ]
+      ]
+    },
+    {
+      "index": 89,
+      "text": "46",
+      "confidence": 0.9983632147860905,
+      "bbox": [
+        [
+          142,
+          1426
+        ],
+        [
+          177,
+          1426
+        ],
+        [
+          177,
+          1449
+        ],
+        [
+          142,
+          1449
+        ]
+      ]
+    },
+    {
+      "index": 90,
+      "text": "SchaggOoUO",
+      "confidence": 0.5208230438239293,
+      "bbox": [
+        [
+          1293,
+          990
+        ],
+        [
+          1424,
+          990
+        ],
+        [
+          1424,
+          1015
+        ],
+        [
+          1293,
+          1015
+        ]
+      ]
+    },
+    {
+      "index": 91,
+      "text": "TEL:+(38)8600995-93..",
+      "confidence": 0.6764408316621399,
+      "bbox": [
+        [
+          154,
+          445
+        ],
+        [
+          467,
+          445
+        ],
+        [
+          467,
+          476
+        ],
+        [
+          154,
+          476
+        ]
+      ]
+    },
+    {
+      "index": 92,
+      "text": "No.",
+      "confidence": 0.9984534197465732,
+      "bbox": [
+        [
+          1003,
+          298
+        ],
+        [
+          1046,
+          298
+        ],
+        [
+          1046,
+          320
+        ],
+        [
+          1003,
+          320
+        ]
+      ]
+    },
+    {
+      "index": 93,
+      "text": "Port",
+      "confidence": 0.9923004135302758,
+      "bbox": [
+        [
+          144,
+          1001
+        ],
+        [
+          203,
+          1001
+        ],
+        [
+          203,
+          1022
+        ],
+        [
+          144,
+          1022
+        ]
+      ]
+    },
+    {
+      "index": 94,
+      "text": "data",
+      "confidence": 0.810731442955925,
+      "bbox": [
+        [
+          1097,
+          299
+        ],
+        [
+          1151,
+          299
+        ],
+        [
+          1151,
+          318
+        ],
+        [
+          1097,
+          318
+        ]
+      ]
+    },
+    {
+      "index": 95,
+      "text": "9",
+      "confidence": 0.9964126943900528,
+      "bbox": [
+        [
+          959,
+          988
+        ],
+        [
+          982,
+          988
+        ],
+        [
+          982,
+          1010
+        ],
+        [
+          959,
+          1010
+        ]
+      ]
+    },
+    {
+      "index": 96,
+      "text": "V.16)",
+      "confidence": 0.568943570510929,
+      "bbox": [
+        [
+          144,
+          951
+        ],
+        [
+          223,
+          951
+        ],
+        [
+          223,
+          975
+        ],
+        [
+          144,
+          975
+        ]
+      ]
+    },
+    {
+      "index": 97,
+      "text": "Rep쉼표",
+      "confidence": 0.6264073169490384,
+      "bbox": [
+        [
+          166,
+          415
+        ],
+        [
+          224,
+          415
+        ],
+        [
+          224,
+          440
+        ],
+        [
+          166,
+          440
+        ]
+      ]
+    }
+  ],
+  "elapsed_seconds": 28.438,
+  "common_json": {
+    "schema_version": "1.0",
+    "document_type": "commercial_invoice",
+    "document_id": "IMG_OCR_6_T_NV_002734",
+    "processing_status": "partial",
+    "fields": {
+      "invoice_no": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice number label/value not recovered",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "date": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice date not printed or not recoverable",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "buyer": {
+        "value": "Dominoon Strategies Co.쉼표 Ltd.",
+        "normalized": "Dominoon Strategies Co.쉼표 Ltd.",
+        "raw_text": "Dominoon Strategies Ltd. Co.쉼표",
+        "bbox": [
+          [
+            232,
+            634
+          ],
+          [
+            626,
+            634
+          ],
+          [
+            626,
+            661
+          ],
+          [
+            232,
+            661
+          ]
+        ],
+        "confidence": 0.7780101390026215,
+        "status": "ambiguous",
+        "source_indices": [
+          59,
+          18,
+          10,
+          16
+        ],
+        "reason": "buyer label absent; consignee retained as a counterparty proxy requiring review",
+        "normalization_status": "ambiguous",
+        "normalization_reason": "source field remains ambiguous"
+      },
+      "amount": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice-level total amount not recovered",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "currency": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "currency code or symbol not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "goods_description": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "table header not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "quantity": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "table header not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      }
+    }
+  }
+}
