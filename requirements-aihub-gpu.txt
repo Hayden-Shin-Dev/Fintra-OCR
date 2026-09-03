@@ -1,0 +1,7 @@
+# Install this in a new .venv-aihub-gpu only. Never install it in .venv or
+# .venv-aihub-cpu. The remaining AI-Hub dependencies are pinned in
+# requirements-aihub-cpu.txt; install that file first, then install this GPU
+# override so the CPU torch wheels are replaced by CUDA wheels.
+--extra-index-url https://download.pytorch.org/whl/cu124
+torch==2.6.0+cu124
+torchvision==0.21.0+cu124
