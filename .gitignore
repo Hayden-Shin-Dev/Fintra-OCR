@@ -21,6 +21,7 @@ venv/
 # Python cache
 __pycache__/
 *.py[cod]
+.pytest-tmp*/
 
 # Environment variables / secrets
 .env
