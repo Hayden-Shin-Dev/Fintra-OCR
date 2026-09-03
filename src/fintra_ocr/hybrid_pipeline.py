@@ -111,23 +111,20 @@ def _rebase_source_indices(field: FieldEvidence, offset: int) -> FieldEvidence:
     )
 
 
-def run_hybrid_document(
-    image_bytes: bytes,
+def build_hybrid_document(
     form_type: str,
     document_id: str,
-    primary: OCRBackend,
-    fallback: OCRBackend,
+    primary_predictions: list[OCRPrediction],
+    fallback_predictions: list[OCRPrediction],
     *,
     policy: HybridPolicy = HybridPolicy(),
 ) -> PipelineResult:
-    """Run both backends and expose one conservative Fintra document.
+    """Build one conservative Fintra document from two OCR result sets.
 
     Predictions are retained as ``primary + fallback`` so field evidence source
     indices remain auditable.  Existing field extraction is run independently
     for each backend; no extractor rule is added here.
     """
-    primary_predictions = primary.predict_bytes(image_bytes)
-    fallback_predictions = fallback.predict_bytes(image_bytes)
     primary_fields = normalize_fields(extract_fields(form_type, primary_predictions))
     fallback_fields = normalize_fields(extract_fields(form_type, fallback_predictions))
 
@@ -157,4 +154,23 @@ def run_hybrid_document(
         predictions=predictions,
         fields=selected,
         document=document,
+    )
+
+
+def run_hybrid_document(
+    image_bytes: bytes,
+    form_type: str,
+    document_id: str,
+    primary: OCRBackend,
+    fallback: OCRBackend,
+    *,
+    policy: HybridPolicy = HybridPolicy(),
+) -> PipelineResult:
+    """Run both backends and expose one conservative Fintra document."""
+    return build_hybrid_document(
+        form_type,
+        document_id,
+        primary.predict_bytes(image_bytes),
+        fallback.predict_bytes(image_bytes),
+        policy=policy,
     )
