@@ -15,6 +15,7 @@ AI모델*.zip
 
 # Python virtual environment
 .venv/
+.venv-aihub-cpu/
 venv/
 
 # Python cache
