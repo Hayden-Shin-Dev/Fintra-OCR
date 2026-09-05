@@ -43,32 +43,44 @@ foreach ($caseDir in $caseDirs) {
     $image = "/project/$relativeCase/$($imageFile[0].Name)"
     $detection = "/project/$relativeCase/outputs/detection.json"
     $recognitionOutput = "/project/$relativeCase/outputs/recognition"
+    $detectionHost = Join-Path $caseDir.FullName "outputs\detection.json"
     New-Item -ItemType Directory -Force -Path (Join-Path $caseDir.FullName "outputs\recognition") | Out-Null
 
-    Write-Host "[$($caseDir.Name)] Detection"
-    Invoke-DockerChecked @(
-        "run", "--rm", "--gpus", "all", "--ipc=host",
-        "-v", "${projectRoot}:/project", "-w", "/project", $detectionTag,
-        "python", "/opt/fintra/modern_detection.py",
-        "--image", $image,
-        "--checkpoint", $detectionCheckpoint,
-        "--config", "/opt/fintra/detection_config.py",
-        "--output", $detection,
-        "--device", "cuda"
-    )
+    if (Test-Path -LiteralPath $detectionHost) {
+        Write-Host "[$($caseDir.Name)] Detection already present; reusing it"
+    } else {
+        Write-Host "[$($caseDir.Name)] Detection"
+        Invoke-DockerChecked @(
+            "run", "--rm", "--gpus", "all", "--ipc=host",
+            "-v", "${projectRoot}:/project", "-w", "/project", $detectionTag,
+            "python", "/opt/fintra/modern_detection.py",
+            "--image", $image,
+            "--checkpoint", $detectionCheckpoint,
+            "--config", "/opt/fintra/detection_config.py",
+            "--output", $detection,
+            "--device", "cuda"
+        )
+    }
 
-    Write-Host "[$($caseDir.Name)] Recognition"
-    Invoke-DockerChecked @(
-        "run", "--rm", "--gpus", "all", "--ipc=host",
-        "-v", "${projectRoot}:/project", "-w", "/project", $recognitionTag,
-        "python", "/opt/fintra/modern_recognition.py",
-        "--image", $image,
-        "--regions-json", $detection,
-        "--checkpoint", $recognitionCheckpoint,
-        "--dict", $dictionary,
-        "--output-dir", $recognitionOutput,
-        "--device", "cuda"
-    )
+    $recognitionJson = @(Get-ChildItem -LiteralPath (Join-Path $caseDir.FullName "outputs\recognition") -Filter "*.json" -File -ErrorAction SilentlyContinue)
+    if ($recognitionJson.Count -gt 0) {
+        Write-Host "[$($caseDir.Name)] Recognition already present; reusing it"
+    } else {
+        Write-Host "[$($caseDir.Name)] Recognition"
+        Invoke-DockerChecked @(
+            "run", "--rm", "--gpus", "all", "--ipc=host",
+            "-v", "${projectRoot}:/project", "-w", "/project", $recognitionTag,
+            # Run the repository wrapper through the project mount.  The image may
+            # contain an older wrapper that only accepts --baseline-txt.
+            "python", "/project/runtime/modern_gpu/modern_recognition.py",
+            "--image", $image,
+            "--regions-json", $detection,
+            "--checkpoint", $recognitionCheckpoint,
+            "--dict", $dictionary,
+            "--output-dir", $recognitionOutput,
+            "--device", "cuda"
+        )
+    }
 }
 
 Write-Host "[60/60] Evaluating extracted fields"
