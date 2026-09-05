@@ -113,3 +113,12 @@ test_pipeline = [
     dict(type="PackDetInputs", meta_keys=("img_id", "img_path", "ori_shape", "img_shape", "scale_factor")),
 ]
 
+# MMDetection 3.x's inference API reads the test pipeline through this
+# dataloader path even for a direct single-image call. The pipeline itself is
+# unchanged from the declaration above; this only supplies the required API
+# wrapper and keeps the one-image runner dataset-free.
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=0,
+    dataset=dict(type="CocoDataset", pipeline=test_pipeline),
+)
