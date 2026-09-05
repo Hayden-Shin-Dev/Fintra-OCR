@@ -1,0 +1,39 @@
+# Detection needs to compile MMCV's CUDA operators. The Recognition image is
+# intentionally left on its smaller runtime base; Detection gets an isolated
+# CUDA development base so the original image and Modern Recognition image are
+# untouched.
+FROM pytorch/pytorch:2.6.0-cuda12.4-cudnn9-devel
+
+ENV MMCV_WITH_OPS=1 \
+    FORCE_CUDA=1 \
+    TORCH_CUDA_ARCH_LIST=8.9 \
+    MAX_JOBS=1 \
+    CMAKE_BUILD_PARALLEL_LEVEL=1 \
+    NINJAFLAGS=-j1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+# This is deliberately a separate image. The original MMCV 1.4.3/MMDet 2.20
+# stack is never altered. The current graph is used only after the checkpoint
+# strict-load and output parity checks have been performed.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends build-essential \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir "numpy<2" opencv-python-headless shapely tqdm Polygon3 openmim \
+    && mim install "mmengine==0.10.7" \
+    && mim install "mmcv==2.1.0" \
+    && pip install --no-cache-dir "mmdet==3.3.0"
+
+# OpenCV's headless wheel still resolves these shared libraries in this base
+# image. Keep this as a separate layer so a runtime-library fix reuses the
+# already successful MMCV CUDA build above.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libxcb1 libglib2.0-0 libgl1 libx11-6 libxext6 libxrender1 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY detection_config.py /opt/fintra/detection_config.py
+COPY modern_detection.py /opt/fintra/modern_detection.py
+COPY compare_detection.py /opt/fintra/compare_detection.py
+
+WORKDIR /project
