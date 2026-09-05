@@ -1,0 +1,2035 @@
+{
+  "document_id": "IMG_OCR_6_T_NV_003058",
+  "form_type": "상업송장",
+  "document_type": "commercial_invoice",
+  "backend": "aihub-logistics",
+  "gt_recall": {
+    "gt_boxes": 74,
+    "predicted_boxes": 77,
+    "geometric_recall": 1.0,
+    "exact_text_recall": 0.6891891891891891,
+    "segmentation_aware_recall": 0.7027027027027027,
+    "similarity_90_recall": 0.7027027027027027,
+    "mean_similarity": 0.9065527762896184,
+    "mean_cer": 0.10146416922732712
+  },
+  "fields": {
+    "invoice_no": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "date": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "buyer": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "amount": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "currency": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "goods_description": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "quantity": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    }
+  },
+  "oracle_fields": {
+    "invoice_no": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "date": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "buyer": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "amount": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "currency": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "goods_description": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "quantity": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    }
+  },
+  "field_diagnostics": {
+    "amount": {
+      "field_name": "amount",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "buyer": {
+      "field_name": "buyer",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "currency": {
+      "field_name": "currency",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "date": {
+      "field_name": "date",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "goods_description": {
+      "field_name": "goods_description",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "invoice_no": {
+      "field_name": "invoice_no",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "quantity": {
+      "field_name": "quantity",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    }
+  },
+  "ocr_predictions": [
+    {
+      "index": 0,
+      "text": "6",
+      "confidence": 0.9999028444268281,
+      "bbox": [
+        [
+          681,
+          1396
+        ],
+        [
+          693,
+          1396
+        ],
+        [
+          693,
+          1414
+        ],
+        [
+          681,
+          1414
+        ]
+      ]
+    },
+    {
+      "index": 1,
+      "text": "street,",
+      "confidence": 0.912677412329838,
+      "bbox": [
+        [
+          307,
+          681
+        ],
+        [
+          403,
+          681
+        ],
+        [
+          403,
+          700
+        ],
+        [
+          307,
+          700
+        ]
+      ]
+    },
+    {
+      "index": 2,
+      "text": "Ltd.",
+      "confidence": 0.9822117056319385,
+      "bbox": [
+        [
+          453,
+          641
+        ],
+        [
+          506,
+          641
+        ],
+        [
+          506,
+          658
+        ],
+        [
+          453,
+          658
+        ]
+      ]
+    },
+    {
+      "index": 3,
+      "text": "For",
+      "confidence": 0.9910322606731671,
+      "bbox": [
+        [
+          330,
+          1207
+        ],
+        [
+          373,
+          1207
+        ],
+        [
+          373,
+          1224
+        ],
+        [
+          330,
+          1224
+        ]
+      ]
+    },
+    {
+      "index": 4,
+      "text": "SM",
+      "confidence": 0.9895891493514452,
+      "bbox": [
+        [
+          680,
+          1441
+        ],
+        [
+          710,
+          1441
+        ],
+        [
+          710,
+          1458
+        ],
+        [
+          680,
+          1458
+        ]
+      ]
+    },
+    {
+      "index": 5,
+      "text": "6",
+      "confidence": 0.9996656179524943,
+      "bbox": [
+        [
+          682,
+          1207
+        ],
+        [
+          695,
+          1207
+        ],
+        [
+          695,
+          1225
+        ],
+        [
+          682,
+          1225
+        ]
+      ]
+    },
+    {
+      "index": 6,
+      "text": "455984",
+      "confidence": 0.9970899527090024,
+      "bbox": [
+        [
+          920,
+          344
+        ],
+        [
+          1003,
+          344
+        ],
+        [
+          1003,
+          362
+        ],
+        [
+          920,
+          362
+        ]
+      ]
+    },
+    {
+      "index": 7,
+      "text": "Ltd.",
+      "confidence": 0.961666086345759,
+      "bbox": [
+        [
+          1192,
+          1849
+        ],
+        [
+          1246,
+          1849
+        ],
+        [
+          1246,
+          1868
+        ],
+        [
+          1192,
+          1868
+        ]
+      ]
+    },
+    {
+      "index": 8,
+      "text": "A3A,",
+      "confidence": 0.8477831150808143,
+      "bbox": [
+        [
+          527,
+          1063
+        ],
+        [
+          579,
+          1063
+        ],
+        [
+          579,
+          1083
+        ],
+        [
+          527,
+          1083
+        ]
+      ]
+    },
+    {
+      "index": 9,
+      "text": "Engineer",
+      "confidence": 0.9805959743915684,
+      "bbox": [
+        [
+          870,
+          1889
+        ],
+        [
+          983,
+          1889
+        ],
+        [
+          983,
+          1911
+        ],
+        [
+          870,
+          1911
+        ]
+      ]
+    },
+    {
+      "index": 10,
+      "text": "PKG",
+      "confidence": 0.9992564759515018,
+      "bbox": [
+        [
+          184,
+          1436
+        ],
+        [
+          228,
+          1436
+        ],
+        [
+          228,
+          1454
+        ],
+        [
+          184,
+          1454
+        ]
+      ]
+    },
+    {
+      "index": 11,
+      "text": "ARBRA,",
+      "confidence": 0.9536174614466137,
+      "bbox": [
+        [
+          141,
+          1064
+        ],
+        [
+          220,
+          1064
+        ],
+        [
+          220,
+          1084
+        ],
+        [
+          141,
+          1084
+        ]
+      ]
+    },
+    {
+      "index": 12,
+      "text": "PKG",
+      "confidence": 0.9999312936590967,
+      "bbox": [
+        [
+          185,
+          1247
+        ],
+        [
+          227,
+          1247
+        ],
+        [
+          227,
+          1264
+        ],
+        [
+          185,
+          1264
+        ]
+      ]
+    },
+    {
+      "index": 13,
+      "text": "10022,",
+      "confidence": 0.9995156302739746,
+      "bbox": [
+        [
+          675,
+          387
+        ],
+        [
+          754,
+          387
+        ],
+        [
+          754,
+          408
+        ],
+        [
+          675,
+          408
+        ]
+      ]
+    },
+    {
+      "index": 14,
+      "text": "M9142367NS62600",
+      "confidence": 0.9719756488139178,
+      "bbox": [
+        [
+          915,
+          457
+        ],
+        [
+          1133,
+          457
+        ],
+        [
+          1133,
+          475
+        ],
+        [
+          915,
+          475
+        ]
+      ]
+    },
+    {
+      "index": 15,
+      "text": "$19.47",
+      "confidence": 0.9797375435677356,
+      "bbox": [
+        [
+          1189,
+          1207
+        ],
+        [
+          1272,
+          1207
+        ],
+        [
+          1272,
+          1227
+        ],
+        [
+          1189,
+          1227
+        ]
+      ]
+    },
+    {
+      "index": 16,
+      "text": "Pretoria",
+      "confidence": 0.9539954728129062,
+      "bbox": [
+        [
+          426,
+          679
+        ],
+        [
+          537,
+          679
+        ],
+        [
+          537,
+          697
+        ],
+        [
+          426,
+          697
+        ]
+      ]
+    },
+    {
+      "index": 17,
+      "text": "5938.71",
+      "confidence": 0.9724408690521467,
+      "bbox": [
+        [
+          845,
+          1208
+        ],
+        [
+          942,
+          1208
+        ],
+        [
+          942,
+          1227
+        ],
+        [
+          845,
+          1227
+        ]
+      ]
+    },
+    {
+      "index": 18,
+      "text": "FCA",
+      "confidence": 0.9945316438326557,
+      "bbox": [
+        [
+          927,
+          907
+        ],
+        [
+          970,
+          907
+        ],
+        [
+          970,
+          923
+        ],
+        [
+          927,
+          923
+        ]
+      ]
+    },
+    {
+      "index": 19,
+      "text": "Medicall",
+      "confidence": 0.9169030821078159,
+      "bbox": [
+        [
+          258,
+          640
+        ],
+        [
+          359,
+          640
+        ],
+        [
+          359,
+          658
+        ],
+        [
+          258,
+          658
+        ]
+      ]
+    },
+    {
+      "index": 20,
+      "text": "$82.73",
+      "confidence": 0.9984408537461748,
+      "bbox": [
+        [
+          1189,
+          1397
+        ],
+        [
+          1273,
+          1397
+        ],
+        [
+          1273,
+          1417
+        ],
+        [
+          1189,
+          1417
+        ]
+      ]
+    },
+    {
+      "index": 21,
+      "text": "Starters,",
+      "confidence": 0.8473179458245739,
+      "bbox": [
+        [
+          393,
+          1207
+        ],
+        [
+          514,
+          1207
+        ],
+        [
+          514,
+          1227
+        ],
+        [
+          393,
+          1227
+        ]
+      ]
+    },
+    {
+      "index": 22,
+      "text": "4353.81",
+      "confidence": 0.9367876391076683,
+      "bbox": [
+        [
+          846,
+          1398
+        ],
+        [
+          942,
+          1398
+        ],
+        [
+          942,
+          1416
+        ],
+        [
+          846,
+          1416
+        ]
+      ]
+    },
+    {
+      "index": 23,
+      "text": "Daepyyng,",
+      "confidence": 0.9086195571561332,
+      "bbox": [
+        [
+          356,
+          388
+        ],
+        [
+          478,
+          388
+        ],
+        [
+          478,
+          410
+        ],
+        [
+          356,
+          410
+        ]
+      ]
+    },
+    {
+      "index": 24,
+      "text": "$1.30",
+      "confidence": 0.9986523776367395,
+      "bbox": [
+        [
+          1022,
+          1397
+        ],
+        [
+          1092,
+          1397
+        ],
+        [
+          1092,
+          1418
+        ],
+        [
+          1022,
+          1418
+        ]
+      ]
+    },
+    {
+      "index": 25,
+      "text": "Pedestal",
+      "confidence": 0.9134045036985596,
+      "bbox": [
+        [
+          329,
+          1395
+        ],
+        [
+          446,
+          1395
+        ],
+        [
+          446,
+          1413
+        ],
+        [
+          329,
+          1413
+        ]
+      ]
+    },
+    {
+      "index": 26,
+      "text": "Hawng",
+      "confidence": 0.9684930039180887,
+      "bbox": [
+        [
+          1039,
+          2072
+        ],
+        [
+          1110,
+          2072
+        ],
+        [
+          1110,
+          2094
+        ],
+        [
+          1039,
+          2094
+        ]
+      ]
+    },
+    {
+      "index": 27,
+      "text": "Dushlickk",
+      "confidence": 0.8233364467639646,
+      "bbox": [
+        [
+          869,
+          1849
+        ],
+        [
+          984,
+          1849
+        ],
+        [
+          984,
+          1868
+        ],
+        [
+          869,
+          1868
+        ]
+      ]
+    },
+    {
+      "index": 28,
+      "text": "14477",
+      "confidence": 0.6959637159740905,
+      "bbox": [
+        [
+          558,
+          679
+        ],
+        [
+          623,
+          679
+        ],
+        [
+          623,
+          701
+        ],
+        [
+          558,
+          701
+        ]
+      ]
+    },
+    {
+      "index": 29,
+      "text": "L.d.",
+      "confidence": 0.6855672576275844,
+      "bbox": [
+        [
+          374,
+          347
+        ],
+        [
+          428,
+          347
+        ],
+        [
+          428,
+          365
+        ],
+        [
+          374,
+          365
+        ]
+      ]
+    },
+    {
+      "index": 30,
+      "text": "13-Aug-2010",
+      "confidence": 0.9168935112818691,
+      "bbox": [
+        [
+          563,
+          942
+        ],
+        [
+          719,
+          942
+        ],
+        [
+          719,
+          964
+        ],
+        [
+          563,
+          964
+        ]
+      ]
+    },
+    {
+      "index": 31,
+      "text": "$7.71",
+      "confidence": 0.8905568284304817,
+      "bbox": [
+        [
+          1022,
+          1207
+        ],
+        [
+          1091,
+          1207
+        ],
+        [
+          1091,
+          1228
+        ],
+        [
+          1022,
+          1228
+        ]
+      ]
+    },
+    {
+      "index": 32,
+      "text": "23-May-2000",
+      "confidence": 0.9851640602086723,
+      "bbox": [
+        [
+          1204,
+          457
+        ],
+        [
+          1362,
+          457
+        ],
+        [
+          1362,
+          480
+        ],
+        [
+          1204,
+          480
+        ]
+      ]
+    },
+    {
+      "index": 33,
+      "text": "36-479",
+      "confidence": 0.9670996012172743,
+      "bbox": [
+        [
+          1362,
+          1208
+        ],
+        [
+          1445,
+          1208
+        ],
+        [
+          1445,
+          1227
+        ],
+        [
+          1362,
+          1227
+        ]
+      ]
+    },
+    {
+      "index": 34,
+      "text": "52-6617",
+      "confidence": 0.7698546441951086,
+      "bbox": [
+        [
+          1362,
+          1398
+        ],
+        [
+          1444,
+          1398
+        ],
+        [
+          1444,
+          1416
+        ],
+        [
+          1362,
+          1416
+        ]
+      ]
+    },
+    {
+      "index": 35,
+      "text": "Co.,",
+      "confidence": 0.999575414983957,
+      "bbox": [
+        [
+          1118,
+          1851
+        ],
+        [
+          1171,
+          1851
+        ],
+        [
+          1171,
+          1871
+        ],
+        [
+          1118,
+          1871
+        ]
+      ]
+    },
+    {
+      "index": 36,
+      "text": "$3,310.92",
+      "confidence": 0.984399527162375,
+      "bbox": [
+        [
+          1172,
+          1692
+        ],
+        [
+          1297,
+          1692
+        ],
+        [
+          1297,
+          1714
+        ],
+        [
+          1172,
+          1714
+        ]
+      ]
+    },
+    {
+      "index": 37,
+      "text": "Kitchen",
+      "confidence": 0.9418198174821806,
+      "bbox": [
+        [
+          1000,
+          1849
+        ],
+        [
+          1100,
+          1849
+        ],
+        [
+          1100,
+          1868
+        ],
+        [
+          1000,
+          1868
+        ]
+      ]
+    },
+    {
+      "index": 38,
+      "text": "F)+94-363-3695-0720",
+      "confidence": 0.9936925078369081,
+      "bbox": [
+        [
+          161,
+          485
+        ],
+        [
+          433,
+          485
+        ],
+        [
+          433,
+          504
+        ],
+        [
+          161,
+          504
+        ]
+      ]
+    },
+    {
+      "index": 39,
+      "text": "Co.,",
+      "confidence": 0.9925432105076454,
+      "bbox": [
+        [
+          379,
+          642
+        ],
+        [
+          432,
+          642
+        ],
+        [
+          432,
+          661
+        ],
+        [
+          379,
+          661
+        ]
+      ]
+    },
+    {
+      "index": 40,
+      "text": "JAPAN",
+      "confidence": 0.9997409536460905,
+      "bbox": [
+        [
+          602,
+          1063
+        ],
+        [
+          672,
+          1063
+        ],
+        [
+          672,
+          1080
+        ],
+        [
+          602,
+          1080
+        ]
+      ]
+    },
+    {
+      "index": 41,
+      "text": "Volt",
+      "confidence": 0.7137674012764662,
+      "bbox": [
+        [
+          135,
+          1395
+        ],
+        [
+          193,
+          1395
+        ],
+        [
+          193,
+          1413
+        ],
+        [
+          135,
+          1413
+        ]
+      ]
+    },
+    {
+      "index": 42,
+      "text": "Rooster",
+      "confidence": 0.9705407575877006,
+      "bbox": [
+        [
+          135,
+          1205
+        ],
+        [
+          235,
+          1205
+        ],
+        [
+          235,
+          1222
+        ],
+        [
+          135,
+          1222
+        ]
+      ]
+    },
+    {
+      "index": 43,
+      "text": "Piece",
+      "confidence": 0.7790016457225988,
+      "bbox": [
+        [
+          681,
+          1251
+        ],
+        [
+          751,
+          1251
+        ],
+        [
+          751,
+          1270
+        ],
+        [
+          681,
+          1270
+        ]
+      ]
+    },
+    {
+      "index": 44,
+      "text": "Afric",
+      "confidence": 0.7934214559494084,
+      "bbox": [
+        [
+          246,
+          711
+        ],
+        [
+          332,
+          711
+        ],
+        [
+          332,
+          731
+        ],
+        [
+          246,
+          731
+        ]
+      ]
+    },
+    {
+      "index": 45,
+      "text": "Motors",
+      "confidence": 0.9613916677223919,
+      "bbox": [
+        [
+          536,
+          1207
+        ],
+        [
+          620,
+          1207
+        ],
+        [
+          620,
+          1224
+        ],
+        [
+          536,
+          1224
+        ]
+      ]
+    },
+    {
+      "index": 46,
+      "text": "Pedho",
+      "confidence": 0.8935452471985766,
+      "bbox": [
+        [
+          951,
+          2071
+        ],
+        [
+          1021,
+          2071
+        ],
+        [
+          1021,
+          2090
+        ],
+        [
+          951,
+          2090
+        ]
+      ]
+    },
+    {
+      "index": 47,
+      "text": "SWEDEN",
+      "confidence": 0.9762305295249867,
+      "bbox": [
+        [
+          244,
+          1063
+        ],
+        [
+          328,
+          1063
+        ],
+        [
+          328,
+          1081
+        ],
+        [
+          244,
+          1081
+        ]
+      ]
+    },
+    {
+      "index": 48,
+      "text": "03-Feb-2017",
+      "confidence": 0.96539762691543,
+      "bbox": [
+        [
+          1207,
+          344
+        ],
+        [
+          1360,
+          344
+        ],
+        [
+          1360,
+          363
+        ],
+        [
+          1207,
+          363
+        ]
+      ]
+    },
+    {
+      "index": 49,
+      "text": "HELVETTA",
+      "confidence": 0.9623208686390499,
+      "bbox": [
+        [
+          141,
+          927
+        ],
+        [
+          255,
+          927
+        ],
+        [
+          255,
+          944
+        ],
+        [
+          141,
+          944
+        ]
+      ]
+    },
+    {
+      "index": 50,
+      "text": "2gaa",
+      "confidence": 0.7361109014687985,
+      "bbox": [
+        [
+          279,
+          388
+        ],
+        [
+          332,
+          388
+        ],
+        [
+          332,
+          410
+        ],
+        [
+          279,
+          410
+        ]
+      ]
+    },
+    {
+      "index": 51,
+      "text": "Youngdo-gu,",
+      "confidence": 0.9202845353221102,
+      "bbox": [
+        [
+          500,
+          387
+        ],
+        [
+          652,
+          387
+        ],
+        [
+          652,
+          409
+        ],
+        [
+          500,
+          409
+        ]
+      ]
+    },
+    {
+      "index": 52,
+      "text": "6.,",
+      "confidence": 0.7662547240669972,
+      "bbox": [
+        [
+          1246,
+          1044
+        ],
+        [
+          1271,
+          1044
+        ],
+        [
+          1271,
+          1062
+        ],
+        [
+          1246,
+          1062
+        ]
+      ]
+    },
+    {
+      "index": 53,
+      "text": "Troye",
+      "confidence": 0.8941618180920884,
+      "bbox": [
+        [
+          218,
+          680
+        ],
+        [
+          289,
+          680
+        ],
+        [
+          289,
+          702
+        ],
+        [
+          218,
+          702
+        ]
+      ]
+    },
+    {
+      "index": 54,
+      "text": "V.297",
+      "confidence": 0.9690326822227543,
+      "bbox": [
+        [
+          140,
+          959
+        ],
+        [
+          211,
+          959
+        ],
+        [
+          211,
+          978
+        ],
+        [
+          140,
+          978
+        ]
+      ]
+    },
+    {
+      "index": 55,
+      "text": "1-L9+99444289999-2",
+      "confidence": 0.7788225312125355,
+      "bbox": [
+        [
+          167,
+          775
+        ],
+        [
+          428,
+          775
+        ],
+        [
+          428,
+          795
+        ],
+        [
+          167,
+          795
+        ]
+      ]
+    },
+    {
+      "index": 56,
+      "text": "T/T",
+      "confidence": 0.8158529145242784,
+      "bbox": [
+        [
+          1215,
+          903
+        ],
+        [
+          1258,
+          903
+        ],
+        [
+          1258,
+          924
+        ],
+        [
+          1215,
+          924
+        ]
+      ]
+    },
+    {
+      "index": 57,
+      "text": "Korea",
+      "confidence": 0.960911491992225,
+      "bbox": [
+        [
+          283,
+          420
+        ],
+        [
+          355,
+          420
+        ],
+        [
+          355,
+          438
+        ],
+        [
+          283,
+          438
+        ]
+      ]
+    },
+    {
+      "index": 58,
+      "text": "Co.,",
+      "confidence": 0.999378997019658,
+      "bbox": [
+        [
+          297,
+          348
+        ],
+        [
+          352,
+          348
+        ],
+        [
+          352,
+          368
+        ],
+        [
+          297,
+          368
+        ]
+      ]
+    },
+    {
+      "index": 59,
+      "text": "T)+58-457-2370-1214",
+      "confidence": 0.9953996227301178,
+      "bbox": [
+        [
+          160,
+          453
+        ],
+        [
+          432,
+          453
+        ],
+        [
+          432,
+          472
+        ],
+        [
+          160,
+          472
+        ]
+      ]
+    },
+    {
+      "index": 60,
+      "text": "4.",
+      "confidence": 0.9966541415411473,
+      "bbox": [
+        [
+          139,
+          1246
+        ],
+        [
+          165,
+          1246
+        ],
+        [
+          165,
+          1264
+        ],
+        [
+          139,
+          1264
+        ]
+      ]
+    },
+    {
+      "index": 61,
+      "text": "1.9",
+      "confidence": 0.9362471055257912,
+      "bbox": [
+        [
+          912,
+          998
+        ],
+        [
+          939,
+          998
+        ],
+        [
+          939,
+          1017
+        ],
+        [
+          912,
+          1017
+        ]
+      ]
+    },
+    {
+      "index": 62,
+      "text": "Teiink",
+      "confidence": 0.9122409242395125,
+      "bbox": [
+        [
+          156,
+          640
+        ],
+        [
+          242,
+          640
+        ],
+        [
+          242,
+          659
+        ],
+        [
+          156,
+          659
+        ]
+      ]
+    },
+    {
+      "index": 63,
+      "text": "48",
+      "confidence": 0.9947221801362451,
+      "bbox": [
+        [
+          912,
+          1040
+        ],
+        [
+          938,
+          1040
+        ],
+        [
+          938,
+          1058
+        ],
+        [
+          912,
+          1058
+        ]
+      ]
+    },
+    {
+      "index": 64,
+      "text": "T)+86-246-9809-1071",
+      "confidence": 0.9971720663183152,
+      "bbox": [
+        [
+          156,
+          744
+        ],
+        [
+          424,
+          744
+        ],
+        [
+          424,
+          765
+        ],
+        [
+          156,
+          765
+        ]
+      ]
+    },
+    {
+      "index": 65,
+      "text": "4.",
+      "confidence": 0.9923853772127041,
+      "bbox": [
+        [
+          139,
+          1435
+        ],
+        [
+          165,
+          1435
+        ],
+        [
+          165,
+          1455
+        ],
+        [
+          139,
+          1455
+        ]
+      ]
+    },
+    {
+      "index": 66,
+      "text": "F&-",
+      "confidence": 0.904339520676199,
+      "bbox": [
+        [
+          237,
+          348
+        ],
+        [
+          282,
+          348
+        ],
+        [
+          282,
+          365
+        ],
+        [
+          237,
+          365
+        ]
+      ]
+    },
+    {
+      "index": 67,
+      "text": "2",
+      "confidence": 0.9995251894097223,
+      "bbox": [
+        [
+          924,
+          954
+        ],
+        [
+          936,
+          954
+        ],
+        [
+          936,
+          973
+        ],
+        [
+          924,
+          973
+        ]
+      ]
+    },
+    {
+      "index": 68,
+      "text": "968-10,",
+      "confidence": 0.9552435688144276,
+      "bbox": [
+        [
+          163,
+          387
+        ],
+        [
+          256,
+          387
+        ],
+        [
+          256,
+          409
+        ],
+        [
+          163,
+          409
+        ]
+      ]
+    },
+    {
+      "index": 69,
+      "text": "Of",
+      "confidence": 0.8142451122598556,
+      "bbox": [
+        [
+          236,
+          420
+        ],
+        [
+          266,
+          420
+        ],
+        [
+          266,
+          439
+        ],
+        [
+          236,
+          439
+        ]
+      ]
+    },
+    {
+      "index": 70,
+      "text": "South",
+      "confidence": 0.8972559202364839,
+      "bbox": [
+        [
+          157,
+          712
+        ],
+        [
+          227,
+          712
+        ],
+        [
+          227,
+          731
+        ],
+        [
+          157,
+          731
+        ]
+      ]
+    },
+    {
+      "index": 71,
+      "text": "7.C",
+      "confidence": 0.7616552208674755,
+      "bbox": [
+        [
+          158,
+          679
+        ],
+        [
+          199,
+          679
+        ],
+        [
+          199,
+          698
+        ],
+        [
+          158,
+          698
+        ]
+      ]
+    },
+    {
+      "index": 72,
+      "text": "Ree,",
+      "confidence": 0.6414003838781904,
+      "bbox": [
+        [
+          161,
+          421
+        ],
+        [
+          216,
+          421
+        ],
+        [
+          216,
+          443
+        ],
+        [
+          161,
+          443
+        ]
+      ]
+    },
+    {
+      "index": 73,
+      "text": "Gire",
+      "confidence": 0.8843871983916618,
+      "bbox": [
+        [
+          161,
+          347
+        ],
+        [
+          218,
+          347
+        ],
+        [
+          218,
+          366
+        ],
+        [
+          161,
+          366
+        ]
+      ]
+    },
+    {
+      "index": 74,
+      "text": "94",
+      "confidence": 0.814638917591256,
+      "bbox": [
+        [
+          957,
+          953
+        ],
+        [
+          976,
+          953
+        ],
+        [
+          976,
+          976
+        ],
+        [
+          957,
+          976
+        ]
+      ]
+    },
+    {
+      "index": 75,
+      "text": "96",
+      "confidence": 0.7769739521394483,
+      "bbox": [
+        [
+          956,
+          1040
+        ],
+        [
+          977,
+          1040
+        ],
+        [
+          977,
+          1062
+        ],
+        [
+          956,
+          1062
+        ]
+      ]
+    },
+    {
+      "index": 76,
+      "text": "94,",
+      "confidence": 0.7178655220295252,
+      "bbox": [
+        [
+          956,
+          996
+        ],
+        [
+          977,
+          996
+        ],
+        [
+          977,
+          1017
+        ],
+        [
+          956,
+          1017
+        ]
+      ]
+    }
+  ],
+  "elapsed_seconds": 37.049,
+  "common_json": {
+    "schema_version": "1.0",
+    "document_type": "commercial_invoice",
+    "document_id": "IMG_OCR_6_T_NV_003058",
+    "processing_status": "failed",
+    "fields": {
+      "invoice_no": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice number label/value not recovered",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "date": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice date not printed or not recoverable",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "buyer": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "buyer/sold-to/bill-to label and consignee proxy not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "amount": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice-level total amount not recovered",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "currency": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "currency code or symbol not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "goods_description": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "table header not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "quantity": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "table header not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      }
+    }
+  }
+}

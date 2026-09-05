@@ -1,0 +1,1851 @@
+{
+  "analysis": "field_failure_root_cause",
+  "oracle_note": "oracle_fields are a GT-value-box diagnostic proxy, not semantic human field annotations",
+  "failure_count": 18,
+  "failure_class_counts": {
+    "EXTRACTION_MISSING": 1,
+    "OCR_MISSING": 16,
+    "WRONG_SELECTION": 1
+  },
+  "failures": [
+    {
+      "document_id": "IMG_OCR_6_T_BL_001677",
+      "document_type": "bill_of_lading",
+      "form_type": "선하증권",
+      "split": "development",
+      "field": "consignee",
+      "oracle_proxy": true,
+      "oracle_expected_value": "Tlease proydde compleee name",
+      "stored_baseline_expected_value": "Tlease proydde compleee name",
+      "reconstructed_oracle_value": null,
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": false,
+      "oracle_expected_raw_text": null,
+      "oracle_expected_bbox": null,
+      "expected_bbox_source": "semantic GT field bbox unavailable",
+      "expected_text_in_raw_ocr": true,
+      "expected_text_matches": [
+        {
+          "index": null,
+          "text": "CONSGNEE Tlease proydde compleee name",
+          "bbox": [
+            [
+              95,
+              407
+            ],
+            [
+              479,
+              407
+            ],
+            [
+              479,
+              427
+            ],
+            [
+              95,
+              427
+            ]
+          ],
+          "confidence": 0.8516995878247696,
+          "agreement": 0.8615384615384616
+        }
+      ],
+      "extractor_output": null,
+      "extractor_status": "missing",
+      "baseline_failure_outcome": "missing",
+      "baseline_failure_cause": "EXTRACTION_MISSING",
+      "current_outcome_under_selected_oracle": "unknown",
+      "extractor_normalized": null,
+      "extractor_reason": "candidate was an empty-party instruction caption",
+      "selected_candidate": {
+        "value": null,
+        "raw_text": "",
+        "source_indices": [],
+        "bbox": null,
+        "predictions": []
+      },
+      "failure_classification": "EXTRACTION_MISSING",
+      "root_cause": "expected OCR evidence exists, but label/value attachment did not produce a valid field candidate",
+      "all_raw_prediction_count": 192,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_BL_002596",
+      "document_type": "bill_of_lading",
+      "form_type": "선하증권",
+      "split": "development",
+      "field": "consignee",
+      "oracle_proxy": true,
+      "oracle_expected_value": "LERN TECHNOLOGY GROUP",
+      "stored_baseline_expected_value": "PHONE",
+      "reconstructed_oracle_value": "LERN TECHNOLOGY GROUP",
+      "oracle_conflict": true,
+      "oracle_conflict_detail": "stored regression oracle and reconstructed GT oracle disagree; treat the stored failure as oracle disagreement/manual review",
+      "true_failure_under_reconstructed_oracle": false,
+      "oracle_expected_raw_text": "LERN TECHNOLOGY GROUP",
+      "oracle_expected_bbox": [
+        [
+          79,
+          687
+        ],
+        [
+          358,
+          687
+        ],
+        [
+          358,
+          710
+        ],
+        [
+          79,
+          710
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": true,
+      "expected_text_matches": [
+        {
+          "index": null,
+          "text": "LERN TECHNOLOGY GROUP",
+          "bbox": [
+            [
+              79,
+              689
+            ],
+            [
+              357,
+              689
+            ],
+            [
+              357,
+              708
+            ],
+            [
+              79,
+              708
+            ]
+          ],
+          "confidence": 0.9892358520331271,
+          "agreement": 1.0
+        }
+      ],
+      "extractor_output": "LERN TECHNOLOGY GROUP",
+      "extractor_status": "found",
+      "baseline_failure_outcome": "wrong",
+      "baseline_failure_cause": "WRONG_SELECTION",
+      "current_outcome_under_selected_oracle": "correct",
+      "extractor_normalized": "LERN TECHNOLOGY GROUP",
+      "extractor_reason": null,
+      "selected_candidate": {
+        "value": "LERN TECHNOLOGY GROUP",
+        "raw_text": "LERN TECHNOLOGY GROUP",
+        "source_indices": [
+          96,
+          82,
+          49
+        ],
+        "bbox": [
+          [
+            79,
+            689
+          ],
+          [
+            357,
+            689
+          ],
+          [
+            357,
+            708
+          ],
+          [
+            79,
+            708
+          ]
+        ],
+        "predictions": [
+          {
+            "index": 96,
+            "text": "LERN",
+            "bbox": [
+              [
+                79,
+                689
+              ],
+              [
+                131,
+                689
+              ],
+              [
+                131,
+                708
+              ],
+              [
+                79,
+                708
+              ]
+            ],
+            "confidence": 0.9932254319251885
+          },
+          {
+            "index": 82,
+            "text": "TECHNOLOGY",
+            "bbox": [
+              [
+                136,
+                689
+              ],
+              [
+                276,
+                689
+              ],
+              [
+                276,
+                708
+              ],
+              [
+                136,
+                708
+              ]
+            ],
+            "confidence": 0.9756883382479408
+          },
+          {
+            "index": 49,
+            "text": "GROUP",
+            "bbox": [
+              [
+                286,
+                689
+              ],
+              [
+                357,
+                689
+              ],
+              [
+                357,
+                708
+              ],
+              [
+                286,
+                708
+              ]
+            ],
+            "confidence": 0.9987937859262521
+          }
+        ]
+      },
+      "failure_classification": "WRONG_SELECTION",
+      "root_cause": "stored regression oracle and reconstructed GT oracle disagree; treat the stored failure as oracle disagreement/manual review",
+      "all_raw_prediction_count": 174,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_000322",
+      "document_type": "commercial_invoice",
+      "form_type": "상업송장",
+      "split": "development",
+      "field": "amount",
+      "oracle_proxy": true,
+      "oracle_expected_value": {
+        "value": 39583.47,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "stored_baseline_expected_value": {
+        "value": 39583.47,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "reconstructed_oracle_value": {
+        "value": 39583.47,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "$39,583.47",
+      "oracle_expected_bbox": [
+        [
+          938,
+          1793
+        ],
+        [
+          1063,
+          1793
+        ],
+        [
+          1063,
+          1827
+        ],
+        [
+          938,
+          1827
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": "$39,583.7",
+      "extractor_status": "found",
+      "baseline_failure_outcome": "wrong",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "wrong",
+      "extractor_normalized": {
+        "value": 39583.7,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "extractor_reason": null,
+      "selected_candidate": {
+        "value": "$39,583.7",
+        "raw_text": "$39,583.7",
+        "source_indices": [
+          45
+        ],
+        "bbox": [
+          [
+            937,
+            1799
+          ],
+          [
+            1065,
+            1799
+          ],
+          [
+            1065,
+            1825
+          ],
+          [
+            937,
+            1825
+          ]
+        ],
+        "predictions": [
+          {
+            "index": 45,
+            "text": "$39,583.7",
+            "bbox": [
+              [
+                937,
+                1799
+              ],
+              [
+                1065,
+                1799
+              ],
+              [
+                1065,
+                1825
+              ],
+              [
+                937,
+                1825
+              ]
+            ],
+            "confidence": 0.8335585396652275
+          }
+        ]
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 164,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_001677",
+      "document_type": "commercial_invoice",
+      "form_type": "상업송장",
+      "split": "development",
+      "field": "amount",
+      "oracle_proxy": true,
+      "oracle_expected_value": {
+        "value": 12003.64,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "stored_baseline_expected_value": {
+        "value": 12003.64,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "reconstructed_oracle_value": {
+        "value": 12003.64,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "$12,003.64",
+      "oracle_expected_bbox": [
+        [
+          938,
+          1793
+        ],
+        [
+          1100,
+          1793
+        ],
+        [
+          1100,
+          1828
+        ],
+        [
+          938,
+          1828
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": "$12,003.6",
+      "extractor_status": "found",
+      "baseline_failure_outcome": "wrong",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "wrong",
+      "extractor_normalized": {
+        "value": 12003.6,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "extractor_reason": null,
+      "selected_candidate": {
+        "value": "$12,003.6",
+        "raw_text": "$12,003.6",
+        "source_indices": [
+          163
+        ],
+        "bbox": [
+          [
+            937,
+            1799
+          ],
+          [
+            1105,
+            1799
+          ],
+          [
+            1105,
+            1828
+          ],
+          [
+            937,
+            1828
+          ]
+        ],
+        "predictions": [
+          {
+            "index": 163,
+            "text": "$12,003.6",
+            "bbox": [
+              [
+                937,
+                1799
+              ],
+              [
+                1105,
+                1799
+              ],
+              [
+                1105,
+                1828
+              ],
+              [
+                937,
+                1828
+              ]
+            ],
+            "confidence": 0.935555076499309
+          }
+        ]
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 164,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_001677",
+      "document_type": "commercial_invoice",
+      "form_type": "상업송장",
+      "split": "development",
+      "field": "invoice_no",
+      "oracle_proxy": true,
+      "oracle_expected_value": "210217",
+      "stored_baseline_expected_value": "210217",
+      "reconstructed_oracle_value": "210217",
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "210217",
+      "oracle_expected_bbox": [
+        [
+          830,
+          293
+        ],
+        [
+          938,
+          293
+        ],
+        [
+          938,
+          327
+        ],
+        [
+          830,
+          327
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": "895-353-5469",
+      "extractor_status": "found",
+      "baseline_failure_outcome": "wrong",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "wrong",
+      "extractor_normalized": "895-353-5469",
+      "extractor_reason": null,
+      "selected_candidate": {
+        "value": "895-353-5469",
+        "raw_text": "895-353-5469",
+        "source_indices": [
+          90
+        ],
+        "bbox": [
+          [
+            829,
+            367
+          ],
+          [
+            1035,
+            367
+          ],
+          [
+            1035,
+            395
+          ],
+          [
+            829,
+            395
+          ]
+        ],
+        "predictions": [
+          {
+            "index": 90,
+            "text": "895-353-5469",
+            "bbox": [
+              [
+                829,
+                367
+              ],
+              [
+                1035,
+                367
+              ],
+              [
+                1035,
+                395
+              ],
+              [
+                829,
+                395
+              ]
+            ],
+            "confidence": 0.9648265638469309
+          }
+        ]
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 164,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_001774",
+      "document_type": "commercial_invoice",
+      "form_type": "상업송장",
+      "split": "development",
+      "field": "amount",
+      "oracle_proxy": true,
+      "oracle_expected_value": {
+        "value": 38904.35,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "stored_baseline_expected_value": {
+        "value": 38904.35,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "reconstructed_oracle_value": {
+        "value": 38904.35,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "$38,904.35",
+      "oracle_expected_bbox": [
+        [
+          938,
+          1793
+        ],
+        [
+          1063,
+          1793
+        ],
+        [
+          1063,
+          1827
+        ],
+        [
+          938,
+          1827
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": "$38900435",
+      "extractor_status": "found",
+      "baseline_failure_outcome": "wrong",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "wrong",
+      "extractor_normalized": {
+        "value": 38900435.0,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "extractor_reason": null,
+      "selected_candidate": {
+        "value": "$38900435",
+        "raw_text": "$38900435",
+        "source_indices": [
+          56
+        ],
+        "bbox": [
+          [
+            937,
+            1799
+          ],
+          [
+            1065,
+            1799
+          ],
+          [
+            1065,
+            1825
+          ],
+          [
+            937,
+            1825
+          ]
+        ],
+        "predictions": [
+          {
+            "index": 56,
+            "text": "$38900435",
+            "bbox": [
+              [
+                937,
+                1799
+              ],
+              [
+                1065,
+                1799
+              ],
+              [
+                1065,
+                1825
+              ],
+              [
+                937,
+                1825
+              ]
+            ],
+            "confidence": 0.8810467966089573
+          }
+        ]
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 175,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_001825",
+      "document_type": "commercial_invoice",
+      "form_type": "상업송장",
+      "split": "development",
+      "field": "amount",
+      "oracle_proxy": true,
+      "oracle_expected_value": {
+        "value": 30333.65,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "stored_baseline_expected_value": {
+        "value": 30333.65,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "reconstructed_oracle_value": {
+        "value": 30333.65,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "$30,333.65",
+      "oracle_expected_bbox": [
+        [
+          938,
+          1793
+        ],
+        [
+          1054,
+          1793
+        ],
+        [
+          1054,
+          1828
+        ],
+        [
+          938,
+          1828
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": "$30,333.6",
+      "extractor_status": "found",
+      "baseline_failure_outcome": "wrong",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "wrong",
+      "extractor_normalized": {
+        "value": 30333.6,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "extractor_reason": null,
+      "selected_candidate": {
+        "value": "$30,333.6",
+        "raw_text": "$30,333.6",
+        "source_indices": [
+          44
+        ],
+        "bbox": [
+          [
+            938,
+            1797
+          ],
+          [
+            1056,
+            1797
+          ],
+          [
+            1056,
+            1825
+          ],
+          [
+            938,
+            1825
+          ]
+        ],
+        "predictions": [
+          {
+            "index": 44,
+            "text": "$30,333.6",
+            "bbox": [
+              [
+                938,
+                1797
+              ],
+              [
+                1056,
+                1797
+              ],
+              [
+                1056,
+                1825
+              ],
+              [
+                938,
+                1825
+              ]
+            ],
+            "confidence": 0.9942746450408715
+          }
+        ]
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 160,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_001825",
+      "document_type": "commercial_invoice",
+      "form_type": "상업송장",
+      "split": "development",
+      "field": "invoice_no",
+      "oracle_proxy": true,
+      "oracle_expected_value": "233963",
+      "stored_baseline_expected_value": "233963",
+      "reconstructed_oracle_value": "233963",
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "233963",
+      "oracle_expected_bbox": [
+        [
+          830,
+          293
+        ],
+        [
+          910,
+          293
+        ],
+        [
+          910,
+          328
+        ],
+        [
+          830,
+          328
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": "233965",
+      "extractor_status": "found",
+      "baseline_failure_outcome": "wrong",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "wrong",
+      "extractor_normalized": "233965",
+      "extractor_reason": null,
+      "selected_candidate": {
+        "value": "233965",
+        "raw_text": "233965",
+        "source_indices": [
+          116
+        ],
+        "bbox": [
+          [
+            831,
+            298
+          ],
+          [
+            912,
+            298
+          ],
+          [
+            912,
+            322
+          ],
+          [
+            831,
+            322
+          ]
+        ],
+        "predictions": [
+          {
+            "index": 116,
+            "text": "233965",
+            "bbox": [
+              [
+                831,
+                298
+              ],
+              [
+                912,
+                298
+              ],
+              [
+                912,
+                322
+              ],
+              [
+                831,
+                322
+              ]
+            ],
+            "confidence": 0.8742671391598912
+          }
+        ]
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 160,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_001943",
+      "document_type": "commercial_invoice",
+      "form_type": "상업송장",
+      "split": "development",
+      "field": "amount",
+      "oracle_proxy": true,
+      "oracle_expected_value": {
+        "value": 19000.01,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "stored_baseline_expected_value": {
+        "value": 19000.01,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "reconstructed_oracle_value": {
+        "value": 19000.01,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "$19,000.01",
+      "oracle_expected_bbox": [
+        [
+          938,
+          1793
+        ],
+        [
+          1080,
+          1793
+        ],
+        [
+          1080,
+          1826
+        ],
+        [
+          938,
+          1826
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": null,
+      "extractor_status": "missing",
+      "baseline_failure_outcome": "missing",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "missing",
+      "extractor_normalized": null,
+      "extractor_reason": "generic total label matched a small bare number while another explicit money token was present",
+      "selected_candidate": {
+        "value": null,
+        "raw_text": "",
+        "source_indices": [],
+        "bbox": null,
+        "predictions": []
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 120,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_001943",
+      "document_type": "commercial_invoice",
+      "form_type": "상업송장",
+      "split": "development",
+      "field": "currency",
+      "oracle_proxy": true,
+      "oracle_expected_value": {
+        "code": "USD",
+        "symbol": null
+      },
+      "stored_baseline_expected_value": {
+        "code": "USD",
+        "symbol": null
+      },
+      "reconstructed_oracle_value": {
+        "code": "USD",
+        "symbol": null
+      },
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "USD",
+      "oracle_expected_bbox": [
+        [
+          1377,
+          1861
+        ],
+        [
+          1432,
+          1861
+        ],
+        [
+          1432,
+          1892
+        ],
+        [
+          1377,
+          1892
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": null,
+      "extractor_status": "missing",
+      "baseline_failure_outcome": "missing",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "missing",
+      "extractor_normalized": null,
+      "extractor_reason": "currency code or symbol not found",
+      "selected_candidate": {
+        "value": null,
+        "raw_text": "",
+        "source_indices": [],
+        "bbox": null,
+        "predictions": []
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 120,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_001943",
+      "document_type": "commercial_invoice",
+      "form_type": "상업송장",
+      "split": "development",
+      "field": "invoice_no",
+      "oracle_proxy": true,
+      "oracle_expected_value": "311992",
+      "stored_baseline_expected_value": "311992",
+      "reconstructed_oracle_value": "311992",
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "311992",
+      "oracle_expected_bbox": [
+        [
+          830,
+          293
+        ],
+        [
+          927,
+          293
+        ],
+        [
+          927,
+          327
+        ],
+        [
+          830,
+          327
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": "311999",
+      "extractor_status": "found",
+      "baseline_failure_outcome": "wrong",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "wrong",
+      "extractor_normalized": "311999",
+      "extractor_reason": null,
+      "selected_candidate": {
+        "value": "311999",
+        "raw_text": "311999",
+        "source_indices": [
+          98
+        ],
+        "bbox": [
+          [
+            831,
+            300
+          ],
+          [
+            929,
+            300
+          ],
+          [
+            929,
+            326
+          ],
+          [
+            831,
+            326
+          ]
+        ],
+        "predictions": [
+          {
+            "index": 98,
+            "text": "311999",
+            "bbox": [
+              [
+                831,
+                300
+              ],
+              [
+                929,
+                300
+              ],
+              [
+                929,
+                326
+              ],
+              [
+                831,
+                326
+              ]
+            ],
+            "confidence": 0.8952177124152044
+          }
+        ]
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 120,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_002913",
+      "document_type": "commercial_invoice",
+      "form_type": "상업송장",
+      "split": "development",
+      "field": "amount",
+      "oracle_proxy": true,
+      "oracle_expected_value": {
+        "value": 49180.67,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "stored_baseline_expected_value": {
+        "value": 49180.67,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "reconstructed_oracle_value": {
+        "value": 49180.67,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "$49,180.67",
+      "oracle_expected_bbox": [
+        [
+          938,
+          1793
+        ],
+        [
+          1080,
+          1793
+        ],
+        [
+          1080,
+          1828
+        ],
+        [
+          938,
+          1828
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": "$49,180.7",
+      "extractor_status": "found",
+      "baseline_failure_outcome": "wrong",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "wrong",
+      "extractor_normalized": {
+        "value": 49180.7,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "extractor_reason": null,
+      "selected_candidate": {
+        "value": "$49,180.7",
+        "raw_text": "$49,180.7",
+        "source_indices": [
+          130
+        ],
+        "bbox": [
+          [
+            938,
+            1799
+          ],
+          [
+            1080,
+            1799
+          ],
+          [
+            1080,
+            1826
+          ],
+          [
+            938,
+            1826
+          ]
+        ],
+        "predictions": [
+          {
+            "index": 130,
+            "text": "$49,180.7",
+            "bbox": [
+              [
+                938,
+                1799
+              ],
+              [
+                1080,
+                1799
+              ],
+              [
+                1080,
+                1826
+              ],
+              [
+                938,
+                1826
+              ]
+            ],
+            "confidence": 0.9364587547281473
+          }
+        ]
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 188,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_002913",
+      "document_type": "commercial_invoice",
+      "form_type": "상업송장",
+      "split": "development",
+      "field": "currency",
+      "oracle_proxy": true,
+      "oracle_expected_value": {
+        "code": "CAD",
+        "symbol": null
+      },
+      "stored_baseline_expected_value": {
+        "code": "CAD",
+        "symbol": null
+      },
+      "reconstructed_oracle_value": {
+        "code": "CAD",
+        "symbol": null
+      },
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "CAD",
+      "oracle_expected_bbox": [
+        [
+          1377,
+          1861
+        ],
+        [
+          1439,
+          1861
+        ],
+        [
+          1439,
+          1890
+        ],
+        [
+          1377,
+          1890
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": "$",
+      "extractor_status": "ambiguous",
+      "baseline_failure_outcome": "ambiguous",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "ambiguous",
+      "extractor_normalized": {
+        "code": null,
+        "symbol": "$"
+      },
+      "extractor_reason": "currency symbol found but ISO code absent",
+      "selected_candidate": {
+        "value": "$",
+        "raw_text": "$49,180.7",
+        "source_indices": [
+          130
+        ],
+        "bbox": [
+          [
+            938,
+            1799
+          ],
+          [
+            1080,
+            1799
+          ],
+          [
+            1080,
+            1826
+          ],
+          [
+            938,
+            1826
+          ]
+        ],
+        "predictions": [
+          {
+            "index": 130,
+            "text": "$49,180.7",
+            "bbox": [
+              [
+                938,
+                1799
+              ],
+              [
+                1080,
+                1799
+              ],
+              [
+                1080,
+                1826
+              ],
+              [
+                938,
+                1826
+              ]
+            ],
+            "confidence": 0.9364587547281473
+          }
+        ]
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 188,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_002913",
+      "document_type": "commercial_invoice",
+      "form_type": "상업송장",
+      "split": "development",
+      "field": "invoice_no",
+      "oracle_proxy": true,
+      "oracle_expected_value": "807797",
+      "stored_baseline_expected_value": "807797",
+      "reconstructed_oracle_value": "807797",
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "807797",
+      "oracle_expected_bbox": [
+        [
+          830,
+          293
+        ],
+        [
+          924,
+          293
+        ],
+        [
+          924,
+          328
+        ],
+        [
+          830,
+          328
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": "316-937-4094",
+      "extractor_status": "found",
+      "baseline_failure_outcome": "wrong",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "wrong",
+      "extractor_normalized": "316-937-4094",
+      "extractor_reason": null,
+      "selected_candidate": {
+        "value": "316-937-4094",
+        "raw_text": "316-937-4094",
+        "source_indices": [
+          67
+        ],
+        "bbox": [
+          [
+            829,
+            368
+          ],
+          [
+            1006,
+            368
+          ],
+          [
+            1006,
+            395
+          ],
+          [
+            829,
+            395
+          ]
+        ],
+        "predictions": [
+          {
+            "index": 67,
+            "text": "316-937-4094",
+            "bbox": [
+              [
+                829,
+                368
+              ],
+              [
+                1006,
+                368
+              ],
+              [
+                1006,
+                395
+              ],
+              [
+                829,
+                395
+              ]
+            ],
+            "confidence": 0.9649232290973259
+          }
+        ]
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 188,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_BL_003578",
+      "document_type": "bill_of_lading",
+      "form_type": "선하증권",
+      "split": "holdout",
+      "field": "consignee",
+      "oracle_proxy": true,
+      "oracle_expected_value": "QHOENIX TELECOM",
+      "stored_baseline_expected_value": "QHOENIX TELECOM CO., LTD.",
+      "reconstructed_oracle_value": "QHOENIX TELECOM",
+      "oracle_conflict": true,
+      "oracle_conflict_detail": "stored regression oracle and reconstructed GT oracle disagree; treat the stored failure as oracle disagreement/manual review",
+      "true_failure_under_reconstructed_oracle": false,
+      "oracle_expected_raw_text": "QHOENIX TELECOM",
+      "oracle_expected_bbox": [
+        [
+          122,
+          395
+        ],
+        [
+          391,
+          395
+        ],
+        [
+          391,
+          427
+        ],
+        [
+          122,
+          427
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": "WINNIE,,",
+      "extractor_status": "found",
+      "baseline_failure_outcome": "wrong",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "wrong",
+      "extractor_normalized": "WINNIE,,",
+      "extractor_reason": null,
+      "selected_candidate": {
+        "value": "WINNIE,,",
+        "raw_text": "WINNIE,,",
+        "source_indices": [
+          60
+        ],
+        "bbox": [
+          [
+            396,
+            430
+          ],
+          [
+            549,
+            430
+          ],
+          [
+            549,
+            457
+          ],
+          [
+            396,
+            457
+          ]
+        ],
+        "predictions": [
+          {
+            "index": 60,
+            "text": "WINNIE,,",
+            "bbox": [
+              [
+                396,
+                430
+              ],
+              [
+                549,
+                430
+              ],
+              [
+                549,
+                457
+              ],
+              [
+                396,
+                457
+              ]
+            ],
+            "confidence": 0.8133022902807806
+          }
+        ]
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "stored regression oracle and reconstructed GT oracle disagree; treat the stored failure as oracle disagreement/manual review",
+      "all_raw_prediction_count": 129,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_003235",
+      "document_type": "commercial_invoice",
+      "form_type": "상업송장",
+      "split": "holdout",
+      "field": "amount",
+      "oracle_proxy": true,
+      "oracle_expected_value": {
+        "value": 3985.55,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "stored_baseline_expected_value": {
+        "value": 3985.55,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "reconstructed_oracle_value": {
+        "value": 3985.55,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "$3,985.55",
+      "oracle_expected_bbox": [
+        [
+          332,
+          1619
+        ],
+        [
+          440,
+          1619
+        ],
+        [
+          440,
+          1648
+        ],
+        [
+          332,
+          1648
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": null,
+      "extractor_status": "missing",
+      "baseline_failure_outcome": "missing",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "missing",
+      "extractor_normalized": null,
+      "extractor_reason": "invoice-level total amount not recovered",
+      "selected_candidate": {
+        "value": null,
+        "raw_text": "",
+        "source_indices": [],
+        "bbox": null,
+        "predictions": []
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 79,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_003382",
+      "document_type": "commercial_invoice",
+      "form_type": "상업송장",
+      "split": "holdout",
+      "field": "quantity",
+      "oracle_proxy": true,
+      "oracle_expected_value": {
+        "items": [
+          {
+            "value": 30,
+            "unit": null
+          }
+        ]
+      },
+      "stored_baseline_expected_value": {
+        "items": [
+          {
+            "value": 30,
+            "unit": null
+          }
+        ]
+      },
+      "reconstructed_oracle_value": {
+        "items": [
+          {
+            "value": 30,
+            "unit": null
+          }
+        ]
+      },
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "30",
+      "oracle_expected_bbox": [
+        [
+          368,
+          499
+        ],
+        [
+          391,
+          499
+        ],
+        [
+          391,
+          516
+        ],
+        [
+          368,
+          516
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": null,
+      "extractor_status": "missing",
+      "baseline_failure_outcome": "missing",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "missing",
+      "extractor_normalized": null,
+      "extractor_reason": "table header not found",
+      "selected_candidate": {
+        "value": null,
+        "raw_text": "",
+        "source_indices": [],
+        "bbox": null,
+        "predictions": []
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 45,
+      "oracle_expected_value_valid": true
+    },
+    {
+      "document_id": "IMG_OCR_6_T_PL_004301",
+      "document_type": "packing_list",
+      "form_type": "포장명세서",
+      "split": "holdout",
+      "field": "quantity",
+      "oracle_proxy": true,
+      "oracle_expected_value": {
+        "items": [
+          {
+            "value": 1,
+            "unit": null
+          },
+          {
+            "value": 4,
+            "unit": null
+          },
+          {
+            "value": 3,
+            "unit": null
+          }
+        ]
+      },
+      "stored_baseline_expected_value": {
+        "items": [
+          {
+            "value": 1,
+            "unit": null
+          },
+          {
+            "value": 4,
+            "unit": null
+          },
+          {
+            "value": 3,
+            "unit": null
+          }
+        ]
+      },
+      "reconstructed_oracle_value": {
+        "items": [
+          {
+            "value": 1,
+            "unit": null
+          },
+          {
+            "value": 4,
+            "unit": null
+          },
+          {
+            "value": 3,
+            "unit": null
+          }
+        ]
+      },
+      "oracle_conflict": false,
+      "oracle_conflict_detail": null,
+      "true_failure_under_reconstructed_oracle": true,
+      "oracle_expected_raw_text": "1 4 3",
+      "oracle_expected_bbox": [
+        [
+          930,
+          1133
+        ],
+        [
+          946,
+          1133
+        ],
+        [
+          946,
+          1401
+        ],
+        [
+          930,
+          1401
+        ]
+      ],
+      "expected_bbox_source": "reconstructed oracle field bbox from GT value boxes; semantic field identity remains a proxy",
+      "expected_text_in_raw_ocr": false,
+      "expected_text_matches": [],
+      "extractor_output": "4 | 3",
+      "extractor_status": "found",
+      "baseline_failure_outcome": "wrong",
+      "baseline_failure_cause": "OCR_MISSING",
+      "current_outcome_under_selected_oracle": "wrong",
+      "extractor_normalized": {
+        "items": [
+          {
+            "value": 4,
+            "unit": null
+          },
+          {
+            "value": 3,
+            "unit": null
+          }
+        ]
+      },
+      "extractor_reason": null,
+      "selected_candidate": {
+        "value": "4 | 3",
+        "raw_text": "4 3",
+        "source_indices": [
+          60,
+          56
+        ],
+        "bbox": [
+          [
+            931,
+            1258
+          ],
+          [
+            946,
+            1258
+          ],
+          [
+            946,
+            1403
+          ],
+          [
+            931,
+            1403
+          ]
+        ],
+        "predictions": [
+          {
+            "index": 60,
+            "text": "4",
+            "bbox": [
+              [
+                931,
+                1258
+              ],
+              [
+                945,
+                1258
+              ],
+              [
+                945,
+                1278
+              ],
+              [
+                931,
+                1278
+              ]
+            ],
+            "confidence": 0.9991781115350136
+          },
+          {
+            "index": 56,
+            "text": "3",
+            "bbox": [
+              [
+                931,
+                1376
+              ],
+              [
+                946,
+                1376
+              ],
+              [
+                946,
+                1403
+              ],
+              [
+                931,
+                1403
+              ]
+            ],
+            "confidence": 0.9889183643488778
+          }
+        ]
+      },
+      "failure_classification": "OCR_MISSING",
+      "root_cause": "expected value was not present as a sufficiently matching raw OCRPrediction; extractor rules cannot recover it",
+      "all_raw_prediction_count": 105,
+      "oracle_expected_value_valid": true
+    }
+  ],
+  "oracle_source": "reconstructed from lightweight sample GT labels and raw OCR predictions"
+}

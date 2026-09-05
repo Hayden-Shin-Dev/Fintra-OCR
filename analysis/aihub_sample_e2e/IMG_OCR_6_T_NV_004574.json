@@ -1,0 +1,2333 @@
+{
+  "document_id": "IMG_OCR_6_T_NV_004574",
+  "form_type": "상업송장",
+  "document_type": "commercial_invoice",
+  "backend": "aihub-logistics",
+  "gt_recall": {
+    "gt_boxes": 79,
+    "predicted_boxes": 89,
+    "geometric_recall": 1.0,
+    "exact_text_recall": 0.8227848101265823,
+    "segmentation_aware_recall": 0.8227848101265823,
+    "similarity_90_recall": 0.8481012658227848,
+    "mean_similarity": 0.94698226675242,
+    "mean_cer": 0.11173847064919683
+  },
+  "fields": {
+    "invoice_no": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "date": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "buyer": {
+      "status": "ambiguous",
+      "value": "ChUgai Pharmaccechcca Co., Ltd.",
+      "normalized": "ChUgai Pharmaccechcca Co., Ltd.",
+      "confidence": 0.6426040121333929
+    },
+    "amount": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "currency": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "goods_description": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "quantity": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    }
+  },
+  "oracle_fields": {
+    "invoice_no": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "date": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "buyer": {
+      "status": "ambiguous",
+      "value": "Chugai Pharmaceutical Co., Ltd.",
+      "normalized": "Chugai Pharmaceutical Co., Ltd.",
+      "confidence": 1.0
+    },
+    "amount": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "currency": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "goods_description": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "quantity": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    }
+  },
+  "field_diagnostics": {
+    "amount": {
+      "field_name": "amount",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "buyer": {
+      "field_name": "buyer",
+      "actual_status": "ambiguous",
+      "oracle_status": "ambiguous",
+      "actual_value": "ChUgai Pharmaccechcca Co., Ltd.",
+      "oracle_value": "Chugai Pharmaceutical Co., Ltd.",
+      "classification": "e2e_matches_oracle",
+      "agreement_score": 0.8571428571428571
+    },
+    "currency": {
+      "field_name": "currency",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "date": {
+      "field_name": "date",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "goods_description": {
+      "field_name": "goods_description",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "invoice_no": {
+      "field_name": "invoice_no",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "quantity": {
+      "field_name": "quantity",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    }
+  },
+  "ocr_predictions": [
+    {
+      "index": 0,
+      "text": "$33.60",
+      "confidence": 0.9913170251220796,
+      "bbox": [
+        [
+          1192,
+          1205
+        ],
+        [
+          1272,
+          1205
+        ],
+        [
+          1272,
+          1233
+        ],
+        [
+          1192,
+          1233
+        ]
+      ]
+    },
+    {
+      "index": 1,
+      "text": "District,",
+      "confidence": 0.9862291428835912,
+      "bbox": [
+        [
+          447,
+          676
+        ],
+        [
+          536,
+          676
+        ],
+        [
+          536,
+          704
+        ],
+        [
+          447,
+          704
+        ]
+      ]
+    },
+    {
+      "index": 2,
+      "text": "03-16-2000",
+      "confidence": 0.9999883174105278,
+      "bbox": [
+        [
+          565,
+          939
+        ],
+        [
+          699,
+          939
+        ],
+        [
+          699,
+          963
+        ],
+        [
+          565,
+          963
+        ]
+      ]
+    },
+    {
+      "index": 3,
+      "text": "8232.11",
+      "confidence": 0.9998830675299438,
+      "bbox": [
+        [
+          848,
+          1395
+        ],
+        [
+          940,
+          1395
+        ],
+        [
+          940,
+          1419
+        ],
+        [
+          848,
+          1419
+        ]
+      ]
+    },
+    {
+      "index": 4,
+      "text": "SpaCer,",
+      "confidence": 0.9651386966491217,
+      "bbox": [
+        [
+          332,
+          1393
+        ],
+        [
+          422,
+          1393
+        ],
+        [
+          422,
+          1420
+        ],
+        [
+          332,
+          1420
+        ]
+      ]
+    },
+    {
+      "index": 5,
+      "text": "Puyang",
+      "confidence": 0.8680237344075122,
+      "bbox": [
+        [
+          547,
+          676
+        ],
+        [
+          635,
+          676
+        ],
+        [
+          635,
+          705
+        ],
+        [
+          547,
+          705
+        ]
+      ]
+    },
+    {
+      "index": 6,
+      "text": "Gwangju",
+      "confidence": 0.9201464732355957,
+      "bbox": [
+        [
+          562,
+          383
+        ],
+        [
+          667,
+          383
+        ],
+        [
+          667,
+          413
+        ],
+        [
+          562,
+          413
+        ]
+      ]
+    },
+    {
+      "index": 7,
+      "text": "$8.15",
+      "confidence": 0.917169055764003,
+      "bbox": [
+        [
+          1026,
+          1205
+        ],
+        [
+          1091,
+          1205
+        ],
+        [
+          1091,
+          1234
+        ],
+        [
+          1026,
+          1234
+        ]
+      ]
+    },
+    {
+      "index": 8,
+      "text": "Hongguantun",
+      "confidence": 0.8622410646217886,
+      "bbox": [
+        [
+          275,
+          678
+        ],
+        [
+          435,
+          678
+        ],
+        [
+          435,
+          705
+        ],
+        [
+          275,
+          705
+        ]
+      ]
+    },
+    {
+      "index": 9,
+      "text": "9",
+      "confidence": 0.9999746084217361,
+      "bbox": [
+        [
+          683,
+          1204
+        ],
+        [
+          698,
+          1204
+        ],
+        [
+          698,
+          1227
+        ],
+        [
+          683,
+          1227
+        ]
+      ]
+    },
+    {
+      "index": 10,
+      "text": "Pound",
+      "confidence": 0.998943637839553,
+      "bbox": [
+        [
+          683,
+          1437
+        ],
+        [
+          757,
+          1437
+        ],
+        [
+          757,
+          1460
+        ],
+        [
+          683,
+          1460
+        ]
+      ]
+    },
+    {
+      "index": 11,
+      "text": "1514.90",
+      "confidence": 0.9969609723812086,
+      "bbox": [
+        [
+          850,
+          1205
+        ],
+        [
+          942,
+          1205
+        ],
+        [
+          942,
+          1230
+        ],
+        [
+          850,
+          1230
+        ]
+      ]
+    },
+    {
+      "index": 12,
+      "text": "Pharmaccechcca",
+      "confidence": 0.6426040121333929,
+      "bbox": [
+        [
+          252,
+          637
+        ],
+        [
+          432,
+          637
+        ],
+        [
+          432,
+          661
+        ],
+        [
+          252,
+          661
+        ]
+      ]
+    },
+    {
+      "index": 13,
+      "text": "53-429",
+      "confidence": 0.9936743798589304,
+      "bbox": [
+        [
+          1365,
+          1205
+        ],
+        [
+          1446,
+          1205
+        ],
+        [
+          1446,
+          1230
+        ],
+        [
+          1365,
+          1230
+        ]
+      ]
+    },
+    {
+      "index": 14,
+      "text": "Bag",
+      "confidence": 0.9707624267188275,
+      "bbox": [
+        [
+          684,
+          1249
+        ],
+        [
+          728,
+          1249
+        ],
+        [
+          728,
+          1277
+        ],
+        [
+          684,
+          1277
+        ]
+      ]
+    },
+    {
+      "index": 15,
+      "text": "IQUITOS",
+      "confidence": 0.8543297336974218,
+      "bbox": [
+        [
+          530,
+          1059
+        ],
+        [
+          643,
+          1059
+        ],
+        [
+          643,
+          1087
+        ],
+        [
+          530,
+          1087
+        ]
+      ]
+    },
+    {
+      "index": 16,
+      "text": "SPEED",
+      "confidence": 0.981670930097521,
+      "bbox": [
+        [
+          332,
+          1235
+        ],
+        [
+          412,
+          1235
+        ],
+        [
+          412,
+          1259
+        ],
+        [
+          332,
+          1259
+        ]
+      ]
+    },
+    {
+      "index": 17,
+      "text": "PERU",
+      "confidence": 0.9997471002274086,
+      "bbox": [
+        [
+          656,
+          1058
+        ],
+        [
+          719,
+          1058
+        ],
+        [
+          719,
+          1082
+        ],
+        [
+          656,
+          1082
+        ]
+      ]
+    },
+    {
+      "index": 18,
+      "text": "62019,",
+      "confidence": 0.9998895106981314,
+      "bbox": [
+        [
+          679,
+          383
+        ],
+        [
+          758,
+          383
+        ],
+        [
+          758,
+          411
+        ],
+        [
+          679,
+          411
+        ]
+      ]
+    },
+    {
+      "index": 19,
+      "text": "Lens",
+      "confidence": 0.9564492537896193,
+      "bbox": [
+        [
+          484,
+          1392
+        ],
+        [
+          539,
+          1392
+        ],
+        [
+          539,
+          1415
+        ],
+        [
+          484,
+          1415
+        ]
+      ]
+    },
+    {
+      "index": 20,
+      "text": "Ltd.",
+      "confidence": 0.982228883069079,
+      "bbox": [
+        [
+          502,
+          636
+        ],
+        [
+          545,
+          636
+        ],
+        [
+          545,
+          659
+        ],
+        [
+          502,
+          659
+        ]
+      ]
+    },
+    {
+      "index": 21,
+      "text": "$3.95",
+      "confidence": 0.9963235193454881,
+      "bbox": [
+        [
+          1026,
+          1394
+        ],
+        [
+          1091,
+          1394
+        ],
+        [
+          1091,
+          1422
+        ],
+        [
+          1026,
+          1422
+        ]
+      ]
+    },
+    {
+      "index": 22,
+      "text": "1",
+      "confidence": 0.6069992265006046,
+      "bbox": [
+        [
+          685,
+          1393
+        ],
+        [
+          697,
+          1393
+        ],
+        [
+          697,
+          1415
+        ],
+        [
+          685,
+          1415
+        ]
+      ]
+    },
+    {
+      "index": 23,
+      "text": "ASSY-WHEE,",
+      "confidence": 0.915446324959933,
+      "bbox": [
+        [
+          443,
+          1203
+        ],
+        [
+          601,
+          1203
+        ],
+        [
+          601,
+          1227
+        ],
+        [
+          443,
+          1227
+        ]
+      ]
+    },
+    {
+      "index": 24,
+      "text": "$18.98",
+      "confidence": 0.9981203541922073,
+      "bbox": [
+        [
+          1193,
+          1394
+        ],
+        [
+          1273,
+          1394
+        ],
+        [
+          1273,
+          1421
+        ],
+        [
+          1193,
+          1421
+        ]
+      ]
+    },
+    {
+      "index": 25,
+      "text": "62-645",
+      "confidence": 0.9936548867635069,
+      "bbox": [
+        [
+          1365,
+          1395
+        ],
+        [
+          1446,
+          1395
+        ],
+        [
+          1446,
+          1418
+        ],
+        [
+          1365,
+          1418
+        ]
+      ]
+    },
+    {
+      "index": 26,
+      "text": "Co.,",
+      "confidence": 0.999964742818884,
+      "bbox": [
+        [
+          442,
+          637
+        ],
+        [
+          489,
+          637
+        ],
+        [
+          489,
+          664
+        ],
+        [
+          442,
+          664
+        ]
+      ]
+    },
+    {
+      "index": 27,
+      "text": "SPATN",
+      "confidence": 0.9124447128000334,
+      "bbox": [
+        [
+          254,
+          1059
+        ],
+        [
+          328,
+          1059
+        ],
+        [
+          328,
+          1082
+        ],
+        [
+          254,
+          1082
+        ]
+      ]
+    },
+    {
+      "index": 28,
+      "text": "Leo",
+      "confidence": 0.9997873730263659,
+      "bbox": [
+        [
+          952,
+          2069
+        ],
+        [
+          996,
+          2069
+        ],
+        [
+          996,
+          2092
+        ],
+        [
+          952,
+          2092
+        ]
+      ]
+    },
+    {
+      "index": 29,
+      "text": "For",
+      "confidence": 0.9999355471262596,
+      "bbox": [
+        [
+          434,
+          1392
+        ],
+        [
+          472,
+          1392
+        ],
+        [
+          472,
+          1414
+        ],
+        [
+          434,
+          1414
+        ]
+      ]
+    },
+    {
+      "index": 30,
+      "text": "520484",
+      "confidence": 0.99777063913415,
+      "bbox": [
+        [
+          325,
+          709
+        ],
+        [
+          410,
+          709
+        ],
+        [
+          410,
+          732
+        ],
+        [
+          325,
+          732
+        ]
+      ]
+    },
+    {
+      "index": 31,
+      "text": "SENSOR",
+      "confidence": 0.9996248314476205,
+      "bbox": [
+        [
+          332,
+          1203
+        ],
+        [
+          429,
+          1203
+        ],
+        [
+          429,
+          1227
+        ],
+        [
+          332,
+          1227
+        ]
+      ]
+    },
+    {
+      "index": 32,
+      "text": "PKG",
+      "confidence": 0.9995449641225514,
+      "bbox": [
+        [
+          182,
+          1242
+        ],
+        [
+          230,
+          1242
+        ],
+        [
+          230,
+          1266
+        ],
+        [
+          182,
+          1266
+        ]
+      ]
+    },
+    {
+      "index": 33,
+      "text": "FAX)+4-3563-4049354",
+      "confidence": 0.9945621603299872,
+      "bbox": [
+        [
+          162,
+          772
+        ],
+        [
+          427,
+          772
+        ],
+        [
+          427,
+          800
+        ],
+        [
+          162,
+          800
+        ]
+      ]
+    },
+    {
+      "index": 34,
+      "text": "City,",
+      "confidence": 0.9922505133615473,
+      "bbox": [
+        [
+          647,
+          675
+        ],
+        [
+          700,
+          675
+        ],
+        [
+          700,
+          704
+        ],
+        [
+          647,
+          704
+        ]
+      ]
+    },
+    {
+      "index": 35,
+      "text": "TEL)+1-6226-0228121",
+      "confidence": 0.9873625931649833,
+      "bbox": [
+        [
+          162,
+          740
+        ],
+        [
+          424,
+          740
+        ],
+        [
+          424,
+          768
+        ],
+        [
+          162,
+          768
+        ]
+      ]
+    },
+    {
+      "index": 36,
+      "text": "Tobong-ku",
+      "confidence": 0.9032707070351027,
+      "bbox": [
+        [
+          413,
+          383
+        ],
+        [
+          548,
+          383
+        ],
+        [
+          548,
+          412
+        ],
+        [
+          413,
+          412
+        ]
+      ]
+    },
+    {
+      "index": 37,
+      "text": "M7825853NS52845",
+      "confidence": 0.994748770231712,
+      "bbox": [
+        [
+          920,
+          454
+        ],
+        [
+          1148,
+          454
+        ],
+        [
+          1148,
+          477
+        ],
+        [
+          920,
+          477
+        ]
+      ]
+    },
+    {
+      "index": 38,
+      "text": "63",
+      "confidence": 0.9998943477994723,
+      "bbox": [
+        [
+          141,
+          1243
+        ],
+        [
+          169,
+          1243
+        ],
+        [
+          169,
+          1265
+        ],
+        [
+          141,
+          1265
+        ]
+      ]
+    },
+    {
+      "index": 39,
+      "text": "Hub",
+      "confidence": 0.9646095776723747,
+      "bbox": [
+        [
+          141,
+          1200
+        ],
+        [
+          189,
+          1200
+        ],
+        [
+          189,
+          1225
+        ],
+        [
+          141,
+          1225
+        ]
+      ]
+    },
+    {
+      "index": 40,
+      "text": "$5,107.56",
+      "confidence": 0.9976639262443545,
+      "bbox": [
+        [
+          1173,
+          1690
+        ],
+        [
+          1291,
+          1690
+        ],
+        [
+          1291,
+          1717
+        ],
+        [
+          1173,
+          1717
+        ]
+      ]
+    },
+    {
+      "index": 41,
+      "text": "51",
+      "confidence": 0.9999140475681361,
+      "bbox": [
+        [
+          915,
+          1038
+        ],
+        [
+          943,
+          1038
+        ],
+        [
+          943,
+          1060
+        ],
+        [
+          915,
+          1060
+        ]
+      ]
+    },
+    {
+      "index": 42,
+      "text": "231214",
+      "confidence": 0.995817788054909,
+      "bbox": [
+        [
+          923,
+          341
+        ],
+        [
+          1011,
+          341
+        ],
+        [
+          1011,
+          365
+        ],
+        [
+          923,
+          365
+        ]
+      ]
+    },
+    {
+      "index": 43,
+      "text": "TARIF,",
+      "confidence": 0.8323476778755071,
+      "bbox": [
+        [
+          144,
+          1059
+        ],
+        [
+          241,
+          1059
+        ],
+        [
+          241,
+          1087
+        ],
+        [
+          144,
+          1087
+        ]
+      ]
+    },
+    {
+      "index": 44,
+      "text": "Reader",
+      "confidence": 0.9989943507296896,
+      "bbox": [
+        [
+          994,
+          1886
+        ],
+        [
+          1077,
+          1886
+        ],
+        [
+          1077,
+          1909
+        ],
+        [
+          994,
+          1909
+        ]
+      ]
+    },
+    {
+      "index": 45,
+      "text": "10",
+      "confidence": 0.9967536813433696,
+      "bbox": [
+        [
+          916,
+          995
+        ],
+        [
+          945,
+          995
+        ],
+        [
+          945,
+          1018
+        ],
+        [
+          916,
+          1018
+        ]
+      ]
+    },
+    {
+      "index": 46,
+      "text": "Technicll",
+      "confidence": 0.9097914371778403,
+      "bbox": [
+        [
+          869,
+          1886
+        ],
+        [
+          982,
+          1886
+        ],
+        [
+          982,
+          1910
+        ],
+        [
+          869,
+          1910
+        ]
+      ]
+    },
+    {
+      "index": 47,
+      "text": "CFF",
+      "confidence": 0.9951202039905703,
+      "bbox": [
+        [
+          930,
+          903
+        ],
+        [
+          972,
+          903
+        ],
+        [
+          972,
+          926
+        ],
+        [
+          930,
+          926
+        ]
+      ]
+    },
+    {
+      "index": 48,
+      "text": "China",
+      "confidence": 0.9972165208586679,
+      "bbox": [
+        [
+          247,
+          708
+        ],
+        [
+          313,
+          708
+        ],
+        [
+          313,
+          733
+        ],
+        [
+          247,
+          733
+        ]
+      ]
+    },
+    {
+      "index": 49,
+      "text": "37",
+      "confidence": 0.9985857771424271,
+      "bbox": [
+        [
+          1248,
+          1040
+        ],
+        [
+          1277,
+          1040
+        ],
+        [
+          1277,
+          1063
+        ],
+        [
+          1248,
+          1063
+        ]
+      ]
+    },
+    {
+      "index": 50,
+      "text": "Ltd.",
+      "confidence": 0.9960492967135107,
+      "bbox": [
+        [
+          1119,
+          1847
+        ],
+        [
+          1165,
+          1847
+        ],
+        [
+          1165,
+          1871
+        ],
+        [
+          1119,
+          1871
+        ]
+      ]
+    },
+    {
+      "index": 51,
+      "text": "Co.,",
+      "confidence": 0.9997919863517893,
+      "bbox": [
+        [
+          1060,
+          1847
+        ],
+        [
+          1108,
+          1847
+        ],
+        [
+          1108,
+          1875
+        ],
+        [
+          1060,
+          1875
+        ]
+      ]
+    },
+    {
+      "index": 52,
+      "text": "Qrotectvvee",
+      "confidence": 0.8667085108369548,
+      "bbox": [
+        [
+          870,
+          1847
+        ],
+        [
+          995,
+          1847
+        ],
+        [
+          995,
+          1875
+        ],
+        [
+          870,
+          1875
+        ]
+      ]
+    },
+    {
+      "index": 53,
+      "text": "5",
+      "confidence": 0.9968423842790692,
+      "bbox": [
+        [
+          926,
+          951
+        ],
+        [
+          941,
+          951
+        ],
+        [
+          941,
+          974
+        ],
+        [
+          926,
+          974
+        ]
+      ]
+    },
+    {
+      "index": 54,
+      "text": "Anhui,",
+      "confidence": 0.988944977059666,
+      "bbox": [
+        [
+          159,
+          708
+        ],
+        [
+          236,
+          708
+        ],
+        [
+          236,
+          736
+        ],
+        [
+          159,
+          736
+        ]
+      ]
+    },
+    {
+      "index": 55,
+      "text": "Ltd.",
+      "confidence": 0.9987379543727288,
+      "bbox": [
+        [
+          384,
+          342
+        ],
+        [
+          429,
+          342
+        ],
+        [
+          429,
+          367
+        ],
+        [
+          384,
+          367
+        ]
+      ]
+    },
+    {
+      "index": 56,
+      "text": "A)N-993-391000033",
+      "confidence": 0.6940801974895007,
+      "bbox": [
+        [
+          177,
+          481
+        ],
+        [
+          432,
+          481
+        ],
+        [
+          432,
+          509
+        ],
+        [
+          177,
+          509
+        ]
+      ]
+    },
+    {
+      "index": 57,
+      "text": "373,",
+      "confidence": 0.9293844859027811,
+      "bbox": [
+        [
+          210,
+          677
+        ],
+        [
+          262,
+          677
+        ],
+        [
+          262,
+          703
+        ],
+        [
+          210,
+          703
+        ]
+      ]
+    },
+    {
+      "index": 58,
+      "text": "Co.,",
+      "confidence": 0.9998615411716469,
+      "bbox": [
+        [
+          325,
+          344
+        ],
+        [
+          373,
+          344
+        ],
+        [
+          373,
+          370
+        ],
+        [
+          325,
+          370
+        ]
+      ]
+    },
+    {
+      "index": 59,
+      "text": "Life",
+      "confidence": 0.9939241402888811,
+      "bbox": [
+        [
+          1005,
+          1847
+        ],
+        [
+          1049,
+          1847
+        ],
+        [
+          1049,
+          1871
+        ],
+        [
+          1005,
+          1871
+        ]
+      ]
+    },
+    {
+      "index": 60,
+      "text": "Renark",
+      "confidence": 0.8929218166322919,
+      "bbox": [
+        [
+          148,
+          1750
+        ],
+        [
+          247,
+          1750
+        ],
+        [
+          247,
+          1773
+        ],
+        [
+          148,
+          1773
+        ]
+      ]
+    },
+    {
+      "index": 61,
+      "text": "07-16-2016",
+      "confidence": 0.9413190206386078,
+      "bbox": [
+        [
+          1210,
+          340
+        ],
+        [
+          1346,
+          340
+        ],
+        [
+          1346,
+          365
+        ],
+        [
+          1210,
+          365
+        ]
+      ]
+    },
+    {
+      "index": 62,
+      "text": "AURORA",
+      "confidence": 0.9976851591038,
+      "bbox": [
+        [
+          207,
+          923
+        ],
+        [
+          312,
+          923
+        ],
+        [
+          312,
+          947
+        ],
+        [
+          207,
+          947
+        ]
+      ]
+    },
+    {
+      "index": 63,
+      "text": "Tobong-dong,",
+      "confidence": 0.930821277043977,
+      "bbox": [
+        [
+          235,
+          383
+        ],
+        [
+          405,
+          383
+        ],
+        [
+          405,
+          411
+        ],
+        [
+          235,
+          411
+        ]
+      ]
+    },
+    {
+      "index": 64,
+      "text": "Voy,",
+      "confidence": 0.9776035769974877,
+      "bbox": [
+        [
+          237,
+          883
+        ],
+        [
+          293,
+          883
+        ],
+        [
+          293,
+          911
+        ],
+        [
+          237,
+          911
+        ]
+      ]
+    },
+    {
+      "index": 65,
+      "text": "Swith",
+      "confidence": 0.8960061271045198,
+      "bbox": [
+        [
+          138,
+          1392
+        ],
+        [
+          217,
+          1392
+        ],
+        [
+          217,
+          1416
+        ],
+        [
+          138,
+          1416
+        ]
+      ]
+    },
+    {
+      "index": 66,
+      "text": "ChUgai",
+      "confidence": 0.8896800781531402,
+      "bbox": [
+        [
+          159,
+          636
+        ],
+        [
+          243,
+          636
+        ],
+        [
+          243,
+          667
+        ],
+        [
+          159,
+          667
+        ]
+      ]
+    },
+    {
+      "index": 67,
+      "text": "09-07-2008",
+      "confidence": 0.9931337964758279,
+      "bbox": [
+        [
+          1209,
+          455
+        ],
+        [
+          1345,
+          455
+        ],
+        [
+          1345,
+          478
+        ],
+        [
+          1209,
+          478
+        ]
+      ]
+    },
+    {
+      "index": 68,
+      "text": "Consignee",
+      "confidence": 0.9101887425056255,
+      "bbox": [
+        [
+          146,
+          589
+        ],
+        [
+          274,
+          589
+        ],
+        [
+          274,
+          616
+        ],
+        [
+          146,
+          616
+        ]
+      ]
+    },
+    {
+      "index": 69,
+      "text": "ShipperrSSlle",
+      "confidence": 0.7450365851306939,
+      "bbox": [
+        [
+          147,
+          296
+        ],
+        [
+          315,
+          296
+        ],
+        [
+          315,
+          322
+        ],
+        [
+          147,
+          322
+        ]
+      ]
+    },
+    {
+      "index": 70,
+      "text": "MSC",
+      "confidence": 0.9727006350526386,
+      "bbox": [
+        [
+          145,
+          923
+        ],
+        [
+          200,
+          923
+        ],
+        [
+          200,
+          947
+        ],
+        [
+          145,
+          947
+        ]
+      ]
+    },
+    {
+      "index": 71,
+      "text": "I92,589-22994444",
+      "confidence": 0.5851291736175274,
+      "bbox": [
+        [
+          211,
+          447
+        ],
+        [
+          430,
+          447
+        ],
+        [
+          430,
+          476
+        ],
+        [
+          211,
+          476
+        ]
+      ]
+    },
+    {
+      "index": 72,
+      "text": "V.603",
+      "confidence": 0.9997863965536171,
+      "bbox": [
+        [
+          145,
+          955
+        ],
+        [
+          213,
+          955
+        ],
+        [
+          213,
+          979
+        ],
+        [
+          145,
+          979
+        ]
+      ]
+    },
+    {
+      "index": 73,
+      "text": "Interrideee",
+      "confidence": 0.8081611713678424,
+      "bbox": [
+        [
+          200,
+          342
+        ],
+        [
+          314,
+          342
+        ],
+        [
+          314,
+          368
+        ],
+        [
+          200,
+          368
+        ]
+      ]
+    },
+    {
+      "index": 74,
+      "text": "D/P",
+      "confidence": 0.9987079649006017,
+      "bbox": [
+        [
+          1219,
+          901
+        ],
+        [
+          1265,
+          901
+        ],
+        [
+          1265,
+          927
+        ],
+        [
+          1219,
+          927
+        ]
+      ]
+    },
+    {
+      "index": 75,
+      "text": "Korea",
+      "confidence": 0.9969234153446184,
+      "bbox": [
+        [
+          267,
+          416
+        ],
+        [
+          337,
+          416
+        ],
+        [
+          337,
+          440
+        ],
+        [
+          267,
+          440
+        ]
+      ]
+    },
+    {
+      "index": 76,
+      "text": "Vessel",
+      "confidence": 0.9971625375518346,
+      "bbox": [
+        [
+          143,
+          885
+        ],
+        [
+          222,
+          885
+        ],
+        [
+          222,
+          905
+        ],
+        [
+          143,
+          905
+        ]
+      ]
+    },
+    {
+      "index": 77,
+      "text": "91-6,",
+      "confidence": 0.9793238377461331,
+      "bbox": [
+        [
+          164,
+          384
+        ],
+        [
+          227,
+          384
+        ],
+        [
+          227,
+          411
+        ],
+        [
+          164,
+          411
+        ]
+      ]
+    },
+    {
+      "index": 78,
+      "text": "No.",
+      "confidence": 0.998718105344928,
+      "bbox": [
+        [
+          160,
+          676
+        ],
+        [
+          202,
+          676
+        ],
+        [
+          202,
+          701
+        ],
+        [
+          160,
+          701
+        ]
+      ]
+    },
+    {
+      "index": 79,
+      "text": "Rep.",
+      "confidence": 0.9802379631113762,
+      "bbox": [
+        [
+          166,
+          416
+        ],
+        [
+          220,
+          416
+        ],
+        [
+          220,
+          445
+        ],
+        [
+          166,
+          445
+        ]
+      ]
+    },
+    {
+      "index": 80,
+      "text": "PKG",
+      "confidence": 0.9717547868590756,
+      "bbox": [
+        [
+          181,
+          1432
+        ],
+        [
+          233,
+          1432
+        ],
+        [
+          233,
+          1455
+        ],
+        [
+          181,
+          1455
+        ]
+      ]
+    },
+    {
+      "index": 81,
+      "text": "Loading",
+      "confidence": 0.9709104940815457,
+      "bbox": [
+        [
+          223,
+          1004
+        ],
+        [
+          323,
+          1004
+        ],
+        [
+          323,
+          1028
+        ],
+        [
+          223,
+          1028
+        ]
+      ]
+    },
+    {
+      "index": 82,
+      "text": "VesselPy",
+      "confidence": 0.7121709019588157,
+      "bbox": [
+        [
+          141,
+          882
+        ],
+        [
+          268,
+          882
+        ],
+        [
+          268,
+          908
+        ],
+        [
+          141,
+          908
+        ]
+      ]
+    },
+    {
+      "index": 83,
+      "text": "Signature",
+      "confidence": 0.8817548974450966,
+      "bbox": [
+        [
+          835,
+          1751
+        ],
+        [
+          960,
+          1751
+        ],
+        [
+          960,
+          1778
+        ],
+        [
+          835,
+          1778
+        ]
+      ]
+    },
+    {
+      "index": 84,
+      "text": "96,",
+      "confidence": 0.701157736666319,
+      "bbox": [
+        [
+          959,
+          991
+        ],
+        [
+          981,
+          991
+        ],
+        [
+          981,
+          1012
+        ],
+        [
+          959,
+          1012
+        ]
+      ]
+    },
+    {
+      "index": 85,
+      "text": "94",
+      "confidence": 0.9995464955976863,
+      "bbox": [
+        [
+          140,
+          1432
+        ],
+        [
+          172,
+          1432
+        ],
+        [
+          172,
+          1457
+        ],
+        [
+          140,
+          1457
+        ]
+      ]
+    },
+    {
+      "index": 86,
+      "text": "Re9..06..07e",
+      "confidence": 0.6540619056101686,
+      "bbox": [
+        [
+          165,
+          416
+        ],
+        [
+          320,
+          416
+        ],
+        [
+          320,
+          441
+        ],
+        [
+          165,
+          441
+        ]
+      ]
+    },
+    {
+      "index": 87,
+      "text": "of",
+      "confidence": 0.8817667753364596,
+      "bbox": [
+        [
+          230,
+          415
+        ],
+        [
+          259,
+          415
+        ],
+        [
+          259,
+          441
+        ],
+        [
+          230,
+          441
+        ]
+      ]
+    },
+    {
+      "index": 88,
+      "text": "ss0/W,yy",
+      "confidence": 0.3449358783754875,
+      "bbox": [
+        [
+          181,
+          881
+        ],
+        [
+          294,
+          881
+        ],
+        [
+          294,
+          911
+        ],
+        [
+          181,
+          911
+        ]
+      ]
+    }
+  ],
+  "elapsed_seconds": 21.176,
+  "common_json": {
+    "schema_version": "1.0",
+    "document_type": "commercial_invoice",
+    "document_id": "IMG_OCR_6_T_NV_004574",
+    "processing_status": "partial",
+    "fields": {
+      "invoice_no": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice number label/value not recovered",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "date": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice date not printed or not recoverable",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "buyer": {
+        "value": "ChUgai Pharmaccechcca Co., Ltd.",
+        "normalized": "ChUgai Pharmaccechcca Co., Ltd.",
+        "raw_text": "ChUgai Ltd. Pharmaccechcca Co.,",
+        "bbox": [
+          [
+            159,
+            636
+          ],
+          [
+            545,
+            636
+          ],
+          [
+            545,
+            667
+          ],
+          [
+            159,
+            667
+          ]
+        ],
+        "confidence": 0.6426040121333929,
+        "status": "ambiguous",
+        "source_indices": [
+          66,
+          20,
+          12,
+          26
+        ],
+        "reason": "buyer label absent; consignee retained as a counterparty proxy requiring review",
+        "normalization_status": "ambiguous",
+        "normalization_reason": "source field remains ambiguous"
+      },
+      "amount": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice-level total amount not recovered",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "currency": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "currency code or symbol not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "goods_description": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "table header not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "quantity": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "table header not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      }
+    }
+  }
+}

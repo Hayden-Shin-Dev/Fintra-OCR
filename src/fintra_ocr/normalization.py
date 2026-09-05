@@ -36,7 +36,7 @@ _QUANTITY_FIELDS = {"quantity"}
 _WEIGHT_FIELDS = {"gross_weight"}
 _PACKAGE_FIELDS = {"number_of_packages"}
 _STRING_FIELDS = {
-    "invoice_no", "bl_no", "buyer", "shipper", "consignee", "goods_description",
+    "invoice_no", "bl_no", "buyer", "seller", "shipper", "consignee", "goods_description",
 }
 _SUPPORTED_FIELDS = (
     _DATE_FIELDS | _AMOUNT_FIELDS | _CURRENCY_FIELDS | _QUANTITY_FIELDS
@@ -239,4 +239,3 @@ def normalize_fields(
         field_name: normalize_field(field_name, evidence)
         for field_name, evidence in fields.items()
     }
-

@@ -1,0 +1,2134 @@
+{
+  "document_id": "IMG_OCR_6_T_NV_003235",
+  "form_type": "상업송장",
+  "document_type": "commercial_invoice",
+  "backend": "aihub-logistics",
+  "gt_recall": {
+    "gt_boxes": 70,
+    "predicted_boxes": 79,
+    "geometric_recall": 0.9,
+    "exact_text_recall": 0.4142857142857143,
+    "segmentation_aware_recall": 0.42857142857142855,
+    "similarity_90_recall": 0.45714285714285713,
+    "mean_similarity": 0.698546572475144,
+    "mean_cer": 0.4475370661084947
+  },
+  "fields": {
+    "invoice_no": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "date": {
+      "status": "found",
+      "value": "02-27-2014",
+      "normalized": "2014-02-27",
+      "confidence": 0.9992623290504163
+    },
+    "buyer": {
+      "status": "ambiguous",
+      "value": "NAKATA LED.",
+      "normalized": "NAKATA LED.",
+      "confidence": 0.7427038919720581
+    },
+    "amount": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "currency": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "goods_description": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "quantity": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    }
+  },
+  "oracle_fields": {
+    "invoice_no": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "date": {
+      "status": "found",
+      "value": "02-27-2014",
+      "normalized": "2014-02-27",
+      "confidence": 1.0
+    },
+    "buyer": {
+      "status": "ambiguous",
+      "value": "NAKATA CO, LTD.",
+      "normalized": "NAKATA CO, LTD.",
+      "confidence": 1.0
+    },
+    "amount": {
+      "status": "found",
+      "value": "$3,985.55",
+      "normalized": {
+        "value": 3985.55,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "confidence": 1.0
+    },
+    "currency": {
+      "status": "ambiguous",
+      "value": "$",
+      "normalized": {
+        "code": null,
+        "symbol": "$"
+      },
+      "confidence": 1.0
+    },
+    "goods_description": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    },
+    "quantity": {
+      "status": "missing",
+      "value": null,
+      "normalized": null,
+      "confidence": 0.0
+    }
+  },
+  "field_diagnostics": {
+    "amount": {
+      "field_name": "amount",
+      "actual_status": "missing",
+      "oracle_status": "found",
+      "actual_value": null,
+      "oracle_value": {
+        "value": 3985.55,
+        "symbol": "$",
+        "currency_code": null
+      },
+      "classification": "ocr_value_degradation",
+      "agreement_score": 0.0
+    },
+    "buyer": {
+      "field_name": "buyer",
+      "actual_status": "ambiguous",
+      "oracle_status": "ambiguous",
+      "actual_value": "NAKATA LED.",
+      "oracle_value": "NAKATA CO, LTD.",
+      "classification": "extractor_instability_or_ambiguity",
+      "agreement_score": 0.782608695652174
+    },
+    "currency": {
+      "field_name": "currency",
+      "actual_status": "missing",
+      "oracle_status": "ambiguous",
+      "actual_value": null,
+      "oracle_value": {
+        "code": null,
+        "symbol": "$"
+      },
+      "classification": "extractor_instability_or_ambiguity",
+      "agreement_score": 0.0
+    },
+    "date": {
+      "field_name": "date",
+      "actual_status": "found",
+      "oracle_status": "found",
+      "actual_value": "2014-02-27",
+      "oracle_value": "2014-02-27",
+      "classification": "e2e_matches_oracle",
+      "agreement_score": 1.0
+    },
+    "goods_description": {
+      "field_name": "goods_description",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "invoice_no": {
+      "field_name": "invoice_no",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    },
+    "quantity": {
+      "field_name": "quantity",
+      "actual_status": "missing",
+      "oracle_status": "missing",
+      "actual_value": null,
+      "oracle_value": null,
+      "classification": "both_missing_or_oracle_unavailable",
+      "agreement_score": 0.0
+    }
+  },
+  "ocr_predictions": [
+    {
+      "index": 0,
+      "text": "Africa",
+      "confidence": 0.9994901628567903,
+      "bbox": [
+        [
+          652,
+          957
+        ],
+        [
+          715,
+          957
+        ],
+        [
+          715,
+          978
+        ],
+        [
+          652,
+          978
+        ]
+      ]
+    },
+    {
+      "index": 1,
+      "text": "12-01-2001",
+      "confidence": 0.9992577851744365,
+      "bbox": [
+        [
+          523,
+          1246
+        ],
+        [
+          644,
+          1246
+        ],
+        [
+          644,
+          1261
+        ],
+        [
+          523,
+          1261
+        ]
+      ]
+    },
+    {
+      "index": 2,
+      "text": "BELGIUM",
+      "confidence": 0.9815581854934499,
+      "bbox": [
+        [
+          639,
+          1141
+        ],
+        [
+          751,
+          1141
+        ],
+        [
+          751,
+          1161
+        ],
+        [
+          639,
+          1161
+        ]
+      ]
+    },
+    {
+      "index": 3,
+      "text": "1454,",
+      "confidence": 0.991412931815962,
+      "bbox": [
+        [
+          513,
+          961
+        ],
+        [
+          569,
+          961
+        ],
+        [
+          569,
+          984
+        ],
+        [
+          513,
+          984
+        ]
+      ]
+    },
+    {
+      "index": 4,
+      "text": "South",
+      "confidence": 0.9991109614156718,
+      "bbox": [
+        [
+          579,
+          957
+        ],
+        [
+          642,
+          957
+        ],
+        [
+          642,
+          978
+        ],
+        [
+          579,
+          978
+        ]
+      ]
+    },
+    {
+      "index": 5,
+      "text": "FAL:+(88)(68)7031-7559",
+      "confidence": 0.918949690982262,
+      "bbox": [
+        [
+          440,
+          989
+        ],
+        [
+          718,
+          989
+        ],
+        [
+          718,
+          1015
+        ],
+        [
+          440,
+          1015
+        ]
+      ]
+    },
+    {
+      "index": 6,
+      "text": "WERUTK,",
+      "confidence": 0.6916483095660877,
+      "bbox": [
+        [
+          521,
+          1141
+        ],
+        [
+          627,
+          1141
+        ],
+        [
+          627,
+          1163
+        ],
+        [
+          521,
+          1163
+        ]
+      ]
+    },
+    {
+      "index": 7,
+      "text": "Pressure",
+      "confidence": 0.9858534204183989,
+      "bbox": [
+        [
+          519,
+          1364
+        ],
+        [
+          610,
+          1364
+        ],
+        [
+          610,
+          1383
+        ],
+        [
+          519,
+          1383
+        ]
+      ]
+    },
+    {
+      "index": 8,
+      "text": "FAX:+(20)(71)4026-3641",
+      "confidence": 0.985317764466477,
+      "bbox": [
+        [
+          432,
+          812
+        ],
+        [
+          709,
+          812
+        ],
+        [
+          709,
+          838
+        ],
+        [
+          432,
+          838
+        ]
+      ]
+    },
+    {
+      "index": 9,
+      "text": "Nairobi",
+      "confidence": 0.942003034355548,
+      "bbox": [
+        [
+          889,
+          796
+        ],
+        [
+          973,
+          796
+        ],
+        [
+          973,
+          818
+        ],
+        [
+          889,
+          818
+        ]
+      ]
+    },
+    {
+      "index": 10,
+      "text": "Deutsche",
+      "confidence": 0.9531670963790155,
+      "bbox": [
+        [
+          889,
+          756
+        ],
+        [
+          990,
+          756
+        ],
+        [
+          990,
+          777
+        ],
+        [
+          889,
+          777
+        ]
+      ]
+    },
+    {
+      "index": 11,
+      "text": "Valve",
+      "confidence": 0.998234597578018,
+      "bbox": [
+        [
+          619,
+          1362
+        ],
+        [
+          681,
+          1362
+        ],
+        [
+          681,
+          1383
+        ],
+        [
+          619,
+          1383
+        ]
+      ]
+    },
+    {
+      "index": 12,
+      "text": "11-29-2201",
+      "confidence": 0.9106052653351921,
+      "bbox": [
+        [
+          886,
+          677
+        ],
+        [
+          1005,
+          677
+        ],
+        [
+          1005,
+          697
+        ],
+        [
+          886,
+          697
+        ]
+      ]
+    },
+    {
+      "index": 13,
+      "text": "Blocmfoonrenn",
+      "confidence": 0.6905449050835064,
+      "bbox": [
+        [
+          358,
+          956
+        ],
+        [
+          501,
+          956
+        ],
+        [
+          501,
+          979
+        ],
+        [
+          358,
+          979
+        ]
+      ]
+    },
+    {
+      "index": 14,
+      "text": "No.",
+      "confidence": 0.9981048087318195,
+      "bbox": [
+        [
+          889,
+          471
+        ],
+        [
+          928,
+          471
+        ],
+        [
+          928,
+          491
+        ],
+        [
+          889,
+          491
+        ]
+      ]
+    },
+    {
+      "index": 15,
+      "text": "Yangju-Kun,",
+      "confidence": 0.9626455454900081,
+      "bbox": [
+        [
+          536,
+          536
+        ],
+        [
+          670,
+          536
+        ],
+        [
+          670,
+          562
+        ],
+        [
+          536,
+          562
+        ]
+      ]
+    },
+    {
+      "index": 16,
+      "text": "47338--02888266858",
+      "confidence": 0.7727475688723318,
+      "bbox": [
+        [
+          887,
+          501
+        ],
+        [
+          1085,
+          501
+        ],
+        [
+          1085,
+          526
+        ],
+        [
+          887,
+          526
+        ]
+      ]
+    },
+    {
+      "index": 17,
+      "text": "Bank",
+      "confidence": 0.9995552891816205,
+      "bbox": [
+        [
+          998,
+          756
+        ],
+        [
+          1056,
+          756
+        ],
+        [
+          1056,
+          777
+        ],
+        [
+          998,
+          777
+        ]
+      ]
+    },
+    {
+      "index": 18,
+      "text": "Tanner",
+      "confidence": 0.8986520271920887,
+      "bbox": [
+        [
+          1017,
+          1867
+        ],
+        [
+          1096,
+          1867
+        ],
+        [
+          1096,
+          1888
+        ],
+        [
+          1017,
+          1888
+        ]
+      ]
+    },
+    {
+      "index": 19,
+      "text": "47",
+      "confidence": 0.9996804290823009,
+      "bbox": [
+        [
+          929,
+          1368
+        ],
+        [
+          958,
+          1368
+        ],
+        [
+          958,
+          1389
+        ],
+        [
+          929,
+          1389
+        ]
+      ]
+    },
+    {
+      "index": 20,
+      "text": "4770O,",
+      "confidence": 0.8752723657060442,
+      "bbox": [
+        [
+          547,
+          752
+        ],
+        [
+          625,
+          752
+        ],
+        [
+          625,
+          774
+        ],
+        [
+          547,
+          774
+        ]
+      ]
+    },
+    {
+      "index": 21,
+      "text": "Mayfeel,",
+      "confidence": 0.7305992734119825,
+      "bbox": [
+        [
+          390,
+          747
+        ],
+        [
+          493,
+          747
+        ],
+        [
+          493,
+          772
+        ],
+        [
+          390,
+          772
+        ]
+      ]
+    },
+    {
+      "index": 22,
+      "text": "Date",
+      "confidence": 0.9975463851640965,
+      "bbox": [
+        [
+          958,
+          471
+        ],
+        [
+          1013,
+          471
+        ],
+        [
+          1013,
+          491
+        ],
+        [
+          958,
+          491
+        ]
+      ]
+    },
+    {
+      "index": 23,
+      "text": "Amountt",
+      "confidence": 0.9080614820442442,
+      "bbox": [
+        [
+          1368,
+          1300
+        ],
+        [
+          1463,
+          1300
+        ],
+        [
+          1463,
+          1322
+        ],
+        [
+          1368,
+          1322
+        ]
+      ]
+    },
+    {
+      "index": 24,
+      "text": "02-27-2014",
+      "confidence": 0.9992623290504163,
+      "bbox": [
+        [
+          892,
+          546
+        ],
+        [
+          1020,
+          546
+        ],
+        [
+          1020,
+          567
+        ],
+        [
+          892,
+          567
+        ]
+      ]
+    },
+    {
+      "index": 25,
+      "text": "Media",
+      "confidence": 0.9115083549205087,
+      "bbox": [
+        [
+          1140,
+          1787
+        ],
+        [
+          1207,
+          1787
+        ],
+        [
+          1207,
+          1809
+        ],
+        [
+          1140,
+          1809
+        ]
+      ]
+    },
+    {
+      "index": 26,
+      "text": "M0918557NS14982",
+      "confidence": 0.7812183519359817,
+      "bbox": [
+        [
+          886,
+          633
+        ],
+        [
+          1105,
+          633
+        ],
+        [
+          1105,
+          658
+        ],
+        [
+          886,
+          658
+        ]
+      ]
+    },
+    {
+      "index": 27,
+      "text": "inyoice",
+      "confidence": 0.8145672638371202,
+      "bbox": [
+        [
+          1046,
+          470
+        ],
+        [
+          1133,
+          470
+        ],
+        [
+          1133,
+          493
+        ],
+        [
+          1046,
+          493
+        ]
+      ]
+    },
+    {
+      "index": 28,
+      "text": "Doz",
+      "confidence": 0.9919470355451464,
+      "bbox": [
+        [
+          929,
+          1406
+        ],
+        [
+          975,
+          1406
+        ],
+        [
+          975,
+          1426
+        ],
+        [
+          929,
+          1426
+        ]
+      ]
+    },
+    {
+      "index": 29,
+      "text": "Eneegy",
+      "confidence": 0.8590755080422117,
+      "bbox": [
+        [
+          316,
+          920
+        ],
+        [
+          394,
+          920
+        ],
+        [
+          394,
+          946
+        ],
+        [
+          316,
+          946
+        ]
+      ]
+    },
+    {
+      "index": 30,
+      "text": "Signe.",
+      "confidence": 0.8703133075572127,
+      "bbox": [
+        [
+          907,
+          2045
+        ],
+        [
+          994,
+          2045
+        ],
+        [
+          994,
+          2071
+        ],
+        [
+          907,
+          2071
+        ]
+      ]
+    },
+    {
+      "index": 31,
+      "text": "Total",
+      "confidence": 0.9909574844068985,
+      "bbox": [
+        [
+          262,
+          1620
+        ],
+        [
+          323,
+          1620
+        ],
+        [
+          323,
+          1641
+        ],
+        [
+          262,
+          1641
+        ]
+      ]
+    },
+    {
+      "index": 32,
+      "text": "PKGS",
+      "confidence": 0.9885040987911293,
+      "bbox": [
+        [
+          297,
+          1324
+        ],
+        [
+          368,
+          1324
+        ],
+        [
+          368,
+          1347
+        ],
+        [
+          297,
+          1347
+        ]
+      ]
+    },
+    {
+      "index": 33,
+      "text": "FAL:+(23)(28)3822-9590",
+      "confidence": 0.905073247102423,
+      "bbox": [
+        [
+          449,
+          600
+        ],
+        [
+          735,
+          600
+        ],
+        [
+          735,
+          626
+        ],
+        [
+          449,
+          626
+        ]
+      ]
+    },
+    {
+      "index": 34,
+      "text": "Unit-Prcoe",
+      "confidence": 0.89923622348864,
+      "bbox": [
+        [
+          1139,
+          1299
+        ],
+        [
+          1256,
+          1299
+        ],
+        [
+          1256,
+          1320
+        ],
+        [
+          1139,
+          1320
+        ]
+      ]
+    },
+    {
+      "index": 35,
+      "text": "Bay",
+      "confidence": 0.9983676027458868,
+      "bbox": [
+        [
+          1090,
+          1788
+        ],
+        [
+          1133,
+          1788
+        ],
+        [
+          1133,
+          1813
+        ],
+        [
+          1090,
+          1813
+        ]
+      ]
+    },
+    {
+      "index": 36,
+      "text": "Oenobscct",
+      "confidence": 0.7403791202446117,
+      "bbox": [
+        [
+          969,
+          1787
+        ],
+        [
+          1084,
+          1787
+        ],
+        [
+          1084,
+          1811
+        ],
+        [
+          969,
+          1811
+        ]
+      ]
+    },
+    {
+      "index": 37,
+      "text": "AK",
+      "confidence": 0.6818825067614913,
+      "bbox": [
+        [
+          503,
+          748
+        ],
+        [
+          538,
+          748
+        ],
+        [
+          538,
+          769
+        ],
+        [
+          503,
+          769
+        ]
+      ]
+    },
+    {
+      "index": 38,
+      "text": "&",
+      "confidence": 0.914084193374597,
+      "bbox": [
+        [
+          934,
+          471
+        ],
+        [
+          952,
+          471
+        ],
+        [
+          952,
+          491
+        ],
+        [
+          934,
+          491
+        ]
+      ]
+    },
+    {
+      "index": 39,
+      "text": "Plaiss",
+      "confidence": 0.9168963189870489,
+      "bbox": [
+        [
+          240,
+          920
+        ],
+        [
+          308,
+          920
+        ],
+        [
+          308,
+          944
+        ],
+        [
+          240,
+          944
+        ]
+      ]
+    },
+    {
+      "index": 40,
+      "text": "773--4",
+      "confidence": 0.6620556851218014,
+      "bbox": [
+        [
+          167,
+          962
+        ],
+        [
+          243,
+          962
+        ],
+        [
+          243,
+          983
+        ],
+        [
+          167,
+          983
+        ]
+      ]
+    },
+    {
+      "index": 41,
+      "text": "TEL:+(13)(17)9577-9011",
+      "confidence": 0.945084947877851,
+      "bbox": [
+        [
+          163,
+          812
+        ],
+        [
+          427,
+          812
+        ],
+        [
+          427,
+          838
+        ],
+        [
+          163,
+          838
+        ]
+      ]
+    },
+    {
+      "index": 42,
+      "text": "Date",
+      "confidence": 0.998418101236465,
+      "bbox": [
+        [
+          958,
+          597
+        ],
+        [
+          1013,
+          597
+        ],
+        [
+          1013,
+          618
+        ],
+        [
+          958,
+          618
+        ]
+      ]
+    },
+    {
+      "index": 43,
+      "text": "$80.05",
+      "confidence": 0.918886552803401,
+      "bbox": [
+        [
+          1139,
+          1362
+        ],
+        [
+          1220,
+          1362
+        ],
+        [
+          1220,
+          1387
+        ],
+        [
+          1139,
+          1387
+        ]
+      ]
+    },
+    {
+      "index": 44,
+      "text": "Naya",
+      "confidence": 0.6980073052192918,
+      "bbox": [
+        [
+          249,
+          957
+        ],
+        [
+          314,
+          957
+        ],
+        [
+          314,
+          979
+        ],
+        [
+          249,
+          979
+        ]
+      ]
+    },
+    {
+      "index": 45,
+      "text": "Hrett",
+      "confidence": 0.6494637867070426,
+      "bbox": [
+        [
+          168,
+          921
+        ],
+        [
+          232,
+          921
+        ],
+        [
+          232,
+          943
+        ],
+        [
+          168,
+          943
+        ]
+      ]
+    },
+    {
+      "index": 46,
+      "text": "Kwangeoo-muyon",
+      "confidence": 0.5049194012603251,
+      "bbox": [
+        [
+          344,
+          536
+        ],
+        [
+          522,
+          536
+        ],
+        [
+          522,
+          560
+        ],
+        [
+          344,
+          560
+        ]
+      ]
+    },
+    {
+      "index": 47,
+      "text": "Chief",
+      "confidence": 0.9850109303454985,
+      "bbox": [
+        [
+          1021,
+          1825
+        ],
+        [
+          1083,
+          1825
+        ],
+        [
+          1083,
+          1847
+        ],
+        [
+          1021,
+          1847
+        ]
+      ]
+    },
+    {
+      "index": 48,
+      "text": "State",
+      "confidence": 0.9669927538470438,
+      "bbox": [
+        [
+          249,
+          780
+        ],
+        [
+          317,
+          780
+        ],
+        [
+          317,
+          801
+        ],
+        [
+          249,
+          801
+        ]
+      ]
+    },
+    {
+      "index": 49,
+      "text": "rd",
+      "confidence": 0.9559414400772053,
+      "bbox": [
+        [
+          322,
+          956
+        ],
+        [
+          350,
+          956
+        ],
+        [
+          350,
+          979
+        ],
+        [
+          322,
+          979
+        ]
+      ]
+    },
+    {
+      "index": 50,
+      "text": "of",
+      "confidence": 0.999828902931314,
+      "bbox": [
+        [
+          1017,
+          470
+        ],
+        [
+          1044,
+          470
+        ],
+        [
+          1044,
+          492
+        ],
+        [
+          1017,
+          492
+        ]
+      ]
+    },
+    {
+      "index": 51,
+      "text": "bank",
+      "confidence": 0.8924196525910558,
+      "bbox": [
+        [
+          1027,
+          724
+        ],
+        [
+          1085,
+          724
+        ],
+        [
+          1085,
+          747
+        ],
+        [
+          1027,
+          747
+        ]
+      ]
+    },
+    {
+      "index": 52,
+      "text": "Dart:",
+      "confidence": 0.7545586795713813,
+      "bbox": [
+        [
+          246,
+          887
+        ],
+        [
+          310,
+          887
+        ],
+        [
+          310,
+          911
+        ],
+        [
+          246,
+          911
+        ]
+      ]
+    },
+    {
+      "index": 53,
+      "text": "Korea",
+      "confidence": 0.9019641292849333,
+      "bbox": [
+        [
+          310,
+          569
+        ],
+        [
+          375,
+          569
+        ],
+        [
+          375,
+          590
+        ],
+        [
+          310,
+          590
+        ]
+      ]
+    },
+    {
+      "index": 54,
+      "text": "Exportr",
+      "confidence": 0.8744187544345349,
+      "bbox": [
+        [
+          281,
+          463
+        ],
+        [
+          387,
+          463
+        ],
+        [
+          387,
+          489
+        ],
+        [
+          281,
+          489
+        ]
+      ]
+    },
+    {
+      "index": 55,
+      "text": "TEL:+(77)(29)7563-2444",
+      "confidence": 0.8185526250496951,
+      "bbox": [
+        [
+          162,
+          988
+        ],
+        [
+          441,
+          988
+        ],
+        [
+          441,
+          1015
+        ],
+        [
+          162,
+          1015
+        ]
+      ]
+    },
+    {
+      "index": 56,
+      "text": "St",
+      "confidence": 0.9996507394866334,
+      "bbox": [
+        [
+          359,
+          748
+        ],
+        [
+          382,
+          748
+        ],
+        [
+          382,
+          770
+        ],
+        [
+          359,
+          770
+        ]
+      ]
+    },
+    {
+      "index": 57,
+      "text": "No6iyy",
+      "confidence": 0.8826227526698563,
+      "bbox": [
+        [
+          171,
+          887
+        ],
+        [
+          252,
+          887
+        ],
+        [
+          252,
+          910
+        ],
+        [
+          171,
+          910
+        ]
+      ]
+    },
+    {
+      "index": 58,
+      "text": "Ioading",
+      "confidence": 0.9623499105514213,
+      "bbox": [
+        [
+          254,
+          1097
+        ],
+        [
+          346,
+          1097
+        ],
+        [
+          346,
+          1122
+        ],
+        [
+          254,
+          1122
+        ]
+      ]
+    },
+    {
+      "index": 59,
+      "text": "&",
+      "confidence": 0.8049955991480562,
+      "bbox": [
+        [
+          934,
+          597
+        ],
+        [
+          953,
+          597
+        ],
+        [
+          953,
+          618
+        ],
+        [
+          934,
+          618
+        ]
+      ]
+    },
+    {
+      "index": 60,
+      "text": "and",
+      "confidence": 0.80679346653791,
+      "bbox": [
+        [
+          288,
+          1298
+        ],
+        [
+          329,
+          1298
+        ],
+        [
+          329,
+          1316
+        ],
+        [
+          288,
+          1316
+        ]
+      ]
+    },
+    {
+      "index": 61,
+      "text": "Fimal",
+      "confidence": 0.9143623202978542,
+      "bbox": [
+        [
+          530,
+          1099
+        ],
+        [
+          587,
+          1099
+        ],
+        [
+          587,
+          1119
+        ],
+        [
+          530,
+          1119
+        ]
+      ]
+    },
+    {
+      "index": 62,
+      "text": "United",
+      "confidence": 0.9949671389294344,
+      "bbox": [
+        [
+          166,
+          779
+        ],
+        [
+          243,
+          779
+        ],
+        [
+          243,
+          801
+        ],
+        [
+          166,
+          801
+        ]
+      ]
+    },
+    {
+      "index": 63,
+      "text": "LED.",
+      "confidence": 0.7427038919720581,
+      "bbox": [
+        [
+          331,
+          710
+        ],
+        [
+          387,
+          710
+        ],
+        [
+          387,
+          733
+        ],
+        [
+          331,
+          733
+        ]
+      ]
+    },
+    {
+      "index": 64,
+      "text": "Carrie",
+      "confidence": 0.948816731206525,
+      "bbox": [
+        [
+          170,
+          1200
+        ],
+        [
+          257,
+          1200
+        ],
+        [
+          257,
+          1221
+        ],
+        [
+          170,
+          1221
+        ]
+      ]
+    },
+    {
+      "index": 65,
+      "text": "Alabmma",
+      "confidence": 0.8776055912129065,
+      "bbox": [
+        [
+          251,
+          747
+        ],
+        [
+          350,
+          747
+        ],
+        [
+          350,
+          769
+        ],
+        [
+          251,
+          769
+        ]
+      ]
+    },
+    {
+      "index": 66,
+      "text": "Isuing",
+      "confidence": 0.8075599064071779,
+      "bbox": [
+        [
+          937,
+          724
+        ],
+        [
+          1020,
+          724
+        ],
+        [
+          1020,
+          750
+        ],
+        [
+          937,
+          750
+        ]
+      ]
+    },
+    {
+      "index": 67,
+      "text": "Consignee",
+      "confidence": 0.9283958815162021,
+      "bbox": [
+        [
+          170,
+          676
+        ],
+        [
+          302,
+          676
+        ],
+        [
+          302,
+          699
+        ],
+        [
+          170,
+          699
+        ]
+      ]
+    },
+    {
+      "index": 68,
+      "text": "Kanap--r",
+      "confidence": 0.9019733090653448,
+      "bbox": [
+        [
+          239,
+          536
+        ],
+        [
+          339,
+          536
+        ],
+        [
+          339,
+          561
+        ],
+        [
+          239,
+          561
+        ]
+      ]
+    },
+    {
+      "index": 69,
+      "text": "LTD.",
+      "confidence": 0.8439917773637788,
+      "bbox": [
+        [
+          458,
+          499
+        ],
+        [
+          510,
+          499
+        ],
+        [
+          510,
+          520
+        ],
+        [
+          458,
+          520
+        ]
+      ]
+    },
+    {
+      "index": 70,
+      "text": "DLSU1560188",
+      "confidence": 0.859436936963005,
+      "bbox": [
+        [
+          191,
+          1360
+        ],
+        [
+          348,
+          1360
+        ],
+        [
+          348,
+          1385
+        ],
+        [
+          191,
+          1385
+        ]
+      ]
+    },
+    {
+      "index": 71,
+      "text": "Marksan",
+      "confidence": 0.7831453528524391,
+      "bbox": [
+        [
+          213,
+          1297
+        ],
+        [
+          308,
+          1297
+        ],
+        [
+          308,
+          1316
+        ],
+        [
+          213,
+          1316
+        ]
+      ]
+    },
+    {
+      "index": 72,
+      "text": "Shipperr",
+      "confidence": 0.8910436309102525,
+      "bbox": [
+        [
+          170,
+          464
+        ],
+        [
+          277,
+          464
+        ],
+        [
+          277,
+          489
+        ],
+        [
+          170,
+          489
+        ]
+      ]
+    },
+    {
+      "index": 73,
+      "text": "Rotiygpatyr.",
+      "confidence": 0.600419781177467,
+      "bbox": [
+        [
+          174,
+          886
+        ],
+        [
+          324,
+          886
+        ],
+        [
+          324,
+          910
+        ],
+        [
+          174,
+          910
+        ]
+      ]
+    },
+    {
+      "index": 74,
+      "text": "Port",
+      "confidence": 0.8350938572076072,
+      "bbox": [
+        [
+          170,
+          1098
+        ],
+        [
+          224,
+          1098
+        ],
+        [
+          224,
+          1119
+        ],
+        [
+          170,
+          1119
+        ]
+      ]
+    },
+    {
+      "index": 75,
+      "text": "NAKATA",
+      "confidence": 0.969281560957509,
+      "bbox": [
+        [
+          166,
+          710
+        ],
+        [
+          275,
+          710
+        ],
+        [
+          275,
+          733
+        ],
+        [
+          166,
+          733
+        ]
+      ]
+    },
+    {
+      "index": 76,
+      "text": "CANADA",
+      "confidence": 0.9954099981950477,
+      "bbox": [
+        [
+          271,
+          1140
+        ],
+        [
+          378,
+          1140
+        ],
+        [
+          378,
+          1162
+        ],
+        [
+          271,
+          1162
+        ]
+      ]
+    },
+    {
+      "index": 77,
+      "text": "TEXTTLE",
+      "confidence": 0.8027031478225901,
+      "bbox": [
+        [
+          296,
+          499
+        ],
+        [
+          402,
+          499
+        ],
+        [
+          402,
+          520
+        ],
+        [
+          296,
+          520
+        ]
+      ]
+    },
+    {
+      "index": 78,
+      "text": "of",
+      "confidence": 0.99680770680419,
+      "bbox": [
+        [
+          225,
+          1097
+        ],
+        [
+          254,
+          1097
+        ],
+        [
+          254,
+          1118
+        ],
+        [
+          225,
+          1118
+        ]
+      ]
+    }
+  ],
+  "elapsed_seconds": 21.321,
+  "common_json": {
+    "schema_version": "1.0",
+    "document_type": "commercial_invoice",
+    "document_id": "IMG_OCR_6_T_NV_003235",
+    "processing_status": "partial",
+    "fields": {
+      "invoice_no": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice number label/value not recovered",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "date": {
+        "value": "02-27-2014",
+        "normalized": "2014-02-27",
+        "raw_text": "02-27-2014",
+        "bbox": [
+          [
+            892,
+            546
+          ],
+          [
+            1020,
+            546
+          ],
+          [
+            1020,
+            567
+          ],
+          [
+            892,
+            567
+          ]
+        ],
+        "confidence": 0.9992623290504163,
+        "status": "found",
+        "source_indices": [
+          24
+        ],
+        "reason": null,
+        "normalization_status": "normalized",
+        "normalization_reason": null
+      },
+      "buyer": {
+        "value": "NAKATA LED.",
+        "normalized": "NAKATA LED.",
+        "raw_text": "NAKATA LED.",
+        "bbox": [
+          [
+            166,
+            710
+          ],
+          [
+            387,
+            710
+          ],
+          [
+            387,
+            733
+          ],
+          [
+            166,
+            733
+          ]
+        ],
+        "confidence": 0.7427038919720581,
+        "status": "ambiguous",
+        "source_indices": [
+          75,
+          63
+        ],
+        "reason": "buyer label absent; consignee retained as a counterparty proxy requiring review",
+        "normalization_status": "ambiguous",
+        "normalization_reason": "source field remains ambiguous"
+      },
+      "amount": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "invoice-level total amount not recovered",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "currency": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "currency code or symbol not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "goods_description": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "table header not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      },
+      "quantity": {
+        "value": null,
+        "normalized": null,
+        "raw_text": "",
+        "bbox": null,
+        "confidence": 0.0,
+        "status": "missing",
+        "source_indices": [],
+        "reason": "table header not found",
+        "normalization_status": "failed",
+        "normalization_reason": "source field is missing"
+      }
+    }
+  }
+}

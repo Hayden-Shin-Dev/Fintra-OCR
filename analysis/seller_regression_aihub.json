@@ -1,0 +1,657 @@
+{
+  "evaluation": "explicit_seller_field_regression",
+  "note": "Expected values are reconstructed from lightweight GT value boxes plus static OCR; unavailable/non-semantic cases are manual_review and are excluded from accuracy.",
+  "document_count": 15,
+  "available_count": 10,
+  "outcome_counts": {
+    "correct": 6,
+    "wrong": 4,
+    "manual_review": 5
+  },
+  "results": [
+    {
+      "document_id": "IMG_OCR_6_T_NV_000322",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": true,
+      "oracle_proxy": true,
+      "expected_value": "Sandberry Ave dunedin, South Africa INVOIC",
+      "expected_raw_text": "Sandberry Ave dunedin, South Africa INVOIC",
+      "expected_bbox": [
+        [
+          85,
+          244
+        ],
+        [
+          912,
+          244
+        ],
+        [
+          912,
+          285
+        ],
+        [
+          85,
+          285
+        ]
+      ],
+      "extractor_status": "found",
+      "extractor_output": "Sandberry Aye dunedi,, South Africa INVOIC",
+      "extractor_normalized": "Sandberry Aye dunedi,, South Africa INVOIC",
+      "extractor_raw_text": "dunedi,, South Africa Sandberry Aye INVOIC",
+      "extractor_bbox": [
+        [
+          84,
+          247
+        ],
+        [
+          912,
+          247
+        ],
+        [
+          912,
+          285
+        ],
+        [
+          84,
+          285
+        ]
+      ],
+      "extractor_source_indices": [
+        7,
+        11,
+        6,
+        87,
+        106,
+        138
+      ],
+      "outcome": "correct",
+      "reason": null
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_001677",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": true,
+      "oracle_proxy": true,
+      "expected_value": "Favidson Homes",
+      "expected_raw_text": "Favidson Homes",
+      "expected_bbox": [
+        [
+          46,
+          207
+        ],
+        [
+          279,
+          207
+        ],
+        [
+          279,
+          245
+        ],
+        [
+          46,
+          245
+        ]
+      ],
+      "extractor_status": "found",
+      "extractor_output": "FaVisso Homee",
+      "extractor_normalized": "FaVisso Homee",
+      "extractor_raw_text": "FaVisso Homee",
+      "extractor_bbox": [
+        [
+          48,
+          215
+        ],
+        [
+          280,
+          215
+        ],
+        [
+          280,
+          241
+        ],
+        [
+          48,
+          241
+        ]
+      ],
+      "extractor_source_indices": [
+        115,
+        57
+      ],
+      "outcome": "wrong",
+      "reason": null
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_001774",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": true,
+      "oracle_proxy": true,
+      "expected_value": "Fascade Insights",
+      "expected_raw_text": "Fascade Insights",
+      "expected_bbox": [
+        [
+          46,
+          207
+        ],
+        [
+          236,
+          207
+        ],
+        [
+          236,
+          241
+        ],
+        [
+          46,
+          241
+        ]
+      ],
+      "extractor_status": "found",
+      "extractor_output": "Fascade Insights",
+      "extractor_normalized": "Fascade Insights",
+      "extractor_raw_text": "Insights Fascade",
+      "extractor_bbox": [
+        [
+          47,
+          212
+        ],
+        [
+          237,
+          212
+        ],
+        [
+          237,
+          240
+        ],
+        [
+          47,
+          240
+        ]
+      ],
+      "extractor_source_indices": [
+        53,
+        59
+      ],
+      "outcome": "correct",
+      "reason": null
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_001825",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": true,
+      "oracle_proxy": true,
+      "expected_value": "Ixtract Labs",
+      "expected_raw_text": "Ixtract Labs",
+      "expected_bbox": [
+        [
+          46,
+          207
+        ],
+        [
+          184,
+          207
+        ],
+        [
+          184,
+          243
+        ],
+        [
+          46,
+          243
+        ]
+      ],
+      "extractor_status": "found",
+      "extractor_output": "Ixtrac, Laby",
+      "extractor_normalized": "Ixtrac, Laby",
+      "extractor_raw_text": "Laby Ixtrac,",
+      "extractor_bbox": [
+        [
+          48,
+          212
+        ],
+        [
+          185,
+          212
+        ],
+        [
+          185,
+          237
+        ],
+        [
+          48,
+          237
+        ]
+      ],
+      "extractor_source_indices": [
+        98,
+        63
+      ],
+      "outcome": "correct",
+      "reason": null
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_001943",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": true,
+      "oracle_proxy": true,
+      "expected_value": "Cowater",
+      "expected_raw_text": "Cowater",
+      "expected_bbox": [
+        [
+          46,
+          207
+        ],
+        [
+          168,
+          207
+        ],
+        [
+          168,
+          245
+        ],
+        [
+          46,
+          245
+        ]
+      ],
+      "extractor_status": "found",
+      "extractor_output": "Taivaa INVOIC",
+      "extractor_normalized": "Taivaa INVOIC",
+      "extractor_raw_text": "Taivaa INVOIC",
+      "extractor_bbox": [
+        [
+          654,
+          253
+        ],
+        [
+          912,
+          253
+        ],
+        [
+          912,
+          285
+        ],
+        [
+          654,
+          285
+        ]
+      ],
+      "extractor_source_indices": [
+        99,
+        93
+      ],
+      "outcome": "wrong",
+      "reason": null
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_002061",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": true,
+      "oracle_proxy": true,
+      "expected_value": "Dird Rock Systems",
+      "expected_raw_text": "Dird Rock Systems",
+      "expected_bbox": [
+        [
+          46,
+          207
+        ],
+        [
+          291,
+          207
+        ],
+        [
+          291,
+          243
+        ],
+        [
+          46,
+          243
+        ]
+      ],
+      "extractor_status": "found",
+      "extractor_output": "Dird, Systems",
+      "extractor_normalized": "Dird, Systems",
+      "extractor_raw_text": "Dird, Systems",
+      "extractor_bbox": [
+        [
+          47,
+          213
+        ],
+        [
+          292,
+          213
+        ],
+        [
+          292,
+          239
+        ],
+        [
+          47,
+          239
+        ]
+      ],
+      "extractor_source_indices": [
+        146,
+        73
+      ],
+      "outcome": "correct",
+      "reason": null
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_002734",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": false,
+      "oracle_proxy": true,
+      "expected_value": null,
+      "expected_raw_text": "",
+      "expected_bbox": null,
+      "extractor_status": "missing",
+      "extractor_output": null,
+      "extractor_normalized": null,
+      "extractor_raw_text": "",
+      "extractor_bbox": null,
+      "extractor_source_indices": [],
+      "outcome": "manual_review",
+      "reason": "party label not found"
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_002913",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": true,
+      "oracle_proxy": true,
+      "expected_value": "Dixal Solutions",
+      "expected_raw_text": "Dixal Solutions",
+      "expected_bbox": [
+        [
+          46,
+          207
+        ],
+        [
+          238,
+          207
+        ],
+        [
+          238,
+          243
+        ],
+        [
+          46,
+          243
+        ]
+      ],
+      "extractor_status": "found",
+      "extractor_output": "Dixal",
+      "extractor_normalized": "Dixal",
+      "extractor_raw_text": "Dixal",
+      "extractor_bbox": [
+        [
+          47,
+          213
+        ],
+        [
+          117,
+          213
+        ],
+        [
+          117,
+          237
+        ],
+        [
+          47,
+          237
+        ]
+      ],
+      "extractor_source_indices": [
+        159
+      ],
+      "outcome": "wrong",
+      "reason": null
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_003058",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": false,
+      "oracle_proxy": true,
+      "expected_value": null,
+      "expected_raw_text": "",
+      "expected_bbox": null,
+      "extractor_status": "missing",
+      "extractor_output": null,
+      "extractor_normalized": null,
+      "extractor_raw_text": "",
+      "extractor_bbox": null,
+      "extractor_source_indices": [],
+      "outcome": "manual_review",
+      "reason": "party label not found"
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_003157",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": false,
+      "oracle_proxy": true,
+      "expected_value": null,
+      "expected_raw_text": "",
+      "expected_bbox": null,
+      "extractor_status": "missing",
+      "extractor_output": null,
+      "extractor_normalized": null,
+      "extractor_raw_text": "",
+      "extractor_bbox": null,
+      "extractor_source_indices": [],
+      "outcome": "manual_review",
+      "reason": "party label not found"
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_003235",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": true,
+      "oracle_proxy": true,
+      "expected_value": "TEXTILE CO. LTD",
+      "expected_raw_text": "TEXTILE CO. LTD",
+      "expected_bbox": [
+        [
+          297,
+          498
+        ],
+        [
+          509,
+          498
+        ],
+        [
+          509,
+          521
+        ],
+        [
+          297,
+          521
+        ]
+      ],
+      "extractor_status": "found",
+      "extractor_output": "TEXTTLE LTD.",
+      "extractor_normalized": "TEXTTLE LTD.",
+      "extractor_raw_text": "TEXTTLE LTD.",
+      "extractor_bbox": [
+        [
+          296,
+          499
+        ],
+        [
+          510,
+          499
+        ],
+        [
+          510,
+          520
+        ],
+        [
+          296,
+          520
+        ]
+      ],
+      "extractor_source_indices": [
+        77,
+        69
+      ],
+      "outcome": "wrong",
+      "reason": null
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_003382",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": false,
+      "oracle_proxy": true,
+      "expected_value": null,
+      "expected_raw_text": "",
+      "expected_bbox": null,
+      "extractor_status": "missing",
+      "extractor_output": null,
+      "extractor_normalized": null,
+      "extractor_raw_text": "",
+      "extractor_bbox": null,
+      "extractor_source_indices": [],
+      "outcome": "manual_review",
+      "reason": "party label not found"
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_003696",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": true,
+      "oracle_proxy": true,
+      "expected_value": "Fapital Wealth Advisors",
+      "expected_raw_text": "Fapital Wealth Advisors",
+      "expected_bbox": [
+        [
+          46,
+          207
+        ],
+        [
+          340,
+          207
+        ],
+        [
+          340,
+          241
+        ],
+        [
+          46,
+          241
+        ]
+      ],
+      "extractor_status": "found",
+      "extractor_output": "Fapital Wealth AdVisors",
+      "extractor_normalized": "Fapital Wealth AdVisors",
+      "extractor_raw_text": "Wealth Fapital AdVisors",
+      "extractor_bbox": [
+        [
+          48,
+          210
+        ],
+        [
+          341,
+          210
+        ],
+        [
+          341,
+          239
+        ],
+        [
+          48,
+          239
+        ]
+      ],
+      "extractor_source_indices": [
+        89,
+        49,
+        105
+      ],
+      "outcome": "correct",
+      "reason": null
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_004131",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": true,
+      "oracle_proxy": true,
+      "expected_value": "TEXTILE CO.",
+      "expected_raw_text": "TEXTILE CO.",
+      "expected_bbox": [
+        [
+          317,
+          508
+        ],
+        [
+          466,
+          508
+        ],
+        [
+          466,
+          530
+        ],
+        [
+          317,
+          530
+        ]
+      ],
+      "extractor_status": "found",
+      "extractor_output": "TEXTILE CO.",
+      "extractor_normalized": "TEXTILE CO.",
+      "extractor_raw_text": "TEXTILE CO.",
+      "extractor_bbox": [
+        [
+          317,
+          508
+        ],
+        [
+          465,
+          508
+        ],
+        [
+          465,
+          530
+        ],
+        [
+          317,
+          530
+        ]
+      ],
+      "extractor_source_indices": [
+        60,
+        69
+      ],
+      "outcome": "correct",
+      "reason": null
+    },
+    {
+      "document_id": "IMG_OCR_6_T_NV_004574",
+      "document_type": "commercial_invoice",
+      "field": "seller",
+      "evaluation_available": false,
+      "oracle_proxy": true,
+      "expected_value": null,
+      "expected_raw_text": "",
+      "expected_bbox": null,
+      "extractor_status": "missing",
+      "extractor_output": null,
+      "extractor_normalized": null,
+      "extractor_raw_text": "",
+      "extractor_bbox": null,
+      "extractor_source_indices": [],
+      "outcome": "manual_review",
+      "reason": "party label not found"
+    }
+  ]
+}

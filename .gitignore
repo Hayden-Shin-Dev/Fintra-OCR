@@ -6,14 +6,22 @@
 Training/
 Validation/
 data/raw/
+data/*.zip
+
+# Local AI-Hub package and temporary inspection artifacts
+AI모델*.zip
+*_extracted/
+.aihub/
 
 # Python virtual environment
 .venv/
+.venv-aihub-cpu/
 venv/
 
 # Python cache
 __pycache__/
 *.py[cod]
+.pytest-tmp*/
 
 # Environment variables / secrets
 .env
