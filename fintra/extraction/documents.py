@@ -93,6 +93,14 @@ def _quantity_evidence(regions: list[OCRRegion]) -> EvidenceField:
     return _combined_evidence(regions)
 
 
+def _description_evidence(regions: list[OCRRegion]) -> EvidenceField:
+    # Package marks occasionally fall into the left-side description window
+    # (for example ``PKGS`` immediately before the actual item text).  These
+    # short markers are structural noise, not an item description.
+    selected = [region for region in regions if not re.fullmatch(r"PKG(?:S|A)?", region.text.strip(), re.I)]
+    return _combined_evidence(selected)
+
+
 def _line_groups(regions: list[OCRRegion], tolerance: float = 28) -> list[list[OCRRegion]]:
     """Group nearby OCR regions into reading-order lines."""
     lines: list[list[OCRRegion]] = []
@@ -202,7 +210,7 @@ def _item_from_columns(regions: list[OCRRegion], center: float, columns: tuple[t
     values = []
     for x1, x2 in columns:
         selected = sorted((region for region in _near_row(regions, center) if x1 <= region.bbox[0] <= x2), key=lambda item: item.bbox[0])
-        values.append(_combined_evidence(selected))
+        values.append(_description_evidence(selected) if x1 < 730 else _combined_evidence(selected))
     return LineItem(description=values[0], quantity=values[1], unit=values[2], unit_price=values[3], amount=values[4])
 
 
@@ -234,7 +242,7 @@ def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
     items = []
     for center in centers:
         row = _near_row(item_regions, center, tolerance=42)
-        description = _combined_evidence([region for region in row if region.bbox[0] < 730])
+        description = _description_evidence([region for region in row if region.bbox[0] < 730])
         quantity = _quantity_evidence([region for region in row if 800 <= region.bbox[0] <= 950 and _is_quantity_token(region.text)])
         unit = _combined_evidence([region for region in row if 800 <= region.bbox[0] <= 950 and not re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())])
         items.append(LineItem(description=description, quantity=quantity, unit=unit))

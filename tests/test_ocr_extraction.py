@@ -94,6 +94,19 @@ class OCRExtractionTests(unittest.TestCase):
         invoice = extract_commercial_invoice(result)
         self.assertEqual(invoice.buyer.value, "BETA INC")
 
+    def test_package_mark_is_not_included_in_item_description(self):
+        result = OCRResult(
+            "ci-package-mark", "Commercial Invoice", "invoice.png", [
+                OCRRegion([[150, 1000], [280, 1000], [280, 1020], [150, 1020]], "DESCRIPTION", index=0),
+                OCRRegion([[820, 1000], [900, 1000], [900, 1020], [820, 1020]], "QUANTITY", index=1),
+                OCRRegion([[250, 1100], [310, 1100], [310, 1120], [250, 1120]], "PKGS", index=2),
+                OCRRegion([[400, 1100], [550, 1100], [550, 1120], [400, 1120]], "Widget", index=3),
+                OCRRegion([[820, 1100], [850, 1100], [850, 1120], [820, 1120]], "2", index=4),
+            ],
+        )
+        invoice = extract_commercial_invoice(result)
+        self.assertEqual(invoice.items[0].description.value, "Widget")
+
 
 if __name__ == "__main__":
     unittest.main()
