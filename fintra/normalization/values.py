@@ -88,10 +88,11 @@ def normalize_date(value: Any) -> str | None:
     # Explicit English month names are unambiguous and locale independent.
     months = {name: i for i, name in enumerate(
         ('JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'), 1)}
+    year_first = re.fullmatch(r'(\d{4})[\s-]+([A-Za-z]{3,9})[\s,-]+(\d{1,2})', text)
     named = re.fullmatch(r'(\d{1,2})[\s-]+([A-Za-z]{3,9})[\s,-]+(\d{4})', text)
     month_first = re.fullmatch(r'([A-Za-z]{3,9})[\s-]+(\d{1,2})[\s,-]+(\d{4})', text)
-    if named or month_first:
-        day, month_name, year = named.groups() if named else (month_first[2], month_first[1], month_first[3])
+    if year_first or named or month_first:
+        day, month_name, year = (year_first[3], year_first[2], year_first[1]) if year_first else named.groups() if named else (month_first[2], month_first[1], month_first[3])
         full_names = ('JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER')
         if month_name.upper() not in set(months) | set(full_names):
             return None

@@ -80,6 +80,62 @@ def _near_row(regions: list[OCRRegion], center: float, tolerance: float = 38) ->
     return [region for region in regions if abs((region.bbox[1] + region.bbox[3]) / 2 - center) <= tolerance]
 
 
+def _line_groups(regions: list[OCRRegion], tolerance: float = 28) -> list[list[OCRRegion]]:
+    """Group nearby OCR regions into reading-order lines."""
+    lines: list[list[OCRRegion]] = []
+    for region in sorted(regions, key=lambda item: ((item.bbox[1] + item.bbox[3]) / 2, item.bbox[0], item.index)):
+        center = (region.bbox[1] + region.bbox[3]) / 2
+        if not lines:
+            lines.append([region])
+            continue
+        previous = sum((item.bbox[1] + item.bbox[3]) / 2 for item in lines[-1]) / len(lines[-1])
+        if abs(center - previous) <= tolerance:
+            lines[-1].append(region)
+        else:
+            lines.append([region])
+    return [sorted(line, key=lambda item: (item.bbox[0], item.index)) for line in lines]
+
+
+_PARTY_STOP_WORDS = {
+    "SHIPPER", "SELLER", "EXPORTER", "BUYER", "CONSIGNEE", "CONSINEE", "NOTIFY", "PARTY",
+    "PHONE", "TEL", "FAX", "ADDRESS", "COMPLETE", "NAME", "PROVIDE", "PLEASE", "ACCOUNT",
+    "RISK", "ORDER", "OF", "AND", "&",
+}
+
+
+def _party_evidence(regions: list[OCRRegion]) -> EvidenceField:
+    """Select the first organization line while preserving its OCR evidence.
+
+    Party blocks contain headings, telephone lines and multi-line addresses.
+    Selecting a company line is a structural operation; no spelling or
+    semantic correction is applied to the recognized text.
+    """
+    for line in _line_groups(regions):
+        text = " ".join(item.text.strip() for item in line if item.text.strip()).strip(" ,:;-&")
+        canonical = _canonical(text)
+        if not canonical or set(canonical.split()).issubset(_PARTY_STOP_WORDS):
+            continue
+        if re.search(r"\b(?:PHONE|TEL|FAX|ADDRESS|COMPLETE NAME|PROVIDE)\b", canonical) and not re.search(r"[A-Za-z]{3,}.*\b(?:CO|LTD|INC|CORP|COMPANY|GROUP)\b", canonical):
+            continue
+        if len(re.findall(r"\d", text)) > len(re.findall(r"[A-Za-z]", text)):
+            continue
+        return _combined_evidence(line, value=text)
+    return missing()
+
+
+def _date_evidence(regions: list[OCRRegion], field_name: str = "shipment_date") -> EvidenceField:
+    from fintra.normalization.values import normalize_date
+    candidates = []
+    for line in _line_groups(regions):
+        text = " ".join(item.text.strip() for item in line if item.text.strip())
+        if normalize_date(text):
+            candidates.append((line, text))
+    if len(candidates) == 1:
+        line, text = candidates[0]
+        return _combined_evidence(line, value=text)
+    return missing("date_not_uniquely_parseable")
+
+
 def _item_from_columns(regions: list[OCRRegion], center: float, columns: tuple[tuple[float, float], ...]) -> LineItem:
     values = []
     for x1, x2 in columns:
@@ -99,8 +155,8 @@ def _invoice_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
     return {
         "invoice_number": _combined_evidence(_in_zone(result, x1=850, x2=1320, y1=250, y2=360)),
         "invoice_date": _combined_evidence(_in_zone(result, x1=850, x2=1450, y1=360, y2=455)),
-        "seller": _combined_evidence(_in_zone(result, x1=100, x2=850, y1=280, y2=520)),
-        "buyer": _combined_evidence(_in_zone(result, x1=100, x2=850, y1=540, y2=760)),
+        "seller": _party_evidence(_in_zone(result, x1=100, x2=850, y1=310, y2=520)),
+        "buyer": _party_evidence(_in_zone(result, x1=100, x2=850, y1=570, y2=760)),
         "currency": currency,
         "total_amount": _combined_evidence(total_regions),
         "items": items,
@@ -129,8 +185,8 @@ def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
     return {
         "packing_list_number": missing("template_field_not_present"),
         "date": _combined_evidence(_in_zone(result, x1=1150, x2=1500, y1=170, y2=280)),
-        "exporter": _combined_evidence(_in_zone(result, x1=100, x2=800, y1=280, y2=450)),
-        "consignee": _combined_evidence(_in_zone(result, x1=100, x2=750, y1=480, y2=700)),
+        "exporter": _party_evidence(_in_zone(result, x1=100, x2=800, y1=310, y2=450)),
+        "consignee": _party_evidence(_in_zone(result, x1=100, x2=750, y1=520, y2=700)),
         "items": items,
         "package_count": _combined_evidence(package_regions),
         "gross_weight": gross,
@@ -141,7 +197,22 @@ def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
 
 def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
     values = _regions(result)
-    goods = [region for region in values if 500 <= region.bbox[0] <= 1100 and 1080 <= region.bbox[1] <= 1500]
+    number_regions = _in_zone(result, x1=1150, x2=1500, y1=220, y2=360)
+    goods_regions = [region for region in values if 500 <= region.bbox[0] <= 1100 and 1080 <= region.bbox[1] <= 1500]
+    goods_lines = []
+    for line in _line_groups(goods_regions):
+        kept = [region for region in line if _canonical(region.text) not in {"TOTAL", "PKG", "KG", "KGS", "G", "CBM"}
+                and not re.fullmatch(r"\d+(?:[.,]\d+)?(?:KG|KGS|G)?", region.text.strip(), re.I)]
+        if kept and any(re.search(r"[A-Za-z]", region.text) for region in kept):
+            goods_lines.extend(kept)
+    total_regions = [region for region in values if _canonical(region.text) == "TOTAL"]
+    package_total = []
+    gross_total = []
+    if len(total_regions) == 1:
+        center = (total_regions[0].bbox[1] + total_regions[0].bbox[3]) / 2
+        row = _near_row(values, center, tolerance=42)
+        package_total = [region for region in row if 220 <= region.bbox[0] <= 500 and re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())]
+        gross_total = [region for region in row if 1100 <= region.bbox[0] <= 1300 and re.search(r"\d", region.text)]
     gross_values = [region for region in values if 1100 <= region.bbox[0] <= 1300 and 1080 <= region.bbox[1] <= 1500 and re.search(r"\d", region.text)]
     weight_unit = _token_value(values, r"KG|KGS|G|GRAM|GRAMS")
     if weight_unit.status == "missing":
@@ -149,18 +220,18 @@ def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
         if kg:
             weight_unit = evidence("KG", source_text=" ".join(region.text for region in kg), bbox=kg[0].polygon)
     return {
-        "bl_number": _combined_evidence(_in_zone(result, x1=1150, x2=1500, y1=200, y2=300)),
-        "shipper": missing("template_field_not_present"),
-        "consignee": ambiguous(source_text="two consignee blocks in the source template"),
-        "notify_party": _combined_evidence(_in_zone(result, x1=70, x2=800, y1=600, y2=800)),
+        "bl_number": _token_value(number_regions, r"(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9][A-Za-z0-9.-]{4,}"),
+        "shipper": _party_evidence(_in_zone(result, x1=70, x2=800, y1=290, y2=470)),
+        "consignee": _party_evidence(_in_zone(result, x1=70, x2=800, y1=490, y2=600)),
+        "notify_party": _party_evidence(_in_zone(result, x1=70, x2=800, y1=680, y2=820)),
         "vessel": _combined_evidence(_in_zone(result, x1=70, x2=400, y1=850, y2=980)),
         "port_of_loading": _combined_evidence(_in_zone(result, x1=400, x2=800, y1=850, y2=980)),
         "port_of_discharge": _combined_evidence(_in_zone(result, x1=70, x2=400, y1=950, y2=1080)),
-        "shipment_date": missing("template_field_not_present"),
-        "package_count": ambiguous(source_text="multiple package rows and total in the source template"),
-        "gross_weight": ambiguous(source_text="multiple gross-weight rows in the source template"),
+        "shipment_date": _date_evidence(_in_zone(result, x1=1150, x2=1500, y1=170, y2=290)),
+        "package_count": _evidence_from_region(package_total[0], package_total[0].text) if len(package_total) == 1 else ambiguous(source_text="no unique total package count"),
+        "gross_weight": _evidence_from_region(gross_total[0], gross_total[0].text) if len(gross_total) == 1 else ambiguous(source_text="no unique total gross weight"),
         "weight_unit": weight_unit,
-        "goods_description": _combined_evidence(goods),
+        "goods_description": _combined_evidence(goods_lines),
     }
 
 
