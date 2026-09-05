@@ -57,8 +57,8 @@ After all 60 cases finish:
 The current canonical report uses `gold_source=semantic-v2`, 60 existing AI-Hub
 Validation recognition outputs, and a fixed available-gold denominator. The
 latest run is `FIELD_EXTRACTION_STATUS=NEEDS_IMPROVEMENT`; its normalized field
-accuracy is approximately 30.73% overall (CI 41.46%, Packing List 34.33%, B/L
-18.95%). These numbers are not an official OCR score: the source OCR itself
+accuracy is approximately 31.71% overall (CI 41.46%, Packing List 34.33%, B/L
+21.57%). These numbers are not an official OCR score: the source OCR itself
 contains unrecoverable character errors and the semantic projection awaits
 visual sign-off.
 
