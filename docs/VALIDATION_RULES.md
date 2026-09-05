@@ -10,6 +10,7 @@ The deterministic rules currently implemented in
 - Packing List gross weight ↔ B/L gross weight after supported unit conversion;
 - Packing List package count ↔ B/L package count;
 - Packing List consignee ↔ B/L consignee.
+- ledger recognition date ↔ B/L shipment/on-board date when both are explicit.
 
 Each finding includes rule ID, values, difference, severity, status, message,
 and source evidence. The current item comparison is intentionally MVP-scoped:

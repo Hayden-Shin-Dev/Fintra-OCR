@@ -1,7 +1,7 @@
 import unittest
 from decimal import Decimal
 
-from fintra.domain.schema import CommercialInvoice, DocumentMetadata, LedgerTransaction, evidence
+from fintra.domain.schema import BillOfLading, CommercialInvoice, DocumentMetadata, LedgerTransaction, evidence
 from fintra.normalization.values import compare_values, normalize_date, normalize_weight, parse_amount
 from fintra.validation.engine import validate_transaction
 
@@ -31,6 +31,15 @@ class ValidationTests(unittest.TestCase):
     def test_missing_data_is_not_called_a_match(self):
         findings = validate_transaction(LedgerTransaction("tx-1"), CommercialInvoice(DocumentMetadata("ci-1", "Commercial Invoice")), None, None)
         self.assertTrue(all(item.status.value == "insufficient_evidence" for item in findings))
+
+    def test_recognition_date_is_compared_with_shipment_evidence(self):
+        ledger = LedgerTransaction("tx-1", recognition_date=evidence("2024-01-02"))
+        bill = BillOfLading(
+            DocumentMetadata("bl-1", "B/L"), shipment_date=evidence("2024-01-02")
+        )
+        findings = validate_transaction(ledger, None, None, bill)
+        date_finding = next(item for item in findings if item.rule_id == "RECOGNITION-SHIPMENT-DATE")
+        self.assertEqual(date_finding.status.value, "match")
 
 
 if __name__ == "__main__":

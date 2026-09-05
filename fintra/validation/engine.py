@@ -153,4 +153,9 @@ def validate_transaction(
             "PARTY-CONSISTENCY", "Packing consignee vs B/L consignee", "packing_list", "consignee", packing.consignee,
             "bill_of_lading", "consignee", bill_of_lading.consignee, kind="company",
         ))
+    if bill_of_lading is not None:
+        findings.append(_finding(
+            "RECOGNITION-SHIPMENT-DATE", "Recognition date vs shipment evidence", "ledger", "recognition_date", ledger.recognition_date,
+            "bill_of_lading", "shipment_date", bill_of_lading.shipment_date, kind="date",
+        ))
     return findings
