@@ -30,6 +30,30 @@ class ReviewServiceTests(unittest.TestCase):
         self.assertIn("deterministic_findings", contract["llm_payload"])
         self.assertIn("validation_findings", contract["rag_context"])
 
+    def test_three_document_fixture_produces_pass_or_explicit_findings(self):
+        results = [
+            _result("ci-1", "Commercial Invoice", [
+                "Invoice No: INV-1", "Seller: Seller Co", "Buyer: Buyer Co", "Total: USD 100.00",
+                "ITEM: Widget | 2 EA | 50.00 | 100.00",
+            ]),
+            _result("pl-1", "Packing List", [
+                "Packing List No: PL-1", "Exporter: Seller Co", "Consignee: Buyer Co",
+                "Gross Weight: 10", "Weight Unit: KG", "Package Count: 1",
+                "ITEM: Widget | 2 EA",
+            ]),
+            _result("bl-1", "B/L", [
+                "B/L No: BL-1", "Shipper: Seller Co", "Consignee: Buyer Co",
+                "Gross Weight: 10", "Weight Unit: KG", "Package Count: 1",
+            ]),
+        ]
+        review = build_review(
+            LedgerTransaction("tx-1", amount=evidence("100"), counterparty=evidence("Buyer Co")),
+            results,
+        )
+        self.assertEqual(review.overall_review_status, "PASS")
+        self.assertGreaterEqual(len(review.validation_results), 5)
+        self.assertTrue(all(finding.evidence for finding in review.validation_results if finding.status.value == "match"))
+
     def test_duplicate_document_type_is_rejected(self):
         item = _result("ci-1", "Commercial Invoice", ["Total: 1"])
         with self.assertRaises(ValueError):
