@@ -44,3 +44,15 @@ python .\scripts\run_paddle_field_eval.py --device cpu
 The actual Paddle model inference is intentionally not run as part of the
 repository unit tests. Run it only in this isolated environment after the
 smoke output is reviewed.
+
+After a full Paddle run, compare its same-extractor CSV with the Modern CSV:
+
+```powershell
+python .\scripts\compare_field_backends.py `
+  --modern .\artifacts\fintra\field_eval\field_results.csv `
+  --paddle .\artifacts\fintra\paddle_field_eval\field_results.csv `
+  --output-dir .\artifacts\fintra\paddle_field_eval\comparison
+```
+
+The oracle-union number in that report is diagnostic only. It must not be
+reported as a deployable score because it uses gold to select a backend.
