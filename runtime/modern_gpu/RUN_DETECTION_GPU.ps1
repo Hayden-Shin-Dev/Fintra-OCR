@@ -30,12 +30,13 @@ $ciImage = "/project/artifacts/aihub/validation/smoke/ci-01/transit_train/imgs_r
 $ciModern = "/project/artifacts/aihub/modern_gpu/detection_parity/ci-01/detection.json"
 $ciReference = "/project/artifacts/aihub/validation/smoke/ci-01/transit_train/transit_detection_result_latest.pkl"
 $ciParity = "/project/artifacts/aihub/modern_gpu/detection_parity/ci-01/parity.json"
+$ciParityHost = Join-Path $projectRoot "artifacts\aihub\modern_gpu\detection_parity\ci-01\parity.json"
 
 Write-Host "[2/5] Running CI-01 Modern Detection smoke and original-PKL parity..."
 Invoke-DockerChecked @("run", "--rm", "--gpus", "all", "--ipc=host", "-v", "${projectRoot}:/project", "-w", "/project", $detectionTag, "python", "/opt/fintra/modern_detection.py", "--image", $ciImage, "--checkpoint", $checkpoint, "--config", $config, "--output", $ciModern, "--device", "cuda")
 Invoke-DockerChecked @("run", "--rm", "--gpus", "all", "--ipc=host", "-v", "${projectRoot}:/project", "-w", "/project", $detectionTag, "python", "/opt/fintra/compare_detection.py", "--reference-pkl", $ciReference, "--modern-json", $ciModern, "--output", $ciParity)
 
-$ciParityPayload = Get-Content $ciParity -Raw | ConvertFrom-Json
+$ciParityPayload = Get-Content $ciParityHost -Raw | ConvertFrom-Json
 $requiredParityFields = @(
     "reference_score_gt_0_2_count", "modern_score_gt_0_2_count", "matched_count",
     "mean_bbox_iou", "median_bbox_iou", "iou_ge_0_5_match_rate",
