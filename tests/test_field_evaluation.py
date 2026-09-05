@@ -3,10 +3,18 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.evaluate_field_extraction import evaluate, normalize_field
+from scripts.evaluate_field_extraction import evaluate, normalize_field, compare_field
 
 
 class FieldEvaluationTests(unittest.TestCase):
+    def test_failed_normalizations_never_count_as_matches(self):
+        self.assertEqual(compare_field("Departure", "43-43-11267", "invoice_date"), "wrong")
+        self.assertEqual(compare_field("of", "53-32-81805", "invoice_date"), "wrong")
+        self.assertEqual(compare_field("banana", "pear", "total_amount"), "wrong")
+
+    def test_unit_price_is_numeric_not_unit(self):
+        self.assertEqual(compare_field("USD 12.00", "$12.00", "items[0].unit_price"), "normalized_match")
+
     def test_normalization_is_type_specific_and_conservative(self):
         self.assertEqual(normalize_field(" ACME,  Ltd. ", "seller"), "ACME LTD")
         self.assertEqual(normalize_field("2024/01/02", "invoice_date"), "2024-01-02")

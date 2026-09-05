@@ -32,7 +32,7 @@ def _field_kind(name: str) -> str:
         return "currency"
     if "date" in name:
         return "date"
-    if name.endswith("unit") or ".unit" in name:
+    if name.endswith("unit"):
         return "unit"
     if any(token in name for token in ("amount", "quantity", "package_count", "unit_price", "weight")):
         return "number"
@@ -69,6 +69,16 @@ def _document_payload(result: OCRResult) -> dict[str, Any]:
     if result.document_type == "B/L":
         return extract_bill_of_lading(result).to_dict()
     raise ValueError(f"unsupported document type: {result.document_type}")
+
+
+def compare_field(predicted: Any, gold: Any, field_name: str) -> str:
+    """Only successful normalization can establish equality."""
+    if predicted == gold:
+        return "exact_match"
+    left, right = normalize_field(predicted, field_name), normalize_field(gold, field_name)
+    if left is not None and right is not None and left == right:
+        return "normalized_match"
+    return "wrong"
 
 
 def _predicted_field(payload: dict[str, Any], field_name: str) -> dict[str, Any]:
@@ -115,12 +125,8 @@ def evaluate(cases_root: Path, output_dir: Path) -> dict[str, Any]:
                 result_status = "ambiguous"
             elif prediction_status != "extracted" or predicted_value in (None, ""):
                 result_status = "missing"
-            elif predicted_value == gold_field.get("value"):
-                result_status = "exact_match"
-            elif normalize_field(predicted_value, gold_field["field_name"]) == normalize_field(gold_field.get("value"), gold_field["field_name"]):
-                result_status = "normalized_match"
             else:
-                result_status = "wrong"
+                result_status = compare_field(predicted_value, gold_field.get("value"), gold_field["field_name"])
             rows.append({
                 "document_id": manifest["document_id"], "document_type": manifest["document_type"],
                 "case_id": manifest["case_id"], "field_name": gold_field["field_name"],
@@ -167,6 +173,8 @@ def evaluate(cases_root: Path, output_dir: Path) -> dict[str, Any]:
     worst = sorted(((key, value["normalized_field_accuracy"], value["applicable_gold"]) for key, value in by_field.items() if value["applicable_gold"]), key=lambda item: (item[1], -item[2]))[:10]
     result = {
         "schema_version": "fintra-ocr-v2.field-extraction-evaluation.v1",
+        "score_contract": "non-null-normalization-v2; fixed available-gold denominator",
+        "gold_validity": "UNREVIEWED_LEGACY_TEMPLATE_GOLD; not a validated semantic accuracy claim",
         "selection": {"documents": len({row["case_id"] for row in rows}), "rows": len(rows)},
         "overall": metric(rows), "by_document_type": by_type, "by_field": by_field,
         "weakest_fields": [{"field": key, "normalized_accuracy": accuracy, "applicable_gold": count} for key, accuracy, count in worst],
