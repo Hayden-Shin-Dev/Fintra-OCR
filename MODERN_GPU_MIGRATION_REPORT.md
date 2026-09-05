@@ -9,8 +9,8 @@
 | Modern Recognition runtime prepared | PASS (prepared) | `runtime/modern_gpu/modern_recognition.py`, isolated Dockerfile |
 | Recognition GPU smoke execution | PASS | User-run artifacts report `CUDA_CAPABILITY=8.9`, checkpoint load, and CUDA device execution |
 | Recognition 15-document parity | PASS | 15/15 parity files pass; 1,786 regions, 0 changed ordered bbox/text records |
-| Modern Detection migration | PREPARED, GPU PENDING | `runtime/modern_gpu/DETECTION_PIPELINE_MAP.md`, strict-load runner, parity comparator |
-| Modern full OCR | PREPARED, GPU PENDING | `RUN_DETECTION_GPU.ps1` chains Modern Detection, existing Modern Recognition, and bundled evaluator |
+| Modern Detection migration | PASS | `runtime/modern_gpu/RUN_DETECTION_GPU.ps1`; 15 Detection outputs and parity artifacts |
+| Modern full OCR | PASS | `MODERN_DETECTION_E2E_RESULT.md`; 15 Detection → Recognition cases and bundled evaluator output |
 
 ## Reference naming
 
@@ -40,16 +40,12 @@ reproduced score.
   regions to the existing Modern Recognition runner, and invokes the bundled
   AI-Hub evaluator without changing the CPU reference artifacts.
 
-## Required user action
+## Modern Detection and full OCR result
 
-From the project root, run:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\runtime\modern_gpu\RUN_GPU.ps1
-```
-
-That is the first point requiring GPU execution. No GPU result is claimed
-before its output is available.
+The user-run `RUN_DETECTION_GPU.ps1` completed Modern Detection and Modern
+Recognition over all 15 prepared Validation documents, followed by the bundled
+AI-Hub evaluator. The aggregate result and artifact inventory are recorded in
+`MODERN_DETECTION_E2E_RESULT.md`.
 
 ## Recorded Modern Recognition result
 
@@ -67,8 +63,7 @@ prepared CI/PL/B-L 15-document smoke set. Artifact inspection confirms:
 
 This is a Modern runtime parity result using the **AI-Hub original weights/code
 CPU reference baseline** as the comparison reference. It is not an official
-AI-Hub GPU score. Modern Detection and full OCR remain GPU-pending until the
-user-run `RUN_DETECTION_GPU.ps1` produces their artifacts.
+AI-Hub GPU score.
 
 ## Original Detection reference audit
 
