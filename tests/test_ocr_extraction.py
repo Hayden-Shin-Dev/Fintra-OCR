@@ -51,6 +51,17 @@ class OCRExtractionTests(unittest.TestCase):
         self.assertEqual(invoice.total_amount.value, "$7,754.30")
         self.assertEqual(invoice.items[0].quantity.value, "3")
 
+    def test_duplicate_equal_tokens_are_not_ambiguous(self):
+        result = OCRResult(
+            "ci-currency", "Commercial Invoice", "invoice.png", [
+                OCRRegion([[1, 1], [20, 1], [20, 20], [1, 20]], "USD", index=0),
+                OCRRegion([[1, 30], [20, 30], [20, 50], [1, 50]], "USD", index=1),
+            ],
+        )
+        invoice = extract_commercial_invoice(result)
+        self.assertEqual(invoice.currency.status.value, "extracted")
+        self.assertEqual(invoice.currency.value, "USD")
+
 
 if __name__ == "__main__":
     unittest.main()

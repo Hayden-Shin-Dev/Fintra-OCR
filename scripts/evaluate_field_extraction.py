@@ -42,6 +42,10 @@ def _field_kind(name: str) -> str:
 def normalize_field(value: Any, field_name: str) -> str | None:
     if value in (None, ""):
         return None
+    # The Modern recognition writer escapes commas so that official TXT rows
+    # remain comma-delimited. Restore that serialization escape for semantic
+    # field comparison; raw output remains unchanged on disk.
+    value = str(value).replace("쉼표", ",")
     kind = _field_kind(field_name)
     if kind == "company":
         return normalize_company(value)

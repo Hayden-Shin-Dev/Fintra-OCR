@@ -60,6 +60,9 @@ def _token_value(regions: list[OCRRegion], pattern: str) -> EvidenceField:
     if len(matches) == 1:
         return _evidence_from_region(matches[0], matches[0].text)
     if len(matches) > 1:
+        unique_values = {_canonical(region.text) for region in matches}
+        if len(unique_values) == 1:
+            return _combined_evidence(matches, value=matches[0].text)
         return ambiguous(source_text=" | ".join(region.text for region in matches))
     return missing()
 
