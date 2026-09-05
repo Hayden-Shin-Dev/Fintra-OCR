@@ -234,7 +234,7 @@ def _items(result: OCRResult) -> list[LineItem]:
     return items
 
 
-def extract_commercial_invoice(result: OCRResult) -> CommercialInvoice:
+def extract_commercial_invoice_legacy(result: OCRResult) -> CommercialInvoice:
     layout = _invoice_layout(result)
     return CommercialInvoice(
         metadata=_metadata(result),
@@ -248,7 +248,7 @@ def extract_commercial_invoice(result: OCRResult) -> CommercialInvoice:
     )
 
 
-def extract_packing_list(result: OCRResult) -> PackingList:
+def extract_packing_list_legacy(result: OCRResult) -> PackingList:
     layout = _packing_layout(result)
     return PackingList(
         metadata=_metadata(result),
@@ -264,7 +264,7 @@ def extract_packing_list(result: OCRResult) -> PackingList:
     )
 
 
-def extract_bill_of_lading(result: OCRResult) -> BillOfLading:
+def extract_bill_of_lading_legacy(result: OCRResult) -> BillOfLading:
     layout = _bl_layout(result)
     return BillOfLading(
         metadata=_metadata(result),
@@ -274,6 +274,23 @@ def extract_bill_of_lading(result: OCRResult) -> BillOfLading:
         package_count=layout["package_count"], gross_weight=layout["gross_weight"],
         weight_unit=layout["weight_unit"], goods_description=layout["goods_description"],
     )
+
+
+def _refine(result, document):
+    from .refinement import typed_refinement, ordered_refinement
+    return ordered_refinement(result, typed_refinement(result, document))
+
+
+def extract_commercial_invoice(result: OCRResult) -> CommercialInvoice:
+    return _refine(result, extract_commercial_invoice_legacy(result))
+
+
+def extract_packing_list(result: OCRResult) -> PackingList:
+    return _refine(result, extract_packing_list_legacy(result))
+
+
+def extract_bill_of_lading(result: OCRResult) -> BillOfLading:
+    return _refine(result, extract_bill_of_lading_legacy(result))
 
 
 EXTRACTORS: dict[str, Callable[[OCRResult], object]] = {

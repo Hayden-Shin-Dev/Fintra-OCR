@@ -7,6 +7,8 @@ import csv
 import json
 import re
 import sys
+import struct
+from dataclasses import replace
 import unicodedata
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -18,6 +20,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from fintra.extraction.documents import extract_bill_of_lading, extract_commercial_invoice, extract_packing_list
+from fintra.extraction.documents import extract_bill_of_lading_legacy, extract_commercial_invoice_legacy, extract_packing_list_legacy
 from fintra.normalization.values import normalize_company, normalize_currency, normalize_date, parse_amount
 from fintra.ocr.adapter import OCRResult
 
@@ -63,7 +66,19 @@ def normalize_field(value: Any, field_name: str) -> str | None:
     return " ".join(unicodedata.normalize("NFKC", str(value)).split()).casefold()
 
 
-def _document_payload(result: OCRResult) -> dict[str, Any]:
+def _document_payload(result: OCRResult, strategy: str = "active") -> dict[str, Any]:
+    legacy={"Commercial Invoice":extract_commercial_invoice_legacy,"Packing List":extract_packing_list_legacy,"B/L":extract_bill_of_lading_legacy}
+    if strategy=="legacy":return legacy[result.document_type](result).to_dict()
+    if strategy == "layout":
+        from fintra.extraction.strategies import STRATEGIES
+        return STRATEGIES[result.document_type](result).extract().to_dict()
+    if strategy in ("typed", "ordered", "table"):
+        from fintra.extraction.refinement import typed_refinement, ordered_refinement, table_refinement
+        functions=legacy
+        doc=typed_refinement(result,functions[result.document_type](result))
+        if strategy=="ordered":doc=ordered_refinement(result,doc)
+        if strategy=="table":doc=table_refinement(result,doc,strategy)
+        return doc.to_dict()
     if result.document_type == "Commercial Invoice":
         return extract_commercial_invoice(result).to_dict()
     if result.document_type == "Packing List":
@@ -99,14 +114,22 @@ def _case_prediction(case_dir: Path) -> OCRResult | None:
     if not candidates:
         return None
     manifest = json.loads((case_dir / "case_manifest.json").read_text(encoding="utf-8"))
-    return OCRResult.from_json(candidates[0], document_type=manifest["document_type"])
+    result=OCRResult.from_json(candidates[0], document_type=manifest["document_type"])
+    image=case_dir / manifest.get("image", "")
+    if image.is_file():
+        with image.open('rb') as handle:
+            header=handle.read(24)
+        if header[:8]==b'\x89PNG\r\n\x1a\n':
+            width,height=struct.unpack('>II',header[16:24])
+            result=replace(result,source_file=str(image),metadata={**result.metadata,'page_width':width,'page_height':height})
+    return result
 
 
 def _bbox_string(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, separators=(",", ":")) if value is not None else ""
 
 
-def evaluate(cases_root: Path, output_dir: Path) -> dict[str, Any]:
+def evaluate(cases_root: Path, output_dir: Path, strategy: str = "active") -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     for case_dir in sorted(path for path in cases_root.iterdir() if path.is_dir()):
         manifest_path = case_dir / "case_manifest.json"
@@ -115,7 +138,7 @@ def evaluate(cases_root: Path, output_dir: Path) -> dict[str, Any]:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         gold = manifest.get("gold_fields", [])
         prediction = _case_prediction(case_dir)
-        predicted_payload = _document_payload(prediction) if prediction else {}
+        predicted_payload = _document_payload(prediction,strategy) if prediction else {}
         for gold_field in gold:
             gt_status = gold_field["status"]
             predicted = _predicted_field(predicted_payload, gold_field["field_name"])
@@ -177,6 +200,7 @@ def evaluate(cases_root: Path, output_dir: Path) -> dict[str, Any]:
     worst = sorted(((key, value["normalized_field_accuracy"], value["applicable_gold"]) for key, value in by_field.items() if value["applicable_gold"]), key=lambda item: (item[1], -item[2]))[:10]
     result = {
         "schema_version": "fintra-ocr-v2.field-extraction-evaluation.v1",
+        "strategy": strategy,
         "score_contract": "non-null-normalization-v2; fixed available-gold denominator",
         "gold_validity": "UNREVIEWED_LEGACY_TEMPLATE_GOLD; not a validated semantic accuracy claim",
         "selection": {"documents": len({row["case_id"] for row in rows}), "rows": len(rows)},
@@ -206,8 +230,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cases", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--strategy", choices=("active", "legacy", "layout", "typed", "ordered", "table"), default="active")
     args = parser.parse_args()
-    result = evaluate(args.cases, args.output_dir)
+    result = evaluate(args.cases, args.output_dir, args.strategy)
     print(json.dumps({"documents": result["selection"]["documents"], "applicable_gold": result["overall"]["applicable_gold"]}, ensure_ascii=False))
     print(f"FIELD_RESULTS={args.output_dir / 'field_results.csv'}")
     print(f"FIELD_METRICS={args.output_dir / 'field_metrics.json'}")
