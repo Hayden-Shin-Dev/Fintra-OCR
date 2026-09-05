@@ -81,6 +81,18 @@ def _near_row(regions: list[OCRRegion], center: float, tolerance: float = 38) ->
     return [region for region in regions if abs((region.bbox[1] + region.bbox[3]) / 2 - center) <= tolerance]
 
 
+def _is_quantity_token(text: str) -> bool:
+    """Recognize a numeric quantity, including the common OCR ``1`` -> ``I``."""
+    value = text.strip()
+    return bool(re.fullmatch(r"\d+(?:[.,]\d+)?", value) or re.fullmatch(r"[Il]", value))
+
+
+def _quantity_evidence(regions: list[OCRRegion]) -> EvidenceField:
+    if len(regions) == 1 and re.fullmatch(r"[Il]", regions[0].text.strip()):
+        return _combined_evidence(regions, value="1")
+    return _combined_evidence(regions)
+
+
 def _line_groups(regions: list[OCRRegion], tolerance: float = 28) -> list[list[OCRRegion]]:
     """Group nearby OCR regions into reading-order lines."""
     lines: list[list[OCRRegion]] = []
@@ -199,7 +211,7 @@ def _invoice_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
     values = _regions(result)
     item_regions = [region for region in values if 1000 <= region.bbox[1] <= 1400]
     centers = _row_centers([region for region in item_regions if 820 <= region.bbox[0] <= 950
-                            and re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())], minimum=45)
+                            and _is_quantity_token(region.text)], minimum=45)
     items = [_item_from_columns(item_regions, center, ((120, 700), (820, 950), (950, 1100), (1100, 1260), (1260, 1520))) for center in centers]
     currency = _token_value(values, r"USD|EUR|GBP|JPY|CNY|KRW")
     total_regions = [region for region in values if 1200 <= region.bbox[0] and 1450 <= region.bbox[1] <= 1650 and re.search(r"\d", region.text)]
@@ -218,12 +230,12 @@ def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
     values = _regions(result)
     item_regions = [region for region in values if 1000 <= region.bbox[1] <= 1520]
     centers = _row_centers([region for region in item_regions if 800 <= region.bbox[0] <= 950
-                            and re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())], minimum=45)
+                            and _is_quantity_token(region.text)], minimum=45)
     items = []
     for center in centers:
         row = _near_row(item_regions, center, tolerance=42)
         description = _combined_evidence([region for region in row if region.bbox[0] < 730])
-        quantity = _combined_evidence([region for region in row if 800 <= region.bbox[0] <= 950 and re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())])
+        quantity = _quantity_evidence([region for region in row if 800 <= region.bbox[0] <= 950 and _is_quantity_token(region.text)])
         unit = _combined_evidence([region for region in row if 800 <= region.bbox[0] <= 950 and not re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())])
         items.append(LineItem(description=description, quantity=quantity, unit=unit))
     package_regions = _in_zone(result, x1=350, x2=650, y1=1650, y2=1825)
