@@ -218,6 +218,8 @@ def evaluate(cases_root: Path, output_dir: Path, strategy: str = "active", gold_
     by_field = {f"{kind}:{field}": metric([row for row in rows if row["document_type"] == kind and row["field_name"] == field]) for kind, field in sorted({(row["document_type"], row["field_name"]) for row in rows})}
     applicable_fields = [item for key, item in by_field.items() if item["applicable_gold"]]
     worst = sorted(((key, value["normalized_field_accuracy"], value["applicable_gold"]) for key, value in by_field.items() if value["applicable_gold"]), key=lambda item: (item[1], -item[2]))[:10]
+    target_accuracy = 0.90
+    field_status = "PASS" if metric(rows)["normalized_field_accuracy"] >= target_accuracy else "NEEDS_IMPROVEMENT"
     result = {
         "schema_version": "fintra-ocr-v2.field-extraction-evaluation.v1",
         "strategy": strategy,
@@ -228,6 +230,9 @@ def evaluate(cases_root: Path, output_dir: Path, strategy: str = "active", gold_
             "UNREVIEWED_LEGACY_TEMPLATE_GOLD; not a validated semantic accuracy claim"
         ),
         "gold_source": gold_source,
+        "field_extraction_status": field_status,
+        "target_normalized_accuracy": target_accuracy,
+        "target_met": field_status == "PASS",
         "selection": {"documents": len({row["case_id"] for row in rows}), "rows": len(rows)},
         "overall": metric(rows), "by_document_type": by_type, "by_field": by_field,
         "by_field_group":by_field_group,"by_document":by_document,
@@ -236,7 +241,7 @@ def evaluate(cases_root: Path, output_dir: Path, strategy: str = "active", gold_
     }
     (output_dir / "field_metrics.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     examples = {status: [row for row in rows if row["status"] == status][:20] for status in ("wrong", "missing", "ambiguous")}
-    lines = ["# Fintra field extraction evaluation", "", f"Documents: {result['selection']['documents']} (CI/PL/B-L selected by the preparation manifest)", "", "## Overall", "", f"- Exact Field Accuracy: {result['overall']['exact_field_accuracy']:.6f}", f"- Normalized Field Accuracy: {result['overall']['normalized_field_accuracy']:.6f}", f"- Wrong Extraction Rate: {result['overall']['wrong_extraction_rate']:.6f}", f"- Missing Rate: {result['overall']['missing_rate']:.6f}", f"- Ambiguous Rate: {result['overall']['ambiguous_rate']:.6f}", f"- Applicable gold fields: {result['overall']['applicable_gold']}", "", "## By document type", "", "| Type | Exact | Normalized | Wrong | Missing | Ambiguous | Applicable |", "|---|---:|---:|---:|---:|---:|---:|"]
+    lines = ["# Fintra field extraction evaluation", "", f"Documents: {result['selection']['documents']} (CI/PL/B-L selected by the preparation manifest)", "", "## Overall", "", f"- FIELD_EXTRACTION_STATUS: {result['field_extraction_status']}", f"- Target normalized accuracy: {result['target_normalized_accuracy']:.2f}", f"- Exact Field Accuracy: {result['overall']['exact_field_accuracy']:.6f}", f"- Normalized Field Accuracy: {result['overall']['normalized_field_accuracy']:.6f}", f"- Wrong Extraction Rate: {result['overall']['wrong_extraction_rate']:.6f}", f"- Missing Rate: {result['overall']['missing_rate']:.6f}", f"- Ambiguous Rate: {result['overall']['ambiguous_rate']:.6f}", f"- Applicable gold fields: {result['overall']['applicable_gold']}", "", "## By document type", "", "| Type | Exact | Normalized | Wrong | Missing | Ambiguous | Applicable |", "|---|---:|---:|---:|---:|---:|---:|"]
     for kind, item in by_type.items():
         lines.append(f"| {kind} | {item['exact_field_accuracy']:.6f} | {item['normalized_field_accuracy']:.6f} | {item['wrong_extraction_rate']:.6f} | {item['missing_rate']:.6f} | {item['ambiguous_rate']:.6f} | {item['applicable_gold']} |")
     lines += ["", "## Weakest fields", ""]

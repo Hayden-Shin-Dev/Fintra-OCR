@@ -54,6 +54,8 @@ class FieldEvaluationTests(unittest.TestCase):
             self.assertEqual(result["overall"]["normalized_matches"], 2)
             self.assertEqual(result["overall"]["ambiguous_gt"], 1)
             self.assertEqual(result["overall"]["ambiguous"], 0)
+            self.assertEqual(result["field_extraction_status"], "PASS")
+            self.assertTrue(result["target_met"])
 
 
 if __name__ == "__main__":
