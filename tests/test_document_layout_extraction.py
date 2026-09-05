@@ -38,11 +38,18 @@ class DocumentLayoutExtractionTests(unittest.TestCase):
                 region("Solutions Co., Ltd.", 244, 320, 473, 344, 1),
                 region("Consignee", 136, 492, 250, 514, 2),
                 region("Boccomi Co., Ltd.", 137, 532, 352, 557, 3),
+                region("Description", 250, 1000, 400, 1020, 4),
+                region("Quantity", 850, 1000, 950, 1020, 5),
+                region("Widget", 140, 1080, 250, 1102, 6),
+                region("4", 850, 1080, 870, 1102, 7),
             ],
         )
         document = extract_packing_list(result)
         self.assertEqual(document.exporter.value, "Solutions Co., Ltd.")
         self.assertEqual(document.consignee.value, "Boccomi Co., Ltd.")
+        self.assertEqual(len(document.items), 1)
+        self.assertEqual(document.items[0].description.value, "Widget")
+        self.assertEqual(document.items[0].quantity.value, "4")
 
     def test_typed_date_and_last_port_line_are_selected(self):
         result = OCRResult(

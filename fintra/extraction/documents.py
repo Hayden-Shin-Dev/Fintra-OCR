@@ -156,7 +156,8 @@ def _invoice_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
     # Coordinates are the stable 1654x2340 AI-Hub Commercial Invoice template.
     values = _regions(result)
     item_regions = [region for region in values if 1000 <= region.bbox[1] <= 1400]
-    centers = _row_centers([region for region in item_regions if 820 <= region.bbox[0] <= 950], minimum=45)
+    centers = _row_centers([region for region in item_regions if 820 <= region.bbox[0] <= 950
+                            and re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())], minimum=45)
     items = [_item_from_columns(item_regions, center, ((120, 700), (820, 950), (950, 1100), (1100, 1260), (1260, 1520))) for center in centers]
     currency = _token_value(values, r"USD|EUR|GBP|JPY|CNY|KRW")
     total_regions = [region for region in values if 1200 <= region.bbox[0] and 1450 <= region.bbox[1] <= 1650 and re.search(r"\d", region.text)]
@@ -174,7 +175,8 @@ def _invoice_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
 def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineItem]]:
     values = _regions(result)
     item_regions = [region for region in values if 1000 <= region.bbox[1] <= 1520]
-    centers = _row_centers([region for region in item_regions if 800 <= region.bbox[0] <= 950], minimum=45)
+    centers = _row_centers([region for region in item_regions if 800 <= region.bbox[0] <= 950
+                            and re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())], minimum=45)
     items = []
     for center in centers:
         row = _near_row(item_regions, center, tolerance=42)
