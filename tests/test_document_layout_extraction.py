@@ -21,7 +21,8 @@ class DocumentLayoutExtractionTests(unittest.TestCase):
                 region("YIZHENG, CHINA", 70, 1011, 273, 1038, 6),
                 region("70KG", 1182, 1428, 1246, 1451, 7),
                 region("TOTAL", 1056, 1433, 1121, 1453, 8),
-                region("BACKSHELL", 607, 1211, 752, 1235, 9),
+                region("TOTAL", 1258, 2085, 1319, 2103, 9),
+                region("BACKSHELL", 607, 1211, 752, 1235, 10),
             ],
         )
         document = extract_bill_of_lading(result)

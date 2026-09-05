@@ -218,7 +218,10 @@ def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
                 and not re.fullmatch(r"\d+(?:[.,]\d+)?(?:KG|KGS|G)?", region.text.strip(), re.I)]
         if kept and any(re.search(r"[A-Za-z]", region.text) for region in kept):
             goods_lines.extend(kept)
-    total_regions = [region for region in values if _canonical(region.text) == "TOTAL"]
+    # Other totals can occur in the invoice/footer text.  Only a TOTAL inside
+    # the B/L item table can define the shipment summary row.
+    total_regions = [region for region in values if _canonical(region.text) == "TOTAL"
+                     and 1080 <= region.bbox[1] <= 1600]
     package_total = []
     gross_total = []
     if len(total_regions) == 1:
