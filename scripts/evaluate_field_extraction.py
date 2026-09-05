@@ -112,9 +112,13 @@ def _predicted_field(payload: dict[str, Any], field_name: str) -> dict[str, Any]
 def _case_prediction(case_dir: Path) -> OCRResult | None:
     candidates = sorted((case_dir / "outputs" / "recognition").glob("*.json"))
     if not candidates:
-        return None
+        raise FileNotFoundError(f"Recognition output missing: {case_dir}")
+    if len(candidates)!=1:
+        raise ValueError(f"Expected one prediction for {case_dir}, found {len(candidates)}")
     manifest = json.loads((case_dir / "case_manifest.json").read_text(encoding="utf-8"))
     result=OCRResult.from_json(candidates[0], document_type=manifest["document_type"])
+    if result.metadata.get('exceptions'):
+        raise ValueError(f"Recognition exceptions must be resolved or explicitly reported: {case_dir}")
     image=case_dir / manifest.get("image", "")
     if image.is_file():
         with image.open('rb') as handle:
@@ -137,6 +141,8 @@ def evaluate(cases_root: Path, output_dir: Path, strategy: str = "active") -> di
             continue
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         gold = manifest.get("gold_fields", [])
+        if not gold:
+            raise ValueError(f"Field gold is not reviewed/prepared: {case_dir}; evaluation cannot report accuracy")
         prediction = _case_prediction(case_dir)
         predicted_payload = _document_payload(prediction,strategy) if prediction else {}
         for gold_field in gold:
@@ -195,6 +201,11 @@ def evaluate(cases_root: Path, output_dir: Path, strategy: str = "active") -> di
         }
 
     by_type = {kind: metric([row for row in rows if row["document_type"] == kind]) for kind in ("Commercial Invoice", "Packing List", "B/L")}
+    groups=defaultdict(list)
+    for row in rows:
+        groups[row['document_type']+':'+re.sub(r'items\[\d+\]', 'items[*]', row['field_name'])].append(row)
+    by_field_group={key:metric(subset) for key,subset in sorted(groups.items())}
+    by_document={case:metric([r for r in rows if r['case_id']==case]) for case in sorted({r['case_id'] for r in rows})}
     by_field = {f"{kind}:{field}": metric([row for row in rows if row["document_type"] == kind and row["field_name"] == field]) for kind, field in sorted({(row["document_type"], row["field_name"]) for row in rows})}
     applicable_fields = [item for key, item in by_field.items() if item["applicable_gold"]]
     worst = sorted(((key, value["normalized_field_accuracy"], value["applicable_gold"]) for key, value in by_field.items() if value["applicable_gold"]), key=lambda item: (item[1], -item[2]))[:10]
@@ -205,6 +216,7 @@ def evaluate(cases_root: Path, output_dir: Path, strategy: str = "active") -> di
         "gold_validity": "UNREVIEWED_LEGACY_TEMPLATE_GOLD; not a validated semantic accuracy claim",
         "selection": {"documents": len({row["case_id"] for row in rows}), "rows": len(rows)},
         "overall": metric(rows), "by_document_type": by_type, "by_field": by_field,
+        "by_field_group":by_field_group,"by_document":by_document,
         "weakest_fields": [{"field": key, "normalized_accuracy": accuracy, "applicable_gold": count} for key, accuracy, count in worst],
         "gold_policy": "Only explicit values in AI-Hub word annotations inside inspected template zones are available gold; ambiguous_gt and not_applicable are excluded from accuracy denominator.",
     }
@@ -221,7 +233,9 @@ def evaluate(cases_root: Path, output_dir: Path, strategy: str = "active") -> di
         for row in status_rows:
             lines.append(f"- `{row['document_id']}` `{row['field_name']}`: GT={row['gt_value']!r}; prediction={row['predicted_value']!r}; source={row['source_text']!r}")
         lines.append("")
-    lines += ["## Gold and normalization policy", "", result["gold_policy"], "Normalization changes representation only: company case/punctuation/whitespace, ISO dates, Decimal numbers, known currency codes, and unit case. Semantic substitutions are not performed.", "", "The report is not valid until the 60-case Modern OCR prediction outputs exist under each case's `outputs/recognition/` directory."]
+    lines += ["## Gold and normalization policy", "", result["gold_validity"], "", "All selected recognition JSONs exist. The legacy semantic gold has documented mapping errors and requires independent review. These scores are provisional fixed-benchmark measurements, not validated semantic accuracy.", "", result["gold_policy"], "Normalization changes representation only: company case/punctuation/whitespace, explicit ISO/English-month dates, Decimal numbers, known currency codes and weight-unit aliases. Two failed parses are never a match.", "", "## Grouped fields", "", "| Field | Normalized accuracy | Available | Missing | Wrong |", "|---|---:|---:|---:|---:|"]
+    for key,item in by_field_group.items():
+        lines.append(f"| {key} | {item['normalized_field_accuracy']:.4f} | {item['applicable_gold']} | {item['missing']} | {item['wrong']} |")
     (output_dir / "FIELD_EXTRACTION_EVALUATION.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     return result
 
