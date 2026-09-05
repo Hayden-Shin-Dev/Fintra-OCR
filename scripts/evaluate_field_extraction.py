@@ -6,10 +6,15 @@ import argparse
 import csv
 import json
 import re
+import sys
 import unicodedata
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from fintra.extraction.documents import extract_bill_of_lading, extract_commercial_invoice, extract_packing_list
 from fintra.normalization.values import normalize_company, normalize_currency, normalize_date, parse_amount
