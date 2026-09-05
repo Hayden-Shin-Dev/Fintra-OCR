@@ -1,6 +1,10 @@
 import unittest
+import json
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from fintra.ocr.paddle_backend import parse_paddle_result
+from scripts.run_paddle_field_eval import select_cases
 
 
 class PaddleBackendParserTests(unittest.TestCase):
@@ -46,6 +50,19 @@ class PaddleBackendParserTests(unittest.TestCase):
                 "rec_scores": [0.5],
                 "rec_boxes": [[0, 0, 1, 1], [2, 2, 3, 3]],
             })
+
+    def test_smoke_selection_is_one_case_per_document_type(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            for case_id, document_type in (("ci-001", "Commercial Invoice"), ("pl-001", "Packing List"), ("bl-001", "B/L")):
+                case = root / case_id
+                case.mkdir()
+                (case / "case_manifest.json").write_text(
+                    json.dumps({"case_id": case_id, "document_type": document_type}),
+                    encoding="utf-8",
+                )
+            selected = select_cases(root, smoke=True, limit=None)
+            self.assertEqual([case.name for case in selected], ["ci-001", "pl-001", "bl-001"])
 
 
 if __name__ == "__main__":
