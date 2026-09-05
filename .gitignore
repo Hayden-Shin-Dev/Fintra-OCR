@@ -14,6 +14,7 @@ artifacts/
 cache/
 temp/
 .venv/
+.venv-paddle/
 venv/
 .env
 __pycache__/
