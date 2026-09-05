@@ -254,7 +254,9 @@ def _bl_gold(tokens: list[dict[str, Any]]) -> list[dict[str, Any]]:
     total_lines = [line for line in _lines(tokens) if any(x["text"].upper() == "TOTAL" for x in line)]
     total_line = total_lines[-1] if total_lines else []
     package_total = [x for x in total_line if .12 * WIDTH <= x["bbox"][0] <= .30 * WIDTH and re.fullmatch(r"\d+(?:[.,]\d+)?", x["text"])]
-    gross_total = [x for x in total_line if .68 * WIDTH <= x["bbox"][0] <= .90 * WIDTH and re.search(r"\d", x["text"])]
+    gross_total = [x for x in total_line if .68 * WIDTH <= x["bbox"][0] <= .79 * WIDTH
+                   and re.search(r"\d", x["text"])
+                   and re.search(r"(?:KG|KGS|GRAM|GRAMS|\bG\b)", x["text"], re.I)]
     fields.extend([
         _evidence("package_count", package_total) if len(package_total) == 1 else _evidence("package_count", [], status="ambiguous_gt", review="no_unique_total_package_count"),
         _evidence("gross_weight", gross_total) if len(gross_total) == 1 else _evidence("gross_weight", [], status="ambiguous_gt", review="no_unique_total_gross_weight"),

@@ -36,6 +36,16 @@ class SemanticGoldTests(unittest.TestCase):
         fields = _gold(payload, "B/L")
         self.assertTrue(all("predicted" not in field for field in fields))
 
+    def test_bl_gross_gold_rejects_cbm_from_total_row(self):
+        payload = {"bbox": [
+            token("70KG", 1182, 1428, 1246, 1451),
+            token("547.88", 1353, 1425, 1426, 1447),
+            token("CBM", 1438, 1426, 1492, 1448),
+            token("TOTAL", 1059, 1435, 1119, 1451),
+        ]}
+        fields = {field["field_name"]: field for field in _gold(payload, "B/L")}
+        self.assertEqual(fields["gross_weight"]["value"], "70KG")
+
 
 if __name__ == "__main__":
     unittest.main()
