@@ -69,6 +69,7 @@ foreach ($caseName in $caseNames) {
 
 Write-Host "[4/5] Running existing Modern Recognition on Modern Detection regions..."
 $modernRecognitionTag = $baseTag
+$modernRecognitionScript = "/project/runtime/modern_gpu/modern_recognition.py"
 $modernRecognitionCheckpoint = "/project/artifacts/aihub/runtime/transit_recog_model.pth"
 $modernDictionary = "/project/artifacts/aihub/runtime/unidocs_dict_transit_runtime.txt"
 foreach ($caseName in $caseNames) {
@@ -78,7 +79,7 @@ foreach ($caseName in $caseNames) {
     $image = "/project/artifacts/aihub/validation/smoke/$caseName/transit_train/imgs_resize/$imageName"
     $modernDetection = "/project/artifacts/aihub/modern_gpu/detection_parity/$caseName/detection.json"
     $recognitionOutput = "/project/artifacts/aihub/modern_gpu/end_to_end/$caseName/recognition"
-    Invoke-DockerChecked @("run", "--rm", "--gpus", "all", "--ipc=host", "-v", "${projectRoot}:/project", "-w", "/project", $modernRecognitionTag, "python", "/opt/fintra/modern_recognition.py", "--image", $image, "--regions-json", $modernDetection, "--checkpoint", $modernRecognitionCheckpoint, "--dict", $modernDictionary, "--output-dir", $recognitionOutput, "--device", "cuda")
+    Invoke-DockerChecked @("run", "--rm", "--gpus", "all", "--ipc=host", "-v", "${projectRoot}:/project", "-w", "/project", $modernRecognitionTag, "python", $modernRecognitionScript, "--image", $image, "--regions-json", $modernDetection, "--checkpoint", $modernRecognitionCheckpoint, "--dict", $modernDictionary, "--output-dir", $recognitionOutput, "--device", "cuda")
 }
 
 Write-Host "[5/5] Running the bundled AI-Hub official evaluator and aggregating metrics..."
