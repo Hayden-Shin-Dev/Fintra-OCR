@@ -1,0 +1,4 @@
+# Isolated legacy Paddle reference runtime recovered from Fintra-OCR-main(1).zip.
+# Do not install this into the Modern OCR environment.
+paddlepaddle==3.2.0
+paddleocr==3.7.0
