@@ -127,13 +127,21 @@ def _date_evidence(regions: list[OCRRegion], field_name: str = "shipment_date") 
     from fintra.normalization.values import normalize_date
     candidates = []
     for line in _line_groups(regions):
+        valid_regions = [item for item in line if normalize_date(item.text.strip())]
         text = " ".join(item.text.strip() for item in line if item.text.strip())
-        if normalize_date(text):
+        if len(valid_regions) == 1:
+            candidates.append((valid_regions, valid_regions[0].text.strip()))
+        elif normalize_date(text):
             candidates.append((line, text))
     if len(candidates) == 1:
         line, text = candidates[0]
         return _combined_evidence(line, value=text)
     return missing("date_not_uniquely_parseable")
+
+
+def _last_line_evidence(regions: list[OCRRegion]) -> EvidenceField:
+    lines = _line_groups(regions)
+    return _combined_evidence(lines[-1]) if lines else missing()
 
 
 def _item_from_columns(regions: list[OCRRegion], center: float, columns: tuple[tuple[float, float], ...]) -> LineItem:
@@ -175,8 +183,11 @@ def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
         unit = _combined_evidence([region for region in row if 800 <= region.bbox[0] <= 950 and not re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())])
         items.append(LineItem(description=description, quantity=quantity, unit=unit))
     package_regions = _in_zone(result, x1=350, x2=650, y1=1650, y2=1825)
+    package_numbers = [region for region in package_regions if re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())]
+    package = _evidence_from_region(package_numbers[0], package_numbers[0].text) if len(package_numbers) == 1 else _combined_evidence(package_regions)
     gross_regions = [region for region in values if 400 <= region.bbox[0] <= 700 and 1750 <= region.bbox[1] <= 1850 and re.search(r"\d", region.text)]
-    gross = _combined_evidence(gross_regions)
+    gross_candidates = [region for region in gross_regions if re.search(r"(?:KG|KGS|GRAM|\bG\b)", region.text, re.I)]
+    gross = _evidence_from_region(gross_candidates[0], gross_candidates[0].text) if len(gross_candidates) == 1 else _combined_evidence(gross_regions)
     weight_unit = _token_value(values, r"KG|KGS|G|GRAM|GRAMS")
     if weight_unit.status == "missing" and gross.status == "extracted":
         match = re.search(r"\b(KG|KGS|G)\b", str(gross.value), re.I)
@@ -188,7 +199,7 @@ def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
         "exporter": _party_evidence(_in_zone(result, x1=100, x2=800, y1=310, y2=450)),
         "consignee": _party_evidence(_in_zone(result, x1=100, x2=750, y1=520, y2=700)),
         "items": items,
-        "package_count": _combined_evidence(package_regions),
+        "package_count": package,
         "gross_weight": gross,
         "net_weight": ambiguous(source_text="multiple per-item net weights; no single total"),
         "weight_unit": weight_unit,
@@ -224,9 +235,9 @@ def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
         "shipper": _party_evidence(_in_zone(result, x1=70, x2=800, y1=290, y2=470)),
         "consignee": _party_evidence(_in_zone(result, x1=70, x2=800, y1=490, y2=600)),
         "notify_party": _party_evidence(_in_zone(result, x1=70, x2=800, y1=680, y2=820)),
-        "vessel": _combined_evidence(_in_zone(result, x1=70, x2=400, y1=850, y2=980)),
-        "port_of_loading": _combined_evidence(_in_zone(result, x1=400, x2=800, y1=850, y2=980)),
-        "port_of_discharge": _combined_evidence(_in_zone(result, x1=70, x2=400, y1=950, y2=1080)),
+        "vessel": _last_line_evidence(_in_zone(result, x1=70, x2=400, y1=850, y2=980)),
+        "port_of_loading": _last_line_evidence(_in_zone(result, x1=400, x2=800, y1=850, y2=980)),
+        "port_of_discharge": _last_line_evidence(_in_zone(result, x1=70, x2=400, y1=950, y2=1080)),
         "shipment_date": _date_evidence(_in_zone(result, x1=1150, x2=1500, y1=170, y2=290)),
         "package_count": _evidence_from_region(package_total[0], package_total[0].text) if len(package_total) == 1 else ambiguous(source_text="no unique total package count"),
         "gross_weight": _evidence_from_region(gross_total[0], gross_total[0].text) if len(gross_total) == 1 else ambiguous(source_text="no unique total gross weight"),

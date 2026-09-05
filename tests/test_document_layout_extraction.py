@@ -44,6 +44,19 @@ class DocumentLayoutExtractionTests(unittest.TestCase):
         self.assertEqual(document.exporter.value, "Solutions Co., Ltd.")
         self.assertEqual(document.consignee.value, "Boccomi Co., Ltd.")
 
+    def test_typed_date_and_last_port_line_are_selected(self):
+        result = OCRResult(
+            "bl-2", "B/L", "bl.png", [
+                region("DATE SHIPPED", 1230, 204, 1390, 225, 0),
+                region("APR 24, 2009", 1230, 234, 1390, 258, 1),
+                region("CFS/CFS", 485, 878, 596, 903, 2),
+                region("AYAMONTE, SPAIN", 485, 946, 714, 972, 3),
+            ],
+        )
+        document = extract_bill_of_lading(result)
+        self.assertEqual(document.shipment_date.value, "APR 24, 2009")
+        self.assertEqual(document.port_of_loading.value, "AYAMONTE, SPAIN")
+
 
 if __name__ == "__main__":
     unittest.main()
