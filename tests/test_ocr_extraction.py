@@ -1,6 +1,6 @@
 import unittest
 
-from fintra.extraction.documents import extract_commercial_invoice
+from fintra.extraction.documents import extract_bill_of_lading, extract_commercial_invoice
 from fintra.ocr.adapter import OCRRegion, OCRResult
 
 
@@ -61,6 +61,27 @@ class OCRExtractionTests(unittest.TestCase):
         invoice = extract_commercial_invoice(result)
         self.assertEqual(invoice.currency.status.value, "extracted")
         self.assertEqual(invoice.currency.value, "USD")
+
+    def test_corrupted_party_heading_is_not_returned_as_value(self):
+        result = OCRResult(
+            "bl-party-heading", "B/L", "bl.png", [
+                OCRRegion([[100, 300], [300, 300], [300, 325], [100, 325]], "Shippor/ Exporer", index=0),
+                OCRRegion([[100, 340], [330, 340], [330, 365], [100, 365]], "ACME LOGISTICS CO.", index=1),
+            ],
+        )
+        bl = extract_bill_of_lading(result)
+        self.assertEqual(bl.shipper.value, "ACME LOGISTICS CO.")
+        self.assertEqual(bl.shipper.source_text, "ACME LOGISTICS CO.")
+
+    def test_inline_party_heading_is_removed_from_value(self):
+        result = OCRResult(
+            "ci-inline-party-heading", "Commercial Invoice", "invoice.png", [
+                OCRRegion([[100, 310], [300, 310], [300, 335], [100, 335]], "Buyer: BETA INC", index=0),
+            ],
+        )
+        invoice = extract_commercial_invoice(result)
+        self.assertEqual(invoice.buyer.value, "BETA INC")
+        self.assertEqual(invoice.buyer.source_text, "Buyer: BETA INC")
 
 
 if __name__ == "__main__":

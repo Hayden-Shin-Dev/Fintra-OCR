@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from collections import defaultdict
+from difflib import SequenceMatcher
 from typing import Callable, Iterable
 
 from fintra.domain.schema import (
@@ -102,6 +103,46 @@ _PARTY_STOP_WORDS = {
     "RISK", "ORDER", "OF", "AND", "&",
 }
 
+_PARTY_HEADING_WORDS = (
+    "SHIPPER", "SELLER", "EXPORTER", "BUYER", "CONSIGNEE", "NOTIFY", "PARTY",
+)
+
+
+def _party_word_similarity(left: str, right: str) -> float:
+    return SequenceMatcher(None, _canonical(left), _canonical(right)).ratio()
+
+
+def _looks_like_party_heading(text: str) -> bool:
+    """Recognize OCR-corrupted party headings without using document values.
+
+    AI-Hub recognition commonly returns headings such as ``Shippor/ Exporer``
+    and ``Notiyy Party``.  Treating those lines as company names causes the
+    fixed template fallback to return a label instead of the party value.
+    The test is deliberately limited to lines whose every word resembles a
+    known heading, so organization names containing words such as GROUP are
+    not discarded.
+    """
+    words = _canonical(text).split()
+    if not words:
+        return True
+    matches = [
+        max(_party_word_similarity(word, heading) for heading in _PARTY_HEADING_WORDS)
+        for word in words
+    ]
+    return len(words) >= 1 and all(score >= 0.72 for score in matches)
+
+
+def _remove_inline_party_heading(text: str) -> str:
+    """Remove a leading OCR party label while preserving the value text."""
+    match = re.match(r"\s*([A-Za-z]+)\s*(?::|\||/|#|-)?\s*", text)
+    if not match:
+        return text.strip()
+    word = match.group(1)
+    if max(_party_word_similarity(word, heading) for heading in _PARTY_HEADING_WORDS) < 0.82:
+        return text.strip()
+    remainder = text[match.end():].strip(" |:/#-")
+    return remainder
+
 
 def _party_evidence(regions: list[OCRRegion]) -> EvidenceField:
     """Select the first organization line while preserving its OCR evidence.
@@ -111,9 +152,10 @@ def _party_evidence(regions: list[OCRRegion]) -> EvidenceField:
     semantic correction is applied to the recognized text.
     """
     for line in _line_groups(regions):
-        text = " ".join(item.text.strip() for item in line if item.text.strip()).strip(" ,:;-&")
+        raw_text = " ".join(item.text.strip() for item in line if item.text.strip()).strip(" ,:;-&")
+        text = _remove_inline_party_heading(raw_text)
         canonical = _canonical(text)
-        if not canonical or set(canonical.split()).issubset(_PARTY_STOP_WORDS):
+        if not canonical or _looks_like_party_heading(raw_text) or set(canonical.split()).issubset(_PARTY_STOP_WORDS):
             continue
         if re.search(r"\b(?:PHONE|TEL|FAX|ADDRESS|COMPLETE NAME|PROVIDE)\b", canonical) and not re.search(r"[A-Za-z]{3,}.*\b(?:CO|LTD|INC|CORP|COMPANY|GROUP)\b", canonical):
             continue
