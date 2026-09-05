@@ -311,7 +311,7 @@ def _candidate_after_label(region: OCRRegion, aliases: Iterable[str]) -> str | N
     return None
 
 
-def _find_field(result: OCRResult, aliases: tuple[str, ...]) -> EvidenceField:
+def _find_field(result: OCRResult, aliases: tuple[str, ...], *, prefer_below: bool = False) -> EvidenceField:
     ordered = _regions(result)
     exact_regions = []
     for region in ordered:
@@ -332,7 +332,8 @@ def _find_field(result: OCRResult, aliases: tuple[str, ...]) -> EvidenceField:
     ]
     right = [region for region in candidates if region.bbox[0] >= lx2 - 2 and abs(region.bbox[1] - ly1) <= max(40, ly2 - ly1)]
     below = [region for region in candidates if region.bbox[1] >= ly2 - 2 and abs(region.bbox[0] - lx1) <= max(100, lx2 - lx1)]
-    nearest = sorted(right or below, key=lambda region: (abs(region.bbox[1] - ly1), abs(region.bbox[0] - lx2)))
+    candidates_in_order = (below or right) if prefer_below else (right or below)
+    nearest = sorted(candidates_in_order, key=lambda region: (abs(region.bbox[1] - ly1), abs(region.bbox[0] - lx2)))
     return _evidence_from_region(nearest[0], nearest[0].text) if nearest else missing()
 
 
@@ -369,8 +370,8 @@ def extract_commercial_invoice_legacy(result: OCRResult) -> CommercialInvoice:
         metadata=_metadata(result),
         invoice_number=_find_field(result, ("invoice no", "invoice number", "inv no")) if _find_field(result, ("invoice no", "invoice number", "inv no")).status != "missing" else layout["invoice_number"],
         invoice_date=_find_field(result, ("date", "invoice date")) if _find_field(result, ("date", "invoice date")).status != "missing" else layout["invoice_date"],
-        seller=_find_field(result, ("seller", "exporter")) if _find_field(result, ("seller", "exporter")).status != "missing" else layout["seller"],
-        buyer=_find_field(result, ("buyer", "consignee", "importer")) if _find_field(result, ("buyer", "consignee", "importer")).status != "missing" else layout["buyer"],
+        seller=_find_field(result, ("seller", "exporter"), prefer_below=True) if _find_field(result, ("seller", "exporter"), prefer_below=True).status != "missing" else layout["seller"],
+        buyer=_find_field(result, ("buyer", "consignee", "importer"), prefer_below=True) if _find_field(result, ("buyer", "consignee", "importer"), prefer_below=True).status != "missing" else layout["buyer"],
         currency=_find_field(result, ("currency", "currency code")) if _find_field(result, ("currency", "currency code")).status != "missing" else layout["currency"],
         total_amount=_find_field(result, ("total", "total amount", "invoice total")) if _find_field(result, ("total", "total amount", "invoice total")).status != "missing" else layout["total_amount"],
         items=_items(result) or layout["items"],

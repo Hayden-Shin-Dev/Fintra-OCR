@@ -83,6 +83,17 @@ class OCRExtractionTests(unittest.TestCase):
         self.assertEqual(invoice.buyer.value, "BETA INC")
         self.assertEqual(invoice.buyer.source_text, "Buyer: BETA INC")
 
+    def test_party_heading_prefers_below_value_over_adjacent_column(self):
+        result = OCRResult(
+            "ci-party-column", "Commercial Invoice", "invoice.png", [
+                OCRRegion([[170, 680], [300, 680], [300, 705], [170, 705]], "Consignee", index=0),
+                OCRRegion([[890, 680], [1050, 680], [1050, 705], [890, 705]], "09-23-2002", index=1),
+                OCRRegion([[170, 720], [350, 720], [350, 745], [170, 745]], "BETA INC", index=2),
+            ],
+        )
+        invoice = extract_commercial_invoice(result)
+        self.assertEqual(invoice.buyer.value, "BETA INC")
+
 
 if __name__ == "__main__":
     unittest.main()
