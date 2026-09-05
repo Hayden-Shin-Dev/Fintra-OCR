@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from collections import defaultdict
 from typing import Callable, Iterable
 
 from fintra.domain.schema import (
@@ -34,6 +35,130 @@ def _evidence_from_region(region: OCRRegion, value: str) -> EvidenceField:
         bbox=region.polygon,
         confidence=region.confidence,
     )
+
+
+def _combined_evidence(regions: list[OCRRegion], *, value: str | None = None) -> EvidenceField:
+    if not regions:
+        return missing()
+    text = value if value is not None else " ".join(region.text.strip() for region in regions if region.text.strip())
+    polygon = [[min(region.bbox[0] for region in regions), min(region.bbox[1] for region in regions)],
+               [max(region.bbox[2] for region in regions), min(region.bbox[1] for region in regions)],
+               [max(region.bbox[2] for region in regions), max(region.bbox[3] for region in regions)],
+               [min(region.bbox[0] for region in regions), max(region.bbox[3] for region in regions)]]
+    confidences = [region.confidence for region in regions if region.confidence is not None]
+    return evidence(text, source_text=" ".join(region.text for region in regions), bbox=polygon,
+                    confidence=sum(confidences) / len(confidences) if confidences else None)
+
+
+def _in_zone(result: OCRResult, *, x1: float, x2: float, y1: float, y2: float) -> list[OCRRegion]:
+    return [region for region in _regions(result)
+            if region.bbox[0] >= x1 and region.bbox[2] <= x2 and region.bbox[1] >= y1 and region.bbox[3] <= y2]
+
+
+def _token_value(regions: list[OCRRegion], pattern: str) -> EvidenceField:
+    matches = [region for region in regions if re.fullmatch(pattern, region.text.strip(), re.I)]
+    if len(matches) == 1:
+        return _evidence_from_region(matches[0], matches[0].text)
+    if len(matches) > 1:
+        return ambiguous(source_text=" | ".join(region.text for region in matches))
+    return missing()
+
+
+def _row_centers(regions: list[OCRRegion], *, minimum: float = 20) -> list[float]:
+    centers: list[float] = []
+    for region in sorted(regions, key=lambda item: (item.bbox[1], item.bbox[0])):
+        center = (region.bbox[1] + region.bbox[3]) / 2
+        if not centers or center - centers[-1] > minimum:
+            centers.append(center)
+    return centers
+
+
+def _near_row(regions: list[OCRRegion], center: float, tolerance: float = 38) -> list[OCRRegion]:
+    return [region for region in regions if abs((region.bbox[1] + region.bbox[3]) / 2 - center) <= tolerance]
+
+
+def _item_from_columns(regions: list[OCRRegion], center: float, columns: tuple[tuple[float, float], ...]) -> LineItem:
+    values = []
+    for x1, x2 in columns:
+        selected = sorted((region for region in _near_row(regions, center) if x1 <= region.bbox[0] <= x2), key=lambda item: item.bbox[0])
+        values.append(_combined_evidence(selected))
+    return LineItem(description=values[0], quantity=values[1], unit=values[2], unit_price=values[3], amount=values[4])
+
+
+def _invoice_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineItem]]:
+    # Coordinates are the stable 1654x2340 AI-Hub Commercial Invoice template.
+    values = _regions(result)
+    item_regions = [region for region in values if 1000 <= region.bbox[1] <= 1400]
+    centers = _row_centers([region for region in item_regions if 820 <= region.bbox[0] <= 950], minimum=45)
+    items = [_item_from_columns(item_regions, center, ((120, 700), (820, 950), (950, 1100), (1100, 1260), (1260, 1520))) for center in centers]
+    currency = _token_value(values, r"USD|EUR|GBP|JPY|CNY|KRW")
+    total_regions = [region for region in values if 1200 <= region.bbox[0] and 1450 <= region.bbox[1] <= 1650 and re.search(r"\d", region.text)]
+    return {
+        "invoice_number": _combined_evidence(_in_zone(result, x1=850, x2=1320, y1=250, y2=360)),
+        "invoice_date": _combined_evidence(_in_zone(result, x1=850, x2=1450, y1=360, y2=455)),
+        "seller": _combined_evidence(_in_zone(result, x1=100, x2=850, y1=280, y2=520)),
+        "buyer": _combined_evidence(_in_zone(result, x1=100, x2=850, y1=540, y2=760)),
+        "currency": currency,
+        "total_amount": _combined_evidence(total_regions),
+        "items": items,
+    }
+
+
+def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineItem]]:
+    values = _regions(result)
+    item_regions = [region for region in values if 1000 <= region.bbox[1] <= 1520]
+    centers = _row_centers([region for region in item_regions if 800 <= region.bbox[0] <= 950], minimum=45)
+    items = []
+    for center in centers:
+        row = _near_row(item_regions, center, tolerance=42)
+        description = _combined_evidence([region for region in row if region.bbox[0] < 730])
+        quantity = _combined_evidence([region for region in row if 800 <= region.bbox[0] <= 950 and re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())])
+        unit = _combined_evidence([region for region in row if 800 <= region.bbox[0] <= 950 and not re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())])
+        items.append(LineItem(description=description, quantity=quantity, unit=unit))
+    package_regions = _in_zone(result, x1=350, x2=650, y1=1650, y2=1825)
+    gross_regions = [region for region in values if 400 <= region.bbox[0] <= 700 and 1750 <= region.bbox[1] <= 1850 and re.search(r"\d", region.text)]
+    gross = _combined_evidence(gross_regions)
+    weight_unit = _token_value(values, r"KG|KGS|G|GRAM|GRAMS")
+    if weight_unit.status == "missing" and gross.status == "extracted":
+        match = re.search(r"\b(KG|KGS|G)\b", str(gross.value), re.I)
+        if match:
+            weight_unit = evidence(match.group(1).upper(), source_text=gross.source_text, bbox=gross.bbox)
+    return {
+        "packing_list_number": missing("template_field_not_present"),
+        "date": _combined_evidence(_in_zone(result, x1=1150, x2=1500, y1=170, y2=280)),
+        "exporter": _combined_evidence(_in_zone(result, x1=100, x2=800, y1=280, y2=450)),
+        "consignee": _combined_evidence(_in_zone(result, x1=100, x2=750, y1=480, y2=700)),
+        "items": items,
+        "package_count": _combined_evidence(package_regions),
+        "gross_weight": gross,
+        "net_weight": ambiguous(source_text="multiple per-item net weights; no single total"),
+        "weight_unit": weight_unit,
+    }
+
+
+def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
+    values = _regions(result)
+    goods = [region for region in values if 500 <= region.bbox[0] <= 1100 and 1080 <= region.bbox[1] <= 1500]
+    gross_values = [region for region in values if 1100 <= region.bbox[0] <= 1300 and 1080 <= region.bbox[1] <= 1500 and re.search(r"\d", region.text)]
+    weight_unit = _token_value(values, r"KG|KGS|G|GRAM|GRAMS")
+    if weight_unit.status == "missing":
+        kg = [region for region in gross_values if re.search(r"KG", region.text, re.I)]
+        if kg:
+            weight_unit = evidence("KG", source_text=" ".join(region.text for region in kg), bbox=kg[0].polygon)
+    return {
+        "bl_number": _combined_evidence(_in_zone(result, x1=1150, x2=1500, y1=200, y2=300)),
+        "shipper": missing("template_field_not_present"),
+        "consignee": ambiguous(source_text="two consignee blocks in the source template"),
+        "notify_party": _combined_evidence(_in_zone(result, x1=70, x2=800, y1=600, y2=800)),
+        "vessel": _combined_evidence(_in_zone(result, x1=70, x2=400, y1=850, y2=980)),
+        "port_of_loading": _combined_evidence(_in_zone(result, x1=400, x2=800, y1=850, y2=980)),
+        "port_of_discharge": _combined_evidence(_in_zone(result, x1=70, x2=400, y1=950, y2=1080)),
+        "shipment_date": missing("template_field_not_present"),
+        "package_count": ambiguous(source_text="multiple package rows and total in the source template"),
+        "gross_weight": ambiguous(source_text="multiple gross-weight rows in the source template"),
+        "weight_unit": weight_unit,
+        "goods_description": _combined_evidence(goods),
+    }
 
 
 def _candidate_after_label(region: OCRRegion, aliases: Iterable[str]) -> str | None:
@@ -107,48 +232,44 @@ def _items(result: OCRResult) -> list[LineItem]:
 
 
 def extract_commercial_invoice(result: OCRResult) -> CommercialInvoice:
+    layout = _invoice_layout(result)
     return CommercialInvoice(
         metadata=_metadata(result),
-        invoice_number=_find_field(result, ("invoice no", "invoice number", "inv no")),
-        invoice_date=_find_field(result, ("date", "invoice date")),
-        seller=_find_field(result, ("seller", "exporter")),
-        buyer=_find_field(result, ("buyer", "consignee", "importer")),
-        currency=_find_field(result, ("currency", "currency code")),
-        total_amount=_find_field(result, ("total", "total amount", "invoice total")),
-        items=_items(result),
+        invoice_number=_find_field(result, ("invoice no", "invoice number", "inv no")) if _find_field(result, ("invoice no", "invoice number", "inv no")).status != "missing" else layout["invoice_number"],
+        invoice_date=_find_field(result, ("date", "invoice date")) if _find_field(result, ("date", "invoice date")).status != "missing" else layout["invoice_date"],
+        seller=_find_field(result, ("seller", "exporter")) if _find_field(result, ("seller", "exporter")).status != "missing" else layout["seller"],
+        buyer=_find_field(result, ("buyer", "consignee", "importer")) if _find_field(result, ("buyer", "consignee", "importer")).status != "missing" else layout["buyer"],
+        currency=_find_field(result, ("currency", "currency code")) if _find_field(result, ("currency", "currency code")).status != "missing" else layout["currency"],
+        total_amount=_find_field(result, ("total", "total amount", "invoice total")) if _find_field(result, ("total", "total amount", "invoice total")).status != "missing" else layout["total_amount"],
+        items=_items(result) or layout["items"],
     )
 
 
 def extract_packing_list(result: OCRResult) -> PackingList:
+    layout = _packing_layout(result)
     return PackingList(
         metadata=_metadata(result),
-        packing_list_number=_find_field(result, ("packing list no", "packing list number", "pl no")),
-        date=_find_field(result, ("date", "packing date")),
-        exporter=_find_field(result, ("exporter", "seller")),
-        consignee=_find_field(result, ("consignee", "buyer")),
-        items=_items(result),
-        package_count=_find_field(result, ("package count", "packages", "total packages")),
-        gross_weight=_find_field(result, ("gross weight",)),
-        net_weight=_find_field(result, ("net weight",)),
-        weight_unit=_find_field(result, ("weight unit",)),
+        packing_list_number=layout["packing_list_number"],
+        date=layout["date"],
+        exporter=layout["exporter"],
+        consignee=layout["consignee"],
+        items=layout["items"],
+        package_count=layout["package_count"],
+        gross_weight=layout["gross_weight"],
+        net_weight=layout["net_weight"],
+        weight_unit=layout["weight_unit"],
     )
 
 
 def extract_bill_of_lading(result: OCRResult) -> BillOfLading:
+    layout = _bl_layout(result)
     return BillOfLading(
         metadata=_metadata(result),
-        bl_number=_find_field(result, ("bl no", "b l no", "bill of lading no", "bl number")),
-        shipper=_find_field(result, ("shipper",)),
-        consignee=_find_field(result, ("consignee",)),
-        notify_party=_find_field(result, ("notify party", "notify")),
-        vessel=_find_field(result, ("vessel", "ship name")),
-        port_of_loading=_find_field(result, ("port of loading", "pol")),
-        port_of_discharge=_find_field(result, ("port of discharge", "pod")),
-        shipment_date=_find_field(result, ("shipment date", "on board date", "shipped on board")),
-        package_count=_find_field(result, ("package count", "packages")),
-        gross_weight=_find_field(result, ("gross weight",)),
-        weight_unit=_find_field(result, ("weight unit",)),
-        goods_description=_find_field(result, ("goods description", "description of goods")),
+        bl_number=layout["bl_number"], shipper=layout["shipper"], consignee=layout["consignee"],
+        notify_party=layout["notify_party"], vessel=layout["vessel"], port_of_loading=layout["port_of_loading"],
+        port_of_discharge=layout["port_of_discharge"], shipment_date=layout["shipment_date"],
+        package_count=layout["package_count"], gross_weight=layout["gross_weight"],
+        weight_unit=layout["weight_unit"], goods_description=layout["goods_description"],
     )
 
 

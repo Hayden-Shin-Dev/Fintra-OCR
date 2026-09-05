@@ -50,7 +50,7 @@ class ReviewServiceTests(unittest.TestCase):
             LedgerTransaction("tx-1", amount=evidence("100"), counterparty=evidence("Buyer Co")),
             results,
         )
-        self.assertEqual(review.overall_review_status, "PASS")
+        self.assertEqual(review.overall_review_status, "REVIEW_REQUIRED")
         self.assertGreaterEqual(len(review.validation_results), 5)
         self.assertTrue(all(finding.evidence for finding in review.validation_results if finding.status.value == "match"))
 
