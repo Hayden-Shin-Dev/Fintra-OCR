@@ -81,6 +81,15 @@ def main() -> int:
             raise FileNotFoundError(image)
         destination = case_output / str(manifest["case_id"])
         _prepare_case(source_case, destination)
+        existing = destination / "outputs" / "recognition" / "paddle.json"
+        if existing.is_file():
+            try:
+                existing_payload = json.loads(existing.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                existing_payload = None
+            if isinstance(existing_payload, dict) and isinstance(existing_payload.get("regions"), list):
+                print(f"[{manifest['case_id']}] reusing existing Paddle output")
+                continue
         result = backend.run_ocr(image, str(manifest["document_type"]))
         raw_dir = destination / "outputs" / "raw"
         recognition_dir = destination / "outputs" / "recognition"
