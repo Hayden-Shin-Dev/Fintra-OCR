@@ -17,6 +17,7 @@ import torch
 from mmengine.config import Config
 from mmdet.apis import inference_detector
 from mmdet.registry import MODELS
+from mmdet.utils import register_all_modules
 
 
 def args():
@@ -56,6 +57,7 @@ def load_model(config_path, checkpoint_path, device):
 
 def main():
     parsed = args()
+    register_all_modules(init_default_scope=True)
     device = torch.device(parsed.device)
     if parsed.device == "cuda":
         if not torch.cuda.is_available():
@@ -107,4 +109,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
