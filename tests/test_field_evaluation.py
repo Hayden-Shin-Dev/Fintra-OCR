@@ -14,6 +14,10 @@ class FieldEvaluationTests(unittest.TestCase):
 
     def test_unit_price_is_numeric_not_unit(self):
         self.assertEqual(compare_field("USD 12.00", "$12.00", "items[0].unit_price"), "normalized_match")
+        self.assertEqual(compare_field("12.0", "12.00", "items[0].unit_price"), "normalized_match")
+        self.assertEqual(compare_field("kgs", "KG", "weight_unit"), "normalized_match")
+        self.assertEqual(compare_field("Nov 14, 2020", "2020-11-14", "invoice_date"), "normalized_match")
+        self.assertEqual(compare_field("20-Nar-2001", "20-Mar-2001", "invoice_date"), "wrong")
 
     def test_normalization_is_type_specific_and_conservative(self):
         self.assertEqual(normalize_field(" ACME,  Ltd. ", "seller"), "ACME LTD")

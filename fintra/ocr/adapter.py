@@ -70,6 +70,8 @@ class OCRResult:
             regions_payload = payload["documents"][0].get("predictions", [])
         if regions_payload is None:
             regions_payload = payload.get("candidates", [])
+        metadata = dict(payload.get("metadata", {}))
+        serialized_aihub = metadata.get("model_source", "").startswith("AI-Hub")
         regions = []
         for index, item in enumerate(regions_payload):
             polygon = item.get("polygon") or item.get("bbox") or item.get("boundary")
@@ -78,13 +80,15 @@ class OCRResult:
             regions.append(
                 OCRRegion(
                     polygon=[[float(x), float(y)] for x, y in polygon],
-                    text=str(item.get("text", item.get("data", ""))),
+                    text=(str(item.get("text", item.get("data", ""))).replace("쉼표", ",")
+                          if serialized_aihub else str(item.get("text", item.get("data", "")))),
                     confidence=item.get("confidence", item.get("score")),
                     page=int(item.get("page", 1)),
                     index=index,
                 )
             )
-        metadata = dict(payload.get("metadata", {}))
+        if serialized_aihub:
+            metadata["serialization_escape_decoded"] = "쉼표 -> comma; raw output preserved"
         return cls(
             document_id=str(payload.get("document_id", path.stem)),
             document_type=document_type or str(payload.get("document_type", "Unknown")),

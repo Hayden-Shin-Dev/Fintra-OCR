@@ -10,6 +10,7 @@ import sys
 import unicodedata
 from collections import Counter, defaultdict
 from pathlib import Path
+from decimal import Decimal
 from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -57,7 +58,8 @@ def normalize_field(value: Any, field_name: str) -> str | None:
         number = parse_amount(value)
         return format(number, "f") if number is not None else None
     if kind == "unit":
-        return unicodedata.normalize("NFKC", str(value)).strip().upper()
+        unit = unicodedata.normalize("NFKC", str(value)).strip().upper()
+        return {"KGS": "KG", "KILOGRAM": "KG", "KILOGRAMS": "KG", "GRAM": "G", "GRAMS": "G"}.get(unit, unit)
     return " ".join(unicodedata.normalize("NFKC", str(value)).split()).casefold()
 
 
@@ -76,6 +78,8 @@ def compare_field(predicted: Any, gold: Any, field_name: str) -> str:
     if predicted == gold:
         return "exact_match"
     left, right = normalize_field(predicted, field_name), normalize_field(gold, field_name)
+    if _field_kind(field_name) == "number" and left is not None and right is not None:
+        return "normalized_match" if Decimal(left) == Decimal(right) else "wrong"
     if left is not None and right is not None and left == right:
         return "normalized_match"
     return "wrong"
