@@ -150,6 +150,20 @@ class OCRExtractionTests(unittest.TestCase):
         self.assertEqual(bl.port_of_loading.value, "BUSAN, KOREA")
         self.assertEqual(bl.port_of_discharge.value, "OSAKA, JAPAN")
 
+    def test_bl_to_order_instruction_is_not_a_consignee_value(self):
+        result = OCRResult(
+            "bl-to-order-notice", "B/L", "bl.png", [
+                OCRRegion([[100, 200], [300, 200], [300, 225], [100, 225]], "Shipper", index=0),
+                OCRRegion([[100, 235], [350, 235], [350, 260], [100, 260]], "ALPHA SHIPPING CO.", index=1),
+                OCRRegion([[100, 320], [500, 320], [500, 345], [100, 345]], "Consignee(If 'To Order' so indicate)", index=2),
+                OCRRegion([[100, 360], [350, 360], [350, 385], [100, 385]], "BETA IMPORTS LTD.", index=3),
+                OCRRegion([[100, 450], [300, 450], [300, 475], [100, 475]], "Notify Party", index=4),
+                OCRRegion([[100, 490], [350, 490], [350, 515], [100, 515]], "GAMMA TRADING CO.", index=5),
+            ],
+        )
+        bl = extract_bill_of_lading(result)
+        self.assertEqual(bl.consignee.value, "BETA IMPORTS LTD.")
+
     def test_bl_number_is_extracted_from_combined_date_header(self):
         result = OCRResult(
             "bl-combined-header", "B/L", "bl.png", [

@@ -303,6 +303,8 @@ def _is_party_value_candidate(text: str) -> bool:
         return False
     if re.search(r"NO\s+CLAIM|FAILURE\s+TO\s+NOTIFY|COMPLETE\s+NAME|PLEASE\s+PROVIDE|ACCOUNT\s*(?:&|AND)?\s*RISK", upper):
         return False
+    if re.search(r"\bIF\s*['’]?\s*TO\s+ORDER(?:\s+SO\s+INDICATE)?\b", upper):
+        return False
     if re.search(r"\b(?:BILL\s+OF\s+LADING|MULTIMODAL\s+OCEAN|IMODAL\s+OCEAN|NOT\s+NEOTIABLE|IF\s+TO\s+ORDER|CONSIGNED\s+TO\s+ORDER|PRE[- ]CARRIAGE|PLACE\s+OF\s+RECEIPT|MODE\s+OF\s+INITIAL\s+CARRIAGE)\b", upper):
         return False
     if re.search(r"\b(?:TEL|FAX|PHONE|EMAIL|ADDRESS|STREET|ROAD|AVENUE|DRIVE|ROOM|DISTRICT|VIC)\b", upper):
