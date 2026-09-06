@@ -82,11 +82,26 @@ def main() -> None:
         "historical_accurate_pair_consistency": evaluator_accurate.get("status") == "PASS",
         "historical_balanced_pair_consistency": evaluator_balanced.get("status") == "PASS",
         "all_unverified_available_fields_removed_from_conservative_denominator": all(value.get("available", 0) == 0 for value in conservative_counts.values()),
-        "semantic_role_verification": False,
-        "original_image_header_layout_semantic_review": False,
-        "new_available_field_semantic_justification": False,
-        "true_semantic_row_field_completeness": False,
-        "known_defect_semantic_closure": known.get("metrics", {}).get("classifications", {}).get("CANNOT_VERIFY", 0) == 0,
+        "semantic_role_verification": all(
+            item.get("semantic_role_integrity") is True
+            for item in (accurate_sem, balanced_sem)
+        ),
+        "original_image_header_layout_semantic_review": all(
+            item.get("image_semantic_review_complete") is True
+            for item in (accurate_sem, balanced_sem)
+        ),
+        "new_available_field_semantic_justification": all(
+            item.get("semantic_classification", {}).get("CANNOT_VERIFY", 0) == 0
+            for item in (accurate_sem, balanced_sem)
+        ),
+        "true_semantic_row_field_completeness": all(
+            item.get("row_cannot_verify") == 0
+            for item in (accurate_sem, balanced_sem)
+        ),
+        "known_defect_semantic_closure": (
+            known.get("metrics", {}).get("records", 0) > 0
+            and known.get("metrics", {}).get("classifications", {}).get("CANNOT_VERIFY", 0) == 0
+        ),
         "historical_625_vs_626_root_cause_closed": mismatch.get("root_cause_status") == "REPRODUCED",
         "final_holdout_2_not_accessed": all(
             item.get("final_holdout_2_accessed") is False
