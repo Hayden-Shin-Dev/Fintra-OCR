@@ -1,6 +1,6 @@
 import unittest
 
-from fintra.extraction.documents import extract_bill_of_lading, extract_commercial_invoice
+from fintra.extraction.documents import extract_bill_of_lading, extract_commercial_invoice, _regions
 from fintra.ocr.adapter import OCRRegion, OCRResult
 
 
@@ -83,6 +83,16 @@ class OCRExtractionTests(unittest.TestCase):
         self.assertEqual(invoice.buyer.value, "BETA INC")
         self.assertEqual(invoice.buyer.source_text, "Buyer: BETA INC")
 
+    def test_date_heading_is_not_returned_as_inline_date_value(self):
+        result = OCRResult(
+            "ci-date-heading", "Commercial Invoice", "invoice.png", [
+                OCRRegion([[906, 390], [1063, 390], [1063, 418], [906, 418]], "Date of Issue", index=0),
+                OCRRegion([[1109, 388], [1265, 388], [1265, 414], [1109, 414]], "13-Nov-2011", index=1),
+            ],
+        )
+        invoice = extract_commercial_invoice(result)
+        self.assertEqual(invoice.invoice_date.value, "13-Nov-2011")
+
     def test_party_heading_prefers_below_value_over_adjacent_column(self):
         result = OCRResult(
             "ci-party-column", "Commercial Invoice", "invoice.png", [
@@ -106,6 +116,25 @@ class OCRExtractionTests(unittest.TestCase):
         )
         invoice = extract_commercial_invoice(result)
         self.assertEqual(invoice.items[0].description.value, "Widget")
+
+    def test_contained_paddle_fragment_is_removed_but_adjacent_word_is_kept(self):
+        result = OCRResult(
+            "ci-fragments", "Commercial Invoice", "invoice.png", [
+                OCRRegion([[100, 100], [420, 100], [420, 125], [100, 125]], "ACME MACHINERY CO., LTD.", index=0),
+                OCRRegion([[290, 99], [420, 126], [420, 126], [290, 126]], "Y CO., LTD.", index=1),
+                OCRRegion([[430, 100], [510, 100], [510, 125], [430, 125]], "TOKYO", index=2),
+            ],
+        )
+        self.assertEqual([region.text for region in _regions(result)], ["ACME MACHINERY CO., LTD.", "TOKYO"])
+
+    def test_ordered_refinement_does_not_reintroduce_removed_fragment(self):
+        result = OCRResult(
+            "ci-fragments", "Commercial Invoice", "invoice.png", [
+                OCRRegion([[100, 320], [420, 320], [420, 345], [100, 345]], "ACME MACHINERY CO., LTD.", index=0),
+                OCRRegion([[290, 319], [420, 346], [420, 346], [290, 346]], "Y CO., LTD.", index=1),
+            ],
+        )
+        self.assertEqual(extract_commercial_invoice(result).seller.value, "ACME MACHINERY CO., LTD.")
 
 
 if __name__ == "__main__":

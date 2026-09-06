@@ -25,8 +25,40 @@ def _canonical(value: str) -> str:
     return re.sub(r"[^A-Z0-9]+", " ", value.upper()).strip()
 
 
+def _area(region: OCRRegion) -> float:
+    x1, y1, x2, y2 = region.bbox
+    return max(1.0, (x2 - x1) * (y2 - y1))
+
+
+def _is_contained_fragment(candidate: OCRRegion, larger: OCRRegion) -> bool:
+    """Drop an OCR fragment that duplicates text inside a larger region.
+
+    Paddle may emit a full line and a second, partially overlapping crop of
+    the same line.  Keeping both makes party names and table descriptions
+    repeat text.  This only removes a smaller region when its box is almost
+    contained by the larger box and its canonical text is a substring; two
+    adjacent words or independent table cells are left untouched.
+    """
+    if candidate.page != larger.page or _area(larger) <= _area(candidate) * 1.15:
+        return False
+    small = _canonical(candidate.text)
+    full = _canonical(larger.text)
+    if len(small) < 4 or not small or small == full or small not in full:
+        return False
+    cx1, cy1, cx2, cy2 = candidate.bbox
+    lx1, ly1, lx2, ly2 = larger.bbox
+    padding = max(3.0, min(candidate.bbox[3] - candidate.bbox[1], larger.bbox[3] - larger.bbox[1]) * 0.2)
+    return lx1 - padding <= cx1 and cy1 >= ly1 - padding and cx2 <= lx2 + padding and cy2 <= ly2 + padding
+
+
 def _regions(result: OCRResult) -> list[OCRRegion]:
-    return sorted(result.regions, key=lambda item: (item.page, item.bbox[1], item.bbox[0], item.index))
+    ordered = sorted(result.regions, key=lambda item: (item.page, item.bbox[1], item.bbox[0], item.index))
+    kept: list[OCRRegion] = []
+    for region in sorted(ordered, key=_area, reverse=True):
+        if any(_is_contained_fragment(region, existing) for existing in kept):
+            continue
+        kept.append(region)
+    return sorted(kept, key=lambda item: (item.page, item.bbox[1], item.bbox[0], item.index))
 
 
 def _evidence_from_region(region: OCRRegion, value: str) -> EvidenceField:
@@ -221,11 +253,21 @@ def _invoice_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
     centers = _row_centers([region for region in item_regions if 820 <= region.bbox[0] <= 950
                             and _is_quantity_token(region.text)], minimum=45)
     items = [_item_from_columns(item_regions, center, ((120, 700), (820, 950), (950, 1100), (1100, 1260), (1260, 1520))) for center in centers]
-    currency = _token_value(values, r"USD|EUR|GBP|JPY|CNY|KRW")
+    currency_matches = []
+    for region in values:
+        match = re.search(r"\b(USD|EUR|GBP|JPY|CNY|KRW)\b", region.text, re.I)
+        if match:
+            currency_matches.append((region, match.group(1).upper()))
+    currency_codes = {code for _, code in currency_matches}
+    if len(currency_codes) == 1:
+        region, code = max(currency_matches, key=lambda item: item[0].bbox[1])
+        currency = _evidence_from_region(region, code)
+    else:
+        currency = _token_value(values, r"USD|EUR|GBP|JPY|CNY|KRW")
     total_regions = [region for region in values if 1200 <= region.bbox[0] and 1450 <= region.bbox[1] <= 1650 and re.search(r"\d", region.text)]
     return {
         "invoice_number": _combined_evidence(_in_zone(result, x1=850, x2=1320, y1=250, y2=360)),
-        "invoice_date": _combined_evidence(_in_zone(result, x1=850, x2=1450, y1=360, y2=455)),
+        "invoice_date": _date_evidence(_in_zone(result, x1=850, x2=1450, y1=360, y2=455), "invoice_date"),
         "seller": _party_evidence(_in_zone(result, x1=100, x2=850, y1=310, y2=520)),
         "buyer": _party_evidence(_in_zone(result, x1=100, x2=850, y1=570, y2=760)),
         "currency": currency,
@@ -246,12 +288,28 @@ def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
         quantity = _quantity_evidence([region for region in row if 800 <= region.bbox[0] <= 950 and _is_quantity_token(region.text)])
         unit = _combined_evidence([region for region in row if 800 <= region.bbox[0] <= 950 and not re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())])
         items.append(LineItem(description=description, quantity=quantity, unit=unit))
-    package_regions = _in_zone(result, x1=350, x2=650, y1=1650, y2=1825)
-    package_numbers = [region for region in package_regions if re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())]
-    package = _evidence_from_region(package_numbers[0], package_numbers[0].text) if len(package_numbers) == 1 else _combined_evidence(package_regions)
-    gross_regions = [region for region in values if 400 <= region.bbox[0] <= 700 and 1750 <= region.bbox[1] <= 1850 and re.search(r"\d", region.text)]
-    gross_candidates = [region for region in gross_regions if re.search(r"(?:KG|KGS|GRAM|\bG\b)", region.text, re.I)]
-    gross = _evidence_from_region(gross_candidates[0], gross_candidates[0].text) if len(gross_candidates) == 1 else _combined_evidence(gross_regions)
+    package_regions = [region for region in values if 100 <= region.bbox[0] <= 650 and 1650 <= region.bbox[1] <= 1825]
+    package_values = []
+    for region in package_regions:
+        match = re.search(r"(?:NUMBER\s+OF\s+PACKAGES|NO\.?\s+OF\s+PKGS?)\s*[:#-]?\s*(\d+(?:[.,]\d+)?)", region.text, re.I)
+        if match:
+            package_values.append((region, match.group(1)))
+    if len(package_values) == 1:
+        package = _evidence_from_region(package_values[0][0], package_values[0][1])
+    else:
+        package_numbers = [region for region in package_regions if re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())]
+        package = _evidence_from_region(package_numbers[0], package_numbers[0].text) if len(package_numbers) == 1 else _combined_evidence(package_regions)
+    gross_regions = [region for region in values if 100 <= region.bbox[0] <= 800 and 1750 <= region.bbox[1] <= 1850 and re.search(r"\d", region.text)]
+    gross_values = []
+    for region in gross_regions:
+        match = re.search(r"(?:GROSS\s+WEIGHT).*?(\d+(?:[.,]\d+)?)\s*(KG|KGS|GRAM|G)?\b", region.text, re.I)
+        if match and match.group(2):
+            gross_values.append((region, match.group(1) + match.group(2)))
+    if len(gross_values) == 1:
+        gross = _evidence_from_region(gross_values[0][0], gross_values[0][1])
+    else:
+        gross_candidates = [region for region in gross_regions if re.search(r"(?:KG|KGS|GRAM|\bG\b)", region.text, re.I)]
+        gross = _evidence_from_region(gross_candidates[0], gross_candidates[0].text) if len(gross_candidates) == 1 else _combined_evidence(gross_regions)
     weight_unit = _token_value(values, r"KG|KGS|G|GRAM|GRAMS")
     if weight_unit.status == "missing" and gross.status == "extracted":
         match = re.search(r"\b(KG|KGS|G)\b", str(gross.value), re.I)
@@ -316,6 +374,13 @@ def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
 def _candidate_after_label(region: OCRRegion, aliases: Iterable[str]) -> str | None:
     text = region.text.strip()
     canonical = _canonical(text)
+    # "Buyer's Ref" is a reference-number label, not an inline Buyer value.
+    # Treating the possessive as a match for BUYER returns the suffix "'s Ref".
+    if re.match(r"^(?:BUYER|CONSIGNEE)\s*['’]?S\s+REF(?:ERENCE)?\b", canonical):
+        return None
+    # Date headings such as "Date of Issue" are labels, not inline dates.
+    if re.match(r"^DATE\s+(?:OF|SHIPPED|ISSUED|ON|FROM)\b", canonical):
+        return None
     for alias in aliases:
         alias_canonical = _canonical(alias)
         if canonical == alias_canonical:

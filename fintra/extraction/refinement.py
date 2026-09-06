@@ -42,6 +42,11 @@ def typed_refinement(result, document):
 
 def ordered_refinement(result,document):
     layout=Layout(result);updates={}
+    # Keep the same duplicate-fragment suppression used by the document
+    # layouts.  Re-reading a field bbox from the unfiltered Layout would
+    # otherwise reintroduce Paddle's overlapping partial regions.
+    from .documents import _regions
+    retained_indices={region.index for region in _regions(result)}
     def reorder(field):
         if field.status!='extracted' or not field.bbox:return field
         # An inline label has already been removed from this value. Re-reading
@@ -49,7 +54,7 @@ def ordered_refinement(result,document):
         if field.source_text is not None and str(field.value)!=field.source_text:return field
         xs=[p[0] for p in field.bbox];ys=[p[1] for p in field.bbox]
         box=(min(xs)/layout.width,min(ys)/layout.height,max(xs)/layout.width,max(ys)/layout.height)
-        cells=[c for c in layout.cells if box[0]<=c.cx<=box[2] and box[1]<=c.cy<=box[3]]
+        cells=[c for c in layout.cells if c.index in retained_indices and box[0]<=c.cx<=box[2] and box[1]<=c.cy<=box[3]]
         return layout.evidence(cells) if cells else field
     for name in ('seller','buyer','exporter','consignee','shipper','notify_party','goods_description','vessel','port_of_loading','port_of_discharge'):
         if hasattr(document,name):updates[name]=reorder(getattr(document,name))
