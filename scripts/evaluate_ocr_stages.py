@@ -313,6 +313,76 @@ def _load_extractor_rows(path: Path) -> dict[tuple[str, str], dict[str, str]]:
         return {(row["case_id"], row["field_name"]): row for row in csv.DictReader(handle)}
 
 
+def _extractor_correct(row: dict[str, str] | None) -> bool:
+    return bool(row and row.get("status") in {"exact_match", "normalized_match"})
+
+
+def _candidate_hit(extractor_row: dict[str, str] | None, evidence_row: dict[str, Any]) -> bool:
+    """Check whether the extractor selected text present in raw OCR evidence."""
+    if not extractor_row or extractor_row.get("status") not in {"extracted", "exact_match", "normalized_match"}:
+        return False
+    source = _normalized_text(extractor_row.get("source_text", "")).strip().casefold()
+    if not source:
+        return False
+    candidates = [
+        _normalized_text(value).strip().casefold()
+        for value in evidence_row.get("neighboring_ocr_texts", "").split(" || ")
+        if value.strip()
+    ]
+    joined = _normalized_text(evidence_row.get("combined_ocr_text", "")).strip().casefold()
+    return any(source == value or source in value or value in source for value in candidates) or source in joined
+
+
+def _decomposition(rows: list[dict[str, Any]], extractor: dict[tuple[str, str], dict[str, str]]) -> list[dict[str, Any]]:
+    result = []
+    for row in rows:
+        prediction = extractor.get((row["case_id"], row["field_name"]))
+        raw_recoverable = row["classification"] in RECOVERABLE
+        candidate_hit = raw_recoverable and _candidate_hit(prediction, row)
+        final_correct = _extractor_correct(prediction)
+        result.append({
+            **row,
+            "raw_ocr_recoverable": raw_recoverable,
+            "candidate_hit": candidate_hit,
+            "resolver_correct": candidate_hit and final_correct,
+            "final_correct": final_correct,
+        })
+    return result
+
+
+def _decomposition_aggregate(rows: list[dict[str, Any]], key_names: tuple[str, ...] = ()) -> dict[str, Any]:
+    groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        key = " / ".join(str(row[name]) for name in key_names) if key_names else "overall"
+        groups[key].append(row)
+    result = {}
+    for key, group in sorted(groups.items()):
+        applicable = len(group)
+        recoverable = sum(row["raw_ocr_recoverable"] for row in group)
+        candidate_hit = sum(row["candidate_hit"] for row in group)
+        resolver_correct = sum(row["resolver_correct"] for row in group)
+        final_correct = sum(row["final_correct"] for row in group)
+        result[key] = {
+            "applicable": applicable,
+            "recoverable": recoverable,
+            "candidate_hit": candidate_hit,
+            "resolver_correct": resolver_correct,
+            "final_correct": final_correct,
+            "ocr_recoverability": recoverable / applicable if applicable else 0.0,
+            "candidate_recall_on_recoverable": candidate_hit / recoverable if recoverable else 0.0,
+            "resolver_accuracy_on_candidate_hit": resolver_correct / candidate_hit if candidate_hit else 0.0,
+            "final_accuracy": final_correct / applicable if applicable else 0.0,
+        }
+    return result
+
+
+def _extractor_accuracy(rows: dict[tuple[str, str], dict[str, str]]) -> dict[str, Any]:
+    statuses = Counter(row.get("status", "") for row in rows.values())
+    applicable = sum(row.get("gt_status") == "available" for row in rows.values())
+    correct = statuses["exact_match"] + statuses["normalized_match"]
+    return {"applicable": applicable, "correct": correct, "accuracy": correct / applicable if applicable else 0.0}
+
+
 def evaluate(cases_root: Path, modern_field_csv: Path, paddle_field_csv: Path, output: Path, gold_root: Path | None = None) -> dict[str, Any]:
     cases = []
     for path in sorted(cases_root.iterdir()):
@@ -366,6 +436,10 @@ def evaluate(cases_root: Path, modern_field_csv: Path, paddle_field_csv: Path, o
     secondary_rows = {backend: [row for row in rows if row not in primary_rows[backend]] for backend, rows in evidence.items()}
     evidence_report["primary"] = {backend: {"overall": _field_aggregate(rows, ()), "by_document_type": _field_aggregate(rows, ("document_type",)), "by_field": _field_aggregate(rows, ("document_type", "field_base"))} for backend, rows in primary_rows.items()}
     evidence_report["secondary"] = {backend: {"overall": _field_aggregate(rows, ())} for backend, rows in secondary_rows.items()}
+    decomposition = {
+        "modern": _decomposition(evidence["modern"], modern_extractor),
+        "paddle": _decomposition(evidence["paddle"], paddle_extractor),
+    }
 
     pipeline = {}
     for backend, rows in primary_rows.items():
@@ -373,7 +447,7 @@ def evaluate(cases_root: Path, modern_field_csv: Path, paddle_field_csv: Path, o
         loss = {}
         for scope, group in [("overall", rows), *[(kind, [row for row in rows if row["document_type"] == kind]) for kind in DOCUMENT_TYPES]]:
             applicable = len(group)
-            detected = sum(item["classification"] != "detection_missing" for item in group)
+            detected = sum(item["classification"] != "OCR_DETECTION_MISSING" for item in group)
             recoverable = sum(item["classification"] in RECOVERABLE for item in group)
             extracted = sum(extractor.get((item["case_id"], item["field_name"]), {}).get("status") in ("exact_match", "normalized_match") for item in group)
             loss[scope] = {"applicable_primary_fields": applicable, "detection_evidence_present": detected, "recognition_recoverable": recoverable, "extractor_correct": extracted, "detection_survival_rate": detected / applicable if applicable else 0.0, "recognition_survival_given_detection": recoverable / detected if detected else 0.0, "extractor_accuracy_given_recoverable_ocr": extracted / recoverable if recoverable else 0.0}
@@ -398,13 +472,30 @@ def evaluate(cases_root: Path, modern_field_csv: Path, paddle_field_csv: Path, o
     with (output / "raw_field_evidence.csv").open("w", encoding="utf-8-sig", newline="") as handle:
         fields = ["case_id", "document_id", "document_type", "backend", "field_name", "field_base", "gt_value", "candidate_count", "single_exact", "multi_region_exact", "normalized_exact", "multi_region_normalized", "fuzzy_similarity", "fuzzy_cer", "classification", "closest_ocr_text", "combined_ocr_text", "neighboring_ocr_texts", "confidence"]
         writer = csv.DictWriter(handle, fieldnames=fields); writer.writeheader(); writer.writerows(field_rows)
+    with (output / "extraction_stage_results.csv").open("w", encoding="utf-8-sig", newline="") as handle:
+        fields = ["case_id", "document_id", "document_type", "backend", "field_name", "field_base", "classification", "raw_ocr_recoverable", "candidate_hit", "resolver_correct", "final_correct"]
+        writer = csv.DictWriter(handle, fieldnames=fields); writer.writeheader()
+        for row in decomposition["modern"] + decomposition["paddle"]:
+            writer.writerow({field: row.get(field) for field in fields})
     with (output / "stage_results.csv").open("w", encoding="utf-8-sig", newline="") as handle:
         fields = ["case_id", "document_type", "backend", "stage", "gt_regions", "predicted_regions", "matched_regions", "false_positive_regions", "missed_regions", "precision", "recall", "f1", "hmean", "exact_text_matches", "normalized_text_matches", "exact_text_match_rate_on_matched", "normalized_text_match_rate_on_matched", "character_score_on_matched", "cer_on_matched"]
         writer = csv.DictWriter(handle, fieldnames=fields); writer.writeheader()
         for row in stage_rows:
             for section in ("detection", "recognition", "e2e"):
                 values = {key: value for key, value in row[section].items() if key != "matches"}; writer.writerow({"case_id": row["case_id"], "document_type": row["document_type"], "backend": row["backend"], "stage": section, **values})
-    metrics = {"contract": "Frozen 60-case GT; stage metrics use IoU 0.5 maximum-cardinality matching; field evidence uses raw OCR only.", "documents": len(cases), "gold_status_counts": dict(gold_status_counts), "gold_status_by_document_type": {kind: dict(value) for kind, value in gold_status_by_type.items()}, "stage": stage, "true_field_evidence": evidence_report, "pipeline_loss_primary": pipeline, "hybrid_true_ocr_oracle": hybrid, "same_extractor_reference": {"modern_normalized_accuracy": 0.32682926829268294, "paddle_normalized_accuracy": 0.375609756097561, "oracle_union": 0.4853658536585366}}
+    decomposition_report = {}
+    for backend, rows in decomposition.items():
+        primary = [row for row in rows if row["field_base"] in PRIMARY_BASE_FIELDS.get(row["document_type"], set())]
+        secondary = [row for row in rows if row not in primary]
+        decomposition_report[backend] = {
+            "overall": _decomposition_aggregate(rows),
+            "by_document_type": _decomposition_aggregate(rows, ("document_type",)),
+            "by_field": _decomposition_aggregate(rows, ("document_type", "field_base")),
+            "primary": {"overall": _decomposition_aggregate(primary), "by_document_type": _decomposition_aggregate(primary, ("document_type",)), "by_field": _decomposition_aggregate(primary, ("document_type", "field_base"))},
+            "secondary": {"overall": _decomposition_aggregate(secondary)},
+        }
+    same_extractor = {"modern": _extractor_accuracy(modern_extractor), "paddle": _extractor_accuracy(paddle_extractor)}
+    metrics = {"contract": "Frozen 60-case GT; stage metrics use IoU 0.5 maximum-cardinality matching; field evidence uses raw OCR only.", "documents": len(cases), "gold_status_counts": dict(gold_status_counts), "gold_status_by_document_type": {kind: dict(value) for kind, value in gold_status_by_type.items()}, "stage": stage, "true_field_evidence": evidence_report, "extraction_stage_decomposition": decomposition_report, "pipeline_loss_primary": pipeline, "hybrid_true_ocr_oracle": hybrid, "same_extractor_reference": same_extractor}
     (output / "ocr_stage_metrics.json").write_text(json.dumps(metrics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     failures = sorted((row for row in field_rows if row["classification"] not in ("OCR_CORRECT_SINGLE_REGION", "OCR_CORRECT_MULTI_REGION")), key=lambda row: (row["backend"], row["document_type"], row["case_id"], row["field_name"]))[:30]
     lines = ["# OCR stage evaluation", "", f"Documents evaluated: {len(cases)}", "", "## Contract", "", "Modern and Paddle are compared on the same raw AI-Hub GT boxes. Detection and recognition use polygon IoU 0.5 maximum-cardinality matching. Paddle canonical regions are used as its detector boxes because the saved Paddle adapter output does not expose a separate detector score. Field evidence does not read extractor predictions.", "", "## Stage summary", ""]
@@ -424,12 +515,17 @@ def evaluate(cases_root: Path, modern_field_csv: Path, paddle_field_csv: Path, o
             lines.append(f"- {backend} {scope}: {item['recoverable']}/{item['applicable_fields']} = {item['recoverability']:.6f}")
         lines.append(f"- {backend} primary by type: " + ", ".join(f"{kind}={evidence_report['primary'][backend]['by_document_type'][kind]['recoverable']}/{evidence_report['primary'][backend]['by_document_type'][kind]['applicable_fields']}" for kind in DOCUMENT_TYPES))
         lines.append(f"- {backend} primary failure counts: " + json.dumps({key: evidence_report['primary'][backend]['overall']['overall'][key] for key in ('fuzzy_recoverable', 'major_ocr_error', 'detection_missing')}, ensure_ascii=False))
+    lines += ["", "## Extraction stage decomposition", "", "candidate_hit means the extractor source_text is present in the raw OCR regions selected by the frozen GT-token neighborhood (text evidence only). resolver_correct means candidate_hit plus exact/normalized final status; this does not generate or modify gold.", ""]
+    for backend in ("modern", "paddle"):
+        for scope in ("overall", "primary", "secondary"):
+            item = decomposition_report[backend]["overall"]["overall"] if scope == "overall" else decomposition_report[backend][scope]["overall"]["overall"]
+            lines.append(f"- {backend} {scope}: applicable={item['applicable']}, recoverable={item['recoverable']}, candidate_hit={item['candidate_hit']}, resolver_correct={item['resolver_correct']}, final_correct={item['final_correct']}; OCR={item['ocr_recoverability']:.6f}, candidate_recall={item['candidate_recall_on_recoverable']:.6f}, resolver={item['resolver_accuracy_on_candidate_hit']:.6f}, final={item['final_accuracy']:.6f}")
     lines += ["", "Gold exclusions (not in applicable evidence denominator):", json.dumps(metrics["gold_status_counts"], ensure_ascii=False), "", "Primary field detail is in ocr_stage_metrics.json under true_field_evidence.*.by_field."]
     lines += ["", "## Pipeline loss (primary fields)", ""]
     for backend, scopes in pipeline.items():
         item = scopes["overall"]
         lines.append(f"- {backend}: applicable={item['applicable_primary_fields']}, detection={item['detection_evidence_present']}, recognition={item['recognition_recoverable']}, extractor={item['extractor_correct']}; survival={item['detection_survival_rate']:.6f}/{item['recognition_survival_given_detection']:.6f}/{item['extractor_accuracy_given_recoverable_ocr']:.6f}")
-    lines += ["", "## Hybrid raw OCR oracle", "", json.dumps(hybrid, ensure_ascii=False, indent=2), "", "## Same-extractor outcome (kept separate)", "", "Modern 32.6829%, Paddle 37.5610%, oracle union 48.5366%. This is field-extractor outcome, not OCR character accuracy.", "", "## First 30 non-exact evidence cases", ""]
+    lines += ["", "## Hybrid raw OCR oracle", "", json.dumps(hybrid, ensure_ascii=False, indent=2), "", "## Same-extractor outcome (kept separate)", "", f"Modern {same_extractor['modern']['accuracy']:.6f}, Paddle {same_extractor['paddle']['accuracy']:.6f}. This is field-extractor outcome, not OCR character accuracy.", "", "## First 30 non-exact evidence cases", ""]
     for row in failures:
         lines.append(f"- {row['backend']} {row['case_id']} {row['document_type']} {row['field_name']}: GT={row['gt_value']!r}; closest={row['closest_ocr_text']!r}; neighbors={row['neighboring_ocr_texts']!r}; similarity={row['fuzzy_similarity']:.4f}; classification={row['classification']}")
     (output / "OCR_STAGE_EVALUATION.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
