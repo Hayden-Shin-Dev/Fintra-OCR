@@ -62,3 +62,46 @@ contains 135 rows, led by description 27, unit 22, consignee 18, shipper 10,
 and unit_price 10.  This comparison is not a claim that v3 gold is finally
 human-certified; it is a separately reproducible audited candidate and must
 remain distinct from semantic-v2.
+
+## Semantic-v3.1 strict validation
+
+`validate_semantic_v3.py` validates semantic-v3 prediction-blind using source
+annotation text, token geometry, field types, table row ordering, and
+document-relative structure. It reads no OCR prediction or extractor output.
+The semantic-v2 and semantic-v3 roots are not modified.
+
+Outputs:
+
+- `artifacts/fintra/gold_audit/semantic-v3.1/v3_invalid_gold.csv`
+- `artifacts/fintra/gold_audit/semantic-v3.1/v3_1_validation_metrics.json`
+- `artifacts/fintra/gold_audit/semantic-v3.1/v3_to_v3_1_diff.csv`
+- `artifacts/fintra/gold_audit/semantic-v3.1/cases/`
+
+The v3 candidate contained 482 available fields. Strict validation found 22
+invalid candidates: Commercial Invoice 19, B/L 3, and Packing List 0. The
+v3.1 output has zero residual invariant violations (`PASS`). It retained 460
+v3 available candidates, used 17 structurally valid semantic-v2 fallbacks,
+and marked unresolved/rejected candidates ambiguous where no strict source
+backed value remained. The v3.1 diff contains 25 field changes.
+
+Using the unchanged frozen `b8d53ee` extractor and stored Paddle OCR outputs:
+
+- field results: `artifacts/fintra/gold_audit/semantic-v3.1-paddle-evaluation/field_results.csv`
+- metrics: `artifacts/fintra/gold_audit/semantic-v3.1-paddle-evaluation/field_metrics.json`
+- recoverable errors: `artifacts/fintra/gold_audit/semantic-v3.1-paddle-evaluation/recoverable_but_wrong.csv`
+
+The v3.1 baseline is 337/475 normalized matches (70.95%) overall and 154/192
+(80.21%) across primary fields. Overall by type: CI 146/191 (76.44%), Packing
+113/143 (79.02%), and B/L 78/141 (55.32%). Primary by type: CI 67/74
+(90.54%), Packing 63/70 (90.00%), and B/L 24/48 (50.00%). The frozen
+extractor was not changed. The raw Paddle OCR recoverable-but-wrong
+diagnostic contains 117 rows.
+
+The full unittest suite still has two pre-existing layout failures, which are
+not mixed into this gold work:
+
+- `test_packing_party_headings_are_not_returned_as_values`: the layout
+  extractor returns the heading `Consignee` instead of the expected company
+  line.
+- `test_typed_date_and_last_port_line_are_selected`: the layout extractor
+  returns no value where the fixture expects `AYAMONTE, SPAIN`.

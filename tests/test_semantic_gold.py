@@ -2,6 +2,7 @@ import unittest
 
 from scripts.build_semantic_field_gold import _gold
 from scripts.build_semantic_v3_gold import build_v3
+from scripts.validate_semantic_v3 import _field_valid
 
 
 def token(text, x1, y1, x2=None, y2=None):
@@ -77,6 +78,11 @@ class SemanticGoldTests(unittest.TestCase):
         fields = {field["field_name"]: field for field in build_v3(payload, "Commercial Invoice")}
         self.assertEqual(fields["items[0].quantity"]["value"], "7")
         self.assertEqual(fields["items[0].unit"]["value"], "PC")
+
+    def test_v3_invariants_reject_numeric_description_voyage_party_and_incoterm_vessel(self):
+        self.assertFalse(_field_valid({"field_name": "items[0].description", "value": "7646.00"}, ["7", "PC", "$7646.00"], "Commercial Invoice")[0])
+        self.assertFalse(_field_valid({"field_name": "shipper", "value": "PRINCESS OF LUCK V.427"}, [], "B/L")[0])
+        self.assertFalse(_field_valid({"field_name": "vessel", "value": "DAF"}, [], "B/L")[0])
 
 
 if __name__ == "__main__":
