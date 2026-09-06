@@ -45,7 +45,11 @@ def _is_contained_fragment(candidate: OCRRegion, larger: OCRRegion) -> bool:
         return False
     small = _canonical(candidate.text)
     full = _canonical(larger.text)
-    if len(small) < 3 or not small or small == full:
+    # Two-character OCR fragments (for example a duplicated ``LP`` or
+    # ``D.`` suffix) are still safe to remove when their box is contained in
+    # a larger region.  The decision remains geometric/textual and does not
+    # depend on document values.
+    if len(small) < 2 or not small or small == full:
         return False
     cx1, cy1, cx2, cy2 = candidate.bbox
     lx1, ly1, lx2, ly2 = larger.bbox

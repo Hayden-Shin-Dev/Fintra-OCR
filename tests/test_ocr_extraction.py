@@ -182,6 +182,15 @@ class OCRExtractionTests(unittest.TestCase):
         )
         self.assertEqual([region.text for region in _regions(result)], ["ACME MACHINERY CO., LTD.", "TOKYO"])
 
+    def test_contained_two_character_paddle_fragment_is_removed(self):
+        result = OCRResult(
+            "ci-short-fragment", "Commercial Invoice", "invoice.png", [
+                OCRRegion([[100, 100], [420, 100], [420, 125], [100, 125]], "NORTGAGE CONNECT LP", index=0),
+                OCRRegion([[373, 99], [410, 126], [410, 126], [373, 126]], "LP", index=1),
+            ],
+        )
+        self.assertEqual([region.text for region in _regions(result)], ["NORTGAGE CONNECT LP"])
+
     def test_overlapping_corrupted_paddle_fragment_is_removed(self):
         result = OCRResult(
             "ci-overlap-fragment", "Commercial Invoice", "invoice.png", [
