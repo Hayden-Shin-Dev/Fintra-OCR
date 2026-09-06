@@ -57,6 +57,8 @@ re-evaluation is stored at:
 
 With the unchanged `b8d53ee` extractor, v3 reports 325/482 normalized matches
 (67.43%).  By type: CI 68.37% (134/196), Packing 79.02% (113/143), B/L
-54.55% (78/143).  This comparison is not a claim that v3 gold is finally
+54.55% (78/143).  The Paddle raw-OCR recoverable-but-extractor-wrong report
+contains 135 rows, led by description 27, unit 22, consignee 18, shipper 10,
+and unit_price 10.  This comparison is not a claim that v3 gold is finally
 human-certified; it is a separately reproducible audited candidate and must
 remain distinct from semantic-v2.

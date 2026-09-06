@@ -16,7 +16,7 @@ if str(ROOT) not in sys.path:
 import evaluate_ocr_stages as stage_eval
 
 
-def audit(cases_root: Path, paddle_cases_root: Path, field_results: Path) -> list[dict[str, object]]:
+def audit(cases_root: Path, paddle_cases_root: Path, field_results: Path, gold_root: Path | None = None) -> list[dict[str, object]]:
     with field_results.open(encoding="utf-8-sig", newline="") as handle:
         extracted = {(row["case_id"], row["field_name"]): row for row in csv.DictReader(handle)}
 
@@ -33,7 +33,7 @@ def audit(cases_root: Path, paddle_cases_root: Path, field_results: Path) -> lis
             "document_type": manifest["document_type"],
         }
         paddle_path = paddle_cases_root / manifest["case_id"] / "outputs" / "recognition" / "paddle.json"
-        paddle_rows = stage_eval._field_evidence(case, "paddle", stage_eval._read_ocr(paddle_path))
+        paddle_rows = stage_eval._field_evidence(case, "paddle", stage_eval._read_ocr(paddle_path), gold_root)
         for evidence in paddle_rows:
             if evidence["classification"] not in stage_eval.RECOVERABLE:
                 continue
@@ -66,9 +66,10 @@ def main() -> None:
     parser.add_argument("--paddle-cases", type=Path, required=True)
     parser.add_argument("--field-results", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--gold-root", type=Path, default=None, help="Root containing <case_id>/semantic_gold_fields.json")
     args = parser.parse_args()
     counts = Counter()
-    rows = audit(args.cases, args.paddle_cases, args.field_results)
+    rows = audit(args.cases, args.paddle_cases, args.field_results, args.gold_root)
     counts.update(row["field_base"] for row in rows)
     # Re-sort after counting; the first pass only establishes the row set.
     rows.sort(key=lambda row: (-counts[row["field_base"]], str(row["field_base"]), str(row["case_id"]), str(row["field_name"])))

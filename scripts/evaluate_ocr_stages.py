@@ -234,8 +234,9 @@ def _candidate_regions(field: dict[str, Any], gt_tokens: list[dict[str, Any]], r
     return selected
 
 
-def _field_evidence(case: dict[str, Any], backend: str, regions: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    gold = json.loads((case["path"] / "semantic_gold_fields.json").read_text(encoding="utf-8"))
+def _field_evidence(case: dict[str, Any], backend: str, regions: list[dict[str, Any]], gold_root: Path | None = None) -> list[dict[str, Any]]:
+    gold_path = (gold_root / case["case_id"] / "semantic_gold_fields.json") if gold_root else case["path"] / "semantic_gold_fields.json"
+    gold = json.loads(gold_path.read_text(encoding="utf-8"))
     raw_gt = json.loads((case["path"] / "gt.json").read_text(encoding="utf-8"))
     rows = []
     for field in gold:
