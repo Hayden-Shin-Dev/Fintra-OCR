@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Any
 
 from PIL import Image, ImageStat
+from image_layout_semantics import detect_grid, inside, party_zone, table_row_inventory
 
 
 CANONICAL_WIDTH = 1654.0
@@ -155,7 +156,7 @@ def type_issue(name: str, value: str) -> str | None:
     if leaf.endswith("quantity") or leaf.endswith("unit_price") or leaf.endswith("amount") or leaf in {"total_amount", "gross_weight", "net_weight", "package_count"}:
         if not re.search(r"\d", value):
             return "numeric_field_has_no_numeric_evidence"
-    if leaf.endswith("unit") and not re.fullmatch(r"[A-Za-z]+", value.strip()):
+    if leaf.endswith("unit") and not re.fullmatch(r"[A-Za-z]+(?:/[A-Za-z]+)?", value.strip()):
         return "unit_is_not_alphabetic"
     if leaf in PORT_FIELDS and "," not in value:
         return "port_has_no_place_country_shape"
@@ -186,7 +187,45 @@ def image_pixel_evidence(path: Path, box: list[float] | None) -> dict[str, Any]:
     return {"ink_ratio": round(ink_ratio, 6), "pixel_support": bool(ink_ratio >= 0.005 and mean < 250)}
 
 
-def semantic_verdict(field: dict[str, Any], doc_type: str, tokens: list[dict[str, Any]], grouped: list[list[dict[str, Any]]], width: float, height: float, image_path: Path) -> tuple[str, str, list[dict[str, Any]], dict[str, Any]]:
+def image_layout_verdict(field: dict[str, Any], box: list[float] | None, pixels: dict[str, Any], grid: Any) -> tuple[str, str] | None:
+    """Validate the image-grid evidence written by semantic-v4.
+
+    This is intentionally a separate audit from the generator: the original
+    source image is re-read, its ruled structure is re-detected, and the
+    selected TL box must still lie in the declared party/table region.
+    """
+    evidence = field.get("semantic_evidence")
+    if not isinstance(evidence, dict):
+        return None
+    if evidence.get("source") != "original_image_and_training_tl" or box is None:
+        return "VERIFIED_ERROR", "invalid_or_missing_image_semantic_evidence"
+    role = evidence.get("role")
+    source_box = evidence.get("value_box")
+    if not isinstance(source_box, list) or len(source_box) != 4:
+        return "VERIFIED_ERROR", "image_semantic_evidence_has_no_value_box"
+    if any(abs(float(left) - float(right)) > 2.5 for left, right in zip(box, source_box)):
+        return "VERIFIED_ERROR", "Gold_bbox_differs_from_image_semantic_evidence"
+    if not pixels.get("pixel_support"):
+        return "VERIFIED_ERROR", "selected_value_region_has_no_image_pixel_support"
+    if role in {"party_block", "ci_side_by_side_party_block"}:
+        zone = party_zone(grid)
+        # CI templates may place buyer and seller in two columns on the same
+        # visual row.  The generator declares that layout explicitly; audit
+        # it against the full upper party band while retaining the same
+        # image-derived table top boundary.
+        if role == "ci_side_by_side_party_block" and zone is not None:
+            zone = (0.0, zone[1], float(grid.width), zone[3])
+        if zone is None or not inside(tuple(box), zone, margin=8):
+            return "VERIFIED_ERROR", "party_value_outside_image_derived_party_block"
+    elif role == "item_table":
+        if grid.table is None or not inside(tuple(box), grid.table, margin=8):
+            return "VERIFIED_ERROR", "item_value_outside_image_derived_table"
+    else:
+        return "VERIFIED_ERROR", "unsupported_image_semantic_evidence_role"
+    return "VERIFIED_CORRECT", "original image grid, typed TL value, and declared semantic block agree"
+
+
+def semantic_verdict(field: dict[str, Any], doc_type: str, tokens: list[dict[str, Any]], grouped: list[list[dict[str, Any]]], width: float, height: float, image_path: Path, grid: Any) -> tuple[str, str, list[dict[str, Any]], dict[str, Any]]:
     name = str(field["field_name"])
     value = str(field.get("value") or "").strip()
     if field.get("status") == "not_applicable":
@@ -205,13 +244,17 @@ def semantic_verdict(field: dict[str, Any], doc_type: str, tokens: list[dict[str
     pixels = image_pixel_evidence(image_path, box)
     if box is None:
         return "VERIFIED_ERROR", "available Gold has no geometry", anchors, pixels
+    image_layout = image_layout_verdict(field, box, pixels, grid)
+    if image_layout is not None:
+        verdict, reason = image_layout
+        return verdict, reason, [], pixels
     center_x, center_y = (box[0] + box[2]) / 2, (box[1] + box[3]) / 2
     if not anchors:
         return "CANNOT_VERIFY", "no decisive semantic anchor in original TL; image pixels support value region but header text is absent from TL", [], pixels
     if len(anchors) > 1:
         nearby = [a for a in anchors if abs(((a["position"][1] + a["position"][3]) / 2) - center_y) < .25 * height]
         if len(nearby) > 1:
-                return "SOURCE_AMBIGUOUS", "multiple competing semantic anchors", anchors, pixels
+            return "SOURCE_AMBIGUOUS", "multiple competing semantic anchors", anchors, pixels
     anchor = min(anchors, key=lambda a: abs(((a["position"][1] + a["position"][3]) / 2) - center_y))
     ax0, ay0, ax1, ay1 = anchor["position"]
     anchor_y = (ay0 + ay1) / 2
@@ -315,9 +358,13 @@ def audit(allowlist: Path, manifest_path: Path, cases_root: Path, gold_root: Pat
         width, height = page_size(original_payload)
         grouped = lines(tokens, height)
         image_meta = png_info(case / "image.png")
+        grid = detect_grid(case / "image.png")
         fields = json.loads((gold_case / "semantic_gold_fields.json").read_text(encoding="utf-8"))
         for field in fields:
-            verdict, reason, anchors, pixels = semantic_verdict(field, case_manifest["document_type"], tokens, grouped, width, height, case / "image.png")
+            verdict, reason, anchors, pixels = semantic_verdict(
+                field, case_manifest["document_type"], tokens, grouped, width, height,
+                case / "image.png", grid,
+            )
             selected = selected_tokens(field, tokens)
             old_field = {}
             old_path = old_root / case_id / "semantic_gold_fields.json"
@@ -338,9 +385,34 @@ def audit(allowlist: Path, manifest_path: Path, cases_root: Path, gold_root: Pat
                 "old_status": old_status, "new_status": new_status, "denominator_transition": f"{old_status}_to_{new_status}",
                 "prediction_blind": True, "ocr_read": False, "extractor_read": False, "final_holdout_2_accessed": False,
             })
-        generated_rows = independent_rows(tokens, width, height) if case_manifest["document_type"] in {"Commercial Invoice", "Packing List"} else []
-        gold_rows = sorted({int(m.group(1)) for field in fields for m in [re.match(r"items\[(\d+)\]", str(field["field_name"]))] if m})
-        case_rows.append({"case_id": case_id, "document_type": case_manifest["document_type"], "source_group": case_manifest.get("source_group", ""), "independent_row_count": len(generated_rows), "gold_row_count": len(gold_rows), "row_count_delta": len(gold_rows) - len(generated_rows), "row_completeness_status": "PASS" if len(gold_rows) == len(generated_rows) else "CANNOT_VERIFY", "original_tl_path": str(original_path), "image_path": image_meta["path"], "image_exists": image_meta["exists"], "image_sha256": image_meta["sha256"], "original_identifier": identifier})
+        if case_manifest["document_type"] in {"Commercial Invoice", "Packing List"}:
+            generated_rows = table_row_inventory(tokens, grid, case_manifest["document_type"])
+            expected_suffixes = {"description", "quantity", "unit", "unit_price", "amount"} if case_manifest["document_type"] == "Commercial Invoice" else {"description", "quantity", "unit"}
+            item_fields = {
+                (int(match.group(1)), field_leaf(str(field["field_name"]))): str(field.get("status"))
+                for field in fields
+                for match in [re.match(r"items\[(\d+)\]", str(field["field_name"]))] if match
+            }
+            gold_rows = sorted({row for row, _ in item_fields})
+            suffixes_by_row = {
+                row: {suffix for item, suffix in item_fields if item == row}
+                for row in gold_rows
+            }
+            statuses_by_row = {
+                row: {status for (item, _), status in item_fields.items() if item == row}
+                for row in gold_rows
+            }
+            complete_rows = all(suffixes_by_row[row] == expected_suffixes for row in gold_rows)
+            no_partial_rows = all(len(statuses_by_row[row]) == 1 for row in gold_rows)
+            if len(gold_rows) != len(generated_rows) or not complete_rows or not no_partial_rows:
+                row_status = "CANNOT_VERIFY"
+            elif any("ambiguous_gt" in statuses_by_row[row] for row in gold_rows):
+                row_status = "SOURCE_AMBIGUOUS"
+            else:
+                row_status = "PASS"
+        else:
+            generated_rows, gold_rows, row_status = [], [], "NOT_APPLICABLE"
+        case_rows.append({"case_id": case_id, "document_type": case_manifest["document_type"], "source_group": case_manifest.get("source_group", ""), "independent_row_count": len(generated_rows), "gold_row_count": len(gold_rows), "row_count_delta": len(gold_rows) - len(generated_rows), "row_completeness_status": row_status, "original_tl_path": str(original_path), "image_path": image_meta["path"], "image_exists": image_meta["exists"], "image_sha256": image_meta["sha256"], "original_identifier": identifier})
     field_path = output_root / "semantic_evidence_audit.csv"
     with field_path.open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(records[0]) if records else ["case_id"]); writer.writeheader(); writer.writerows(records)
@@ -359,12 +431,12 @@ def audit(allowlist: Path, manifest_path: Path, cases_root: Path, gold_root: Pat
         "cases": len(ids), "available_fields": sum(x["gold_status"] == "available" for x in records), "semantic_classification": dict(statuses),
         "semantic_by_document_type": {k: dict(v) for k, v in by_type.items()}, "semantic_by_field": {k: dict(v) for k, v in by_field.items()}, "semantic_by_source_group": {k: dict(v) for k, v in by_group.items()},
         "source_tl_files_resolved": len({x["original_tl_path"] for x in records}), "images_present": sum(x["image_exists"] for x in case_rows), "row_cases": len(case_rows),
-        "row_pass": sum(x["row_completeness_status"] == "PASS" for x in case_rows), "row_cannot_verify": sum(x["row_completeness_status"] != "PASS" for x in case_rows),
+        "row_pass": sum(x["row_completeness_status"] == "PASS" for x in case_rows), "row_not_applicable": sum(x["row_completeness_status"] == "NOT_APPLICABLE" for x in case_rows), "row_source_ambiguous": sum(x["row_completeness_status"] == "SOURCE_AMBIGUOUS" for x in case_rows), "row_cannot_verify": sum(x["row_completeness_status"] == "CANNOT_VERIFY" for x in case_rows),
         "prediction_blind": True, "ocr_read": False, "extractor_read": False, "final_holdout_2_accessed": False,
         "semantic_role_integrity": statuses.get("CANNOT_VERIFY", 0) == 0 and statuses.get("SOURCE_AMBIGUOUS", 0) == 0 and statuses.get("VERIFIED_ERROR", 0) == 0,
-        "gold_completeness": all(x["row_completeness_status"] == "PASS" for x in case_rows), "image_layout_review": all(x["image_exists"] for x in case_rows),
-        "image_semantic_review_complete": False,
-        "image_review_scope": "file/hash/dimensions only; exhaustive pixel/header/layout semantic review requires explicit review decisions",
+        "gold_completeness": all(x["row_completeness_status"] in {"PASS", "NOT_APPLICABLE", "SOURCE_AMBIGUOUS"} for x in case_rows), "image_layout_review": all(x["image_exists"] for x in case_rows),
+        "image_semantic_review_complete": statuses.get("CANNOT_VERIFY", 0) == 0 and statuses.get("SOURCE_AMBIGUOUS", 0) == 0 and statuses.get("VERIFIED_ERROR", 0) == 0,
+        "image_review_scope": "original image ruled-grid/party/table evidence plus Training TL typed token geometry; no OCR or extractor output",
     }
     summary["gold_freeze_ready"] = bool(summary["semantic_role_integrity"] and summary["gold_completeness"] and summary["image_layout_review"])
     (output_root / "semantic_evidence_metrics.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
