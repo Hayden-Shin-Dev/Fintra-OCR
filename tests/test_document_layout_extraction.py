@@ -8,6 +8,25 @@ def region(text, x1, y1, x2, y2, index):
     return OCRRegion([[x1, y1], [x2, y1], [x2, y2], [x1, y2]], text, index=index)
 
 
+def transformed(result, scale, offset_x=0, offset_y=0):
+    regions = []
+    for item in result.regions:
+        polygon = [[x * scale + offset_x, y * scale + offset_y] for x, y in item.polygon]
+        regions.append(OCRRegion(polygon, item.text, item.confidence, item.page, item.index))
+    return OCRResult(
+        result.document_id,
+        result.document_type,
+        result.source_file,
+        regions,
+        metadata={
+            "page_width": 1654 * scale,
+            "page_height": 2340 * scale,
+            "page_origin_x": offset_x,
+            "page_origin_y": offset_y,
+        },
+    )
+
+
 class DocumentLayoutExtractionTests(unittest.TestCase):
     def test_bl_structural_zones_separate_number_parties_and_total_weight(self):
         result = OCRResult(
@@ -74,6 +93,27 @@ class DocumentLayoutExtractionTests(unittest.TestCase):
         )
         document = extract_bill_of_lading(result)
         self.assertEqual(document.notify_party.value, "SAME AS CONSIGNEE")
+
+    def test_template_zones_follow_page_scale_and_origin(self):
+        base = OCRResult(
+            "bl-scale", "B/L", "bl.png", [
+                region("HG732993", 1230, 305, 1347, 328, 0),
+                region("TELIANT MORTGAGE", 77, 312, 337, 335, 1),
+                region("NONGS DRUG STORES", 73, 500, 356, 523, 2),
+                region("QILGRIM'S PRIDE", 73, 702, 356, 725, 3),
+                region("ARGOLIKOS", 71, 946, 217, 970, 4),
+                region("AYAMONTE, SPAIN", 485, 946, 714, 972, 5),
+                region("YIZHENG, CHINA", 70, 1011, 273, 1038, 6),
+                region("70KG", 1182, 1428, 1246, 1451, 7),
+                region("TOTAL", 1056, 1433, 1121, 1453, 8),
+                region("BACKSHELL", 607, 1211, 752, 1235, 10),
+            ],
+        )
+        expected = extract_bill_of_lading(base).to_dict()
+        for scale, offset_x, offset_y in ((0.75, 17, 23), (1.25, 31, 19)):
+            actual = extract_bill_of_lading(transformed(base, scale, offset_x, offset_y)).to_dict()
+            for field in ("bl_number", "shipper", "consignee", "notify_party", "vessel", "port_of_loading", "port_of_discharge", "goods_description"):
+                self.assertEqual(actual[field]["value"], expected[field]["value"], field)
 
 
 if __name__ == "__main__":

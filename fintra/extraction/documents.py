@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import re
+import struct
 from collections import defaultdict
 from difflib import SequenceMatcher
+from pathlib import Path
 from typing import Callable, Iterable
 
 from fintra.domain.schema import (
@@ -72,6 +74,70 @@ def _regions(result: OCRResult) -> list[OCRRegion]:
     return sorted(kept, key=lambda item: (item.page, item.bbox[1], item.bbox[0], item.index))
 
 
+# AI-Hub's reference forms use this design canvas.  Resolver rules are written
+# in design coordinates, but are projected to the actual OCR page dimensions
+# whenever those dimensions are available.  This keeps the semantic zones
+# stable under uniform resize/translation without changing the reference
+# behavior for results that carry no page metadata.
+_TEMPLATE_WIDTH = 1654.0
+_TEMPLATE_HEIGHT = 2340.0
+
+
+def _page_dimensions(result: OCRResult) -> tuple[float, float]:
+    metadata = result.metadata or {}
+    for width_key, height_key in (("page_width", "page_height"), ("image_width", "image_height")):
+        try:
+            width = float(metadata[width_key])
+            height = float(metadata[height_key])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if width > 0 and height > 0:
+            return width, height
+
+    source = Path(result.source_file) if result.source_file else None
+    if source and source.is_file():
+        try:
+            with source.open("rb") as handle:
+                header = handle.read(24)
+            if header[:8] == b"\x89PNG\r\n\x1a\n" and len(header) >= 24:
+                return float(struct.unpack(">II", header[16:24])[0]), float(struct.unpack(">II", header[16:24])[1])
+        except (OSError, struct.error):
+            pass
+    return _TEMPLATE_WIDTH, _TEMPLATE_HEIGHT
+
+
+def _template_bounds(result: OCRResult, x1: float, x2: float, y1: float, y2: float) -> tuple[float, float, float, float]:
+    width, height = _page_dimensions(result)
+    try:
+        origin_x = float((result.metadata or {}).get("page_origin_x", 0.0))
+        origin_y = float((result.metadata or {}).get("page_origin_y", 0.0))
+    except (TypeError, ValueError):
+        origin_x = origin_y = 0.0
+    return (origin_x + x1 * width / _TEMPLATE_WIDTH, origin_x + x2 * width / _TEMPLATE_WIDTH,
+            origin_y + y1 * height / _TEMPLATE_HEIGHT, origin_y + y2 * height / _TEMPLATE_HEIGHT)
+
+
+def _in_template_zone(result: OCRResult, region: OCRRegion, *, x1: float, x2: float, y1: float, y2: float) -> bool:
+    left, right, top, bottom = _template_bounds(result, x1, x2, y1, y2)
+    return region.bbox[0] >= left and region.bbox[2] <= right and region.bbox[1] >= top and region.bbox[3] <= bottom
+
+
+def _in_template_window(result: OCRResult, region: OCRRegion, *, x1: float, x2: float, y1: float, y2: float) -> bool:
+    """Project legacy top-left window semantics to the actual page."""
+    left, right, top, bottom = _template_bounds(result, x1, x2, y1, y2)
+    return left <= region.bbox[0] <= right and top <= region.bbox[1] <= bottom
+
+
+def _template_delta(result: OCRResult, *, x: float = 0.0, y: float = 0.0) -> tuple[float, float]:
+    width, height = _page_dimensions(result)
+    return x * width / _TEMPLATE_WIDTH, y * height / _TEMPLATE_HEIGHT
+
+
+def _has_scaled_geometry(result: OCRResult) -> bool:
+    width, height = _page_dimensions(result)
+    return abs(width - _TEMPLATE_WIDTH) > 0.5 or abs(height - _TEMPLATE_HEIGHT) > 0.5
+
+
 def _evidence_from_region(region: OCRRegion, value: str) -> EvidenceField:
     return evidence(
         value.strip(),
@@ -96,7 +162,7 @@ def _combined_evidence(regions: list[OCRRegion], *, value: str | None = None) ->
 
 def _in_zone(result: OCRResult, *, x1: float, x2: float, y1: float, y2: float) -> list[OCRRegion]:
     return [region for region in _regions(result)
-            if region.bbox[0] >= x1 and region.bbox[2] <= x2 and region.bbox[1] >= y1 and region.bbox[3] <= y2]
+            if _in_template_zone(result, region, x1=x1, x2=x2, y1=y1, y2=y2)]
 
 
 def _token_value(regions: list[OCRRegion], pattern: str) -> EvidenceField:
@@ -314,7 +380,7 @@ def _bl_party_evidence(result: OCRResult) -> dict[str, EvidenceField]:
     involved.
     """
     left = [region for region in _regions(result)
-            if region.bbox[0] <= 800 and 150 <= region.bbox[1] <= 850]
+            if _in_template_zone(result, region, x1=0, x2=800, y1=150, y2=850)]
     lines = _line_groups(left)
     anchors: list[tuple[float, str]] = []
     for line in lines:
@@ -412,8 +478,8 @@ def _item_from_columns(regions: list[OCRRegion], center: float, columns: tuple[t
 def _invoice_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineItem]]:
     # Coordinates are the stable 1654x2340 AI-Hub Commercial Invoice template.
     values = _regions(result)
-    item_regions = [region for region in values if 1000 <= region.bbox[1] <= 1400]
-    centers = _row_centers([region for region in item_regions if 820 <= region.bbox[0] <= 950
+    item_regions = [region for region in values if _in_template_window(result, region, x1=0, x2=_TEMPLATE_WIDTH, y1=1000, y2=1400)]
+    centers = _row_centers([region for region in item_regions if _in_template_window(result, region, x1=820, x2=950, y1=0, y2=_TEMPLATE_HEIGHT)
                             and _is_quantity_token(region.text)], minimum=45)
     items = [_item_from_columns(item_regions, center, ((120, 700), (820, 950), (950, 1100), (1100, 1260), (1260, 1520))) for center in centers]
     currency_matches = []
@@ -427,7 +493,7 @@ def _invoice_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
         currency = _evidence_from_region(region, code)
     else:
         currency = _token_value(values, r"USD|EUR|GBP|JPY|CNY|KRW")
-    total_regions = [region for region in values if 1200 <= region.bbox[0] and 1450 <= region.bbox[1] <= 1650 and re.search(r"\d", region.text)]
+    total_regions = [region for region in values if _in_template_window(result, region, x1=1200, x2=_TEMPLATE_WIDTH, y1=1450, y2=1650) and re.search(r"\d", region.text)]
     return {
         "invoice_number": _combined_evidence(_in_zone(result, x1=850, x2=1320, y1=250, y2=360)),
         "invoice_date": _date_evidence(_in_zone(result, x1=850, x2=1450, y1=360, y2=455), "invoice_date"),
@@ -453,7 +519,7 @@ def _invoice_number_header(result: OCRResult) -> EvidenceField:
     for region in _regions(result):
         x1, y1, x2, y2 = region.bbox
         text = region.text.strip()
-        if not (800 <= x1 <= 1200 and 230 <= y1 <= 410 and len(text) >= 4):
+        if not _in_template_window(result, region, x1=800, x2=1200, y1=230, y2=410) or len(text) < 4:
             continue
         if normalize_date(text) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9./-]{3,}", text):
             continue
@@ -468,17 +534,17 @@ def _invoice_number_header(result: OCRResult) -> EvidenceField:
 
 def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineItem]]:
     values = _regions(result)
-    item_regions = [region for region in values if 1000 <= region.bbox[1] <= 1520]
-    centers = _row_centers([region for region in item_regions if 800 <= region.bbox[0] <= 950
+    item_regions = [region for region in values if _in_template_window(result, region, x1=0, x2=_TEMPLATE_WIDTH, y1=1000, y2=1520)]
+    centers = _row_centers([region for region in item_regions if _in_template_window(result, region, x1=800, x2=950, y1=0, y2=_TEMPLATE_HEIGHT)
                             and _is_quantity_token(region.text)], minimum=45)
     items = []
     for center in centers:
         row = _near_row(item_regions, center, tolerance=42)
-        description = _description_evidence([region for region in row if region.bbox[0] < 730])
-        quantity = _quantity_evidence([region for region in row if 800 <= region.bbox[0] <= 950 and _is_quantity_token(region.text)])
-        unit = _combined_evidence([region for region in row if 800 <= region.bbox[0] <= 950 and not re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())])
+        description = _description_evidence([region for region in row if _in_template_window(result, region, x1=0, x2=730, y1=0, y2=_TEMPLATE_HEIGHT)])
+        quantity = _quantity_evidence([region for region in row if _in_template_window(result, region, x1=800, x2=950, y1=0, y2=_TEMPLATE_HEIGHT) and _is_quantity_token(region.text)])
+        unit = _combined_evidence([region for region in row if _in_template_window(result, region, x1=800, x2=950, y1=0, y2=_TEMPLATE_HEIGHT) and not re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())])
         items.append(LineItem(description=description, quantity=quantity, unit=unit))
-    package_regions = [region for region in values if 100 <= region.bbox[0] <= 650 and 1650 <= region.bbox[1] <= 1825]
+    package_regions = [region for region in values if _in_template_window(result, region, x1=100, x2=650, y1=1650, y2=1825)]
     package_values = []
     for region in package_regions:
         match = re.search(r"(?:NUMBER\s+OF\s+PACKAGES|NO\.?\s+OF\s+PKGS?)\s*[:#-]?\s*(\d+(?:[.,]\d+)?)", region.text, re.I)
@@ -489,7 +555,7 @@ def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
     else:
         package_numbers = [region for region in package_regions if re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())]
         package = _evidence_from_region(package_numbers[0], package_numbers[0].text) if len(package_numbers) == 1 else _combined_evidence(package_regions)
-    gross_regions = [region for region in values if 100 <= region.bbox[0] <= 800 and 1750 <= region.bbox[1] <= 1850 and re.search(r"\d", region.text)]
+    gross_regions = [region for region in values if _in_template_window(result, region, x1=100, x2=800, y1=1750, y2=1850) and re.search(r"\d", region.text)]
     gross_values = []
     for region in gross_regions:
         match = re.search(r"(?:GROSS\s+WEIGHT).*?(\d+(?:[.,]\d+)?)\s*(KG|KGS|GRAM|G)?\b", region.text, re.I)
@@ -526,16 +592,32 @@ def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
     values = _regions(result)
     parties = _bl_party_evidence(result)
     number_regions = _in_zone(result, x1=1150, x2=1500, y1=220, y2=360)
-    description_headers = [region for region in values if 500 <= region.bbox[0] <= 1100
-                           and 1000 <= region.bbox[1] <= 1200
-                           and re.search(r"DESCRIPTION|GOODS", region.text, re.I)]
-    goods_start = min((region.bbox[3] for region in description_headers), default=1050) + 25
-    table_total_markers = [region for region in values
-                           if (region.bbox[0] >= 900 and _canonical(region.text) == "TOTAL")
-                           or re.search(r"TOTAL.*(?:PKG|PACKAGES)", region.text, re.I)]
-    goods_end = min((region.bbox[1] for region in table_total_markers if region.bbox[1] > goods_start), default=1550) - 5
-    goods_regions = [region for region in values if 500 <= region.bbox[0] <= 1100
-                     and goods_start <= region.bbox[1] <= goods_end]
+    if _has_scaled_geometry(result):
+        description_headers = [region for region in values if _in_template_window(result, region, x1=500, x2=1100, y1=1000, y2=1200)
+                               and re.search(r"DESCRIPTION|GOODS", region.text, re.I)]
+        _, delta_y = _template_delta(result, y=25)
+        goods_start = min((region.bbox[3] for region in description_headers), default=_template_bounds(result, 0, 0, 0, 1050)[3]) + delta_y
+        table_total_markers = [region for region in values
+                               if (_in_template_window(result, region, x1=900, x2=_TEMPLATE_WIDTH, y1=0, y2=_TEMPLATE_HEIGHT)
+                                   and _canonical(region.text) == "TOTAL")
+                               or (_in_template_window(result, region, x1=0, x2=_TEMPLATE_WIDTH, y1=0, y2=_TEMPLATE_HEIGHT)
+                                   and re.search(r"TOTAL.*(?:PKG|PACKAGES)", region.text, re.I))]
+        _, end_delta_y = _template_delta(result, y=5)
+        default_end = _template_bounds(result, 0, 0, 0, 1550)[3]
+        goods_end = min((region.bbox[1] for region in table_total_markers if region.bbox[1] > goods_start), default=default_end) - end_delta_y
+        goods_regions = [region for region in values if _in_template_window(result, region, x1=500, x2=1100, y1=0, y2=_TEMPLATE_HEIGHT)
+                         and goods_start <= region.bbox[1] <= goods_end]
+    else:
+        description_headers = [region for region in values if 500 <= region.bbox[0] <= 1100
+                               and 1000 <= region.bbox[1] <= 1200
+                               and re.search(r"DESCRIPTION|GOODS", region.text, re.I)]
+        goods_start = min((region.bbox[3] for region in description_headers), default=1050) + 25
+        table_total_markers = [region for region in values
+                               if (region.bbox[0] >= 900 and _canonical(region.text) == "TOTAL")
+                               or re.search(r"TOTAL.*(?:PKG|PACKAGES)", region.text, re.I)]
+        goods_end = min((region.bbox[1] for region in table_total_markers if region.bbox[1] > goods_start), default=1550) - 5
+        goods_regions = [region for region in values if 500 <= region.bbox[0] <= 1100
+                         and goods_start <= region.bbox[1] <= goods_end]
     goods_lines = []
     for line in _line_groups(goods_regions):
         kept = [region for region in line if _canonical(region.text) not in {"TOTAL", "PKG", "KG", "KGS", "G", "CBM"}
@@ -546,18 +628,18 @@ def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
     # Other totals can occur in the invoice/footer text.  Only a TOTAL inside
     # the B/L item table can define the shipment summary row.
     total_regions = [region for region in values if _canonical(region.text) == "TOTAL"
-                     and 1080 <= region.bbox[1] <= 1600]
+                     and _in_template_window(result, region, x1=0, x2=_TEMPLATE_WIDTH, y1=1080, y2=1600)]
     total_regions.extend(region for region in values
                          if re.search(r"TOTAL.*(?:PKG|PACKAGES)", region.text, re.I)
-                         and 1080 <= region.bbox[1] <= 1600)
+                         and _in_template_window(result, region, x1=0, x2=_TEMPLATE_WIDTH, y1=1080, y2=1600))
     package_total = []
     gross_total = []
     if len(total_regions) == 1:
         center = (total_regions[0].bbox[1] + total_regions[0].bbox[3]) / 2
         row = _near_row(values, center, tolerance=42)
-        package_total = [region for region in row if 220 <= region.bbox[0] <= 500 and re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())]
-        gross_total = [region for region in row if 1100 <= region.bbox[0] <= 1300 and re.search(r"\d", region.text)]
-    gross_values = [region for region in values if 1100 <= region.bbox[0] <= 1300 and 1080 <= region.bbox[1] <= 1500 and re.search(r"\d", region.text)]
+        package_total = [region for region in row if _in_template_zone(result, region, x1=220, x2=500, y1=0, y2=_TEMPLATE_HEIGHT) and re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())]
+        gross_total = [region for region in row if _in_template_zone(result, region, x1=1100, x2=1300, y1=0, y2=_TEMPLATE_HEIGHT) and re.search(r"\d", region.text)]
+    gross_values = [region for region in values if _in_template_window(result, region, x1=1100, x2=1300, y1=1080, y2=1500) and re.search(r"\d", region.text)]
     weight_unit = _token_value(values, r"KG|KGS|G|GRAM|GRAMS")
     if weight_unit.status == "missing":
         kg = [region for region in gross_values if re.search(r"KG", region.text, re.I)]
@@ -584,7 +666,7 @@ def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
     if loading.status == "missing" or discharge.status == "missing":
         place_candidates = [
             region for region in values
-            if 750 <= region.bbox[1] <= 1080
+            if _in_template_window(result, region, x1=0, x2=_TEMPLATE_WIDTH, y1=750, y2=1080)
             and "," in region.text
             and re.search(r"[A-Za-z]", region.text)
             and not re.search(r"\b(?:FOB|CIF|CFR|DAF|DDP|DDU|CFS|CY|DEQ)\b", region.text, re.I)
@@ -703,9 +785,10 @@ def _vessel_evidence(result: OCRResult) -> EvidenceField:
         if inline and is_value(OCRRegion(anchor.polygon, inline.group(1), anchor.confidence, anchor.page, anchor.index)):
             return _evidence_from_region(anchor, inline.group(1).strip())
         ax1, ay1, ax2, ay2 = anchor.bbox
+        _, delta_y = _template_delta(result, y=150)
         below = [region for region in values
                  if region.page == anchor.page and region.bbox[1] >= ay2 - 2
-                 and region.bbox[1] <= ay2 + 150
+                 and region.bbox[1] <= ay2 + delta_y
                  and abs(((region.bbox[0] + region.bbox[2]) / 2) - ((ax1 + ax2) / 2)) <= 180
                  and is_value(region)]
         if below:
