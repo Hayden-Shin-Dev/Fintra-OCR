@@ -469,8 +469,14 @@ def _last_line_evidence(regions: list[OCRRegion]) -> EvidenceField:
 
 def _item_from_columns(regions: list[OCRRegion], center: float, columns: tuple[tuple[float, float], ...]) -> LineItem:
     values = []
-    for x1, x2 in columns:
-        selected = sorted((region for region in _near_row(regions, center) if x1 <= region.bbox[0] <= x2), key=lambda item: item.bbox[0])
+    for column_index, (x1, x2) in enumerate(columns):
+        row_tolerance = 62 if column_index == 2 else 38
+        selected = sorted((region for region in _near_row(regions, center, tolerance=row_tolerance)
+                           if x1 <= region.bbox[0] <= x2), key=lambda item: item.bbox[0])
+        if column_index == 2:
+            selected = [region for region in selected
+                        if (region.bbox[1] + region.bbox[3]) / 2 >= center - 10
+                        and re.fullmatch(r"[A-Za-z][A-Za-z /.-]{0,14}", region.text.strip())]
         values.append(_description_evidence(selected) if x1 < 730 else _combined_evidence(selected))
     return LineItem(description=values[0], quantity=values[1], unit=values[2], unit_price=values[3], amount=values[4])
 
@@ -478,10 +484,10 @@ def _item_from_columns(regions: list[OCRRegion], center: float, columns: tuple[t
 def _invoice_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineItem]]:
     # Coordinates are the stable 1654x2340 AI-Hub Commercial Invoice template.
     values = _regions(result)
-    item_regions = [region for region in values if _in_template_window(result, region, x1=0, x2=_TEMPLATE_WIDTH, y1=1000, y2=1400)]
+    item_regions = [region for region in values if _in_template_window(result, region, x1=0, x2=_TEMPLATE_WIDTH, y1=1000, y2=1520)]
     centers = _row_centers([region for region in item_regions if _in_template_window(result, region, x1=820, x2=950, y1=0, y2=_TEMPLATE_HEIGHT)
                             and _is_quantity_token(region.text)], minimum=45)
-    items = [_item_from_columns(item_regions, center, ((120, 700), (820, 950), (950, 1100), (1100, 1260), (1260, 1520))) for center in centers]
+    items = [_item_from_columns(item_regions, center, ((120, 700), (820, 950), (820, 1100), (1100, 1260), (1260, 1520))) for center in centers]
     currency_matches = []
     for region in values:
         match = re.search(r"\b(USD|EUR|GBP|JPY|CNY|KRW)\b", region.text, re.I)

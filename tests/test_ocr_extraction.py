@@ -51,6 +51,23 @@ class OCRExtractionTests(unittest.TestCase):
         self.assertEqual(invoice.total_amount.value, "$7,754.30")
         self.assertEqual(invoice.items[0].quantity.value, "3")
 
+    def test_invoice_unit_below_combined_quantity_unit_column_is_recovered(self):
+        result = OCRResult(
+            "ci-quantity-unit-column", "Commercial Invoice", "invoice.png", [
+                OCRRegion([[890, 1030], [960, 1030], [960, 1055], [890, 1055]], "Quantity/Unit", index=0),
+                OCRRegion([[500, 1030], [680, 1030], [680, 1055], [500, 1055]], "Description", index=1),
+                OCRRegion([[1130, 1030], [1230, 1030], [1230, 1055], [1130, 1055]], "Unit-Price", index=2),
+                OCRRegion([[1340, 1030], [1450, 1030], [1450, 1055], [1340, 1055]], "Amount", index=3),
+                OCRRegion([[520, 1080], [680, 1080], [680, 1105], [520, 1105]], "Widget", index=4),
+                OCRRegion([[900, 1080], [920, 1080], [920, 1105], [900, 1105]], "3", index=5),
+                OCRRegion([[900, 1120], [950, 1120], [950, 1145], [900, 1145]], "Bag", index=6),
+                OCRRegion([[1140, 1080], [1210, 1080], [1210, 1105], [1140, 1105]], "$2.00", index=7),
+                OCRRegion([[1350, 1080], [1430, 1080], [1430, 1105], [1350, 1105]], "$6.00", index=8),
+            ],
+        )
+        invoice = extract_commercial_invoice(result)
+        self.assertEqual(invoice.items[0].unit.value, "Bag")
+
     def test_duplicate_equal_tokens_are_not_ambiguous(self):
         result = OCRResult(
             "ci-currency", "Commercial Invoice", "invoice.png", [
