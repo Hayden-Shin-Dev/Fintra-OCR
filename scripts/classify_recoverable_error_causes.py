@@ -37,14 +37,26 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--failure-matrix", type=Path, action="append", default=[],
+                        help="Three-way failure matrix; only EXTRACTOR_WRONG rows are subtype-counted")
     args = parser.parse_args()
     with args.input.open(encoding="utf-8-sig", newline="") as handle:
         rows = list(csv.DictReader(handle))
+    extractor_wrong_keys: set[tuple[str, str]] | None = None
+    if args.failure_matrix:
+        extractor_wrong_keys = set()
+        for matrix_path in args.failure_matrix:
+            with matrix_path.open(encoding="utf-8-sig", newline="") as handle:
+                for matrix_row in csv.DictReader(handle):
+                    if matrix_row.get("classification") == "EXTRACTOR_WRONG":
+                        extractor_wrong_keys.add((matrix_row["case_id"], matrix_row["field_name"]))
     counts = Counter()
     by_type: dict[str, Counter] = defaultdict(Counter)
     by_field: dict[str, Counter] = defaultdict(Counter)
     output = []
     for row in rows:
+        if extractor_wrong_keys is not None and (row["case_id"], row["field_name"]) not in extractor_wrong_keys:
+            continue
         cause, reason = classify(row)
         counts[cause] += 1
         by_type[row["document_type"]][cause] += 1

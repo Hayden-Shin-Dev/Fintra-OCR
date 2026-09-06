@@ -25,6 +25,13 @@ Complete field-level metrics are in the holdout `field_metrics.json`.
 Recoverable-but-wrong count: 134. The diagnostic cause split is stored in
 `recoverable_error_causes.csv` and `error_cause_metrics.json`.
 
+After excluding the one gold-flagged recoverable row, the 133
+`EXTRACTOR_WRONG` rows split into: candidate generation 101, row selection 15,
+normalization 12, candidate ranking 5, and other 0.
+
+The three-way failure counts were: CI `EXTRACTOR_WRONG 58 / OCR_MISSING 30 /
+GOLD 0`, Packing List `35 / 10 / 1`, and B/L `40 / 11 / 0`.
+
 The conservative three-way failure matrices are stored under `*-failure-analysis`:
 
 - `OCR_MISSING`: required evidence is not recoverable from Accurate OCR.
