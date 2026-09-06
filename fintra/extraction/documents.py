@@ -43,12 +43,23 @@ def _is_contained_fragment(candidate: OCRRegion, larger: OCRRegion) -> bool:
         return False
     small = _canonical(candidate.text)
     full = _canonical(larger.text)
-    if len(small) < 3 or not small or small == full or small not in full:
+    if len(small) < 3 or not small or small == full:
         return False
     cx1, cy1, cx2, cy2 = candidate.bbox
     lx1, ly1, lx2, ly2 = larger.bbox
     padding = max(5.0, min(candidate.bbox[3] - candidate.bbox[1], larger.bbox[3] - larger.bbox[1]) * 0.25)
-    return lx1 - padding <= cx1 and cy1 >= ly1 - padding and cx2 <= lx2 + padding and cy2 <= ly2 + padding
+    contained = lx1 - padding <= cx1 and cy1 >= ly1 - padding and cx2 <= lx2 + padding and cy2 <= ly2 + padding
+    if small in full and contained:
+        return True
+    # Paddle can emit a crop that extends a few pixels beyond a full line and
+    # contains OCR-corrupted text, so substring matching is unavailable.  A
+    # small region whose box is mostly covered by a larger region is still a
+    # duplicate when it has no independent spatial content.
+    ix1, iy1 = max(cx1, lx1), max(cy1, ly1)
+    ix2, iy2 = min(cx2, lx2), min(cy2, ly2)
+    overlap = max(0.0, ix2 - ix1) * max(0.0, iy2 - iy1)
+    candidate_area = max(1.0, (cx2 - cx1) * (cy2 - cy1))
+    return overlap / candidate_area >= 0.70
 
 
 def _regions(result: OCRResult) -> list[OCRRegion]:
