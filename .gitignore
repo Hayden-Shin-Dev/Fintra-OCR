@@ -15,6 +15,7 @@ cache/
 temp/
 .venv/
 .venv-paddle/
+.venv-paddle-gpu/
 venv/
 .env
 __pycache__/
