@@ -49,7 +49,9 @@ def _is_contained_fragment(candidate: OCRRegion, larger: OCRRegion) -> bool:
     # ``D.`` suffix) are still safe to remove when their box is contained in
     # a larger region.  The decision remains geometric/textual and does not
     # depend on document values.
-    if len(small) < 2 or not small or small == full:
+    if len(small) < 2 and not re.search(r"\d|[^A-Za-z\s]", candidate.text):
+        return False
+    if not small or small == full:
         return False
     cx1, cy1, cx2, cy2 = candidate.bbox
     lx1, ly1, lx2, ly2 = larger.bbox
