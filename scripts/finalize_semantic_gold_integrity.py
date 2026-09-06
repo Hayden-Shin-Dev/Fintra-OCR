@@ -114,6 +114,12 @@ def main() -> None:
         ),
     }
     gates["gold_freeze_ready"] = all(gates.values())
+    failed_gates = [name for name, passed in gates.items() if not passed and name != "gold_freeze_ready"]
+    decision = (
+        "YES: all Gold integrity gates passed."
+        if not failed_gates
+        else "NO: failed gates: " + ", ".join(failed_gates) + "."
+    )
     summary = {
         "gold_candidate": "semantic-v3.3-candidate9",
         "conservative_gold": {
@@ -128,7 +134,7 @@ def main() -> None:
         "historical_evaluator_mismatch": mismatch,
         "gates": gates,
         "gold_freeze_ready": gates["gold_freeze_ready"],
-        "decision": "NO: semantic roles, image/header/layout review, true completeness, and historical 625-side reproduction are not fully evidenced in local artifacts.",
+        "decision": decision,
         "prediction_blind": True,
         "ocr_read": False,
         "extractor_read": False,
@@ -157,8 +163,8 @@ def main() -> None:
         "",
         f"- Accurate75 semantic audit: {accurate_sem.get('semantic_classification')}; image files present {accurate_sem.get('images_present')}/{accurate_sem.get('cases')}.",
         f"- Balanced300 semantic audit: {balanced_sem.get('semantic_classification')}; image files present {balanced_sem.get('images_present')}/{balanced_sem.get('cases')}.",
-        "- Image file existence/hash/dimensions were checked, but exhaustive pixel-level header/layout semantic sign-off was not performed by a labeled semantic source. A word-level TL file has no semantic field roles.",
-        f"- Known-defect closure: {known.get('metrics', {}).get('classifications')}; old/new differences alone are not called verified mapping errors.",
+        "- Image file existence/hash/dimensions and value-region pixel support were checked. Full header/layout semantic sign-off is still incomplete because the word-level TL has no semantic field roles; only explicitly reviewed cases are accepted as visual decisions.",
+        f"- Known-defect closure: {known.get('metrics', {}).get('classifications')}; only the separately reviewed image decisions are accepted, not old/new differences alone.",
         "",
         "## Historical 625 vs 626",
         "",
@@ -171,7 +177,7 @@ def main() -> None:
         "",
         f"GOLD_FREEZE_READY = {'YES' if gates['gold_freeze_ready'] else 'NO'}",
         "",
-        "Reason for NO: semantic-role verification, exhaustive image/header/layout review, denominator semantic justification, true semantic row completeness, known-defect semantic closure, and exact historical 625-side reproduction are not all available as independent evidence. This is a conservative integrity result, not an extractor score.",
+        f"Decision detail: {decision} This is a conservative integrity result, not an extractor score.",
         "",
         "## Gate JSON",
         "",
