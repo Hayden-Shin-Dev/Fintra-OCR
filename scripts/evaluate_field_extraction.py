@@ -116,7 +116,7 @@ def _case_prediction(case_dir: Path) -> OCRResult | None:
     if len(candidates)!=1:
         raise ValueError(f"Expected one prediction for {case_dir}, found {len(candidates)}")
     manifest = json.loads((case_dir / "case_manifest.json").read_text(encoding="utf-8"))
-    result=OCRResult.from_json(candidates[0], document_type=manifest["document_type"])
+    result=OCRResult.from_json(candidates[0], document_type=manifest["document_type"], preserve_raw=False)
     if result.metadata.get('exceptions'):
         raise ValueError(f"Recognition exceptions must be resolved or explicitly reported: {case_dir}")
     image=case_dir / manifest.get("image", "")

@@ -63,8 +63,28 @@ class OCRResult:
         }
 
     @classmethod
-    def from_json(cls, path: Path, document_type: str | None = None) -> "OCRResult":
-        payload = json.loads(path.read_text(encoding="utf-8"))
+    def from_json(
+        cls,
+        path: Path,
+        document_type: str | None = None,
+        *,
+        preserve_raw: bool = True,
+    ) -> "OCRResult":
+        if preserve_raw:
+            raw_text = path.read_text(encoding="utf-8")
+            payload = json.loads(raw_text)
+        else:
+            # Paddle benchmark files preserve a very large raw result after
+            # the canonical regions. Evaluation only needs the prefix; the
+            # complete raw file remains available through raw_output_path.
+            with path.open("rb") as handle:
+                prefix = handle.read(8 * 1024 * 1024)
+            marker = b',"raw_output":'
+            marker_index = prefix.find(marker)
+            if marker_index >= 0:
+                payload = json.loads(prefix[:marker_index] + b"}")
+            else:
+                payload = json.loads(path.read_text(encoding="utf-8"))
         regions_payload = payload.get("regions") or payload.get("predictions")
         if regions_payload is None and payload.get("documents"):
             regions_payload = payload["documents"][0].get("predictions", [])
@@ -94,7 +114,7 @@ class OCRResult:
             document_type=document_type or str(payload.get("document_type", "Unknown")),
             source_file=str(payload.get("source_file", "")),
             regions=regions,
-            raw_output=path.read_text(encoding="utf-8"),
+            raw_output=raw_text if preserve_raw else None,
             raw_output_path=str(path),
             runtime=str(metadata.get("runtime", payload.get("runtime", "fixture"))),
             metadata=metadata,

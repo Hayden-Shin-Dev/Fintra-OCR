@@ -4,9 +4,26 @@ import unittest
 from pathlib import Path
 
 from scripts.evaluate_field_extraction import evaluate, normalize_field, compare_field
+from fintra.ocr.adapter import OCRResult
 
 
 class FieldEvaluationTests(unittest.TestCase):
+    def test_large_raw_json_can_load_regions_without_materializing_raw_payload(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "paddle.json"
+            payload = {
+                "document_id": "doc-1",
+                "document_type": "B/L",
+                "regions": [{"polygon": [[0, 0], [10, 0], [10, 10], [0, 10]], "text": "ABC"}],
+                "raw_output": "x" * (8 * 1024 * 1024),
+                "metadata": {"runtime": "paddle"},
+            }
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            result = OCRResult.from_json(path, preserve_raw=False)
+            self.assertEqual([region.text for region in result.regions], ["ABC"])
+            self.assertIsNone(result.raw_output)
+            self.assertEqual(result.raw_output_path, str(path))
+
     def test_failed_normalizations_never_count_as_matches(self):
         self.assertEqual(compare_field("Departure", "43-43-11267", "invoice_date"), "wrong")
         self.assertEqual(compare_field("of", "53-32-81805", "invoice_date"), "wrong")
