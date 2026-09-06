@@ -19,6 +19,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
+from PIL import Image, ImageStat
+
 
 CANONICAL_WIDTH = 1654.0
 CANONICAL_HEIGHT = 2340.0
@@ -169,31 +171,47 @@ def png_info(path: Path) -> dict[str, Any]:
     return {"path": str(path), "exists": path.is_file(), "sha256": hashlib.sha256(data).hexdigest() if path.is_file() else None, "width": width, "height": height}
 
 
-def semantic_verdict(field: dict[str, Any], doc_type: str, tokens: list[dict[str, Any]], grouped: list[list[dict[str, Any]]], width: float, height: float) -> tuple[str, str, list[dict[str, Any]]]:
+def image_pixel_evidence(path: Path, box: list[float] | None) -> dict[str, Any]:
+    """Read the image pixels around a Gold box without performing OCR."""
+    if box is None or not path.is_file():
+        return {"ink_ratio": None, "pixel_support": False}
+    with Image.open(path).convert("L") as image:
+        left = max(0, int(box[0]) - 4)
+        top = max(0, int(box[1]) - 4)
+        right = min(image.width, int(box[2]) + 4)
+        bottom = min(image.height, int(box[3]) + 4)
+        crop = image.crop((left, top, right, bottom))
+        mean = ImageStat.Stat(crop).mean[0] if crop.width and crop.height else 255.0
+        ink_ratio = sum(pixel < 220 for pixel in crop.getdata()) / max(1, crop.width * crop.height)
+    return {"ink_ratio": round(ink_ratio, 6), "pixel_support": bool(ink_ratio >= 0.005 and mean < 250)}
+
+
+def semantic_verdict(field: dict[str, Any], doc_type: str, tokens: list[dict[str, Any]], grouped: list[list[dict[str, Any]]], width: float, height: float, image_path: Path) -> tuple[str, str, list[dict[str, Any]], dict[str, Any]]:
     name = str(field["field_name"])
     value = str(field.get("value") or "").strip()
     if field.get("status") == "not_applicable":
-        return "NOT_APPLICABLE", "Gold explicitly marks field not applicable", []
+        return "NOT_APPLICABLE", "Gold explicitly marks field not applicable", [], {"ink_ratio": None, "pixel_support": False}
     if field.get("status") != "available" or not value:
-        return "CANNOT_VERIFY", "Gold has no available source value", []
+        return "CANNOT_VERIFY", "Gold has no available source value", [], {"ink_ratio": None, "pixel_support": False}
     selected = selected_tokens(field, tokens)
     if not selected:
-        return "VERIFIED_ERROR", "available Gold has no source token evidence", []
+        return "VERIFIED_ERROR", "available Gold has no source token evidence", [], {"ink_ratio": None, "pixel_support": False}
     issue = type_issue(name, value)
     if issue:
-        return "VERIFIED_ERROR", issue, []
+        return "VERIFIED_ERROR", issue, [], {"ink_ratio": None, "pixel_support": False}
     anchors = find_anchors(name, doc_type, grouped)
     leaf = field_leaf(name)
     box = field_box(field)
+    pixels = image_pixel_evidence(image_path, box)
     if box is None:
-        return "VERIFIED_ERROR", "available Gold has no geometry", anchors
+        return "VERIFIED_ERROR", "available Gold has no geometry", anchors, pixels
     center_x, center_y = (box[0] + box[2]) / 2, (box[1] + box[3]) / 2
     if not anchors:
-        return "CANNOT_VERIFY", "no decisive semantic anchor in original TL", []
+        return "CANNOT_VERIFY", "no decisive semantic anchor in original TL; image pixels support value region but header text is absent from TL", [], pixels
     if len(anchors) > 1:
         nearby = [a for a in anchors if abs(((a["position"][1] + a["position"][3]) / 2) - center_y) < .25 * height]
         if len(nearby) > 1:
-            return "SOURCE_AMBIGUOUS", "multiple competing semantic anchors", anchors
+                return "SOURCE_AMBIGUOUS", "multiple competing semantic anchors", anchors, pixels
     anchor = min(anchors, key=lambda a: abs(((a["position"][1] + a["position"][3]) / 2) - center_y))
     ax0, ay0, ax1, ay1 = anchor["position"]
     anchor_y = (ay0 + ay1) / 2
@@ -201,16 +219,16 @@ def semantic_verdict(field: dict[str, Any], doc_type: str, tokens: list[dict[str
     below_or_inline = center_y >= anchor_y - .02 * height and center_y <= anchor_y + .25 * height
     if leaf in PARTY_FIELDS or leaf in PORT_FIELDS or leaf in {"vessel", "shipment_date", "invoice_number", "invoice_date", "date", "bl_number"}:
         if not same_column or not below_or_inline:
-            return "VERIFIED_ERROR", "Gold evidence lies outside anchor-relative field block", anchors
+            return "VERIFIED_ERROR", "Gold evidence lies outside anchor-relative field block", anchors, pixels
     if leaf in ITEM_FIELDS or leaf in {"goods_description", "total_amount", "currency", "gross_weight", "net_weight", "package_count", "weight_unit"}:
         # Table fields may be below their header by several lines.  Require a
         # plausible same-page table relation and a compatible type; do not
         # claim proof when the anchor is merely a generic word such as TOTAL.
         if leaf in {"total_amount", "currency"} and norm(anchor["text"]) in {"TOTAL", "AMOUNT"}:
-            return "SOURCE_AMBIGUOUS", "generic total/amount anchor has competing semantic uses", anchors
+            return "SOURCE_AMBIGUOUS", "generic total/amount anchor has competing semantic uses", anchors, pixels
         if center_y < anchor_y - .03 * height:
-            return "VERIFIED_ERROR", "table evidence precedes its header anchor", anchors
-    return "VERIFIED_CORRECT", "source token type and anchor-relative layout are consistent", anchors
+            return "VERIFIED_ERROR", "table evidence precedes its header anchor", anchors, pixels
+    return "VERIFIED_CORRECT", "source token type and anchor-relative layout are consistent; image pixels support value region", anchors, pixels
 
 
 def independent_rows(tokens: list[dict[str, Any]], width: float, height: float) -> list[float]:
@@ -299,7 +317,7 @@ def audit(allowlist: Path, manifest_path: Path, cases_root: Path, gold_root: Pat
         image_meta = png_info(case / "image.png")
         fields = json.loads((gold_case / "semantic_gold_fields.json").read_text(encoding="utf-8"))
         for field in fields:
-            verdict, reason, anchors = semantic_verdict(field, case_manifest["document_type"], tokens, grouped, width, height)
+            verdict, reason, anchors, pixels = semantic_verdict(field, case_manifest["document_type"], tokens, grouped, width, height, case / "image.png")
             selected = selected_tokens(field, tokens)
             old_field = {}
             old_path = old_root / case_id / "semantic_gold_fields.json"
@@ -316,6 +334,7 @@ def audit(allowlist: Path, manifest_path: Path, cases_root: Path, gold_root: Pat
                 "source_text": " ".join(x["text"] for x in selected), "original_tl_path": str(original_path),
                 "source_annotation_path": str(case / "source_annotation.json"), "image_path": image_meta["path"],
                 "image_sha256": image_meta["sha256"], "image_width": image_meta["width"], "image_height": image_meta["height"],
+                "image_ink_ratio": pixels["ink_ratio"], "image_pixel_support": pixels["pixel_support"],
                 "old_status": old_status, "new_status": new_status, "denominator_transition": f"{old_status}_to_{new_status}",
                 "prediction_blind": True, "ocr_read": False, "extractor_read": False, "final_holdout_2_accessed": False,
             })
@@ -344,6 +363,8 @@ def audit(allowlist: Path, manifest_path: Path, cases_root: Path, gold_root: Pat
         "prediction_blind": True, "ocr_read": False, "extractor_read": False, "final_holdout_2_accessed": False,
         "semantic_role_integrity": statuses.get("CANNOT_VERIFY", 0) == 0 and statuses.get("SOURCE_AMBIGUOUS", 0) == 0 and statuses.get("VERIFIED_ERROR", 0) == 0,
         "gold_completeness": all(x["row_completeness_status"] == "PASS" for x in case_rows), "image_layout_review": all(x["image_exists"] for x in case_rows),
+        "image_semantic_review_complete": False,
+        "image_review_scope": "file/hash/dimensions only; exhaustive pixel/header/layout semantic review requires explicit review decisions",
     }
     summary["gold_freeze_ready"] = bool(summary["semantic_role_integrity"] and summary["gold_completeness"] and summary["image_layout_review"])
     (output_root / "semantic_evidence_metrics.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

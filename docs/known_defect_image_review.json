@@ -1,0 +1,10 @@
+[
+  {"case_id":"bl01-081-IMG_OCR_6_T_BL_004108","field_name":"port_of_loading","classification":"VERIFIED_GOLD_MAPPING_ERROR","visible_anchor":"Port of Loading","visible_value_position":"left port cell"},
+  {"case_id":"bl01-081-IMG_OCR_6_T_BL_004108","field_name":"port_of_discharge","classification":"VERIFIED_GOLD_MAPPING_ERROR","visible_anchor":"Port of Discharge","visible_value_position":"right port cell"},
+  {"case_id":"bl02-081-IMG_OCR_6_T_BL_009123","field_name":"port_of_loading","classification":"VERIFIED_GOLD_MAPPING_ERROR","visible_anchor":"Port of Loading","visible_value_position":"right half of the Place of Receipt/Port of Loading row"},
+  {"case_id":"bl02-081-IMG_OCR_6_T_BL_009123","field_name":"port_of_discharge","classification":"VERIFIED_GOLD_MAPPING_ERROR","visible_anchor":"Port of Discharge","visible_value_position":"right half of the Vessel/Port of Discharge row"},
+  {"case_id":"inv01-084-IMG_OCR_6_T_NV_003885","field_name":"items[0].description","classification":"VERIFIED_GOLD_MAPPING_ERROR","visible_anchor":"Item Description","visible_value_position":"row 1 description column"},
+  {"case_id":"inv01-084-IMG_OCR_6_T_NV_003885","field_name":"items[1].description","classification":"VERIFIED_GOLD_MAPPING_ERROR","visible_anchor":"Item Description","visible_value_position":"row 2 description column"},
+  {"case_id":"inv01-084-IMG_OCR_6_T_NV_003885","field_name":"items[2].description","classification":"VERIFIED_GOLD_MAPPING_ERROR","visible_anchor":"Item Description","visible_value_position":"row 3 description column"},
+  {"case_id":"inv01-082-IMG_OCR_6_T_NV_003882","field_name":"items[1].description","classification":"VERIFIED_GOLD_MAPPING_ERROR","visible_anchor":"Description of Good(s)","visible_value_position":"row 2 description column"}
+]
