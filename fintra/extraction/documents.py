@@ -352,7 +352,11 @@ def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
             weight_unit = evidence(match.group(1).upper(), source_text=gross.source_text, bbox=gross.bbox)
     return {
         "packing_list_number": missing("template_field_not_present"),
-        "date": _date_evidence(_in_zone(result, x1=1150, x2=1500, y1=170, y2=280), "date"),
+        # The date field occupies the upper-right header zone.  Paddle boxes
+        # can extend below y=280 even when the date is the first header date;
+        # use the full template header band while retaining unique-date
+        # validation in _date_evidence.
+        "date": _date_evidence(_in_zone(result, x1=1150, x2=1500, y1=150, y2=380), "date"),
         "exporter": _party_evidence(_in_zone(result, x1=100, x2=800, y1=230, y2=650)),
         "consignee": _party_evidence(_in_zone(result, x1=100, x2=800, y1=430, y2=820)),
         "items": items,

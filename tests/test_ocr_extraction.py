@@ -1,6 +1,6 @@
 import unittest
 
-from fintra.extraction.documents import extract_bill_of_lading, extract_commercial_invoice, _regions
+from fintra.extraction.documents import extract_bill_of_lading, extract_commercial_invoice, extract_packing_list, _regions
 from fintra.ocr.adapter import OCRRegion, OCRResult
 
 
@@ -151,6 +151,15 @@ class OCRExtractionTests(unittest.TestCase):
             ],
         )
         self.assertEqual([region.text for region in _regions(result)], ["Derry Law Firm Co., Ltd."])
+
+    def test_packing_date_accepts_full_header_date_box(self):
+        result = OCRResult(
+            "pl-date-header", "Packing List", "packing.png", [
+                OCRRegion([[1222, 269], [1408, 269], [1408, 302], [1222, 302]], "Jan 08, 2002", index=0),
+                OCRRegion([[1223, 271], [1277, 271], [1277, 302], [1223, 302]], "Jan", index=1),
+            ],
+        )
+        self.assertEqual(extract_packing_list(result).date.value, "Jan 08, 2002")
 
     def test_ordered_refinement_does_not_reintroduce_removed_fragment(self):
         result = OCRResult(
