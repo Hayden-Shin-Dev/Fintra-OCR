@@ -345,19 +345,22 @@ def _bl_party_evidence(result: OCRResult) -> dict[str, EvidenceField]:
     by_section: dict[int, EvidenceField] = {}
     for section, _, candidate in sorted(candidates, key=lambda item: (item[0], item[1])):
         by_section.setdefault(section, candidate)
-    role_by_section = {index + 1: role for index, (_, role) in enumerate(anchors)}
-
-    # If the recognizer repeats CONSIGNEE where the top SHIPPER anchor should
-    # be, three populated sequential party sections provide enough layout
-    # evidence to restore the stable party slots.
-    if (len(anchors) >= 3 and not any(role == "shipper" for role in role_by_section.values())
-            and all(section in by_section for section in (1, 2, 3))):
-        role_by_section.update({1: "shipper", 2: "consignee", 3: "notify_party"})
+    anchor_roles = [role for _, role in anchors]
+    role_by_section = {}
+    if anchor_roles and anchor_roles[0] == "shipper":
+        role_by_section.update({index + 1: role for index, role in enumerate(
+            ("shipper", "consignee", "notify_party"))})
+    elif anchor_roles and anchor_roles[0] == "consignee" and "shipper" not in anchor_roles:
+        # Several AI-Hub B/L templates omit or misrecognize the SHIPPER label,
+        # while the following anchors still delimit the three vertical party
+        # sections. Interpret those detected sections in template order.
+        role_by_section.update({index + 1: role for index, role in enumerate(
+            ("shipper", "consignee", "notify_party"))})
+    else:
+        role_by_section = {index + 1: role for index, (_, role) in enumerate(anchors)}
 
     resolved = {name: missing("party_candidate_not_found")
                 for name in ("shipper", "consignee", "notify_party")}
-    if 0 in by_section:
-        resolved["shipper"] = by_section[0]
     for section, candidate in by_section.items():
         role = role_by_section.get(section)
         if role in resolved and resolved[role].status == "missing":
