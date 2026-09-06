@@ -118,8 +118,20 @@ def main() -> None:
         for scope in ("Overall", row["document_type"], f"{row['document_type']}:{row['field_name']}", f"source_group:{row['source_group']}"):
             transition_delta[scope][row["transition_type"]] += 1
 
+    def available_count(scope: str, label: str) -> int:
+        # ``all_counts`` contains every status for document-type and field
+        # scopes, while the compact ``counts`` map contains the historical
+        # Overall/type/source-group available totals.  The previous version
+        # checked field scopes against ``counts`` and silently used zero as
+        # their expected delta, even though their transition delta was real.
+        if scope in field_counts:
+            return field_counts[scope][label]["available"]
+        if scope in all_counts:
+            return all_counts[scope][label]["available"]
+        return counts[label][scope]
+
     def available_delta(scope: str) -> int:
-        return counts["new"][scope] - counts["old"][scope]
+        return available_count(scope, "new") - available_count(scope, "old")
 
     def transition_available_delta(scope: str) -> int:
         values = transition_delta[scope]
@@ -130,7 +142,8 @@ def main() -> None:
     scopes = ["Overall", "Commercial Invoice", "Packing List", "B/L"] + sorted(field_counts) + [f"source_group:{group}" for group in sorted(set(by_group.values()))]
     reconciliation = {}
     for scope in scopes:
-        expected = available_delta(scope) if scope in counts["old"] or scope in counts["new"] else 0
+        known_scope = scope in counts["old"] or scope in counts["new"] or scope in all_counts or scope in field_counts
+        expected = available_delta(scope) if known_scope else 0
         actual = transition_available_delta(scope)
         reconciliation[scope] = {"expected_available_delta": expected, "transition_available_delta": actual, "match": expected == actual}
     reconciliation_pass = all(value["match"] for value in reconciliation.values())

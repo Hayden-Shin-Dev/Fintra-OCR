@@ -9,14 +9,8 @@ from collections import Counter
 from pathlib import Path
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--csv", type=Path, required=True)
-    parser.add_argument("--metrics", type=Path, required=True)
-    parser.add_argument("--output", type=Path, required=True)
-    args = parser.parse_args()
-    rows = list(csv.DictReader(args.csv.open(encoding="utf-8-sig", newline="")))
-    metrics = json.loads(args.metrics.read_text(encoding="utf-8"))
+def consistency_checks(rows: list[dict[str, str]], metrics: dict) -> tuple[dict[str, int], dict[str, bool]]:
+    """Recompute the persisted summary from the CSV without rounding."""
     counts = Counter(row.get("status") for row in rows)
     overall = metrics.get("overall", {})
     checks = {
@@ -27,6 +21,19 @@ def main() -> None:
         "csv_wrong_matches_summary": counts["wrong"] == int(overall.get("wrong", -1)),
         "csv_missing_matches_summary": counts["missing"] == int(overall.get("missing", -1)),
     }
+    return dict(counts), checks
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--csv", type=Path, required=True)
+    parser.add_argument("--metrics", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    rows = list(csv.DictReader(args.csv.open(encoding="utf-8-sig", newline="")))
+    metrics = json.loads(args.metrics.read_text(encoding="utf-8"))
+    counts, checks = consistency_checks(rows, metrics)
+    overall = metrics.get("overall", {})
     result = {
         "csv": str(args.csv),
         "metrics": str(args.metrics),
