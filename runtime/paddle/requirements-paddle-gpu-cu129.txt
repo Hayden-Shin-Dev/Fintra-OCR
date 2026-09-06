@@ -1,0 +1,5 @@
+# Separate GPU comparison runtime for an NVIDIA driver supporting CUDA 12.9.
+# This is not byte-identical to the legacy CPU paddlepaddle==3.2.0 runtime.
+# The PaddleOCR version and model names remain fixed for the comparison.
+paddlepaddle-gpu==3.2.2
+paddleocr==3.7.0

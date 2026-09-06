@@ -45,6 +45,15 @@ The actual Paddle model inference is intentionally not run as part of the
 repository unit tests. Run it only in this isolated environment after the
 smoke output is reviewed.
 
+## RTX 4050 GPU comparison
+
+The legacy project was verified with the CPU Paddle wheel. For a GPU run on
+the current machine, use a separate `.venv-paddle-gpu` and the CUDA 12.9
+requirement file. This changes the Paddle binary/runtime from the historical
+CPU reference, so label the result as a Paddle GPU comparison, not as a
+byte-identical legacy CPU reproduction. The PaddleOCR model names and
+preprocessing policy remain unchanged.
+
 After a full Paddle run, compare its same-extractor CSV with the Modern CSV:
 
 ```powershell
