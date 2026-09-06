@@ -35,7 +35,7 @@ def select_cases(
     allowed_ids = None
     if case_ids_file is not None:
         allowed_ids = {
-            line.strip()
+            line.strip().lstrip("\ufeff")
             for line in case_ids_file.read_text(encoding="utf-8").splitlines()
             if line.strip()
         }
