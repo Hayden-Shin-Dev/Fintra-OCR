@@ -1,7 +1,8 @@
 import unittest
 
 from scripts.build_semantic_field_gold import _gold
-from scripts.build_semantic_v3_gold import build_v3
+from scripts.build_semantic_v3_gold import build_v3, v2
+from scripts.build_semantic_v3_2_gold import _ci_table_v2
 from scripts.validate_semantic_v3 import _field_valid
 
 
@@ -78,6 +79,31 @@ class SemanticGoldTests(unittest.TestCase):
         fields = {field["field_name"]: field for field in build_v3(payload, "Commercial Invoice")}
         self.assertEqual(fields["items[0].quantity"]["value"], "7")
         self.assertEqual(fields["items[0].unit"]["value"], "PC")
+
+    def test_v32_ci_table_keeps_rows_and_resolves_numeric_columns(self):
+        payload = {"bbox": [
+            token("SKU-1", 70, 1000),
+            token("Widget", 250, 1000, 360, 1024),
+            token("1234.56", 700, 1000, 790, 1024),
+            token("8", 865, 1000),
+            token("EA", 1045, 1000),
+            token("$12.50", 1250, 1000),
+            token("$100.00", 1435, 1000),
+            token("SKU-2", 70, 1110),
+            token("Second Widget", 250, 1110, 390, 1134),
+            token("2222.22", 700, 1110, 790, 1134),
+            token("3", 865, 1110),
+            token("BOX", 1045, 1110),
+            token("$20.00", 1250, 1110),
+            token("$60.00", 1435, 1110),
+        ]}
+        fields = {field["field_name"]: field for field in _ci_table_v2(v2._tokens(payload))}
+        self.assertEqual(fields["items[0].quantity"]["value"], "8")
+        self.assertEqual(fields["items[0].unit"]["value"], "EA")
+        self.assertEqual(fields["items[0].unit_price"]["value"], "$12.50")
+        self.assertEqual(fields["items[0].amount"]["value"], "$100.00")
+        self.assertEqual(fields["items[1].quantity"]["value"], "3")
+        self.assertEqual(fields["items[1].unit"]["value"], "BOX")
 
     def test_v3_invariants_reject_numeric_description_voyage_party_and_incoterm_vessel(self):
         self.assertFalse(_field_valid({"field_name": "items[0].description", "value": "7646.00"}, ["7", "PC", "$7646.00"], "Commercial Invoice")[0])

@@ -34,6 +34,10 @@ def _numeric_token(token: dict[str, Any]) -> bool:
     return bool(MONEY_RE.fullmatch(token["text"].strip())) or _numeric(token["text"])
 
 
+def _plain_quantity_token(token: dict[str, Any]) -> bool:
+    return bool(re.fullmatch(r"[+-]?\d[\d,]*(?:\.\d+)?", token["text"].strip()))
+
+
 def _unit_token(token: dict[str, Any]) -> bool:
     text = token["text"].strip()
     if text.upper() in UNIT_WORDS:
@@ -47,14 +51,18 @@ def _quantity_unit_cells(line: list[dict[str, Any]]) -> tuple[list[dict[str, Any
     units = []
     numbers = []
     for token in line:
-        if not (.30 * v3.v2.WIDTH <= token["bbox"][0] <= .68 * v3.v2.WIDTH):
+        # Keep the candidate scan broad enough to see HS/quantity numbers,
+        # but require standalone unit text to live in the right-side unit
+        # column.  Description words such as ``Formula`` can otherwise win
+        # the nearest-unit comparison.
+        if not (.30 * v3.v2.WIDTH <= token["bbox"][0] <= .78 * v3.v2.WIDTH):
             continue
         match = re.fullmatch(r"(\d+(?:[.,]\d+)?)\s+([A-Za-z]+)", token["text"].strip())
         if match:
             combined.append((token, match.group(1), match.group(2)))
-        elif token["text"].strip().upper() in UNIT_WORDS or re.fullmatch(r"[A-Za-z]+", token["text"].strip()):
+        elif token["bbox"][0] >= .58 * v3.v2.WIDTH and (token["text"].strip().upper() in UNIT_WORDS or re.fullmatch(r"[A-Za-z]+", token["text"].strip())):
             units.append(token)
-        elif _numeric_token(token):
+        elif _plain_quantity_token(token):
             numbers.append(token)
     if combined:
         token, quantity, unit = combined[0]
@@ -68,9 +76,10 @@ def _quantity_unit_cells(line: list[dict[str, Any]]) -> tuple[list[dict[str, Any
     # nearest to the unit, not the leftmost decimal number in the row.
     unit = min(units, key=lambda candidate: min(abs(candidate["bbox"][0] - number["bbox"][0]) for number in numbers))
     quantity = min(numbers, key=lambda candidate: abs(candidate["bbox"][0] - unit["bbox"][0]))
-    if abs(quantity["bbox"][0] - unit["bbox"][0]) > 140.0:
-        quantity = min(numbers, key=lambda candidate: candidate["bbox"][0])
-        return [quantity], [], quantity["text"].strip(), None
+    # The quantity/unit columns are often separated by more than 140 source
+    # pixels.  Once an alphabetic unit is present, the nearest plain numeric
+    # token is the typed quantity; falling back to the leftmost number would
+    # incorrectly select an HS/product-code value.
     return [quantity], [unit], quantity["text"].strip(), unit["text"].strip()
 
 
@@ -95,7 +104,8 @@ def _row_seeds(tokens: list[dict[str, Any]]) -> list[float]:
     for line in _lines([x for x in tokens if 850 <= x["bbox"][1] <= 1750], tolerance=18.0):
         numeric = [x for x in line if .30 * v3.v2.WIDTH <= x["bbox"][0] <= .68 * v3.v2.WIDTH and _numeric_token(x)]
         right_numeric = [x for x in line if x["bbox"][0] > .60 * v3.v2.WIDTH and _numeric_token(x)]
-        if numeric and right_numeric:
+        left_text = [x for x in line if x["bbox"][2] <= .30 * v3.v2.WIDTH and re.search(r"[A-Za-z]", x["text"])]
+        if numeric and right_numeric and left_text:
             center = sum((x["bbox"][1] + x["bbox"][3]) / 2 for x in line) / len(line)
             if not seeds or center - seeds[-1] > 45.0:
                 seeds.append(center)
@@ -109,7 +119,7 @@ def _row_tokens(tokens: list[dict[str, Any]], center: float, next_center: float 
     return [
         x for x in tokens
         if 850 <= x["bbox"][1] <= 1750
-        and center - 46.0 <= (x["bbox"][1] + x["bbox"][3]) / 2 <= upper
+        and center - 18.0 <= (x["bbox"][1] + x["bbox"][3]) / 2 <= upper
     ]
 
 
@@ -268,13 +278,14 @@ def build_v3_2(payload: dict[str, Any], document_type: str) -> list[dict[str, An
     if document_type == "Commercial Invoice":
         replacements["seller"] = _party_v2("seller", tokens, document_type, 0)
         replacements["buyer"] = _party_v2("buyer", tokens, document_type, 1)
-        # Keep the audited Gold schema's item cardinality.  The corrected
-        # table resolver may discover more candidate rows than this case's
-        # reviewed schema; silently adding those rows would change the
-        # denominator rather than correct a mapping.
-        item_names = {field["field_name"] for field in fields if field["field_name"].startswith("items[")}
+        # The source annotation is word-level and does not provide a reviewed
+        # item cardinality.  Reconstruct rows from independent same-line
+        # typed evidence instead of using the previous Gold's item indices as
+        # an implicit row selector.  This keeps row order tied to source
+        # geometry and avoids silently dropping a detected row.
+        item_fields = _ci_table_v2(tokens)
         fields = [field for field in fields if not field["field_name"].startswith("items[")]
-        fields.extend(field for field in _ci_table_v2(tokens) if field["field_name"] in item_names)
+        fields.extend(item_fields)
         return [replacements.get(field["field_name"], field) for field in fields]
     if document_type == "Packing List":
         replacements["exporter"] = _party_v2("exporter", tokens, document_type, 0)
