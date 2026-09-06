@@ -65,6 +65,16 @@ class DocumentLayoutExtractionTests(unittest.TestCase):
         self.assertEqual(document.shipment_date.value, "APR 24, 2009")
         self.assertEqual(document.port_of_loading.value, "AYAMONTE, SPAIN")
 
+    def test_notify_same_as_consignee_is_not_truncated_at_inline_heading(self):
+        result = OCRResult(
+            "bl-3", "B/L", "bl.png", [
+                region("Notify Party (No claim shall attach for failure to notify)", 90, 600, 620, 625, 0),
+                region("SAME AS CONSIGNEE", 90, 640, 350, 665, 1),
+            ],
+        )
+        document = extract_bill_of_lading(result)
+        self.assertEqual(document.notify_party.value, "SAME AS CONSIGNEE")
+
 
 if __name__ == "__main__":
     unittest.main()

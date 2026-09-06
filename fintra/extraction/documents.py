@@ -171,6 +171,18 @@ _PARTY_HEADING_WORDS = (
     "SHIPPER", "SELLER", "EXPORTER", "BUYER", "CONSIGNEE", "NOTIFY", "PARTY",
 )
 
+_PARTY_COMPANY_MARKERS = {
+    "CO", "LTD", "INC", "LLC", "CORP", "CORPORATION", "COMPANY", "LIMITED",
+    "TRADING", "INDUSTRIES", "ENTERPRISES", "SYSTEMS", "GROUP", "SOLUTIONS",
+}
+_PARTY_COUNTRY_LINES = {
+    "AUSTRALIA", "CANADA", "CHINA", "DENMARK", "EGYPT", "ERITREA", "FRANCE",
+    "GERMANY", "INDIA", "ITALY", "JAPAN", "KOREA", "MALAYSIA", "NORWAY",
+    "NIGERIA", "SINGAPORE", "SPAIN", "TAIWAN", "THAILAND", "TURKEY",
+    "UNITED STATES", "VIET NAM", "VIETNAM", "REP OF KOREA", "REP OF SINGAPORE",
+    "SOUTH AFRICA",
+}
+
 
 def _party_word_similarity(left: str, right: str) -> float:
     return SequenceMatcher(None, _canonical(left), _canonical(right)).ratio()
@@ -208,6 +220,39 @@ def _remove_inline_party_heading(text: str) -> str:
     return remainder
 
 
+def _is_party_value_candidate(text: str) -> bool:
+    """Reject structural party-block lines before choosing an organization.
+
+    The OCR party block is ordered as heading, organization, address, country,
+    and contact.  This lexical filter is deliberately value-independent: it
+    does not know a document id or any gold value and allows organizations
+    without a legal suffix (for example ``NONGS DRUG STORES``).
+    """
+    upper = text.upper().strip(" ,:;-&")
+    canonical = _canonical(upper)
+    words = set(canonical.split())
+    if not canonical or _looks_like_party_heading(upper):
+        return False
+    if canonical in _PARTY_COUNTRY_LINES:
+        return False
+    if re.search(r"NO\s+CLAIM|FAILURE\s+TO\s+NOTIFY|COMPLETE\s+NAME|PLEASE\s+PROVIDE|ACCOUNT\s*(?:&|AND)?\s*RISK", upper):
+        return False
+    if re.search(r"\b(?:TEL|FAX|PHONE|EMAIL|ADDRESS|STREET|ROAD|AVENUE|DRIVE|ROOM|DISTRICT|VIC)\b", upper):
+        if not words.intersection(_PARTY_COMPANY_MARKERS):
+            return False
+    if re.search(r"\bV\s*\.?\s*\d+\b", upper):
+        return False
+    if re.search(r"\b(?:CFS|CY|FOB|CIF|CFR|DAF|DDP|DDU|DEQ)\b", upper):
+        return False
+    # A place line such as ``CITY, COUNTRY`` is not a party name.  Company
+    # markers keep legitimate names containing a country/place word valid.
+    if "," in upper and re.search(r"\b(?:AUSTRALIA|CANADA|CHINA|JAPAN|KOREA|NORWAY|SINGAPORE|SPAIN|TAIWAN|TURKEY|UNITED STATES)\b", upper) and not words.intersection(_PARTY_COMPANY_MARKERS):
+        return False
+    if re.match(r"^\d", upper) and not words.intersection(_PARTY_COMPANY_MARKERS):
+        return False
+    return len(re.findall(r"[A-Za-z]", upper)) >= 3
+
+
 def _party_evidence(regions: list[OCRRegion]) -> EvidenceField:
     """Select the first organization line while preserving its OCR evidence.
 
@@ -224,15 +269,14 @@ def _party_evidence(regions: list[OCRRegion]) -> EvidenceField:
             raw_text,
             re.I,
         )
-        if trailing_heading and trailing_heading.start() > 0:
+        if (trailing_heading and trailing_heading.start() > 0
+                and not re.match(r"^SAME\s+AS\s+(?:THE\s+)?CONSIGNEE\b", raw_text, re.I)):
             raw_text = raw_text[:trailing_heading.start()].strip(" ,:;-&")
         text = _remove_inline_party_heading(raw_text)
         canonical = _canonical(text)
-        if (not canonical or _looks_like_party_heading(raw_text)
+        if (not _is_party_value_candidate(text)
                 or set(canonical.split()).issubset(_PARTY_STOP_WORDS)
                 or re.search(r"\b(?:ACCOUNT\s*&?\s*RISK|FOR\s+ACCOUNT|NOT\s+NEGOTIABLE)\b", canonical)):
-            continue
-        if re.search(r"\b(?:PHONE|TEL|FAX|ADDRESS|COMPLETE NAME|PROVIDE)\b", canonical) and not re.search(r"[A-Za-z]{3,}.*\b(?:CO|LTD|INC|CORP|COMPANY|GROUP)\b", canonical):
             continue
         if len(re.findall(r"\d", text)) > len(re.findall(r"[A-Za-z]", text)):
             continue
@@ -443,6 +487,23 @@ def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
                 break
     loading = _find_field(result, ("port of loading",), prefer_below=True)
     discharge = _find_field(result, ("port of discharge",), prefer_below=True)
+    # Some forms omit the port labels from OCR entirely.  Recover a port only
+    # when there is exactly one typed place candidate in the transport row;
+    # multiple candidates stay missing rather than crossing sections.
+    if loading.status == "missing" or discharge.status == "missing":
+        place_candidates = [
+            region for region in values
+            if 750 <= region.bbox[1] <= 1080
+            and "," in region.text
+            and re.search(r"[A-Za-z]", region.text)
+            and not re.search(r"\b(?:FOB|CIF|CFR|DAF|DDP|DDU|CFS|CY|DEQ)\b", region.text, re.I)
+            and not re.search(r"\b(?:PORT|PLACE|DESTINATION|VESSEL|VOY|CARRIER)\b", region.text, re.I)
+        ]
+        if len(place_candidates) == 1:
+            if loading.status == "missing":
+                loading = _evidence_from_region(place_candidates[0], place_candidates[0].text)
+            elif discharge.status == "missing":
+                discharge = _evidence_from_region(place_candidates[0], place_candidates[0].text)
     return {
         "bl_number": _token_value(number_regions, r"(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9][A-Za-z0-9.-]{4,}"),
         "shipper": _party_evidence(_in_zone(result, x1=70, x2=800, y1=290, y2=470)),
@@ -568,14 +629,12 @@ def extract_commercial_invoice_legacy(result: OCRResult) -> CommercialInvoice:
 
 def extract_packing_list_legacy(result: OCRResult) -> PackingList:
     layout = _packing_layout(result)
-    exporter = _find_field(result, ("exporter", "seller", "shipper", "shipper/exporter"), prefer_below=True)
-    consignee = _find_field(result, ("consignee", "buyer"), prefer_below=True)
     return PackingList(
         metadata=_metadata(result),
         packing_list_number=layout["packing_list_number"],
         date=layout["date"],
-        exporter=exporter if exporter.status != "missing" else layout["exporter"],
-        consignee=consignee if consignee.status != "missing" else layout["consignee"],
+        exporter=layout["exporter"],
+        consignee=layout["consignee"],
         items=layout["items"],
         package_count=layout["package_count"],
         gross_weight=layout["gross_weight"],
