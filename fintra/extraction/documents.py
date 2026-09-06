@@ -237,6 +237,8 @@ def _is_party_value_candidate(text: str) -> bool:
         return False
     if re.search(r"NO\s+CLAIM|FAILURE\s+TO\s+NOTIFY|COMPLETE\s+NAME|PLEASE\s+PROVIDE|ACCOUNT\s*(?:&|AND)?\s*RISK", upper):
         return False
+    if re.search(r"\b(?:BILL\s+OF\s+LADING|MULTIMODAL\s+OCEAN|IMODAL\s+OCEAN|NOT\s+NEOTIABLE|IF\s+TO\s+ORDER|CONSIGNED\s+TO\s+ORDER|PRE[- ]CARRIAGE|PLACE\s+OF\s+RECEIPT|MODE\s+OF\s+INITIAL\s+CARRIAGE)\b", upper):
+        return False
     if re.search(r"\b(?:TEL|FAX|PHONE|EMAIL|ADDRESS|STREET|ROAD|AVENUE|DRIVE|ROOM|DISTRICT|VIC)\b", upper):
         if not words.intersection(_PARTY_COMPANY_MARKERS):
             return False
@@ -270,7 +272,7 @@ def _party_evidence(regions: list[OCRRegion]) -> EvidenceField:
             re.I,
         )
         if (trailing_heading and trailing_heading.start() > 0
-                and not re.match(r"^SAME\s+AS\s+(?:THE\s+)?CONSIGNEE\b", raw_text, re.I)):
+                and not re.match(r"^SAME\s+AS\s+(?:THE\s+)?(?:CONSIGNEE|SHIPPER|BUYER|EXPORTER|SELLER)\b", raw_text, re.I)):
             raw_text = raw_text[:trailing_heading.start()].strip(" ,:;-&")
         text = _remove_inline_party_heading(raw_text)
         canonical = _canonical(text)
@@ -282,6 +284,85 @@ def _party_evidence(regions: list[OCRRegion]) -> EvidenceField:
             continue
         return _combined_evidence(line, value=text)
     return missing()
+
+
+def _party_heading_role(text: str) -> str | None:
+    """Return a party role anchor, excluding contact/instruction headings."""
+    upper = text.upper()
+    if re.fullmatch(r"\s*SAME\s+AS\s+(?:THE\s+)?(?:CONSIGNEE|SHIPPER|BUYER|EXPORTER|SELLER)\s*", upper):
+        return None
+    if re.search(r"\b(?:PHONE|TEL|FAX|EMAIL|FOR\s+DELIVERY)\b", upper):
+        return None
+    if re.search(r"\bNOTIFY(?:\s+PARTY)?\b", upper):
+        return "notify_party"
+    if re.search(r"\b(?:SHIPPER|EXPORTER|SELLER)\b", upper):
+        return "shipper"
+    if re.search(r"\b(?:CONSIGNEE|BUYER)\b", upper):
+        return "consignee"
+    return None
+
+
+def _bl_party_evidence(result: OCRResult) -> dict[str, EvidenceField]:
+    """Resolve B/L parties from detected left-column sections.
+
+    OCR layouts in this dataset use more than one page scale.  Fixed y
+    windows can therefore select the next party or drop the first one.  This
+    resolver first finds party-anchor section boundaries, then asks the
+    existing typed party filter for a candidate within each section.  A
+    duplicated first role is treated as an OCR label error only when the
+    complete three-slot party structure is present; no value-specific rule is
+    involved.
+    """
+    left = [region for region in _regions(result)
+            if region.bbox[0] <= 800 and 150 <= region.bbox[1] <= 850]
+    lines = _line_groups(left)
+    anchors: list[tuple[float, str]] = []
+    for line in lines:
+        role = _party_heading_role(" ".join(region.text for region in line))
+        if role is not None:
+            anchors.append((min(region.bbox[1] for region in line), role))
+    anchors.sort()
+
+    candidates: list[tuple[int, float, EvidenceField]] = []
+    for line in lines:
+        candidate = _party_evidence(line)
+        if candidate.status != "extracted" or not candidate.bbox:
+            continue
+        y = min(point[1] for point in candidate.bbox)
+        section = sum(y >= boundary for boundary, _ in anchors)
+        candidates.append((section, y, candidate))
+
+    if not anchors:
+        # Keep the old test/low-information behavior when no structural
+        # anchor exists, but restrict it to the first three typed candidates.
+        ordered = [field for _, _, field in sorted(candidates, key=lambda item: item[1])]
+        return {
+            "shipper": ordered[0] if len(ordered) > 0 else missing("party_candidate_not_found"),
+            "consignee": ordered[1] if len(ordered) > 1 else missing("party_candidate_not_found"),
+            "notify_party": ordered[2] if len(ordered) > 2 else missing("party_candidate_not_found"),
+        }
+
+    by_section: dict[int, EvidenceField] = {}
+    for section, _, candidate in sorted(candidates, key=lambda item: (item[0], item[1])):
+        by_section.setdefault(section, candidate)
+    role_by_section = {index + 1: role for index, (_, role) in enumerate(anchors)}
+
+    # If the recognizer repeats CONSIGNEE where the top SHIPPER anchor should
+    # be, three populated sequential party sections provide enough layout
+    # evidence to restore the stable party slots.
+    if (len(anchors) >= 3 and not any(role == "shipper" for role in role_by_section.values())
+            and all(section in by_section for section in (1, 2, 3))):
+        role_by_section.update({1: "shipper", 2: "consignee", 3: "notify_party"})
+
+    resolved = {name: missing("party_candidate_not_found")
+                for name in ("shipper", "consignee", "notify_party")}
+    if 0 in by_section:
+        resolved["shipper"] = by_section[0]
+    for section, candidate in by_section.items():
+        role = role_by_section.get(section)
+        if role in resolved and resolved[role].status == "missing":
+            resolved[role] = candidate
+    return resolved
 
 
 def _date_evidence(regions: list[OCRRegion], field_name: str = "shipment_date") -> EvidenceField:
@@ -440,6 +521,7 @@ def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
 
 def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
     values = _regions(result)
+    parties = _bl_party_evidence(result)
     number_regions = _in_zone(result, x1=1150, x2=1500, y1=220, y2=360)
     description_headers = [region for region in values if 500 <= region.bbox[0] <= 1100
                            and 1000 <= region.bbox[1] <= 1200
@@ -506,9 +588,9 @@ def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
                 discharge = _evidence_from_region(place_candidates[0], place_candidates[0].text)
     return {
         "bl_number": _token_value(number_regions, r"(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9][A-Za-z0-9.-]{4,}"),
-        "shipper": _party_evidence(_in_zone(result, x1=70, x2=800, y1=290, y2=470)),
-        "consignee": _party_evidence(_in_zone(result, x1=70, x2=800, y1=490, y2=600)),
-        "notify_party": _party_evidence(_in_zone(result, x1=70, x2=800, y1=580, y2=820)),
+        "shipper": parties["shipper"],
+        "consignee": parties["consignee"],
+        "notify_party": parties["notify_party"],
         "vessel": vessel,
         "port_of_loading": loading,
         "port_of_discharge": discharge,
