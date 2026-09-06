@@ -200,6 +200,32 @@ class OCRExtractionTests(unittest.TestCase):
         )
         self.assertEqual(extract_packing_list(result).date.value, "Jan 08, 2002")
 
+    def test_packing_table_recovers_separate_unit_column(self):
+        result = OCRResult(
+            "pl-unit-column", "Packing List", "packing.png", [
+                OCRRegion([[320, 1020], [600, 1020], [600, 1050], [320, 1050]], "Description", index=0),
+                OCRRegion([[845, 1015], [963, 1015], [963, 1050], [845, 1050]], "Quantity", index=1),
+                OCRRegion([[1093, 1015], [1154, 1015], [1154, 1050], [1093, 1050]], "Unit", index=2),
+                OCRRegion([[320, 1080], [500, 1080], [500, 1110], [320, 1110]], "Cable", index=3),
+                OCRRegion([[850, 1079], [890, 1079], [890, 1112], [850, 1112]], "26", index=4),
+                OCRRegion([[1090, 1122], [1150, 1122], [1150, 1155], [1090, 1155]], "BAG", index=5),
+            ],
+        )
+        document = extract_packing_list(result)
+        self.assertEqual(document.items[0].quantity.value, "26")
+        self.assertEqual(document.items[0].unit.value, "BAG")
+
+    def test_packing_date_prefers_invoice_date_over_lc_date(self):
+        result = OCRResult(
+            "pl-two-header-dates", "Packing List", "packing.png", [
+                OCRRegion([[858, 232], [1157, 232], [1157, 255], [858, 255]], "NO. & DATE OF INVOICE", index=0),
+                OCRRegion([[1235, 266], [1424, 266], [1424, 293], [1235, 293]], "Oct 11, 2000", index=1),
+                OCRRegion([[860, 319], [1105, 319], [1105, 343], [860, 343]], "NO. & DATE OF L/C", index=2),
+                OCRRegion([[1234, 350], [1425, 350], [1425, 378], [1234, 378]], "Feb 28, 2012", index=3),
+            ],
+        )
+        self.assertEqual(extract_packing_list(result).date.value, "Oct 11, 2000")
+
     def test_invoice_number_is_separated_from_combined_header_date(self):
         result = OCRResult(
             "ci-invoice-header", "Commercial Invoice", "invoice.png", [

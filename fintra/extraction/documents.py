@@ -546,17 +546,80 @@ def _invoice_number_header(result: OCRResult) -> EvidenceField:
     return missing("invoice_number_not_unique_in_header")
 
 
+def _packing_date_evidence(result: OCRResult) -> EvidenceField:
+    """Choose the invoice date when a packing-list header has several dates.
+
+    Packing lists commonly place invoice date and L/C date in the same header
+    band.  A broad date scan becomes ambiguous, so when an invoice/date label
+    exists, choose only the date nearest that label.  The rule is based on
+    layout and label text, not on a document value.
+    """
+    values = _regions(result)
+    date_regions: list[tuple[OCRRegion, EvidenceField]] = []
+    for region in values:
+        if not _in_template_window(result, region, x1=1150, x2=1500, y1=150, y2=455):
+            continue
+        candidate = _date_evidence([region], "date")
+        if candidate.status == "extracted":
+            date_regions.append((region, candidate))
+    if len(date_regions) <= 1:
+        return date_regions[0][1] if date_regions else _date_evidence(
+            _in_zone(result, x1=1150, x2=1500, y1=150, y2=455), "date"
+        )
+
+    invoice_labels = [region for region in values
+                      if _in_template_window(result, region, x1=760, x2=1200, y1=150, y2=455)
+                      and re.search(r"INVOICE", region.text, re.I)
+                      and re.search(r"DATE", region.text, re.I)]
+    if not invoice_labels:
+        return _date_evidence([region for region, _ in date_regions], "date")
+    label = min(invoice_labels, key=lambda region: (region.bbox[1], region.bbox[0]))
+    selected = min(
+        date_regions,
+        key=lambda item: (
+            abs(((item[0].bbox[1] + item[0].bbox[3]) / 2) - ((label.bbox[1] + label.bbox[3]) / 2)),
+            abs(item[0].bbox[0] - label.bbox[2]),
+        ),
+    )
+    return selected[1]
+
+
 def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineItem]]:
     values = _regions(result)
-    item_regions = [region for region in values if _in_template_window(result, region, x1=0, x2=_TEMPLATE_WIDTH, y1=1000, y2=1520)]
-    centers = _row_centers([region for region in item_regions if _in_template_window(result, region, x1=800, x2=950, y1=0, y2=_TEMPLATE_HEIGHT)
+    # Packing-list templates use either a separate Unit column or a combined
+    # QTY/UNIT column.  In the latter, the unit is often printed one line
+    # below the quantity; keep the table window wide enough to include that
+    # second line while stopping before the footer totals.
+    item_regions = [region for region in values if _in_template_window(result, region, x1=0, x2=_TEMPLATE_WIDTH, y1=1000, y2=1640)]
+    centers = _row_centers([region for region in item_regions if _in_template_window(result, region, x1=800, x2=1100, y1=0, y2=_TEMPLATE_HEIGHT)
                             and _is_quantity_token(region.text)], minimum=45)
+    unit_headers = [region for region in values
+                    if _in_template_window(result, region, x1=760, x2=1250, y1=1000, y2=1140)
+                    and re.search(r"\bUNIT\b", region.text, re.I)]
+    if unit_headers:
+        unit_header = min(unit_headers, key=lambda region: (region.bbox[1], region.bbox[0]))
+        unit_left = max(760.0, unit_header.bbox[0] - 60.0)
+        unit_right = min(1250.0, unit_header.bbox[2] + 70.0)
+    else:
+        unit_left, unit_right = 800.0, 1200.0
+
+    unit_noise = {"QUANTITY", "QTY", "QTY UNIT", "UNIT", "NET WEIGHT", "GROSS WEIGHT", "PACKAGES", "PACKAGE"}
+
+    def unit_value(region: OCRRegion) -> bool:
+        text = region.text.strip()
+        return (
+            bool(re.fullmatch(r"[A-Za-z][A-Za-z /.-]{0,14}", text))
+            and _canonical(text) not in unit_noise
+        )
+
     items = []
     for center in centers:
-        row = _near_row(item_regions, center, tolerance=42)
+        row = _near_row(item_regions, center, tolerance=62)
         description = _description_evidence([region for region in row if _in_template_window(result, region, x1=0, x2=730, y1=0, y2=_TEMPLATE_HEIGHT)])
-        quantity = _quantity_evidence([region for region in row if _in_template_window(result, region, x1=800, x2=950, y1=0, y2=_TEMPLATE_HEIGHT) and _is_quantity_token(region.text)])
-        unit = _combined_evidence([region for region in row if _in_template_window(result, region, x1=800, x2=950, y1=0, y2=_TEMPLATE_HEIGHT) and not re.fullmatch(r"\d+(?:[.,]\d+)?", region.text.strip())])
+        quantity = _quantity_evidence([region for region in row
+                                       if 800 <= region.bbox[0] <= 1100 and _is_quantity_token(region.text)])
+        unit = _combined_evidence([region for region in row
+                                   if unit_left <= region.bbox[0] <= unit_right and unit_value(region)])
         items.append(LineItem(description=description, quantity=quantity, unit=unit))
     package_regions = [region for region in values if _in_template_window(result, region, x1=100, x2=650, y1=1650, y2=1825)]
     package_values = []
@@ -591,7 +654,7 @@ def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
         # can extend below y=280 even when the date is the first header date;
         # use the full template header band while retaining unique-date
         # validation in _date_evidence.
-        "date": _date_evidence(_in_zone(result, x1=1150, x2=1500, y1=150, y2=380), "date"),
+        "date": _packing_date_evidence(result),
         "exporter": _party_evidence(_in_zone(result, x1=100, x2=800, y1=230, y2=650)),
         "consignee": _party_evidence(_in_zone(result, x1=100, x2=800, y1=430, y2=820)),
         "items": items,
