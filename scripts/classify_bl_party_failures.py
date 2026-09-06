@@ -25,6 +25,7 @@ from fintra.extraction.documents import (
     _canonical,
     _is_party_value_candidate,
     _line_groups,
+    _party_evidence,
     _party_heading_role,
 )
 from fintra.ocr.adapter import OCRResult
@@ -86,7 +87,8 @@ def _candidate_role_for_gold(result: OCRResult, expected: str, field: str) -> tu
     target = normalize_field(expected, field) or ""
     best = None
     for line in _line_groups(pool):
-        text = " ".join(region.text.strip() for region in line if region.text.strip()).strip()
+        typed = _party_evidence(line)
+        text = str(typed.value or "")
         if not text:
             continue
         observed = normalize_field(text, field) or ""
