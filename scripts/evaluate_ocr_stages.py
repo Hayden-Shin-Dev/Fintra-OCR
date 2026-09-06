@@ -313,7 +313,7 @@ def _load_extractor_rows(path: Path) -> dict[tuple[str, str], dict[str, str]]:
         return {(row["case_id"], row["field_name"]): row for row in csv.DictReader(handle)}
 
 
-def evaluate(cases_root: Path, modern_field_csv: Path, paddle_field_csv: Path, output: Path) -> dict[str, Any]:
+def evaluate(cases_root: Path, modern_field_csv: Path, paddle_field_csv: Path, output: Path, gold_root: Path | None = None) -> dict[str, Any]:
     cases = []
     for path in sorted(cases_root.iterdir()):
         manifest_path = path / "case_manifest.json"
@@ -340,7 +340,7 @@ def evaluate(cases_root: Path, modern_field_csv: Path, paddle_field_csv: Path, o
             rec = _metric(gt, predictions, 0.5)
             e2e = _e2e_metric(rec)
             stage_rows.append({"case_id": case["case_id"], "document_type": case["document_type"], "backend": backend, "detection": det, "recognition": rec, "e2e": e2e, "regions": predictions})
-            field_rows.extend(_field_evidence(case, backend, predictions))
+            field_rows.extend(_field_evidence(case, backend, predictions, gold_root))
 
     def by_type(rows: list[dict[str, Any]], section: str) -> dict[str, Any]:
         return {kind: _sum_metrics([row[section] for row in rows if row["document_type"] == kind]) for kind in DOCUMENT_TYPES}
@@ -348,7 +348,8 @@ def evaluate(cases_root: Path, modern_field_csv: Path, paddle_field_csv: Path, o
     gold_status_counts = Counter()
     gold_status_by_type = {kind: Counter() for kind in DOCUMENT_TYPES}
     for case in cases:
-        gold = json.loads((case["path"] / "semantic_gold_fields.json").read_text(encoding="utf-8"))
+        gold_path = (gold_root / case["case_id"] / "semantic_gold_fields.json") if gold_root else case["path"] / "semantic_gold_fields.json"
+        gold = json.loads(gold_path.read_text(encoding="utf-8"))
         for field in gold:
             gold_status_counts[field.get("status", "unknown")] += 1
             gold_status_by_type[case["document_type"]][field.get("status", "unknown")] += 1
@@ -442,8 +443,9 @@ def main() -> None:
     parser.add_argument("--modern-field-csv", type=Path, default=ROOT / "artifacts/fintra/field_eval/field_results.csv")
     parser.add_argument("--paddle-field-csv", type=Path, default=ROOT / "artifacts/fintra/paddle_gpu_field_eval/field_results.csv")
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts/fintra/ocr_stage_eval")
+    parser.add_argument("--gold-root", type=Path, default=None, help="Root containing <case_id>/semantic_gold_fields.json")
     args = parser.parse_args()
-    evaluate(args.cases, args.modern_field_csv, args.paddle_field_csv, args.output)
+    evaluate(args.cases, args.modern_field_csv, args.paddle_field_csv, args.output, args.gold_root)
 
 
 if __name__ == "__main__":
