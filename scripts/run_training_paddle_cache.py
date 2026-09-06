@@ -26,7 +26,19 @@ def _manifest(case_dir: Path) -> dict[str, object]:
     return json.loads((case_dir / "case_manifest.json").read_text(encoding="utf-8"))
 
 
-def select_cases(gold_cases: Path, split: str, limit: int | None) -> list[Path]:
+def select_cases(
+    gold_cases: Path,
+    split: str,
+    limit: int | None,
+    case_ids_file: Path | None = None,
+) -> list[Path]:
+    allowed_ids = None
+    if case_ids_file is not None:
+        allowed_ids = {
+            line.strip()
+            for line in case_ids_file.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        }
     cases = []
     for path in sorted(item for item in gold_cases.iterdir() if item.is_dir()):
         manifest_path = path / "case_manifest.json"
@@ -34,6 +46,8 @@ def select_cases(gold_cases: Path, split: str, limit: int | None) -> list[Path]:
             continue
         manifest = _manifest(path)
         if split != "all" and manifest.get("split") != split:
+            continue
+        if allowed_ids is not None and manifest.get("case_id") not in allowed_ids:
             continue
         cases.append(path)
     if limit is not None:
@@ -57,8 +71,17 @@ def _valid_output(path: Path) -> bool:
     return isinstance(payload, dict) and isinstance(payload.get("regions"), list)
 
 
-def run(gold_cases: Path, output_dir: Path, device: str, mode: str, split: str, limit: int | None, gzip_raw: bool) -> dict[str, object]:
-    selected = select_cases(gold_cases, split, limit)
+def run(
+    gold_cases: Path,
+    output_dir: Path,
+    device: str,
+    mode: str,
+    split: str,
+    limit: int | None,
+    gzip_raw: bool,
+    case_ids_file: Path | None = None,
+) -> dict[str, object]:
+    selected = select_cases(gold_cases, split, limit, case_ids_file)
     output_cases = output_dir / "cases"
     backend = PaddleOCRBackend(device=device, mode=mode)
     counts = {"selected": len(selected), "processed": 0, "reused": 0}
@@ -109,9 +132,10 @@ def main() -> int:
     parser.add_argument("--mode", choices=("fast", "accurate"), default="accurate")
     parser.add_argument("--split", choices=("DEV", "INTERNAL-HOLDOUT", "all"), default="DEV")
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--case-ids-file", type=Path, help="optional newline-delimited case IDs to process")
     parser.add_argument("--gzip-raw", action="store_true", help="store raw output once as gzip and omit its embedded duplicate")
     args = parser.parse_args()
-    run(args.gold_cases, args.output_dir, args.device, args.mode, args.split, args.limit, args.gzip_raw)
+    run(args.gold_cases, args.output_dir, args.device, args.mode, args.split, args.limit, args.gzip_raw, args.case_ids_file)
     return 0
 
 
