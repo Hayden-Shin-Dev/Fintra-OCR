@@ -29,6 +29,7 @@ from fintra.normalization.values import normalize_date
 
 WIDTH = 1654.0
 HEIGHT = 2340.0
+LINE_TOLERANCE = .007692308 * HEIGHT
 MONTHS = {name: i for i, name in enumerate(
     ("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"), 1
 )}
@@ -67,7 +68,9 @@ def _join(items: Iterable[dict[str, Any]]) -> str:
     return " ".join(item["text"] for item in items if item["text"])
 
 
-def _lines(items: Iterable[dict[str, Any]], tolerance: float = 18.0) -> list[list[dict[str, Any]]]:
+def _lines(items: Iterable[dict[str, Any]], tolerance: float | None = None) -> list[list[dict[str, Any]]]:
+    if tolerance is None:
+        tolerance = LINE_TOLERANCE
     lines: list[list[dict[str, Any]]] = []
     for item in sorted(items, key=lambda value: ((value["bbox"][1] + value["bbox"][3]) / 2, value["bbox"][0], value["index"])):
         cy = (item["bbox"][1] + item["bbox"][3]) / 2
@@ -158,7 +161,15 @@ def _numeric(text: str) -> bool:
     return bool(re.search(r"\d", text)) and bool(re.fullmatch(r"[\s$€£¥A-Z(),.+/-]*\d[\s$€£¥A-Z(),.+/-]*", text, re.I))
 
 
-def _item_rows(items: list[dict[str, Any]], quantity_x=(820, 950), minimum=45.0) -> list[float]:
+def _item_rows(items: list[dict[str, Any]], quantity_x=None, minimum=None) -> list[float]:
+    # Work in the canonical page coordinate system used by the Gold
+    # generators.  The margin is proportional to page height so a small
+    # input scaling/rounding change cannot split stacked quantity/unit words
+    # into a new item row.
+    if minimum is None:
+        minimum = 0.025 * HEIGHT
+    if quantity_x is None:
+        quantity_x = (.496 * WIDTH, .574 * WIDTH)
     centers: list[float] = []
     for item in sorted((x for x in items if quantity_x[0] <= x["bbox"][0] <= quantity_x[1]), key=lambda x: x["bbox"][1]):
         center = (item["bbox"][1] + item["bbox"][3]) / 2
@@ -167,7 +178,9 @@ def _item_rows(items: list[dict[str, Any]], quantity_x=(820, 950), minimum=45.0)
     return centers
 
 
-def _near(items: list[dict[str, Any]], center: float, tolerance: float = 42.0) -> list[dict[str, Any]]:
+def _near(items: list[dict[str, Any]], center: float, tolerance: float | None = None) -> list[dict[str, Any]]:
+    if tolerance is None:
+        tolerance = .018 * HEIGHT
     return [item for item in items if abs((item["bbox"][1] + item["bbox"][3]) / 2 - center) <= tolerance]
 
 
@@ -192,15 +205,15 @@ def _ci_gold(tokens: list[dict[str, Any]]) -> list[dict[str, Any]]:
     total = _relative_zone(tokens, .72, .96, .62, .78)
     total_lines = [line for line in _lines(total) if any(_numeric(x["text"]) for x in line)]
     fields.append(_evidence("total_amount", total_lines[0]) if len(total_lines) == 1 else _evidence("total_amount", [], status="ambiguous_gt", review="total_not_unique_in_footer_zone"))
-    item_tokens = [x for x in tokens if 1000 <= x["bbox"][1] <= 1400]
+    item_tokens = [x for x in tokens if .427 * HEIGHT <= x["bbox"][1] <= .598 * HEIGHT]
     for index, center in enumerate(_item_rows(item_tokens)):
         row = _near(item_tokens, center)
         fields.extend([
-            _cell(f"items[{index}].description", [x for x in row if 120 <= x["bbox"][0] <= 700]),
-            _cell(f"items[{index}].quantity", [x for x in row if 820 <= x["bbox"][0] <= 950], numeric=True),
-            _cell(f"items[{index}].unit", [x for x in row if 950 <= x["bbox"][0] <= 1100]),
-            _cell(f"items[{index}].unit_price", [x for x in row if 1100 <= x["bbox"][0] <= 1260], numeric=True),
-            _cell(f"items[{index}].amount", [x for x in row if 1260 <= x["bbox"][0] <= 1520], numeric=True),
+            _cell(f"items[{index}].description", [x for x in row if .073 * WIDTH <= x["bbox"][0] <= .423 * WIDTH]),
+            _cell(f"items[{index}].quantity", [x for x in row if .496 * WIDTH <= x["bbox"][0] <= .574 * WIDTH], numeric=True),
+            _cell(f"items[{index}].unit", [x for x in row if .574 * WIDTH <= x["bbox"][0] <= .665 * WIDTH]),
+            _cell(f"items[{index}].unit_price", [x for x in row if .665 * WIDTH <= x["bbox"][0] <= .762 * WIDTH], numeric=True),
+            _cell(f"items[{index}].amount", [x for x in row if .762 * WIDTH <= x["bbox"][0] <= .919 * WIDTH], numeric=True),
         ])
     return fields
 
@@ -212,13 +225,13 @@ def _packing_gold(tokens: list[dict[str, Any]]) -> list[dict[str, Any]]:
         _single_line("exporter", _relative_zone(tokens, .06, .49, .12, .22)),
         _single_line("consignee", _relative_zone(tokens, .06, .46, .21, .31)),
     ]
-    item_tokens = [x for x in tokens if 1000 <= x["bbox"][1] <= 1520]
+    item_tokens = [x for x in tokens if .427 * HEIGHT <= x["bbox"][1] <= .650 * HEIGHT]
     for index, center in enumerate(_item_rows(item_tokens)):
         row = _near(item_tokens, center)
         fields.extend([
-            _cell(f"items[{index}].description", [x for x in row if x["bbox"][0] < 730]),
-            _cell(f"items[{index}].quantity", [x for x in row if 800 <= x["bbox"][0] <= 950], numeric=True),
-            _cell(f"items[{index}].unit", [x for x in row if 800 <= x["bbox"][0] <= 950 and not re.fullmatch(r"\d+(?:[.,]\d+)?", x["text"]) ]),
+            _cell(f"items[{index}].description", [x for x in row if x["bbox"][0] < .441 * WIDTH]),
+            _cell(f"items[{index}].quantity", [x for x in row if .484 * WIDTH <= x["bbox"][0] <= .574 * WIDTH], numeric=True),
+            _cell(f"items[{index}].unit", [x for x in row if .484 * WIDTH <= x["bbox"][0] <= .574 * WIDTH and not re.fullmatch(r"\d+(?:[.,]\d+)?", x["text"]) ]),
         ])
     package_zone = _relative_zone(tokens, .21, .40, .70, .79)
     package_tokens = [x for x in package_zone if re.fullmatch(r"\d+(?:[.,]\d+)?", x["text"])]

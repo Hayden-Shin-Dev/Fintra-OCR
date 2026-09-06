@@ -30,6 +30,56 @@ UNIT_WORDS = {
 TRANSPORT_TERMS = {"FOB", "CIF", "CFR", "DAF", "DDP", "DDU", "DEQ", "CFS", "CY"}
 ADDRESS_MARKERS = {"ROOM", "RM", "TEL", "TEL:", "FAX", "FAX:", "PHONE", "MOBILE", "STREET", "ROAD", "AVE", "AVENUE", "DISTRICT", "COUNTRY", "ZIP", "POSTAL"}
 
+# All geometry below is evaluated in the canonical page space.  Keep the
+# tolerances proportional to that space so the source page can be normalized
+# without introducing scale-dependent row/line decisions.
+CANONICAL_WIDTH = v3.v2.WIDTH
+CANONICAL_HEIGHT = v3.v2.HEIGHT
+TABLE_Y_MIN = 850.0 / CANONICAL_HEIGHT
+TABLE_Y_MAX = 1750.0 / CANONICAL_HEIGHT
+LINE_TOLERANCE = 18.0 / CANONICAL_HEIGHT
+ROW_SEED_GAP = 45.0 / CANONICAL_HEIGHT
+ROW_PRE_GAP = 20.0 / CANONICAL_HEIGHT
+ROW_POST_GAP = 115.0 / CANONICAL_HEIGHT
+PORT_SEGMENT_GAP = 70.0 / CANONICAL_WIDTH
+PORT_TARGET_DISTANCE = 180.0 / CANONICAL_HEIGHT
+PORT_GROUP_X_GAP = 180.0 / CANONICAL_WIDTH
+PORT_GROUP_Y_GAP = 140.0 / CANONICAL_HEIGHT
+PORT_VESSEL_GAP = 30.0 / CANONICAL_WIDTH
+PORT_Y_SEPARATION = 35.0 / CANONICAL_HEIGHT
+
+
+def _page_size(payload: dict[str, Any]) -> tuple[float, float]:
+    image = payload.get("Images", {})
+    width, height = image.get("width"), image.get("height")
+    if isinstance(width, (int, float)) and isinstance(height, (int, float)) and width > 0 and height > 0:
+        return float(width), float(height)
+    xs = [x for item in payload.get("bbox", []) for x in item.get("x", [])]
+    ys = [y for item in payload.get("bbox", []) for y in item.get("y", [])]
+    return (max(xs) if xs else v3.v2.WIDTH, max(ys) if ys else v3.v2.HEIGHT)
+
+
+def _canonical_payload(payload: dict[str, Any]) -> tuple[dict[str, Any], float, float]:
+    """Normalize arbitrary page geometry into the historical reference space."""
+    width, height = _page_size(payload)
+    sx, sy = v3.v2.WIDTH / width, v3.v2.HEIGHT / height
+    normalized = deepcopy(payload)
+    normalized.setdefault("Images", {})["width"] = v3.v2.WIDTH
+    normalized.setdefault("Images", {})["height"] = v3.v2.HEIGHT
+    for item in normalized.get("bbox", []):
+        item["x"] = [x * sx for x in item.get("x", [])]
+        item["y"] = [y * sy for y in item.get("y", [])]
+    return normalized, sx, sy
+
+
+def _restore_field_geometry(fields: list[dict[str, Any]], sx: float, sy: float) -> list[dict[str, Any]]:
+    """Restore Gold polygons/boxes to the original document coordinate space."""
+    for field in fields:
+        bbox = field.get("bbox")
+        if isinstance(bbox, list):
+            field["bbox"] = [[point[0] / sx, point[1] / sy] for point in bbox]
+    return fields
+
 
 def _numeric_token(token: dict[str, Any]) -> bool:
     return bool(MONEY_RE.fullmatch(token["text"].strip())) or _numeric(token["text"])
@@ -102,13 +152,16 @@ def _port_address_like(text: str) -> bool:
 def _row_seeds(tokens: list[dict[str, Any]]) -> list[float]:
     """Find table rows from quantity-column numbers plus right-side numbers."""
     seeds: list[float] = []
-    for line in _lines([x for x in tokens if 850 <= x["bbox"][1] <= 1750], tolerance=18.0):
+    for line in _lines(
+        [x for x in tokens if TABLE_Y_MIN * CANONICAL_HEIGHT <= x["bbox"][1] <= TABLE_Y_MAX * CANONICAL_HEIGHT],
+        tolerance=LINE_TOLERANCE * CANONICAL_HEIGHT,
+    ):
         numeric = [x for x in line if .30 * v3.v2.WIDTH <= x["bbox"][0] <= .68 * v3.v2.WIDTH and _numeric_token(x)]
         right_numeric = [x for x in line if x["bbox"][0] > .60 * v3.v2.WIDTH and _numeric_token(x)]
         left_text = [x for x in line if x["bbox"][2] <= .30 * v3.v2.WIDTH and re.search(r"[A-Za-z]", x["text"])]
         if numeric and right_numeric and left_text:
             center = sum((x["bbox"][1] + x["bbox"][3]) / 2 for x in line) / len(line)
-            if not seeds or center - seeds[-1] > 45.0:
+            if not seeds or center - seeds[-1] > ROW_SEED_GAP * CANONICAL_HEIGHT:
                 seeds.append(center)
     return seeds
 
@@ -116,11 +169,11 @@ def _row_seeds(tokens: list[dict[str, Any]]) -> list[float]:
 def _row_tokens(tokens: list[dict[str, Any]], center: float, next_center: float | None) -> list[dict[str, Any]]:
     # Include a possible wrapped description line before the next typed row,
     # but do not absorb a distant footer or a prior non-table section.
-    upper = next_center - 20.0 if next_center is not None else center + 115.0
+    upper = next_center - ROW_PRE_GAP * CANONICAL_HEIGHT if next_center is not None else center + ROW_POST_GAP * CANONICAL_HEIGHT
     return [
         x for x in tokens
-        if 850 <= x["bbox"][1] <= 1750
-        and center - 18.0 <= (x["bbox"][1] + x["bbox"][3]) / 2 <= upper
+        if TABLE_Y_MIN * CANONICAL_HEIGHT <= x["bbox"][1] <= TABLE_Y_MAX * CANONICAL_HEIGHT
+        and center - LINE_TOLERANCE * CANONICAL_HEIGHT <= (x["bbox"][1] + x["bbox"][3]) / 2 <= upper
     ]
 
 
@@ -153,17 +206,17 @@ def _description(field_name: str, row: list[dict[str, Any]], quantity_x: float |
     # textual portion only.  This is type/layout logic, not case knowledge.
     if not candidates:
         return _evidence(field_name, [], status="ambiguous_gt", review="description_has_no_textual_candidate_before_quantity_unit")
-    lines = _lines(candidates, tolerance=18.0)
+    lines = _lines(candidates, tolerance=LINE_TOLERANCE * CANONICAL_HEIGHT)
     return _evidence(field_name, [item for line in lines for item in line], review="typed_row_remaining_text_before_quantity_unit")
 
 
 def _ci_table_v2(tokens: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    table_tokens = [x for x in tokens if 850 <= x["bbox"][1] <= 1750]
+    table_tokens = [x for x in tokens if TABLE_Y_MIN * CANONICAL_HEIGHT <= x["bbox"][1] <= TABLE_Y_MAX * CANONICAL_HEIGHT]
     seeds = _row_seeds(table_tokens)
     fields: list[dict[str, Any]] = []
     for index, center in enumerate(seeds):
         row = _row_tokens(table_tokens, center, seeds[index + 1] if index + 1 < len(seeds) else None)
-        row_lines = _lines(row, tolerance=18.0)
+        row_lines = _lines(row, tolerance=LINE_TOLERANCE * CANONICAL_HEIGHT)
         seed_line = min(row_lines, key=lambda line: abs(sum((x["bbox"][1] + x["bbox"][3]) / 2 for x in line) / len(line) - center))
         quantity, unit, quantity_value, unit_value = _quantity_unit_cells(row)
         quantity_x = min((x["bbox"][0] for x in quantity + unit), default=None)
@@ -228,7 +281,7 @@ def _port_segments(tokens: list[dict[str, Any]], target_y: float | None) -> list
     for line in v3.v2._lines(items):
         segments: list[list[dict[str, Any]]] = []
         for token in line:
-            if not segments or token["bbox"][0] - segments[-1][-1]["bbox"][2] > 70.0:
+            if not segments or token["bbox"][0] - segments[-1][-1]["bbox"][2] > PORT_SEGMENT_GAP * CANONICAL_WIDTH:
                 segments.append([token])
             else:
                 segments[-1].append(token)
@@ -241,7 +294,7 @@ def _port_segments(tokens: list[dict[str, Any]], target_y: float | None) -> list
                 continue
             cy = sum((x["bbox"][1] + x["bbox"][3]) / 2 for x in segment) / len(segment)
             distance = abs(cy - target_y) if target_y is not None else cy
-            if target_y is not None and distance > 180.0:
+            if target_y is not None and distance > PORT_TARGET_DISTANCE * CANONICAL_HEIGHT:
                 continue
             candidates.append((distance, min(x["bbox"][0] for x in segment), segment))
     if not candidates:
@@ -269,7 +322,7 @@ def _port_pair(tokens: list[dict[str, Any]], vessel_tokens: list[dict[str, Any]]
     # over nearby Place of Receipt/Delivery cells.
     groups: list[list[tuple[float, float, list[dict[str, Any]]]]] = []
     for center, y_center, segment in sorted(centers):
-        if not groups or center - groups[-1][-1][0] > 180.0 or abs(y_center - groups[-1][-1][1]) > 140.0:
+        if not groups or center - groups[-1][-1][0] > PORT_GROUP_X_GAP * CANONICAL_WIDTH or abs(y_center - groups[-1][-1][1]) > PORT_GROUP_Y_GAP * CANONICAL_HEIGHT:
             groups.append([(center, y_center, segment)])
         else:
             groups[-1].append((center, y_center, segment))
@@ -280,7 +333,7 @@ def _port_pair(tokens: list[dict[str, Any]], vessel_tokens: list[dict[str, Any]]
         # text in these forms.  Without an annotated semantic label, keeping
         # it as a port would invent a role from geometry alone.
         vessel_right = max((x["bbox"][2] for x in vessel_tokens), default=vessel_center)
-        if sum(item[0] for item in chosen) / len(chosen) < vessel_center or max(item[0] for item in chosen) < vessel_right + 30.0:
+        if sum(item[0] for item in chosen) / len(chosen) < vessel_center or max(item[0] for item in chosen) < vessel_right + PORT_VESSEL_GAP * CANONICAL_WIDTH:
             return [], []
         pair = [item[2] for item in sorted(chosen, key=lambda item: item[1])[:2]]
         return pair[0], pair[1]
@@ -288,7 +341,7 @@ def _port_pair(tokens: list[dict[str, Any]], vessel_tokens: list[dict[str, Any]]
     nearest = [item[2] for item in nearest]
     if vessel_y is not None:
         y_values = [sum((x["bbox"][1] + x["bbox"][3]) / 2 for x in segment) / len(segment) for segment in nearest]
-        if abs(y_values[0] - y_values[1]) > 35.0 and min(y_values) <= vessel_y <= max(y_values):
+        if abs(y_values[0] - y_values[1]) > PORT_Y_SEPARATION * CANONICAL_HEIGHT and min(y_values) <= vessel_y <= max(y_values):
             above, below = sorted(zip(y_values, nearest), key=lambda item: item[0])
             return above[1], below[1]
     nearest.sort(key=lambda segment: min(x["bbox"][0] for x in segment))
@@ -296,8 +349,9 @@ def _port_pair(tokens: list[dict[str, Any]], vessel_tokens: list[dict[str, Any]]
 
 
 def build_v3_2(payload: dict[str, Any], document_type: str) -> list[dict[str, Any]]:
-    tokens = v3.v2._tokens(payload)
-    fields = v3.build_v3(payload, document_type)
+    normalized_payload, sx, sy = _canonical_payload(payload)
+    tokens = v3.v2._tokens(normalized_payload)
+    fields = v3.build_v3(normalized_payload, document_type)
     replacements: dict[str, dict[str, Any]] = {}
     if document_type == "Commercial Invoice":
         replacements["seller"] = _party_v2("seller", tokens, document_type, 0)
@@ -310,11 +364,11 @@ def build_v3_2(payload: dict[str, Any], document_type: str) -> list[dict[str, An
         item_fields = _ci_table_v2(tokens)
         fields = [field for field in fields if not field["field_name"].startswith("items[")]
         fields.extend(item_fields)
-        return [replacements.get(field["field_name"], field) for field in fields]
+        return _restore_field_geometry([replacements.get(field["field_name"], field) for field in fields], sx, sy)
     if document_type == "Packing List":
         replacements["exporter"] = _party_v2("exporter", tokens, document_type, 0)
         replacements["consignee"] = _party_v2("consignee", tokens, document_type, 1)
-        return [replacements.get(field["field_name"], field) for field in fields]
+        return _restore_field_geometry([replacements.get(field["field_name"], field) for field in fields], sx, sy)
 
     for name, ordinal in (("shipper", 0), ("consignee", 1), ("notify_party", 2)):
         replacements[name] = _party_v2(name, tokens, document_type, ordinal)
@@ -325,7 +379,7 @@ def build_v3_2(payload: dict[str, Any], document_type: str) -> list[dict[str, An
     loading, discharge = _port_pair(tokens, vessel_tokens)
     replacements["port_of_loading"] = v3.v2._evidence("port_of_loading", loading, review="anchor_relative_port_layout_loading") if loading else v3.v2._evidence("port_of_loading", [], status="ambiguous_gt", review="no_unique_loading_place_cell")
     replacements["port_of_discharge"] = v3.v2._evidence("port_of_discharge", discharge, review="anchor_relative_port_layout_discharge") if discharge else v3.v2._evidence("port_of_discharge", [], status="ambiguous_gt", review="no_unique_discharge_place_cell")
-    return [replacements.get(field["field_name"], field) for field in fields]
+    return _restore_field_geometry([replacements.get(field["field_name"], field) for field in fields], sx, sy)
 
 
 def _case_ids(path: Path) -> list[str]:

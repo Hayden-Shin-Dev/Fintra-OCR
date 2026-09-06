@@ -2,7 +2,7 @@ import unittest
 
 from scripts.build_semantic_field_gold import _gold
 from scripts.build_semantic_v3_gold import build_v3, v2
-from scripts.build_semantic_v3_2_gold import _ci_table_v2, _party_v2
+from scripts.build_semantic_v3_2_gold import _ci_table_v2, _party_v2, build_v3_2
 from scripts.validate_semantic_v3 import _field_valid
 
 
@@ -132,6 +132,43 @@ class SemanticGoldTests(unittest.TestCase):
         field = _party_v2("consignee", v2._tokens(payload), "B/L", 0)
         self.assertEqual(field["value"], "QROUD SOURCE WATER CO., LTD.")
         self.assertNotIn("ROOM", field["value"])
+
+    def test_v32_gold_is_scale_invariant_after_page_normalization(self):
+        base = {
+            "Images": {"width": 1654, "height": 2340},
+            "bbox": [
+                token("Widget", 250, 1000, 390, 1024),
+                token("2", 865, 1000, 885, 1024),
+                token("EA", 1045, 1000, 1080, 1024),
+                token("$10.00", 1250, 1000, 1330, 1024),
+                token("$20.00", 1435, 1000, 1520, 1024),
+            ],
+        }
+        reference = build_v3_2(base, "Commercial Invoice")
+        ref = [(f["field_name"], f["value"], f["status"], f["source_token_indices"]) for f in reference]
+        for scale in (0.5, 1.5, 2.0):
+            scaled = {"Images": {"width": 1654 * scale, "height": 2340 * scale}, "bbox": []}
+            for item in base["bbox"]:
+                scaled["bbox"].append({"data": item["data"], "x": [x * scale for x in item["x"]], "y": [y * scale for y in item["y"]]})
+            current = build_v3_2(scaled, "Commercial Invoice")
+            self.assertEqual(ref, [(f["field_name"], f["value"], f["status"], f["source_token_indices"]) for f in current])
+
+    def test_v32_packing_rows_are_scale_invariant_when_quantity_and_unit_stack(self):
+        base = {
+            "Images": {"width": 1654, "height": 2340},
+            "bbox": [
+                token("Alpha", 300, 1100), token("2", 850, 1100), token("BOX", 850, 1140),
+                token("Beta", 300, 1300), token("3", 850, 1300), token("PCS", 850, 1340),
+            ],
+        }
+        reference = build_v3_2(base, "Packing List")
+        ref = [(f["field_name"], f["value"], f["status"], f["source_token_indices"]) for f in reference]
+        for scale in (0.5, 1.5, 2.0):
+            scaled = {"Images": {"width": 1654 * scale, "height": 2340 * scale}, "bbox": []}
+            for item in base["bbox"]:
+                scaled["bbox"].append({"data": item["data"], "x": [x * scale for x in item["x"]], "y": [y * scale for y in item["y"]]})
+            current = build_v3_2(scaled, "Packing List")
+            self.assertEqual(ref, [(f["field_name"], f["value"], f["status"], f["source_token_indices"]) for f in current])
 
     def test_v3_invariants_reject_numeric_description_voyage_party_and_incoterm_vessel(self):
         self.assertFalse(_field_valid({"field_name": "items[0].description", "value": "7646.00"}, ["7", "PC", "$7646.00"], "Commercial Invoice")[0])

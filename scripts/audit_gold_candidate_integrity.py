@@ -25,7 +25,18 @@ DATE = re.compile(
     r"[A-Za-z]{3,9}\s+\d{1,2}[, ]+\d{4}|"
     r"\d{1,4}[-/]\d{1,2}[-/]\d{1,4}", re.I
 )
-WIDTH = 1654.0
+CANONICAL_WIDTH = 1654.0
+CANONICAL_HEIGHT = 2340.0
+
+
+def page_size(payload: dict[str, Any]) -> tuple[float, float]:
+    image = payload.get("Images", {})
+    width, height = image.get("width"), image.get("height")
+    if isinstance(width, (int, float)) and isinstance(height, (int, float)) and width > 0 and height > 0:
+        return float(width), float(height)
+    tokens = raw_tokens(payload)
+    return (max((token["bbox"][2] for token in tokens), default=CANONICAL_WIDTH),
+            max((token["bbox"][3] for token in tokens), default=CANONICAL_HEIGHT))
 
 
 def load_manifest(path: Path) -> dict[str, dict[str, Any]]:
@@ -102,12 +113,12 @@ def same_bbox(left: list[float] | None, right: list[float] | None) -> bool:
     return left is not None and right is not None and all(abs(a - b) < 1e-6 for a, b in zip(left, right))
 
 
-def reading_order_text(selected: list[dict[str, Any]]) -> str:
+def reading_order_text(selected: list[dict[str, Any]], line_tolerance: float) -> str:
     """Read selected TL words by geometry, keeping near-y words on one line."""
     lines: list[dict[str, Any]] = []
     for token in sorted(selected, key=lambda item: ((item["bbox"][1] + item["bbox"][3]) / 2, item["bbox"][0])):
         center_y = (token["bbox"][1] + token["bbox"][3]) / 2
-        line = next((candidate for candidate in lines if abs(candidate["center_y"] - center_y) <= 18), None)
+        line = next((candidate for candidate in lines if abs(candidate["center_y"] - center_y) <= line_tolerance), None)
         if line is None:
             line = {"center_y": center_y, "tokens": []}
             lines.append(line)
@@ -137,7 +148,7 @@ def field_type_issue(name: str, value: str) -> str | None:
     return None
 
 
-def item_row_audit(fields: list[dict[str, Any]], tokens: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def item_row_audit(fields: list[dict[str, Any]], tokens: list[dict[str, Any]], page_width: float, page_height: float) -> list[dict[str, Any]]:
     grouped: dict[int, dict[str, dict[str, Any]]] = defaultdict(dict)
     for field in fields:
         match = re.match(r"items\[(\d+)\]\.(description|quantity|unit|unit_price|amount)$", str(field["field_name"]))
@@ -154,12 +165,12 @@ def item_row_audit(fields: list[dict[str, Any]], tokens: list[dict[str, Any]]) -
         present = [role for role in ("description", "quantity", "unit", "unit_price", "amount") if role in centers]
         if len(present) >= 2:
             y_values = [centers[role][1] for role in present]
-            if max(y_values) - min(y_values) > 55:
+            if max(y_values) - min(y_values) > (55.0 / CANONICAL_HEIGHT) * page_height:
                 issues.append({"row": row_index, "invariant": "row_alignment", "reason": "available item fields are not on one row"})
             x_values = [centers[role][0] for role in present]
             # Quantity and unit may be stacked in the same source column;
             # tolerate small center jitter for that pair.
-            if any(x_values[i] > x_values[i + 1] + 10.0 for i in range(len(x_values) - 1)):
+            if any(x_values[i] > x_values[i + 1] + (10.0 / CANONICAL_WIDTH) * page_width for i in range(len(x_values) - 1)):
                 issues.append({"row": row_index, "invariant": "column_order", "reason": "item columns are not left-to-right description/quantity/unit/unit_price/amount"})
     return issues
 
@@ -167,6 +178,8 @@ def item_row_audit(fields: list[dict[str, Any]], tokens: list[dict[str, Any]]) -
 def audit_case(case_id: str, manifest_row: dict[str, Any], cases_root: Path, gold_root: Path, tl_dir: Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     raw_payload, archive = load_tl(tl_dir, manifest_row)
     raw = raw_tokens(raw_payload)
+    page_width, page_height = page_size(raw_payload)
+    line_tolerance = (18.0 / CANONICAL_HEIGHT) * page_height
     source_path = cases_root / case_id / "source_annotation.json"
     candidate_path = gold_root / case_id / "semantic_gold_fields.json"
     source_payload = json.loads(source_path.read_text(encoding="utf-8"))
@@ -178,7 +191,7 @@ def audit_case(case_id: str, manifest_row: dict[str, Any], cases_root: Path, gol
             continue
         indices = [int(x) for x in field.get("source_token_indices", [])]
         selected = [token for token in raw if token["index"] in set(indices)]
-        source_text = reading_order_text(selected)
+        source_text = reading_order_text(selected, line_tolerance)
         value = str(field.get("value") or "").strip()
         issues = []
         if not selected:
@@ -211,7 +224,7 @@ def audit_case(case_id: str, manifest_row: dict[str, Any], cases_root: Path, gol
             "source_annotation": str(source_path),
             "candidate_gold": str(candidate_path),
         })
-    row_issues = item_row_audit(fields, raw)
+    row_issues = item_row_audit(fields, raw, page_width, page_height)
     return records, {"case_id": case_id, "source_token_count": len(raw), "source_payload_token_geometry_equal": source_equal, "item_row_issues": row_issues}
 
 
@@ -245,12 +258,24 @@ def main() -> None:
         writer.writerows(records)
     structural = Counter(row["structural_status"] for row in records)
     issue_counts = Counter(issue for row in records for issue in row["structural_issues"].split(";") if issue)
+    semantic = Counter(row["semantic_status"] for row in records)
+    semantic_by_type = defaultdict(Counter)
+    semantic_by_field = defaultdict(Counter)
+    semantic_by_group = defaultdict(Counter)
+    for row in records:
+        semantic_by_type[row["document_type"]][row["semantic_status"]] += 1
+        semantic_by_field[f"{row['document_type']}:{row['field_name']}"][row["semantic_status"]] += 1
+        semantic_by_group[row["source_group"]][row["semantic_status"]] += 1
     row_issues = [issue for case in cases for issue in case["item_row_issues"]]
     summary = {
         "cases": len(cases),
         "available_fields": len(records),
         "structural_status": dict(structural),
         "structural_issue_counts": dict(issue_counts),
+        "semantic_classification": dict(semantic),
+        "semantic_by_document_type": {key: dict(value) for key, value in semantic_by_type.items()},
+        "semantic_by_field": {key: dict(value) for key, value in semantic_by_field.items()},
+        "semantic_by_source_group": {key: dict(value) for key, value in semantic_by_group.items()},
         "item_row_issue_count": len(row_issues),
         "source_payload_token_geometry_equal_cases": sum(bool(case["source_payload_token_geometry_equal"]) for case in cases),
         "source_annotation_is_downstream_copy": True,

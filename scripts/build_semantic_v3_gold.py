@@ -159,10 +159,10 @@ def _cell(field_name: str, items: list[dict[str, Any]], *, numeric: bool = False
 
 
 def _ci_table(tokens: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    item_tokens = [x for x in tokens if 1000 <= x["bbox"][1] <= 1520]
+    item_tokens = [x for x in tokens if .427 * v2.HEIGHT <= x["bbox"][1] <= .650 * v2.HEIGHT]
     fields: list[dict[str, Any]] = []
     for index, center in enumerate(v2._item_rows(item_tokens)):
-        row = v2._near(item_tokens, center, tolerance=50.0)
+        row = v2._near(item_tokens, center, tolerance=.0214 * v2.HEIGHT)
         fields.extend([
             _cell(f"items[{index}].description", [x for x in row if .24 * v2.WIDTH <= x["bbox"][0] <= .53 * v2.WIDTH]),
             _quantity_cell(f"items[{index}].quantity", [x for x in row if .47 * v2.WIDTH <= x["bbox"][0] <= .62 * v2.WIDTH]),
@@ -187,9 +187,9 @@ def build_v3(payload: dict[str, Any], document_type: str) -> list[dict[str, Any]
             replacements[name] = _party(name, tokens, document_type, ordinal)
         # Packing layouts use a shared quantity/unit column.  Replace only the
         # unit resolver; descriptions/quantities remain the v2 evidence view.
-        item_tokens = [x for x in tokens if 1000 <= x["bbox"][1] <= 1520]
+        item_tokens = [x for x in tokens if .427 * v2.HEIGHT <= x["bbox"][1] <= .650 * v2.HEIGHT]
         for index, center in enumerate(v2._item_rows(item_tokens)):
-            replacements[f"items[{index}].unit"] = _unit_cell(f"items[{index}].unit", v2._near(item_tokens, center, tolerance=50.0))
+            replacements[f"items[{index}].unit"] = _unit_cell(f"items[{index}].unit", v2._near(item_tokens, center, tolerance=.0214 * v2.HEIGHT))
     else:
         for name, ordinal in (("shipper", 0), ("consignee", 1), ("notify_party", 2)):
             replacements[name] = _party(name, tokens, document_type, ordinal)
