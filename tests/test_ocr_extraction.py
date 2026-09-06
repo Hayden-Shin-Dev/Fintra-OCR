@@ -117,6 +117,22 @@ class OCRExtractionTests(unittest.TestCase):
         invoice = extract_commercial_invoice(result)
         self.assertEqual(invoice.items[0].description.value, "Widget")
 
+    def test_bl_label_candidates_do_not_select_later_template_text(self):
+        result = OCRResult(
+            "bl-labels", "B/L", "bl.png", [
+                OCRRegion([[100, 850], [280, 850], [280, 875], [100, 875]], "VESSEL NAME", index=0),
+                OCRRegion([[100, 885], [250, 885], [250, 910], [100, 910]], "OCEAN STAR", index=1),
+                OCRRegion([[500, 850], [680, 850], [680, 875], [500, 875]], "PORT OF LOADING", index=2),
+                OCRRegion([[500, 885], [680, 885], [680, 910], [500, 910]], "BUSAN, KOREA", index=3),
+                OCRRegion([[100, 950], [300, 950], [300, 975], [100, 975]], "PORT OF DISCHARGE", index=4),
+                OCRRegion([[100, 985], [280, 985], [280, 1010], [100, 1010]], "OSAKA, JAPAN", index=5),
+            ],
+        )
+        bl = extract_bill_of_lading(result)
+        self.assertEqual(bl.vessel.value, "OCEAN STAR")
+        self.assertEqual(bl.port_of_loading.value, "BUSAN, KOREA")
+        self.assertEqual(bl.port_of_discharge.value, "OSAKA, JAPAN")
+
     def test_contained_paddle_fragment_is_removed_but_adjacent_word_is_kept(self):
         result = OCRResult(
             "ci-fragments", "Commercial Invoice", "invoice.png", [

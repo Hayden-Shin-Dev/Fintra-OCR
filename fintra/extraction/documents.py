@@ -43,11 +43,11 @@ def _is_contained_fragment(candidate: OCRRegion, larger: OCRRegion) -> bool:
         return False
     small = _canonical(candidate.text)
     full = _canonical(larger.text)
-    if len(small) < 4 or not small or small == full or small not in full:
+    if len(small) < 3 or not small or small == full or small not in full:
         return False
     cx1, cy1, cx2, cy2 = candidate.bbox
     lx1, ly1, lx2, ly2 = larger.bbox
-    padding = max(3.0, min(candidate.bbox[3] - candidate.bbox[1], larger.bbox[3] - larger.bbox[1]) * 0.2)
+    padding = max(5.0, min(candidate.bbox[3] - candidate.bbox[1], larger.bbox[3] - larger.bbox[1]) * 0.25)
     return lx1 - padding <= cx1 and cy1 >= ly1 - padding and cx2 <= lx2 + padding and cy2 <= ly2 + padding
 
 
@@ -205,6 +205,15 @@ def _party_evidence(regions: list[OCRRegion]) -> EvidenceField:
     """
     for line in _line_groups(regions):
         raw_text = " ".join(item.text.strip() for item in line if item.text.strip()).strip(" ,:;-&")
+        # A value and the next heading can land on one OCR line (for example
+        # ``QILGRIM'S PRIDE NOTIFY PARTY ...``). Keep the value prefix.
+        trailing_heading = re.search(
+            r"\b(?:SHIPPER|SELLER|EXPORTER|BUYER|CONSIGNEE|NOTIFY\s+PARTY)\b",
+            raw_text,
+            re.I,
+        )
+        if trailing_heading and trailing_heading.start() > 0:
+            raw_text = raw_text[:trailing_heading.start()].strip(" ,:;-&")
         text = _remove_inline_party_heading(raw_text)
         canonical = _canonical(text)
         if not canonical or _looks_like_party_heading(raw_text) or set(canonical.split()).issubset(_PARTY_STOP_WORDS):
@@ -331,10 +340,16 @@ def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
 def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
     values = _regions(result)
     number_regions = _in_zone(result, x1=1150, x2=1500, y1=220, y2=360)
-    goods_regions = [region for region in values if 500 <= region.bbox[0] <= 1100 and 1080 <= region.bbox[1] <= 1500]
+    description_headers = [region for region in values if 500 <= region.bbox[0] <= 1100
+                           and 1000 <= region.bbox[1] <= 1200
+                           and re.search(r"DESCRIPTION|GOODS", region.text, re.I)]
+    goods_start = min((region.bbox[3] for region in description_headers), default=1050) + 25
+    goods_regions = [region for region in values if 500 <= region.bbox[0] <= 1100
+                     and goods_start <= region.bbox[1] <= 1550]
     goods_lines = []
     for line in _line_groups(goods_regions):
         kept = [region for region in line if _canonical(region.text) not in {"TOTAL", "PKG", "KG", "KGS", "G", "CBM"}
+                and not re.search(r"PARTICULARS|DESCRIPTION OF PACKAGE|GROSS WEIGHT|MEASUREMENTS|FREIGHT|CLASS|NO OF|CONTAINER NO", region.text, re.I)
                 and not re.fullmatch(r"\d+(?:[.,]\d+)?(?:KG|KGS|G)?", region.text.strip(), re.I)]
         if kept and any(re.search(r"[A-Za-z]", region.text) for region in kept):
             goods_lines.extend(kept)
@@ -342,6 +357,9 @@ def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
     # the B/L item table can define the shipment summary row.
     total_regions = [region for region in values if _canonical(region.text) == "TOTAL"
                      and 1080 <= region.bbox[1] <= 1600]
+    total_regions.extend(region for region in values
+                         if re.search(r"TOTAL.*(?:PKG|PACKAGES)", region.text, re.I)
+                         and 1080 <= region.bbox[1] <= 1600)
     package_total = []
     gross_total = []
     if len(total_regions) == 1:
@@ -355,14 +373,23 @@ def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
         kg = [region for region in gross_values if re.search(r"KG", region.text, re.I)]
         if kg:
             weight_unit = evidence("KG", source_text=" ".join(region.text for region in kg), bbox=kg[0].polygon)
+    vessel = _find_field(result, ("export carrier (vessel)", "vessel name"), prefer_below=True)
+    if vessel.status == "missing":
+        for region in values:
+            match = re.match(r"VESSEL\s*/?\s*VOY\.?\s+(.+)$", region.text.strip(), re.I)
+            if match:
+                vessel = _evidence_from_region(region, match.group(1).strip())
+                break
+    loading = _find_field(result, ("port of loading",), prefer_below=True)
+    discharge = _find_field(result, ("port of discharge",), prefer_below=True)
     return {
         "bl_number": _token_value(number_regions, r"(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9][A-Za-z0-9.-]{4,}"),
         "shipper": _party_evidence(_in_zone(result, x1=70, x2=800, y1=290, y2=470)),
         "consignee": _party_evidence(_in_zone(result, x1=70, x2=800, y1=490, y2=600)),
-        "notify_party": _party_evidence(_in_zone(result, x1=70, x2=800, y1=680, y2=820)),
-        "vessel": _last_line_evidence(_in_zone(result, x1=70, x2=400, y1=850, y2=980)),
-        "port_of_loading": _last_line_evidence(_in_zone(result, x1=400, x2=800, y1=850, y2=980)),
-        "port_of_discharge": _last_line_evidence(_in_zone(result, x1=70, x2=400, y1=950, y2=1080)),
+        "notify_party": _party_evidence(_in_zone(result, x1=70, x2=800, y1=580, y2=820)),
+        "vessel": vessel,
+        "port_of_loading": loading,
+        "port_of_discharge": discharge,
         "shipment_date": _date_evidence(_in_zone(result, x1=1150, x2=1500, y1=170, y2=290)),
         "package_count": _evidence_from_region(package_total[0], package_total[0].text) if len(package_total) == 1 else ambiguous(source_text="no unique total package count"),
         "gross_weight": _evidence_from_region(gross_total[0], gross_total[0].text) if len(gross_total) == 1 else ambiguous(source_text="no unique total gross weight"),
@@ -385,7 +412,7 @@ def _candidate_after_label(region: OCRRegion, aliases: Iterable[str]) -> str | N
         alias_canonical = _canonical(alias)
         if canonical == alias_canonical:
             return None
-        match = re.search(rf"\b{re.escape(alias_canonical)}\b\s*[:#-]?\s*(.+)$", canonical)
+        match = re.match(rf"\s*{re.escape(alias_canonical)}\b\s*[:#-]?\s*(.+)$", canonical)
         if match:
             raw_match = re.search(r"[:#-]\s*(.+)$", text)
             return (raw_match.group(1) if raw_match else text[len(alias):]).strip()
