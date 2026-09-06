@@ -564,6 +564,12 @@ def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
         if kg:
             weight_unit = evidence("KG", source_text=" ".join(region.text for region in kg), bbox=kg[0].polygon)
     vessel = _find_field(result, ("export carrier (vessel)", "vessel name"), prefer_below=True)
+    vessel_value_is_voyage = bool(vessel.value and re.fullmatch(
+        r"\s*(?:NO\s*)?V\s*\.?\s*\d+\s*|\s*NO\s*", str(vessel.value), re.I))
+    if vessel.status == "missing" or vessel_value_is_voyage:
+        anchored_vessel = _vessel_evidence(result)
+        if anchored_vessel.status == "extracted":
+            vessel = anchored_vessel
     if vessel.status == "missing":
         for region in values:
             match = re.match(r"VESSEL\s*/?\s*VOY\.?\s+(.+)$", region.text.strip(), re.I)
@@ -661,6 +667,51 @@ def _find_field(result: OCRResult, aliases: tuple[str, ...], *, prefer_below: bo
     candidates_in_order = (below or right) if prefer_below else (right or below)
     nearest = sorted(candidates_in_order, key=lambda region: (abs(region.bbox[1] - ly1), abs(region.bbox[0] - lx2)))
     return _evidence_from_region(nearest[0], nearest[0].text) if nearest else missing()
+
+
+def _vessel_evidence(result: OCRResult) -> EvidenceField:
+    """Resolve vessel values from a vessel anchor and its own column.
+
+    Some B/L forms render the voyage number in the anchor line and the vessel
+    name on the following line.  Generic label lookup returns ``V.091`` in
+    that layout, so the resolver explicitly rejects voyage/incoterm tokens and
+    selects the first typed value below the vessel anchor in the same column.
+    """
+    values = _regions(result)
+    anchor_pattern = re.compile(r"\b(?:VESSEL\s*/?\s*VOY|VESSEL\s+NAME|OCEAN\s+VESSEL|EXPORT\s+CARRIER)\b", re.I)
+    anchors = [region for region in values if anchor_pattern.search(region.text)]
+
+    def is_voyage(text: str) -> bool:
+        cleaned = text.strip(" ,:;-\")")
+        return bool(re.fullmatch(r"\s*(?:NO\s*)?V\s*\.?\s*\d+\s*|\s*NO\s*", cleaned, re.I))
+
+    def is_value(region: OCRRegion) -> bool:
+        text = region.text.strip()
+        upper = text.upper()
+        if not text or is_voyage(text) or re.fullmatch(r"\d+(?:[.,]\d+)?", text):
+            return False
+        if re.search(r"\b(?:PORT|PLACE|CARRIER|FREIGHT|INCOTERM|FOB|CIF|CFR|DAF|DDP|DDU|DEQ|CFS|CY)\b", upper):
+            return False
+        if re.search(r"\b(?:SHIPPER|CONSIGNEE|NOTIFY|PARTY|PACKAGE|GROSS|WEIGHT|DESCRIPTION)\b", upper):
+            return False
+        return bool(re.search(r"[A-Za-z]", text))
+
+    # Inline vessel names such as ``Vessel/voy. MAERSK SANTANA`` are already
+    # complete values unless the remainder is only a voyage number.
+    for anchor in anchors:
+        inline = re.search(r"(?:VESSEL\s*/?\s*VOY\.?|VESSEL\s+NAME|OCEAN\s+VESSEL|EXPORT\s+CARRIER)\s*[:#-]?\s*(.+)$", anchor.text, re.I)
+        if inline and is_value(OCRRegion(anchor.polygon, inline.group(1), anchor.confidence, anchor.page, anchor.index)):
+            return _evidence_from_region(anchor, inline.group(1).strip())
+        ax1, ay1, ax2, ay2 = anchor.bbox
+        below = [region for region in values
+                 if region.page == anchor.page and region.bbox[1] >= ay2 - 2
+                 and region.bbox[1] <= ay2 + 150
+                 and abs(((region.bbox[0] + region.bbox[2]) / 2) - ((ax1 + ax2) / 2)) <= 180
+                 and is_value(region)]
+        if below:
+            candidate = min(below, key=lambda region: (region.bbox[1], region.bbox[0]))
+            return _evidence_from_region(candidate, candidate.text)
+    return missing("vessel_anchor_value_not_found")
 
 
 def _metadata(result: OCRResult) -> DocumentMetadata:
