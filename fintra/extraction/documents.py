@@ -152,7 +152,8 @@ def _line_groups(regions: list[OCRRegion], tolerance: float = 28) -> list[list[O
 _PARTY_STOP_WORDS = {
     "SHIPPER", "SELLER", "EXPORTER", "BUYER", "CONSIGNEE", "CONSINEE", "NOTIFY", "PARTY",
     "PHONE", "TEL", "FAX", "ADDRESS", "COMPLETE", "NAME", "PROVIDE", "PLEASE", "ACCOUNT",
-    "RISK", "ORDER", "OF", "AND", "&",
+    "RISK", "ORDER", "OF", "AND", "&", "MESSRS", "IF", "OTHER", "THAN", "NOT", "NEGOTIABLE",
+    "UNLESS", "CONSIGNED",
 }
 
 _PARTY_HEADING_WORDS = (
@@ -216,7 +217,9 @@ def _party_evidence(regions: list[OCRRegion]) -> EvidenceField:
             raw_text = raw_text[:trailing_heading.start()].strip(" ,:;-&")
         text = _remove_inline_party_heading(raw_text)
         canonical = _canonical(text)
-        if not canonical or _looks_like_party_heading(raw_text) or set(canonical.split()).issubset(_PARTY_STOP_WORDS):
+        if (not canonical or _looks_like_party_heading(raw_text)
+                or set(canonical.split()).issubset(_PARTY_STOP_WORDS)
+                or re.search(r"\b(?:ACCOUNT\s*&?\s*RISK|FOR\s+ACCOUNT|NOT\s+NEGOTIABLE)\b", canonical)):
             continue
         if re.search(r"\b(?:PHONE|TEL|FAX|ADDRESS|COMPLETE NAME|PROVIDE)\b", canonical) and not re.search(r"[A-Za-z]{3,}.*\b(?:CO|LTD|INC|CORP|COMPANY|GROUP)\b", canonical):
             continue
@@ -289,7 +292,7 @@ def _invoice_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
     return {
         "invoice_number": _combined_evidence(_in_zone(result, x1=850, x2=1320, y1=250, y2=360)),
         "invoice_date": _date_evidence(_in_zone(result, x1=850, x2=1450, y1=360, y2=455), "invoice_date"),
-        "seller": _party_evidence(_in_zone(result, x1=100, x2=850, y1=310, y2=520)),
+        "seller": _party_evidence(_in_zone(result, x1=100, x2=850, y1=300, y2=650)),
         "buyer": _party_evidence(_in_zone(result, x1=100, x2=850, y1=570, y2=760)),
         "currency": currency,
         "total_amount": _combined_evidence(total_regions),
@@ -339,8 +342,8 @@ def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
     return {
         "packing_list_number": missing("template_field_not_present"),
         "date": _date_evidence(_in_zone(result, x1=1150, x2=1500, y1=170, y2=280), "date"),
-        "exporter": _party_evidence(_in_zone(result, x1=100, x2=800, y1=310, y2=450)),
-        "consignee": _party_evidence(_in_zone(result, x1=100, x2=750, y1=520, y2=700)),
+        "exporter": _party_evidence(_in_zone(result, x1=100, x2=800, y1=230, y2=650)),
+        "consignee": _party_evidence(_in_zone(result, x1=100, x2=800, y1=430, y2=820)),
         "items": items,
         "package_count": package,
         "gross_weight": gross,
@@ -430,6 +433,13 @@ def _candidate_after_label(region: OCRRegion, aliases: Iterable[str]) -> str | N
             return None
         match = re.match(rf"\s*{re.escape(alias_canonical)}\b\s*[:#-]?\s*(.+)$", canonical)
         if match:
+            remainder = match.group(1)
+            if any(re.search(rf"\b{re.escape(_canonical(heading))}\b", remainder) for heading in _PARTY_HEADING_WORDS):
+                return None
+            if alias_canonical in {"BUYER", "CONSIGNEE"} and re.search(r"\bREF(?:ERENCE)?\b", remainder):
+                return None
+            if alias_canonical == "CONSIGNEE" and re.search(r"ACCOUNT|RISK|OTHER\s+THAN", remainder):
+                return None
             raw_match = re.search(r"[:#-]\s*(.+)$", text)
             return (raw_match.group(1) if raw_match else text[len(alias):]).strip()
     if ":" in text:
@@ -494,26 +504,33 @@ def _items(result: OCRResult) -> list[LineItem]:
 
 def extract_commercial_invoice_legacy(result: OCRResult) -> CommercialInvoice:
     layout = _invoice_layout(result)
+    seller = _find_field(result, ("seller", "exporter", "shipper", "shipper/exporter"), prefer_below=True)
+    buyer = _find_field(result, ("buyer", "consignee", "importer"), prefer_below=True)
+    invoice_date = _find_field(result, ("date", "invoice date"))
+    currency = _find_field(result, ("currency", "currency code"))
+    total_amount = _find_field(result, ("total", "total amount", "invoice total"))
     return CommercialInvoice(
         metadata=_metadata(result),
         invoice_number=_find_field(result, ("invoice no", "invoice number", "inv no")) if _find_field(result, ("invoice no", "invoice number", "inv no")).status != "missing" else layout["invoice_number"],
-        invoice_date=_find_field(result, ("date", "invoice date")) if _find_field(result, ("date", "invoice date")).status != "missing" else layout["invoice_date"],
-        seller=_find_field(result, ("seller", "exporter"), prefer_below=True) if _find_field(result, ("seller", "exporter"), prefer_below=True).status != "missing" else layout["seller"],
-        buyer=_find_field(result, ("buyer", "consignee", "importer"), prefer_below=True) if _find_field(result, ("buyer", "consignee", "importer"), prefer_below=True).status != "missing" else layout["buyer"],
-        currency=_find_field(result, ("currency", "currency code")) if _find_field(result, ("currency", "currency code")).status != "missing" else layout["currency"],
-        total_amount=_find_field(result, ("total", "total amount", "invoice total")) if _find_field(result, ("total", "total amount", "invoice total")).status != "missing" else layout["total_amount"],
+        invoice_date=invoice_date if invoice_date.status != "missing" else layout["invoice_date"],
+        seller=seller if seller.status != "missing" else layout["seller"],
+        buyer=buyer if buyer.status != "missing" else layout["buyer"],
+        currency=currency if currency.status != "missing" else layout["currency"],
+        total_amount=total_amount if total_amount.status != "missing" else layout["total_amount"],
         items=_items(result) or layout["items"],
     )
 
 
 def extract_packing_list_legacy(result: OCRResult) -> PackingList:
     layout = _packing_layout(result)
+    exporter = _find_field(result, ("exporter", "seller", "shipper", "shipper/exporter"), prefer_below=True)
+    consignee = _find_field(result, ("consignee", "buyer"), prefer_below=True)
     return PackingList(
         metadata=_metadata(result),
         packing_list_number=layout["packing_list_number"],
         date=layout["date"],
-        exporter=layout["exporter"],
-        consignee=layout["consignee"],
+        exporter=exporter if exporter.status != "missing" else layout["exporter"],
+        consignee=consignee if consignee.status != "missing" else layout["consignee"],
         items=layout["items"],
         package_count=layout["package_count"],
         gross_weight=layout["gross_weight"],
