@@ -521,13 +521,19 @@ def _invoice_number_header(result: OCRResult) -> EvidenceField:
     """
     from fintra.normalization.values import normalize_date
 
+    date_like = re.compile(
+        r"(?:\d{1,2}[-/]\d{1,2}[-/]\d{2,4}|\d{4}[-/]\d{1,2}[-/]\d{1,2}|"
+        r"\d{1,2}[- ](?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[- ]\d{2,4}|"
+        r"(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[ -]\d{1,2},?[ -]\d{2,4})",
+        re.I,
+    )
     candidates = []
     for region in _regions(result):
         x1, y1, x2, y2 = region.bbox
         text = region.text.strip()
         if not _in_template_window(result, region, x1=800, x2=1200, y1=230, y2=410) or len(text) < 4:
             continue
-        if normalize_date(text) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9./-]{3,}", text):
+        if normalize_date(text) or date_like.fullmatch(text) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9./-]{3,}", text):
             continue
         canonical = _canonical(text)
         if canonical in {"INVOICE", "NUMBER", "NO", "DATE", "AND", "LC"}:

@@ -196,6 +196,17 @@ class OCRExtractionTests(unittest.TestCase):
         )
         self.assertEqual(extract_commercial_invoice(result).invoice_number.value, "763488")
 
+    def test_invoice_number_rejects_ambiguous_numeric_date_candidate(self):
+        result = OCRResult(
+            "ci-ambiguous-header-date", "Commercial Invoice", "invoice.png", [
+                OCRRegion([[850, 220], [940, 250], [940, 250], [850, 250]], "Invoice", index=0),
+                OCRRegion([[1000, 235], [1100, 263], [1100, 263], [1000, 263]], "497619", index=1),
+                OCRRegion([[1160, 235], [1320, 263], [1320, 263], [1160, 263]], "02-06-2006", index=2),
+                OCRRegion([[850, 245], [980, 276], [980, 276], [850, 276]], "No. & Date", index=3),
+            ],
+        )
+        self.assertEqual(extract_commercial_invoice(result).invoice_number.value, "497619")
+
     def test_ordered_refinement_does_not_reintroduce_removed_fragment(self):
         result = OCRResult(
             "ci-fragments", "Commercial Invoice", "invoice.png", [
