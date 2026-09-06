@@ -228,14 +228,26 @@ def _party_evidence(regions: list[OCRRegion]) -> EvidenceField:
 
 def _date_evidence(regions: list[OCRRegion], field_name: str = "shipment_date") -> EvidenceField:
     from fintra.normalization.values import normalize_date
+
+    def date_text(text: str) -> str | None:
+        candidates = re.findall(
+            r"\d{4}[-/]\d{1,2}[-/]\d{1,2}|\d{1,2}[-/]\d{1,2}[-/]\d{2,4}|"
+            r"\d{1,2}[- ](?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[- ]\d{2,4}|"
+            r"(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[ -]\d{1,2},?[ -]\d{2,4}",
+            text,
+            re.I,
+        )
+        return next((candidate for candidate in candidates if normalize_date(candidate)), None)
+
     candidates = []
     for line in _line_groups(regions):
-        valid_regions = [item for item in line if normalize_date(item.text.strip())]
+        valid_regions = [(item, date_text(item.text.strip()) or item.text.strip()) for item in line if date_text(item.text.strip()) or normalize_date(item.text.strip())]
         text = " ".join(item.text.strip() for item in line if item.text.strip())
+        line_date = date_text(text) or (text if normalize_date(text) else None)
         if len(valid_regions) == 1:
-            candidates.append((valid_regions, valid_regions[0].text.strip()))
-        elif normalize_date(text):
-            candidates.append((line, text))
+            candidates.append(([valid_regions[0][0]], valid_regions[0][1]))
+        elif line_date:
+            candidates.append((line, line_date))
     if len(candidates) == 1:
         line, text = candidates[0]
         return _combined_evidence(line, value=text)
@@ -326,7 +338,7 @@ def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
             weight_unit = evidence(match.group(1).upper(), source_text=gross.source_text, bbox=gross.bbox)
     return {
         "packing_list_number": missing("template_field_not_present"),
-        "date": _combined_evidence(_in_zone(result, x1=1150, x2=1500, y1=170, y2=280)),
+        "date": _date_evidence(_in_zone(result, x1=1150, x2=1500, y1=170, y2=280), "date"),
         "exporter": _party_evidence(_in_zone(result, x1=100, x2=800, y1=310, y2=450)),
         "consignee": _party_evidence(_in_zone(result, x1=100, x2=750, y1=520, y2=700)),
         "items": items,
@@ -344,8 +356,12 @@ def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
                            and 1000 <= region.bbox[1] <= 1200
                            and re.search(r"DESCRIPTION|GOODS", region.text, re.I)]
     goods_start = min((region.bbox[3] for region in description_headers), default=1050) + 25
+    table_total_markers = [region for region in values
+                           if (region.bbox[0] >= 900 and _canonical(region.text) == "TOTAL")
+                           or re.search(r"TOTAL.*(?:PKG|PACKAGES)", region.text, re.I)]
+    goods_end = min((region.bbox[1] for region in table_total_markers if region.bbox[1] > goods_start), default=1550) - 5
     goods_regions = [region for region in values if 500 <= region.bbox[0] <= 1100
-                     and goods_start <= region.bbox[1] <= 1550]
+                     and goods_start <= region.bbox[1] <= goods_end]
     goods_lines = []
     for line in _line_groups(goods_regions):
         kept = [region for region in line if _canonical(region.text) not in {"TOTAL", "PKG", "KG", "KGS", "G", "CBM"}
