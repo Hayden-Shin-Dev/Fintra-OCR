@@ -37,6 +37,19 @@ rows. The diagnostic subtype split is:
 These are diagnostic labels, not gold-generation rules. They indicate where
 the active extractor and the raw-evidence diagnostic disagree.
 
+The 72 candidate-generation rows cluster as follows:
+
+| Diagnostic subsystem | Rows | Unique documents | Source groups | Document types |
+|---|---:|---:|---:|---|
+| Item table | 32 | 19 | 7 | CI, Packing List |
+| Party block | 22 | 19 | 11 | CI, Packing List, B/L |
+| Location/port | 11 | 8 | 5 | B/L |
+| Typed value | 3 | 3 | 3 | B/L |
+| Other goods/table structure | 4 | 4 | 3 | B/L |
+
+The grouping is a diagnostic projection based on field role; it does not
+rewrite gold or feed predictions into extraction.
+
 ## Generalization clusters
 
 All five source groups for each document family are represented in the
@@ -91,6 +104,27 @@ single high-confidence mechanism that improves all three regression sets.
 The current fragment rule addresses the repeated region-duplication part;
 the remaining mixed-row cases require a separate typed row/section analysis
 before any change is safe.
+
+## Implementation decision
+
+The independent Layout probe recovered only 3 of the 72 candidate-generation
+rows, and the active/Layout oracle union improved the complete set by only
+3/518. The three rows are not a reliable basis for an active fallback: two
+are numeric item-description projections and one is a party projection. A
+blind union/ranking rule would use no gold signal to know when to prefer the
+Layout candidate and would risk changing valid active results. Therefore the
+candidate architecture remains the active extractor plus the accepted
+geometry/text fragment suppression, with no Layout union patch promoted.
+
+The remaining candidate clusters are ranked for future independent work as:
+
+1. typed item-table row model, but only after a gold/row-semantic review
+2. shared party-block candidate generation and ranking
+3. anchor-relative B/L port resolver, only where source semantics agree with gold
+4. typed B/L vessel fallback
+
+No case-specific rule, literal value, source-group exception, or absolute
+coordinate patch was added for these clusters.
 
 ## Candidate-generator probe
 
