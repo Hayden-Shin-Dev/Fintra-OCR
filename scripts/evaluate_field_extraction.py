@@ -133,23 +133,28 @@ def _bbox_string(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, separators=(",", ":")) if value is not None else ""
 
 
-def _gold_fields(case_dir: Path, manifest: dict[str, Any], gold_source: str) -> list[dict[str, Any]]:
+def _gold_fields(case_dir: Path, manifest: dict[str, Any], gold_source: str, gold_root: Path | None = None) -> list[dict[str, Any]]:
     if gold_source == "semantic-v2":
         path = case_dir / "semantic_gold_fields.json"
         if not path.is_file():
             raise FileNotFoundError(f"Semantic gold missing: {path}; run build_semantic_field_gold.py first")
         return json.loads(path.read_text(encoding="utf-8"))
+    if gold_source == "semantic-v3":
+        path = (gold_root or PROJECT_ROOT / "artifacts/fintra/gold_audit/semantic-v3/cases") / case_dir.name / "semantic_gold_fields.json"
+        if not path.is_file():
+            raise FileNotFoundError(f"Audited semantic gold missing: {path}; run build_semantic_v3_gold.py first")
+        return json.loads(path.read_text(encoding="utf-8"))
     return manifest.get("gold_fields", [])
 
 
-def evaluate(cases_root: Path, output_dir: Path, strategy: str = "active", gold_source: str = "legacy") -> dict[str, Any]:
+def evaluate(cases_root: Path, output_dir: Path, strategy: str = "active", gold_source: str = "legacy", gold_root: Path | None = None) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     for case_dir in sorted(path for path in cases_root.iterdir() if path.is_dir()):
         manifest_path = case_dir / "case_manifest.json"
         if not manifest_path.is_file():
             continue
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        gold = _gold_fields(case_dir, manifest, gold_source)
+        gold = _gold_fields(case_dir, manifest, gold_source, gold_root)
         if not gold:
             raise ValueError(f"Field gold is not reviewed/prepared: {case_dir}; evaluation cannot report accuracy")
         prediction = _case_prediction(case_dir)
@@ -226,7 +231,7 @@ def evaluate(cases_root: Path, output_dir: Path, strategy: str = "active", gold_
         "score_contract": "non-null-normalization-v2; fixed available-gold denominator",
         "gold_validity": (
             "SEMANTIC_V2_TYPED_RELATIVE_GOLD; independently built from AI-Hub word annotations without reading predictions"
-            if gold_source == "semantic-v2" else
+            if gold_source in {"semantic-v2", "semantic-v3"} else
             "UNREVIEWED_LEGACY_TEMPLATE_GOLD; not a validated semantic accuracy claim"
         ),
         "gold_source": gold_source,
@@ -252,8 +257,8 @@ def evaluate(cases_root: Path, output_dir: Path, strategy: str = "active", gold_
         for row in status_rows:
             lines.append(f"- `{row['document_id']}` `{row['field_name']}`: GT={row['gt_value']!r}; prediction={row['predicted_value']!r}; source={row['source_text']!r}")
         lines.append("")
-    caveat = ("The semantic-v2 gold is a reproducible typed/relative-zone annotation projection; it still requires human visual sign-off before being treated as a production accuracy claim."
-              if gold_source == "semantic-v2" else
+    caveat = ("The semantic gold is a reproducible typed/relative-zone annotation projection; semantic-v3 is prediction-blind and stored separately from frozen semantic-v2. It still requires human visual sign-off before being treated as a production accuracy claim."
+              if gold_source in {"semantic-v2", "semantic-v3"} else
               "All selected recognition JSONs exist, but the legacy gold has documented mapping errors and requires independent review. These scores are provisional fixed-benchmark measurements, not validated semantic accuracy.")
     lines += ["## Gold and normalization policy", "", result["gold_validity"], "", caveat, "", result["gold_policy"], "Normalization changes representation only: company case/punctuation/whitespace, explicit ISO/English-month dates, Decimal numbers, known currency codes and weight-unit aliases. Two failed parses are never a match.", "", "## Grouped fields", "", "| Field | Normalized accuracy | Available | Missing | Wrong |", "|---|---:|---:|---:|---:|"]
     for key,item in by_field_group.items():
@@ -267,9 +272,10 @@ def main() -> None:
     parser.add_argument("--cases", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--strategy", choices=("active", "legacy", "layout", "typed", "ordered", "table"), default="active")
-    parser.add_argument("--gold-source", choices=("legacy", "semantic-v2"), default="legacy")
+    parser.add_argument("--gold-source", choices=("legacy", "semantic-v2", "semantic-v3"), default="legacy")
+    parser.add_argument("--gold-root", type=Path, default=None, help="Root containing <case_id>/semantic_gold_fields.json for semantic-v3")
     args = parser.parse_args()
-    result = evaluate(args.cases, args.output_dir, args.strategy, args.gold_source)
+    result = evaluate(args.cases, args.output_dir, args.strategy, args.gold_source, args.gold_root)
     print(json.dumps({"documents": result["selection"]["documents"], "applicable_gold": result["overall"]["applicable_gold"]}, ensure_ascii=False))
     print(f"FIELD_RESULTS={args.output_dir / 'field_results.csv'}")
     print(f"FIELD_METRICS={args.output_dir / 'field_metrics.json'}")

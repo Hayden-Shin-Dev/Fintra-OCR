@@ -245,12 +245,12 @@ def _structural_reasons(field: dict[str, Any], value_tokens: list[dict[str, Any]
     return reasons
 
 
-def audit(cases_root: Path, output_dir: Path) -> dict[str, Any]:
+def audit(cases_root: Path, output_dir: Path, gold_root: Path | None = None) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     for case_dir in sorted(path for path in cases_root.iterdir() if path.is_dir()):
         manifest_path = case_dir / "case_manifest.json"
         gt_path = case_dir / "gt.json"
-        gold_path = case_dir / "semantic_gold_fields.json"
+        gold_path = (gold_root / case_dir.name / "semantic_gold_fields.json") if gold_root else case_dir / "semantic_gold_fields.json"
         if not all(path.is_file() for path in (manifest_path, gt_path, gold_path)):
             continue
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -329,8 +329,9 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--cases", type=Path, default=Path("artifacts/fintra/field_eval/cases"))
     parser.add_argument("--output-dir", type=Path, default=Path("artifacts/fintra/gold_audit/semantic-v2"))
+    parser.add_argument("--gold-root", type=Path, default=None, help="Root containing <case_id>/semantic_gold_fields.json")
     args = parser.parse_args()
-    print(json.dumps(audit(args.cases, args.output_dir), ensure_ascii=False))
+    print(json.dumps(audit(args.cases, args.output_dir, args.gold_root), ensure_ascii=False))
 
 
 if __name__ == "__main__":
