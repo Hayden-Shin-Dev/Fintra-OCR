@@ -119,6 +119,14 @@ class DocumentExtractor:
         return self.layout.evidence(cells,self.layout.read(company),method='party_name_with_full_block_evidence')
 
     def table(self):
+        # The experimental strategy now exposes the generalized resolver too,
+        # so it can be inspected independently from the active document
+        # extractors.  Keep the original implementation as a fallback when a
+        # form has no sufficiently informative header band.
+        from .table import extract_header_relative_items
+        generalized = extract_header_relative_items(self.result, self.kind)
+        if generalized:
+            return generalized
         fields={'description','quantity','unit','unit_price','amount'}
         headers=[a for a in self.anchors if a.field in fields and .25<a.span.cy<.8]
         if not headers:return []

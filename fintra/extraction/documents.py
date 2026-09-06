@@ -975,7 +975,29 @@ def extract_bill_of_lading_legacy(result: OCRResult) -> BillOfLading:
 
 def _refine(result, document):
     from .refinement import typed_refinement, ordered_refinement
-    return ordered_refinement(result, typed_refinement(result, document))
+    refined = ordered_refinement(result, typed_refinement(result, document))
+    # Use header-relative tables only when they produce complete, typed rows.
+    # The legacy resolver remains the fallback for low-information forms; this
+    # prevents a weak header guess from replacing already extracted evidence.
+    # Commercial Invoice headers have an explicit price/amount grid that the
+    # resolver can validate.  Packing List and B/L tables use different
+    # logistics columns; they remain on their existing conservative resolver
+    # until a document-specific column contract is available.
+    if result.document_type == "Commercial Invoice" and hasattr(refined, "items"):
+        from .table import extract_header_relative_items
+        items = extract_header_relative_items(result, result.document_type)
+    else:
+        items = []
+    if items and hasattr(refined, "items"):
+        required = ("description", "quantity")
+        complete = all(
+            all(getattr(item, field).status.value == "extracted" and getattr(item, field).value for field in required)
+            for item in items
+        )
+        if complete:
+            from dataclasses import replace
+            refined = replace(refined, items=items)
+    return refined
 
 
 def extract_commercial_invoice(result: OCRResult) -> CommercialInvoice:
