@@ -133,6 +133,14 @@ class OCRExtractionTests(unittest.TestCase):
         self.assertEqual(bl.port_of_loading.value, "BUSAN, KOREA")
         self.assertEqual(bl.port_of_discharge.value, "OSAKA, JAPAN")
 
+    def test_bl_number_is_extracted_from_combined_date_header(self):
+        result = OCRResult(
+            "bl-combined-header", "B/L", "bl.png", [
+                OCRRegion([[1200, 250], [1500, 250], [1500, 285], [1200, 285]], "06-NOV-2011 | HG787486", index=0),
+            ],
+        )
+        self.assertEqual(extract_bill_of_lading(result).bl_number.value, "HG787486")
+
     def test_contained_paddle_fragment_is_removed_but_adjacent_word_is_kept(self):
         result = OCRResult(
             "ci-fragments", "Commercial Invoice", "invoice.png", [

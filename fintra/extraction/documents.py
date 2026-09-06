@@ -678,7 +678,7 @@ def _bl_layout(result: OCRResult) -> dict[str, EvidenceField]:
             elif discharge.status == "missing":
                 discharge = _evidence_from_region(place_candidates[0], place_candidates[0].text)
     return {
-        "bl_number": _token_value(number_regions, r"(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9][A-Za-z0-9.-]{4,}"),
+        "bl_number": _bl_number_evidence(result),
         "shipper": parties["shipper"],
         "consignee": parties["consignee"],
         "notify_party": parties["notify_party"],
@@ -795,6 +795,22 @@ def _vessel_evidence(result: OCRResult) -> EvidenceField:
             candidate = min(below, key=lambda region: (region.bbox[1], region.bbox[0]))
             return _evidence_from_region(candidate, candidate.text)
     return missing("vessel_anchor_value_not_found")
+
+
+def _bl_number_evidence(result: OCRResult) -> EvidenceField:
+    """Extract one B/L identifier when the header shares a box with its date."""
+    from fintra.normalization.values import normalize_date
+
+    token_pattern = re.compile(r"(?<![A-Za-z0-9])[A-Za-z0-9][A-Za-z0-9./-]{4,}(?![A-Za-z0-9])")
+    candidates: list[tuple[OCRRegion, str]] = []
+    for region in _in_zone(result, x1=1150, x2=1500, y1=220, y2=360):
+        for token in token_pattern.findall(region.text):
+            if re.search(r"[A-Za-z]", token) and re.search(r"\d", token) and not normalize_date(token):
+                candidates.append((region, token))
+    if len({token.upper() for _, token in candidates}) == 1 and candidates:
+        region, token = candidates[0]
+        return _evidence_from_region(region, token)
+    return _token_value(_in_zone(result, x1=1150, x2=1500, y1=220, y2=360), r"(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9][A-Za-z0-9.-]{4,}")
 
 
 def _metadata(result: OCRResult) -> DocumentMetadata:
