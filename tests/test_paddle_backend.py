@@ -3,11 +3,18 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from fintra.ocr.paddle_backend import parse_paddle_result
+from fintra.ocr.paddle_backend import _jsonable, parse_paddle_result
 from scripts.run_paddle_field_eval import select_cases
 
 
 class PaddleBackendParserTests(unittest.TestCase):
+    def test_jsonable_converts_array_in_one_native_operation(self):
+        class Array:
+            def tolist(self):
+                return [[1.0, 2.0], [3.0, 4.0]]
+
+        self.assertEqual(_jsonable({"boxes": Array()}), {"boxes": [[1.0, 2.0], [3.0, 4.0]]})
+
     def test_parses_paddle_v3_mapping_and_preserves_confidence(self):
         regions = parse_paddle_result({
             "res": {

@@ -273,7 +273,10 @@ def _focus_regions(width: int, height: int) -> list[tuple[int, int, int, int]]:
 
 def _jsonable(value: Any) -> Any:
     if hasattr(value, "tolist"):
-        return _jsonable(value.tolist())
+        # ndarray.tolist() already converts the complete array to native
+        # Python scalars.  Recursing through that list element-by-element was
+        # the dominant CPU cost for accurate mode's tile raw outputs.
+        return value.tolist()
     if isinstance(value, Mapping):
         return {str(key): _jsonable(item) for key, item in value.items()}
     if isinstance(value, (list, tuple)):
@@ -296,6 +299,8 @@ class PaddleOCRBackend:
     tile_overlap: int = 160
     min_tile_dimension: int = 1500
     focus_upscale: float = 1.75
+    text_detection_batch_size: int | None = None
+    text_recognition_batch_size: int | None = None
     name: str = "paddleocr"
 
     def __post_init__(self) -> None:
@@ -325,6 +330,10 @@ class PaddleOCRBackend:
             desired.update({"text_det_limit_side_len": 1536, "text_det_limit_type": "max"})
         if self.lang:
             desired["lang"] = self.lang
+        if self.text_detection_batch_size is not None:
+            desired["text_detection_batch_size"] = self.text_detection_batch_size
+        if self.text_recognition_batch_size is not None:
+            desired["text_recognition_batch_size"] = self.text_recognition_batch_size
         self._ocr = PaddleOCR(**{key: value for key, value in desired.items() if key in supported})
 
     def _predict_array(self, image: Any) -> tuple[list[OCRRegion], Any]:
