@@ -311,6 +311,33 @@ def _invoice_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineIte
     }
 
 
+def _invoice_number_header(result: OCRResult) -> EvidenceField:
+    """Select a unique invoice identifier from the upper-right header.
+
+    Several AI-Hub forms render ``Invoice No. and date`` as one label while
+    Paddle may split the identifier and date into separate regions.  The
+    identifier resolver only accepts a standalone alphanumeric token and
+    excludes parseable dates, preserving the original OCR text as evidence.
+    """
+    from fintra.normalization.values import normalize_date
+
+    candidates = []
+    for region in _regions(result):
+        x1, y1, x2, y2 = region.bbox
+        text = region.text.strip()
+        if not (800 <= x1 <= 1200 and 230 <= y1 <= 410 and len(text) >= 4):
+            continue
+        if normalize_date(text) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9./-]{3,}", text):
+            continue
+        canonical = _canonical(text)
+        if canonical in {"INVOICE", "NUMBER", "NO", "DATE", "AND", "LC"}:
+            continue
+        candidates.append(region)
+    if len(candidates) == 1:
+        return _evidence_from_region(candidates[0], candidates[0].text)
+    return missing("invoice_number_not_unique_in_header")
+
+
 def _packing_layout(result: OCRResult) -> dict[str, EvidenceField | list[LineItem]]:
     values = _regions(result)
     item_regions = [region for region in values if 1000 <= region.bbox[1] <= 1520]
@@ -519,6 +546,9 @@ def _items(result: OCRResult) -> list[LineItem]:
 
 def extract_commercial_invoice_legacy(result: OCRResult) -> CommercialInvoice:
     layout = _invoice_layout(result)
+    invoice_number = _invoice_number_header(result)
+    if invoice_number.status == "missing":
+        invoice_number = _find_field(result, ("invoice no", "invoice number", "inv no"))
     seller = _find_field(result, ("seller", "exporter", "shipper", "shipper/exporter"), prefer_below=True)
     buyer = _find_field(result, ("buyer", "consignee", "importer"), prefer_below=True)
     invoice_date = _find_field(result, ("date", "invoice date"))
@@ -526,7 +556,7 @@ def extract_commercial_invoice_legacy(result: OCRResult) -> CommercialInvoice:
     total_amount = _find_field(result, ("total", "total amount", "invoice total"))
     return CommercialInvoice(
         metadata=_metadata(result),
-        invoice_number=_find_field(result, ("invoice no", "invoice number", "inv no")) if _find_field(result, ("invoice no", "invoice number", "inv no")).status != "missing" else layout["invoice_number"],
+        invoice_number=invoice_number if invoice_number.status != "missing" else layout["invoice_number"],
         invoice_date=invoice_date if invoice_date.status != "missing" else layout["invoice_date"],
         seller=seller if seller.status != "missing" else layout["seller"],
         buyer=buyer if buyer.status != "missing" else layout["buyer"],

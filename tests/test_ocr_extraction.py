@@ -161,6 +161,16 @@ class OCRExtractionTests(unittest.TestCase):
         )
         self.assertEqual(extract_packing_list(result).date.value, "Jan 08, 2002")
 
+    def test_invoice_number_is_separated_from_combined_header_date(self):
+        result = OCRResult(
+            "ci-invoice-header", "Commercial Invoice", "invoice.png", [
+                OCRRegion([[913, 291], [1151, 291], [1151, 317], [913, 317]], "Invoice No. and date", index=0),
+                OCRRegion([[918, 329], [1017, 329], [1017, 361], [918, 361]], "763488", index=1),
+                OCRRegion([[1206, 330], [1365, 330], [1365, 360], [1206, 360]], "21-Mar-2002", index=2),
+            ],
+        )
+        self.assertEqual(extract_commercial_invoice(result).invoice_number.value, "763488")
+
     def test_ordered_refinement_does_not_reintroduce_removed_fragment(self):
         result = OCRResult(
             "ci-fragments", "Commercial Invoice", "invoice.png", [
