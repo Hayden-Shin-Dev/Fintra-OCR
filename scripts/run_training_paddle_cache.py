@@ -8,6 +8,7 @@ valid per-case JSON is reused so an interrupted run can resume safely.
 from __future__ import annotations
 
 import argparse
+import gzip
 import json
 from pathlib import Path
 import shutil
@@ -56,7 +57,7 @@ def _valid_output(path: Path) -> bool:
     return isinstance(payload, dict) and isinstance(payload.get("regions"), list)
 
 
-def run(gold_cases: Path, output_dir: Path, device: str, mode: str, split: str, limit: int | None) -> dict[str, object]:
+def run(gold_cases: Path, output_dir: Path, device: str, mode: str, split: str, limit: int | None, gzip_raw: bool) -> dict[str, object]:
     selected = select_cases(gold_cases, split, limit)
     output_cases = output_dir / "cases"
     backend = PaddleOCRBackend(device=device, mode=mode)
@@ -80,8 +81,15 @@ def run(gold_cases: Path, output_dir: Path, device: str, mode: str, split: str, 
         recognition_dir.mkdir(parents=True, exist_ok=True)
         raw_dir.mkdir(parents=True, exist_ok=True)
         raw_path = raw_dir / "paddle_raw.json"
-        raw_path.write_text(result.raw_output or "[]", encoding="utf-8")
-        canonical = replace(result, raw_output_path=str(raw_path))
+        raw_text = result.raw_output or "[]"
+        if gzip_raw:
+            raw_path = raw_dir / "paddle_raw.json.gz"
+            with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
+                handle.write(raw_text)
+            canonical = replace(result, raw_output=None, raw_output_path=str(raw_path))
+        else:
+            raw_path.write_text(raw_text, encoding="utf-8")
+            canonical = replace(result, raw_output_path=str(raw_path))
         canonical_path.write_text(json.dumps(canonical.to_dict(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         counts["processed"] += 1
         print(f"[{manifest['case_id']}] regions={len(result.regions)} processed={counts['processed']}", flush=True)
@@ -101,8 +109,9 @@ def main() -> int:
     parser.add_argument("--mode", choices=("fast", "accurate"), default="accurate")
     parser.add_argument("--split", choices=("DEV", "INTERNAL-HOLDOUT", "all"), default="DEV")
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--gzip-raw", action="store_true", help="store raw output once as gzip and omit its embedded duplicate")
     args = parser.parse_args()
-    run(args.gold_cases, args.output_dir, args.device, args.mode, args.split, args.limit)
+    run(args.gold_cases, args.output_dir, args.device, args.mode, args.split, args.limit, args.gzip_raw)
     return 0
 
 
