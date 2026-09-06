@@ -28,6 +28,7 @@ UNIT_WORDS = {
     "BOX", "CTN", "SET", "UNIT", "POUND", "YARD", "DRUM", "BAG", "PIECE", "ST",
 }
 TRANSPORT_TERMS = {"FOB", "CIF", "CFR", "DAF", "DDP", "DDU", "DEQ", "CFS", "CY"}
+ADDRESS_MARKERS = {"ROOM", "RM", "TEL", "TEL:", "FAX", "FAX:", "PHONE", "MOBILE", "STREET", "ROAD", "AVE", "AVENUE", "DISTRICT", "COUNTRY", "ZIP", "POSTAL"}
 
 
 def _numeric_token(token: dict[str, Any]) -> bool:
@@ -133,11 +134,27 @@ def _description(field_name: str, row: list[dict[str, Any]], quantity_x: float |
         and not _identifier_like(x["text"])
         and x["text"].strip().upper() not in UNIT_WORDS
     ]
+    # A CI row may contain a shipping-mark column to the left of the
+    # description column.  Infer the rightmost text component before the
+    # typed quantity column from relative horizontal gaps, then retain only
+    # that component's column neighbourhood.  This is layout-derived and
+    # does not depend on a document ID, literal value, or OCR prediction.
+    components: list[list[dict[str, Any]]] = []
+    for token in sorted(candidates, key=lambda item: (item["bbox"][0], item["bbox"][2], item["index"])):
+        if not components or token["bbox"][0] - max(item["bbox"][2] for item in components[-1]) > .035 * v3.v2.WIDTH:
+            components.append([token])
+        else:
+            components[-1].append(token)
+    if len(components) > 1:
+        description_component = components[-1]
+        lower_bound = min(item["bbox"][0] for item in description_component) - .05 * v3.v2.WIDTH
+        candidates = [item for item in candidates if item["bbox"][0] >= lower_bound]
     # If marks/HS-like tokens are mixed with a real description, retain the
     # textual portion only.  This is type/layout logic, not case knowledge.
     if not candidates:
         return _evidence(field_name, [], status="ambiguous_gt", review="description_has_no_textual_candidate_before_quantity_unit")
-    return _evidence(field_name, sorted(candidates, key=lambda x: (x["bbox"][1], x["bbox"][0], x["index"])), review="typed_row_remaining_text_before_quantity_unit")
+    lines = _lines(candidates, tolerance=18.0)
+    return _evidence(field_name, [item for line in lines for item in line], review="typed_row_remaining_text_before_quantity_unit")
 
 
 def _ci_table_v2(tokens: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -186,12 +203,19 @@ def _vessel_v2(tokens: list[dict[str, Any]]) -> dict[str, Any]:
 def _party_v2(field_name: str, tokens: list[dict[str, Any]], document_type: str, ordinal: int) -> dict[str, Any]:
     lines = []
     for line in v3._party_lines(tokens, document_type):
-        text = v3.v2._join(line).upper().strip()
+        # Some TL boxes overlap the following address line vertically.  Do
+        # not let an address marker become part of an otherwise valid company
+        # candidate; this remains prediction-blind and value-independent.
+        filtered_line = [
+            item for item in line
+            if item["text"].strip().upper().rstrip(":") not in ADDRESS_MARKERS
+        ]
+        text = v3.v2._join(filtered_line).upper().strip()
         if re.search(r"\bV\s*\.?\s*\d+\b", text):
             continue
         if set(re.findall(r"[A-Z][A-Z.'-]*", text)).intersection(TRANSPORT_TERMS):
             continue
-        lines.append(line)
+        lines.append(filtered_line)
     if ordinal >= len(lines):
         return v3.v2._evidence(field_name, [], status="ambiguous_gt", review="party_block_has_no_unique_typed_company_line")
     return v3.v2._evidence(field_name, lines[ordinal], review="relative_party_block_and_typed_company_line")

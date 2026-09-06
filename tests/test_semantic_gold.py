@@ -2,7 +2,7 @@ import unittest
 
 from scripts.build_semantic_field_gold import _gold
 from scripts.build_semantic_v3_gold import build_v3, v2
-from scripts.build_semantic_v3_2_gold import _ci_table_v2
+from scripts.build_semantic_v3_2_gold import _ci_table_v2, _party_v2
 from scripts.validate_semantic_v3 import _field_valid
 
 
@@ -104,6 +104,34 @@ class SemanticGoldTests(unittest.TestCase):
         self.assertEqual(fields["items[0].amount"]["value"], "$100.00")
         self.assertEqual(fields["items[1].quantity"]["value"], "3")
         self.assertEqual(fields["items[1].unit"]["value"], "BOX")
+
+    def test_v32_ci_description_excludes_left_mark_and_preserves_wrapped_reading_order(self):
+        payload = {"bbox": [
+            token("Prism", 130, 1400),
+            token("PLUG-WAX", 327, 1400, 471, 1424),
+            token("INJECTION", 481, 1400, 621, 1424),
+            token("HOLE", 327, 1430, 402, 1454),
+            token("2", 676, 1400),
+            token("lb", 676, 1430),
+            token("$6.73", 1018, 1400),
+            token("$75.59", 1185, 1400),
+        ]}
+        fields = {field["field_name"]: field for field in _ci_table_v2(v2._tokens(payload))}
+        self.assertEqual(fields["items[0].description"]["value"], "PLUG-WAX INJECTION HOLE")
+        self.assertNotIn("Prism", fields["items[0].description"]["value"])
+
+    def test_v32_party_removes_overlapping_address_marker_from_company_candidate(self):
+        payload = {"bbox": [
+            token("QROUD", 100, 500, 180, 524),
+            token("SOURCE", 190, 500, 280, 524),
+            token("WATER", 290, 500, 360, 524),
+            token("CO.,", 370, 500, 420, 524),
+            token("LTD.", 430, 500, 480, 524),
+            token("ROOM", 100, 529, 160, 548),
+        ]}
+        field = _party_v2("consignee", v2._tokens(payload), "B/L", 0)
+        self.assertEqual(field["value"], "QROUD SOURCE WATER CO., LTD.")
+        self.assertNotIn("ROOM", field["value"])
 
     def test_v3_invariants_reject_numeric_description_voyage_party_and_incoterm_vessel(self):
         self.assertFalse(_field_valid({"field_name": "items[0].description", "value": "7646.00"}, ["7", "PC", "$7646.00"], "Commercial Invoice")[0])
