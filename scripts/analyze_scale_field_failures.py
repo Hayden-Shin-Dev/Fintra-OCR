@@ -35,7 +35,8 @@ def _obvious_gold_issue(row: dict[str, object]) -> str | None:
 
 
 def analyze(cases_root: Path, ocr_cases_root: Path, field_results: Path,
-            gold_root: Path, output_dir: Path, document_type: str | None) -> dict[str, object]:
+            gold_root: Path, output_dir: Path, document_type: str | None,
+            gt_root: Path | None = None) -> dict[str, object]:
     with field_results.open(encoding="utf-8-sig", newline="") as handle:
         extracted = {(row["case_id"], row["field_name"]): row for row in csv.DictReader(handle)}
 
@@ -50,6 +51,10 @@ def analyze(cases_root: Path, ocr_cases_root: Path, field_results: Path,
             continue
         case = {"path": case_path, "case_id": manifest["case_id"],
                 "document_id": manifest["document_id"], "document_type": kind}
+        if gt_root is not None:
+            source_case = gt_root / manifest["case_id"]
+            case["gt_path"] = (source_case / "gt.json" if (source_case / "gt.json").is_file()
+                                else source_case / "source_annotation.json")
         ocr_path = ocr_cases_root / manifest["case_id"] / "outputs" / "recognition" / "paddle.json"
         evidence_rows = stage_eval._field_evidence(case, "paddle", stage_eval._read_ocr(ocr_path), gold_root)
         for evidence in evidence_rows:
@@ -128,9 +133,10 @@ def main() -> None:
     parser.add_argument("--gold-root", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--document-type", default=None)
+    parser.add_argument("--gt-root", type=Path, default=None, help="Separate immutable root containing gt.json or source_annotation.json")
     args = parser.parse_args()
     print(json.dumps(analyze(args.cases_root, args.ocr_cases_root, args.field_results,
-                              args.gold_root, args.output_dir, args.document_type), ensure_ascii=False))
+                              args.gold_root, args.output_dir, args.document_type, args.gt_root), ensure_ascii=False))
 
 
 if __name__ == "__main__":
