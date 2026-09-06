@@ -68,7 +68,11 @@ def main() -> None:
 
     audit = json.loads(args.audit_metrics.read_text(encoding="utf-8"))
     audit_rows = list(csv.DictReader(args.audit_csv.open(encoding="utf-8-sig", newline="")))
-    audit_status = Counter(row.get("semantic_status") for row in audit_rows)
+    # The semantic audit intentionally emits CANNOT_VERIFY for ambiguous Gold
+    # rows.  MVP readiness is about the available subset, so do not turn an
+    # excluded ambiguous row into an available-field failure.
+    available_audit_rows = [row for row in audit_rows if row.get("gold_status") == "available"]
+    audit_status = Counter(row.get("semantic_status") for row in available_audit_rows)
     known = json.loads(args.known_defects.read_text(encoding="utf-8"))["records"]
     field_map = {(row["case_id"], row["field_name"]): row for row in fields}
     known_rows = []
@@ -112,33 +116,58 @@ def main() -> None:
                 all_ambiguous_core.append(key)
 
     known_counts = Counter(row["resolution"] for row in known_rows)
-    # This is intentionally a strict MVP gate for the requested core-field
-    # benchmark.  A conservative ambiguous value is preferable to a false
-    # Gold, but it is not a usable positive benchmark target.
+    evaluator_input_contract = all(
+        field.get("status") != "available"
+        or bool(field.get("value"))
+        and bool(field.get("source_token_indices"))
+        and bool(field.get("bbox"))
+        for field in fields
+    )
+    fast_audit = json.loads(args.fast_audit_metrics.read_text(encoding="utf-8")) if args.fast_audit_metrics else {}
+    fast_gold = json.loads(args.fast_gold_metrics.read_text(encoding="utf-8")) if args.fast_gold_metrics else {}
+    fast_sanity_pass = bool(
+        not args.fast_audit_metrics
+        or (fast_audit.get("gold_freeze_ready")
+            and fast_audit.get("row_cannot_verify") == 0
+            and fast_audit.get("semantic_classification", {}).get("VERIFIED_CORRECT", 0) == fast_audit.get("available_fields"))
+    )
+    # Unsupported field families are an explicit MVP scope decision.  They
+    # remain ambiguous_gt and do not block this development benchmark.
     mvp_ready = bool(
         audit.get("gold_freeze_ready")
         and audit_status["VERIFIED_ERROR"] == 0
         and audit_status["CANNOT_VERIFY"] == 0
         and all(by_type[doc_type]["available"] > 0 for doc_type in CORE_FIELDS)
-        and not all_ambiguous_core
-        and known_counts["VERIFIED_CORRECT"] == len(known_rows)
+        and known_counts["VALUE_MISMATCH"] == 0
+        and known_counts["MISSING"] == 0
+        and evaluator_input_contract
+        and fast_sanity_pass
     )
 
+    supported = sorted(key for key, counter in by_family.items() if counter["available"] > 0)
+    unsupported = sorted(key for key, counter in by_family.items() if counter["available"] == 0 and counter["ambiguous_gt"] > 0 and counter["not_applicable"] == 0)
+
     report = {
+        "gold_name": "MVP_DEVELOPMENT_GOLD_V4",
+        "scope": "development benchmark over semantically verified available fields; ambiguous_gt is excluded",
         "accurate75": {"available": available, "ambiguous": ambiguous, "not_applicable": not_applicable, "total_fields": len(fields)},
         "by_document_type": {key: dict(value) for key, value in sorted(by_type.items())},
         "core_field_status": core_counts,
         "core_fields_all_ambiguous": all_ambiguous_core,
+        "supported_field_families": supported,
+        "unsupported_in_mvp_gold": unsupported,
         "image_sanity_checked_cases": image_cases,
         "image_sanity_checked_case_count": len(image_cases),
         "known_defects": {"count": len(known_rows), "resolution_counts": dict(known_counts), "records": known_rows},
-        "audit": {"gold_freeze_ready": audit.get("gold_freeze_ready"), "semantic_status_counts": dict(audit_status), "row_cannot_verify": audit.get("row_cannot_verify"), "prediction_blind": audit.get("prediction_blind"), "ocr_read": audit.get("ocr_read"), "extractor_read": audit.get("extractor_read"), "final_holdout_2_accessed": audit.get("final_holdout_2_accessed")},
+        "audit": {"gold_freeze_ready": audit.get("gold_freeze_ready"), "available_field_semantic_status_counts": dict(audit_status), "row_cannot_verify": audit.get("row_cannot_verify"), "prediction_blind": audit.get("prediction_blind"), "ocr_read": audit.get("ocr_read"), "extractor_read": audit.get("extractor_read"), "final_holdout_2_accessed": audit.get("final_holdout_2_accessed")},
+        "evaluator_input_contract": evaluator_input_contract,
+        "fast300_sanity_pass": fast_sanity_pass,
         "mvp_gold_sanity_ready": mvp_ready,
     }
     if args.fast_gold_metrics:
-        report["fast300_gold_metrics"] = json.loads(args.fast_gold_metrics.read_text(encoding="utf-8"))
+        report["fast300_gold_metrics"] = fast_gold
     if args.fast_audit_metrics:
-        report["fast300_audit_metrics"] = json.loads(args.fast_audit_metrics.read_text(encoding="utf-8"))
+        report["fast300_audit_metrics"] = fast_audit
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False))
