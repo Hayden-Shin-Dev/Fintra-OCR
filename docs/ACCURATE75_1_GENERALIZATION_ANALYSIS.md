@@ -20,6 +20,10 @@ The current Accurate75 #1 result is 362/518 (69.884%). By document type:
 | Packing List | 110 | 154 | 71.43% |
 | B/L | 142 | 183 | 77.60% |
 
+Using the existing primary-field definition, the same run gives 166/205
+(80.98%) overall: CI 51/74 (68.92%), Packing List 58/69 (84.06%), and B/L
+57/62 (91.94%).
+
 The current raw-OCR-recoverable but not correctly extracted set contains 105
 rows. The diagnostic subtype split is:
 
@@ -87,6 +91,16 @@ single high-confidence mechanism that improves all three regression sets.
 The current fragment rule addresses the repeated region-duplication part;
 the remaining mixed-row cases require a separate typed row/section analysis
 before any change is safe.
+
+## Candidate-generator probe
+
+The independent normalized `Layout` strategy was evaluated as a diagnostic
+only; it was not made active. Its result was 74/518 (14.29%): CI 33/181,
+Packing List 26/154, and B/L 15/183. An oracle union of fields correct under
+the active output or the Layout output was 365/518 (70.46%), only three rows
+above the current active result. This union is not deployable because it uses
+the gold outcome to select between outputs; it therefore does not justify an
+active union architecture.
 
 ## Regression gate
 
