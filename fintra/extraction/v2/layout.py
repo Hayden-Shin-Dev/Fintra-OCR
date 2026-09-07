@@ -185,10 +185,24 @@ class Layout:
             result.extend(self.anchors(field, aliases))
         return result
 
-    def adjacent(self, anchor: Anchor, all_anchors: list[Anchor]) -> list[tuple[list[Cell], str, float]]:
-        """Return bounded right/below text blocks with a relation label."""
+    def adjacent(
+        self,
+        anchor: Anchor,
+        all_anchors: list[Anchor],
+        semantic_heading_ids: set[int] | None = None,
+    ) -> list[tuple[list[Cell], str, float]]:
+        """Return bounded right/below text blocks with a relation label.
+
+        ``all_anchors`` is also used for boundary discovery, but value cells
+        must not be removed merely because a fuzzy alias happened to match
+        them as another field.  Callers may provide the IDs of true heading
+        cells when a document-specific semantic inventory is available; by
+        default only the current heading is protected.
+        """
         page = anchor.cells[0].page
-        used = {cell.index for item in all_anchors for cell in item.cells}
+        used = {cell.index for cell in anchor.cells}
+        if semantic_heading_ids:
+            used.update(semantic_heading_ids)
         ax1, ay1, ax2, ay2 = anchor.box
         other = [item for item in all_anchors if item is not anchor and item.cells[0].page == page]
         next_y = min((item.box[1] for item in other if item.box[1] > ay2 and abs(item.x - anchor.x) < 0.28), default=1.0)

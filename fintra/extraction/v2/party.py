@@ -19,7 +19,21 @@ COUNTRIES = {
 REJECT = re.compile(r"\b(?:TEL|TELEPHONE|PHONE|FAX|EMAIL|E[- ]?MAIL|WWW|HTTP|ZIP|POSTAL|P[.]?O[.]? BOX|STREET|ROAD|RD[.]?|AVENUE|AVE[.]?|DISTRICT|CITY|COUNTRY|ATTN|CONTACT|ADDRESS|UNLESS|PLEASE|PROVIDE|COMPLETE|ORDER)\b", re.I)
 TRANSPORT = re.compile(r"\b(?:VESSEL|VOY(?:AGE)?|PORT|FOB|CIF|CFR|DAF|DDP|DDU|DEQ|CFS|CY|ETD|ETA|B/L|BILL OF LADING)\b", re.I)
 HEADING_ONLY = re.compile(r"^(?:SELLER|BUYER|EXPORTER|SHIPPER|CONSIGNEE|CONSIGNED TO|NOTIFY|NOTIFY PARTY|SOLD TO|BILL TO|SHIP TO)$", re.I)
-SAME_AS = re.compile(r"^SAME\s+AS\s+(?:CONSIGNEE|SHIPPER|BUYER|EXPORTER|SELLER)$", re.I)
+SAME_AS = re.compile(r"^SAME\s+AS\s+(CONSIGNEE|SHIPPER|BUYER|EXPORTER|SELLER)$", re.I)
+
+SAME_AS_COMPATIBILITY = {
+    "buyer": {"consignee", "buyer"},
+    "consignee": {"buyer", "consignee"},
+    "seller": {"exporter", "seller"},
+    "exporter": {"seller", "exporter", "shipper"},
+    "shipper": {"exporter", "shipper"},
+    "notify_party": {"consignee", "buyer", "notify_party"},
+}
+
+
+def _same_as_target(text: str) -> str | None:
+    match = SAME_AS.fullmatch(" ".join(str(text or "").split()))
+    return match.group(1).lower() if match else None
 
 
 def _organization_like(value: str) -> float:
@@ -59,6 +73,9 @@ def _line_candidates(layout: Layout, anchor: Anchor, all_anchors: list[Anchor], 
         if not text:
             continue
         value = _candidate_value(text, anchor.alias) or text
+        same_as_target = _same_as_target(value)
+        if same_as_target is not None and same_as_target not in SAME_AS_COMPATIBILITY.get(field, set()):
+            continue
         quality = _organization_like(value)
         if quality <= 0:
             continue
@@ -89,15 +106,39 @@ def _line_candidates(layout: Layout, anchor: Anchor, all_anchors: list[Anchor], 
                             True, "party_block", anchor.strength * 3.5 + quality - abs(sum(x.y for x in cells) / len(cells) - anchor.y) * 5.0)
 
 
-def resolve(layout: Layout, field: str, all_anchors: list[Anchor] | None = None) -> dict:
+def resolve(
+    layout: Layout,
+    field: str,
+    all_anchors: list[Anchor] | None = None,
+    resolved_parties: dict[str, dict] | None = None,
+) -> dict:
     aliases = SPECS[field].aliases
     anchors = layout.anchors(field, aliases)
     all_anchors = all_anchors or layout.all_anchors({name: SPECS[name].aliases for name in PARTY_FIELDS if name in SPECS})
     candidates = [candidate for anchor in anchors for candidate in _line_candidates(layout, anchor, all_anchors, field)]
-    # Explicit SAME AS values must survive generic heading filtering.
+    # Explicit SAME AS values must survive generic heading filtering, but only
+    # when the referenced role is semantically compatible with this field.
+    # Otherwise a shipper resolver could incorrectly return SAME AS CONSIGNEE
+    # just because it was visible elsewhere on the page.
     for cell in layout.cells:
-        if SAME_AS.fullmatch(cell.text.strip()):
-            candidates.append(Candidate(field, cell.text.strip(), cell.text, None, (cell,), None, "explicit_same_as", True, "party_block", 6.0))
+        target = _same_as_target(cell.text)
+        if target is None or target not in SAME_AS_COMPATIBILITY.get(field, set()):
+            continue
+        target_result = (resolved_parties or {}).get(target)
+        target_value = target_result.get("value") if isinstance(target_result, dict) else None
+        value = target_value or cell.text.strip()
+        candidates.append(Candidate(
+            field,
+            value,
+            cell.text,
+            None,
+            (cell,),
+            None,
+            f"same_as_{target}",
+            True,
+            "party_block",
+            6.0 if target_value else 5.0,
+        ))
     return select(layout, candidates, method="v2_party_rank")
 
 

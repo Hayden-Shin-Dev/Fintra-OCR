@@ -36,7 +36,7 @@ def main() -> None:
     parser.add_argument("--cases", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--gold-source", default="semantic-v4")
-    parser.add_argument("--gold-root", type=Path, required=True)
+    parser.add_argument("--gold-root", type=Path, default=None)
     args = parser.parse_args()
     result = evaluate(args.cases, args.output_dir, args.gold_source, args.gold_root)
     print({"documents": result["selection"]["documents"], "applicable_gold": result["overall"]["applicable_gold"], "normalized": result["overall"]["normalized_field_accuracy"]})

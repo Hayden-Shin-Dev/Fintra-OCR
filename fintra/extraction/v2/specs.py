@@ -95,7 +95,10 @@ SPECS = {
 DOCUMENT_FIELDS = {
     "Commercial Invoice": ("invoice_number", "invoice_date", "seller", "buyer", "consignee", "lc_number", "lc_date", "bl_number", "purchase_order_number", "currency", "total_amount", "payment_terms", "incoterm", "vessel", "voyage_number", "departure_date", "port_of_loading", "port_of_discharge", "final_destination"),
     "Packing List": ("document_number", "packing_list_number", "document_date", "date", "invoice_reference", "exporter", "shipper", "consignee", "buyer", "package_count", "package_type", "gross_weight", "net_weight", "weight_unit", "measurement", "vessel", "voyage_number", "port_of_loading", "port_of_discharge", "final_destination"),
-    "B/L": ("bl_number", "document_date", "shipper", "consignee", "notify_party", "vessel", "voyage_number", "invoice_reference", "port_of_loading", "port_of_discharge", "place_of_receipt", "place_of_delivery", "final_destination", "container_number", "seal_number", "package_count", "gross_weight", "measurement", "weight_unit", "goods_description"),
+    # ``shipment_date`` is the stable B/L contract name.  ``document_date``
+    # remains as an optional compatibility field for callers that used the
+    # broader audit schema, but it is never a replacement for shipment_date.
+    "B/L": ("bl_number", "document_date", "shipment_date", "shipper", "consignee", "notify_party", "vessel", "voyage_number", "invoice_reference", "port_of_loading", "port_of_discharge", "place_of_receipt", "place_of_delivery", "final_destination", "container_number", "seal_number", "package_count", "gross_weight", "measurement", "weight_unit", "goods_description"),
 }
 
 ITEM_FIELDS = {
@@ -105,8 +108,14 @@ ITEM_FIELDS = {
 
 PARTY_FIELDS = {"seller", "buyer", "consignee", "exporter", "shipper", "notify_party", "carrier", "bank", "manufacturer", "signatory_company"}
 
+PARTY_FIELDS_BY_DOCUMENT = {
+    "Commercial Invoice": ("seller", "buyer", "consignee"),
+    "Packing List": ("exporter", "shipper", "buyer", "consignee"),
+    "B/L": ("shipper", "consignee", "notify_party"),
+}
 
-__all__ = ["DOCUMENT_FIELDS", "FIELD_SPEC", "ITEM_FIELDS", "PARTY_FIELDS", "SPECS", "FieldSpec"]
+
+__all__ = ["DOCUMENT_FIELDS", "FIELD_SPEC", "ITEM_FIELDS", "PARTY_FIELDS", "PARTY_FIELDS_BY_DOCUMENT", "SPECS", "FieldSpec"]
 
 # Compatibility alias for callers that prefer the singular spelling.
 FIELD_SPEC = SPECS

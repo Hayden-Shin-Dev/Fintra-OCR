@@ -187,7 +187,10 @@ def _inferred_items(layout: Layout, document_type: str) -> list[dict[str, Any]]:
         numbers = sorted(_numeric_cells(row), key=lambda cell: cell.x)
         amount = numbers[-1]
         unit_price = numbers[-2] if len(numbers) >= 3 else None
-        quantity = numbers[-3] if len(numbers) >= 4 else (numbers[0] if len(numbers) == 2 else None)
+        # Three numeric cells are the common headerless row shape:
+        # quantity, unit_price, amount.  The previous >=4 guard silently
+        # dropped quantity for exactly that shape.
+        quantity = numbers[-3] if len(numbers) >= 3 else (numbers[0] if len(numbers) == 2 else None)
         unit = next((cell for cell in row if cell.x >= (quantity.x if quantity else 0.0) and cell.x <= (unit_price.x if unit_price else amount.x) and _is_unit(cell.text)), None)
         text_cells = [cell for cell in row if cell.x < (quantity.x if quantity else amount.x) and _description_cells([cell])]
         values: dict[str, dict[str, Any]] = {}
