@@ -7,7 +7,7 @@ from typing import Any
 
 from fintra.ocr.adapter import OCRResult
 
-from .specs import COMPATIBILITY_DOCUMENT_FIELDS, DOCUMENT_FIELDS, ITEM_FIELDS
+from .specs import COMPATIBILITY_DOCUMENT_FIELDS, DOCUMENT_FIELDS, FIELD_FAMILY, ITEM_FIELDS
 
 
 def _missing(method: str = "v2_contract_missing") -> dict[str, Any]:
@@ -91,6 +91,18 @@ def build_document(result: OCRResult, payload: dict[str, Any]) -> V2Document:
     metadata.setdefault("document_type", document_type)
     metadata.setdefault("source_file", result.source_file)
     metadata.setdefault("extraction_status", "extracted")
+    metadata.setdefault("field_activity", {
+        name: {"status": "active", "family": FIELD_FAMILY.get(name, "scalar")}
+        for name in DOCUMENT_FIELDS[document_type]
+    })
+    metadata.setdefault("item_field_activity", {
+        name: {"status": "active", "family": "table"}
+        for name in ITEM_FIELDS.get(document_type, ())
+    })
+    metadata.setdefault("compatibility_field_activity", {
+        name: {"status": "compatibility_only", "family": "scalar"}
+        for name in COMPATIBILITY_DOCUMENT_FIELDS.get(document_type, ())
+    })
 
     fields = {
         key: _field(value, default_method="v2_baseline_provenance")

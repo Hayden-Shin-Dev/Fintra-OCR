@@ -46,6 +46,14 @@ class SchemaV2ContractTests(unittest.TestCase):
                     self.assertIn("source_label", item[field])
                     self.assertIn("semantic_relation", item[field])
 
+    def test_activity_metadata_routes_document_and_item_fields(self):
+        payload = extract_document(_result("Commercial Invoice")).to_dict()
+        activity = payload["metadata"]["field_activity"]
+        item_activity = payload["metadata"]["item_field_activity"]
+        self.assertEqual(activity["invoice_number"]["status"], "active")
+        self.assertEqual(activity["invoice_number"]["family"], "scalar")
+        self.assertEqual(item_activity["description"]["family"], "table")
+
     def test_missing_contract_slot_is_explicit(self):
         payload = extract_document(_result("B/L")).to_dict()
         self.assertIn("port_of_loading", payload)
