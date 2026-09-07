@@ -43,3 +43,13 @@ python .\scripts\audit_schema_v2_contract.py
 The report is written to
 `artifacts/fintra/schema-v2/schema_contract_audit.json` and
 `artifacts/fintra/schema-v2/SCHEMA_V2_CONTRACT_AUDIT.md`.
+
+One cached Accurate OCR sample per document type can be rendered without
+rerunning OCR or reading Gold:
+
+```powershell
+python .\scripts\report_schema_v2_samples.py
+```
+
+It writes `contract_sample_report.json` and
+`SCHEMA_V2_CACHED_SAMPLES.md` under `artifacts/fintra/schema-v2/`.
