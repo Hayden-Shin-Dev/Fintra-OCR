@@ -9,6 +9,7 @@ that the available-field accuracy target has been reached.
 | Git branch | `restart/clean-v2` |
 | Extractor semantics | `4f9487f` |
 | Integration boundary | `2581717` |
+| Evaluator v4 support | `f54b0bb` |
 | Gold | `MVP_DEVELOPMENT_GOLD_V4` |
 | Accurate Gold | `artifacts/fintra/gold_audit/semantic-v4-image-accurate75/cases` |
 | Fast Gold | `artifacts/fintra/gold_audit/semantic-v4-image-balanced300/cases` |
@@ -26,7 +27,7 @@ Development metrics at freeze:
 - Fast300: 1687/2409 overall (70.03%), 864/1106 CI, 656/1010 PL,
   167/293 B/L.
 - Stage decomposition: `artifacts/fintra/train-scale-v1/mvp-v4-iter2/stages/`
-- Unit suite: 83 tests passed.
+- Unit suite before final report: 84 tests passed.
 
 The Accurate75-1 and Fast300 numbers are development-set measurements and
 must not be compared as a causal improvement claim. FINAL-HOLDOUT #2 is a
