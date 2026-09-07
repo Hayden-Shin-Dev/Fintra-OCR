@@ -147,7 +147,13 @@ def _dedupe_cells(cells: Iterable[Cell]) -> list[Cell]:
 
 def _line_candidates(layout: Layout, anchor: Anchor, all_anchors: list[Anchor], field: str) -> Iterable[Candidate]:
     spec = SPECS[field]
-    for cells, relation, distance in layout.adjacent(anchor, all_anchors):
+    semantic_heading_ids = {
+        cell.index
+        for item in all_anchors
+        if item.field in PARTY_FIELDS and _anchor_is_compatible(item, item.field)
+        for cell in item.cells
+    }
+    for cells, relation, distance in layout.adjacent(anchor, all_anchors, semantic_heading_ids=semantic_heading_ids):
         cells = _dedupe_cells(cells)
         text = layout.text(cells).strip()
         if not text:
@@ -182,6 +188,13 @@ def _line_candidates(layout: Layout, anchor: Anchor, all_anchors: list[Anchor], 
     for line in lines[:4]:
         cells = _dedupe_cells(cell for cell in line if cell.y > anchor.y and column_left <= cell.x <= column_right)
         if not cells:
+            continue
+        # A stacked left-hand party block must not absorb a separate
+        # right-hand party/third-party column.  Side-by-side values are still
+        # handled by ``layout.adjacent`` above; this guard applies only to the
+        # multiline block fallback.
+        line_center = sum(cell.x for cell in cells) / len(cells)
+        if abs(line_center - anchor.x) > 0.30:
             continue
         value = layout.text(cells).strip()
         quality = _organization_like(value)

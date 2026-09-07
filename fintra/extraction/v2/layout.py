@@ -211,6 +211,8 @@ class Layout:
             used.update(semantic_heading_ids)
         ax1, ay1, ax2, ay2 = anchor.box
         other = [item for item in all_anchors if item is not anchor and item.cells[0].page == page]
+        if semantic_heading_ids:
+            other = [item for item in other if any(cell.index in semantic_heading_ids for cell in item.cells)]
         # Only decisive semantic headings form a vertical boundary.  Fuzzy
         # aliases found in ordinary value text must not truncate a candidate
         # block merely because the full contract is now in the inventory.

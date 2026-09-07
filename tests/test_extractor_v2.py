@@ -171,3 +171,18 @@ def test_v2_party_rejects_role_phone_heading_as_value_anchor():
         metadata={"page_width": 200, "page_height": 80},
     )
     assert resolve_party(Layout(result), "shipper")["value"] is None
+
+
+def test_v2_party_block_does_not_cross_into_right_hand_third_party_column():
+    result = OCRResult(
+        "party-columns",
+        "B/L",
+        "party-columns.png",
+        [
+            region(0, 0, 0, 160, 20, "NOTIFY PARTY (COMPLETE NAME, ADDRESS)"),
+            region(1, 0, 35, 220, 55, "LEFT NOTIFY COMPANY LTD"),
+            region(2, 700, 35, 960, 55, "RIGHT THIRD PARTY LTD"),
+        ],
+        metadata={"page_width": 1000, "page_height": 1000},
+    )
+    assert resolve_party(Layout(result), "notify_party")["value"] == "LEFT NOTIFY COMPANY LTD"
