@@ -136,7 +136,12 @@ class Layout:
         if not values:
             return ""
         y_span = max(cell.y for cell in values) - min(cell.y for cell in values)
-        same_line = y_span <= max(self.line_height * 1.5, 0.012)
+        # OCR often emits a second wrapped line only a little below the
+        # first one.  Treating that span as one horizontal line reorders the
+        # text by x-coordinate (e.g. ``ASSEMBL TOOL,BRIDLE``).  The line
+        # builder uses a tighter band, so use the same normalized geometry
+        # scale here and preserve reading order for wrapped values.
+        same_line = y_span <= max(self.line_height * 0.70, 0.008)
         key = (lambda item: (item.page, item.box[0], item.y, item.index)) if same_line else (lambda item: (item.page, item.y, item.box[0], item.index))
         return " ".join(cell.text for cell in sorted(values, key=key))
 

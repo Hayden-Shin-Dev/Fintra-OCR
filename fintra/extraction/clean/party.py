@@ -68,7 +68,45 @@ def _semantic_anchor(anchor: Anchor, field: str) -> bool:
 
 
 def _same_as(text: str) -> bool:
-    return bool(re.fullmatch(r"SAME\s+AS\s+(?:THE\s+)?(?:CONSIGNEE|SHIPPER|BUYER|EXPORTER|SELLER|ABOVE)", canonical(text)))
+    """Recognize a complete SAME-AS party value, including OCR noise.
+
+    The value is meaningful only when the whole line is a party reference.
+    Comparing the role token with a small semantic vocabulary lets us retain
+    ``SAME AS CONSGNEE`` without using a document-specific literal or
+    truncating it during inline-heading cleanup.
+    """
+    words = canonical(text).split()
+    if len(words) < 3 or words[:2] != ["SAME", "AS"]:
+        return False
+    role = " ".join(words[2:])
+    allowed = ("CONSIGNEE", "SHIPPER", "BUYER", "EXPORTER", "SELLER", "ABOVE")
+    if role in allowed:
+        return True
+    return any(
+        len(role) >= 5 and SequenceMatcher(None, role, expected).ratio() >= 0.76
+        for expected in allowed
+    )
+
+
+def _contextual_heading_rejected(layout: Layout, anchor: Anchor, field: str) -> bool:
+    """Reject role-word mentions that are not party-section headings.
+
+    B/L boilerplate often contains ``PARTICULARS FURNISHED BY SHIPPER``.
+    ``Layout.anchors`` quite correctly finds the word SHIPPER, but it is a
+    cargo-section label, not the start of a shipper block.  Looking at the
+    complete normalized OCR line keeps this rule layout-relative and avoids
+    a fixed page/template window.
+    """
+    if field not in {"shipper", "exporter", "seller"}:
+        return False
+    anchor_ids = {cell.index for cell in anchor.cells}
+    for line in layout.lines:
+        if not anchor_ids.intersection(cell.index for cell in line):
+            continue
+        context = canonical(layout.text(line))
+        if re.search(r"\b(?:PARTICULARS|FURNISHED|BY)\b", context):
+            return True
+    return False
 
 
 def _typed_party(text: str) -> bool:
@@ -92,6 +130,32 @@ def _typed_party(text: str) -> bool:
     return bool(re.search(r"[A-Za-z]{2,}", value))
 
 
+def _trim_party_value(text: str) -> str:
+    """Keep the organization prefix when one OCR cell includes its address.
+
+    This is a typed boundary, not a company-specific rule: organization
+    markers followed by a postal/numbered address delimit the party value.
+    Address text remains in ``source_text`` and the evidence bbox, while the
+    canonical value is the organization itself.
+    """
+    value = " ".join(str(text).split()).strip(" ,:;-&")
+    marker = re.search(
+        r"\b(?:CO(?:MPANY)?\.?\s*,?\s*(?:LTD\.?|LIMITED)|"
+        r"LTD\.?|LIMITED|INC(?:ORPORATED)?\.?|LLC|CORP(?:ORATION)?\.?|"
+        r"GROUP|TRADING|INDUSTR(?:Y|IES)|ENTERPRISES?)\b",
+        value,
+        re.I,
+    )
+    if not marker:
+        return value
+    tail = value[marker.end():]
+    if re.search(r"\d|\b(?:ROAD|RD|STREET|ST|AVENUE|AVE|DRIVE|DR|LANE|LN|"
+                 r"BOULEVARD|BLVD|HIGHWAY|HWY|FLOOR|UNIT|SUITE|BUILDING|"
+                 r"SEOUL|KOREA|JAPAN|AUSTRALIA|CHINA|USA|UNITED STATES)\b", tail, re.I):
+        return value[:marker.end()].strip(" ,:;-&")
+    return value
+
+
 def _line_clusters(line, gap: float = 0.055):
     clusters = []
     for cell in line:
@@ -103,8 +167,9 @@ def _line_clusters(line, gap: float = 0.055):
 
 
 def _candidate(layout: Layout, field: str, anchor: Anchor, cells, relation: str, score: float) -> FieldCandidate:
-    value = layout.text(cells).strip()
-    ev = evidence(value, source_text=layout.text(cells), bbox=layout.box(cells), confidence=min((c.confidence for c in cells if c.confidence is not None), default=None), method="clean_party_candidate")
+    source_text = layout.text(cells)
+    value = _trim_party_value(source_text)
+    ev = evidence(value, source_text=source_text, bbox=layout.box(cells), confidence=min((c.confidence for c in cells if c.confidence is not None), default=None), method="clean_party_candidate")
     box = (min(c.box[0] for c in cells), min(c.box[1] for c in cells), max(c.box[2] for c in cells), max(c.box[3] for c in cells))
     return FieldCandidate(field, value, ev.source_text, tuple(c.index for c in cells), ev.bbox, ev.confidence, anchor.alias, relation, box, True, "party_block", score, evidence=ev)
 
@@ -112,7 +177,12 @@ def _candidate(layout: Layout, field: str, anchor: Anchor, cells, relation: str,
 def candidates(layout: Layout, field: str, aliases: tuple[str, ...] | None = None) -> list[FieldCandidate]:
     aliases = aliases or PARTY_ALIASES[field]
     all_anchors = layout.anchors({name: PARTY_ALIASES[name] for name in PARTY_ALIASES})
-    anchors = [anchor for anchor in all_anchors if anchor.field == field and _semantic_anchor(anchor, field)]
+    anchors = [
+        anchor for anchor in all_anchors
+        if anchor.field == field
+        and _semantic_anchor(anchor, field)
+        and not _contextual_heading_rejected(layout, anchor, field)
+    ]
     # A lone fuzzy ``EXPORT`` token is often the left edge of an
     # ``EXPORT REFERENCES`` heading, not a shipper/exporter role label.
     if field in {"shipper", "exporter", "seller"}:
@@ -128,7 +198,7 @@ def candidates(layout: Layout, field: str, aliases: tuple[str, ...] | None = Non
         anchors = [anchor for anchor in anchors if "OTHER THAN CONSIGNEE" not in canonical(anchor.text)]
         if not anchors:
             exporter = next((item for item in all_anchors if item.field == "exporter" and _semantic_anchor(item, "exporter")), None)
-            boundary = min((item.box[1] for item in all_anchors if item.box[1] > (exporter.box[3] if exporter else 0.0) and item.field != "exporter" and _semantic_anchor(item, item.field) and abs(item.x - exporter.x) < 0.25), default=(exporter.box[3] + 0.22 if exporter else 0.25))
+            boundary = min((item.box[1] for item in all_anchors if item.box[1] > (exporter.box[3] if exporter else 0.0) and item.field != "exporter" and _semantic_anchor(item, item.field) and exporter is not None and abs(item.x - exporter.x) < 0.25), default=(exporter.box[3] + 0.22 if exporter else 0.25))
             if exporter:
                 anchors = [Anchor(field, "residual party block", exporter.cells, max(0.6, exporter.strength))]
                 residual_boundary = boundary

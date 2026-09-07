@@ -78,6 +78,31 @@ class CleanExtractorTests(unittest.TestCase):
         self.assertEqual(document["shipper"]["value"], "SHIPPER COMPANY LTD.")
         self.assertNotEqual(document["shipper"]["value"], "OCEAN CARRIER")
 
+    def test_party_boilerplate_is_not_a_shipper_anchor(self):
+        result = _result("B/L", [
+            (100, 50, "SHIPPER COMPANY LTD."),
+            (100, 100, "CONSIGNEE"), (100, 130, "CONSIGNEE COMPANY LTD."),
+            (100, 180, "PARTICULARS FURNISHED BY SHIPPER"),
+        ])
+        document = EXTRACTORS["B/L"](result).to_dict()
+        self.assertEqual(document["shipper"]["value"], "SHIPPER COMPANY LTD.")
+
+    def test_party_same_as_survives_minor_role_corruption(self):
+        result = _result("B/L", [
+            (100, 100, "Notify Party"),
+            (100, 130, "SAME AS CONSGNEE"),
+        ])
+        document = EXTRACTORS["B/L"](result).to_dict()
+        self.assertEqual(document["notify_party"]["value"], "SAME AS CONSGNEE")
+
+    def test_party_value_removes_address_tail_from_combined_ocr_cell(self):
+        result = _result("Packing List", [
+            (100, 100, "Exporter"),
+            (100, 130, "ACME INDUSTRIES 123 MAIN STREET, SEOUL"),
+        ])
+        document = EXTRACTORS["Packing List"](result).to_dict()
+        self.assertEqual(document["exporter"]["value"], "ACME INDUSTRIES")
+
     def test_table_footer_does_not_contaminate_description(self):
         result = _result("Packing List", [
             (100, 300, "Description"), (450, 300, "Quantity"),
@@ -86,6 +111,14 @@ class CleanExtractorTests(unittest.TestCase):
         ])
         items = resolve_table(Layout(result))
         self.assertEqual(items[0].description.value, "STEEL BOLT")
+
+    def test_table_wrapped_description_preserves_reading_order(self):
+        result = _result("Commercial Invoice", [
+            (100, 300, "Description"), (450, 300, "Quantity"),
+            (100, 350, "TOOL,BRIDLE"), (100, 370, "ASSEMBL"), (450, 350, "2"),
+        ])
+        items = resolve_table(Layout(result))
+        self.assertEqual(items[0].description.value, "TOOL,BRIDLE ASSEMBL")
 
     def test_transport_scalar_stays_in_anchor_column(self):
         result = _result("B/L", [
