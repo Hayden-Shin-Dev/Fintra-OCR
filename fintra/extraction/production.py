@@ -15,7 +15,11 @@ from fintra.domain.schema import EvidenceField
 from fintra.ocr.adapter import OCRResult
 
 from .layout import Layout
-from .strategies import STRATEGIES
+from .production_engine import (
+    extract_bill_of_lading as _extract_bill_of_lading,
+    extract_commercial_invoice as _extract_commercial_invoice,
+    extract_packing_list as _extract_packing_list,
+)
 
 
 @dataclass(frozen=True)
@@ -102,11 +106,15 @@ def candidates_for(document: Any, result: OCRResult) -> list[FieldCandidate]:
 
 
 def _extract(result: OCRResult) -> Any:
+    factories = {
+        "Commercial Invoice": _extract_commercial_invoice,
+        "Packing List": _extract_packing_list,
+        "B/L": _extract_bill_of_lading,
+    }
     try:
-        factory = STRATEGIES[result.document_type]
+        document = factories[result.document_type](result)
     except KeyError as exc:
         raise ValueError(f"unsupported document_type: {result.document_type}") from exc
-    document = factory(result).extract()
     # The clean path performs a single candidate selection pass.  The
     # candidates are intentionally derived after selection for diagnostics;
     # they never trigger a second resolver or overwrite a field.
