@@ -119,7 +119,7 @@ def main() -> None:
     args = _args()
     st.set_page_config(page_title="Fintra Extractor v2", layout="wide")
     st.title("Fintra Extractor v2")
-    st.caption("Production Paddle OCR → independent Audit Field Schema v2 extractor")
+    st.caption("Production Paddle OCR + independent Audit Field Schema v2 extractor")
 
     @st.cache_resource
     def backend(device: str, mode: str) -> PaddleOCRBackend:
@@ -165,6 +165,11 @@ def main() -> None:
         st.subheader("Items")
         item_rows = _items(document, document_type)
         st.dataframe(item_rows, use_container_width=True, hide_index=True)
+
+    with st.expander("Semantic title diagnostics", expanded=False):
+        diagnostics = document.get("metadata", {}).get("v2_title_diagnostics", [])
+        st.dataframe(diagnostics, use_container_width=True, hide_index=True)
+        st.json({"overrides": document.get("metadata", {}).get("v2_overrides", [])})
 
     st.subheader("OCR Detected Text")
     st.dataframe([
