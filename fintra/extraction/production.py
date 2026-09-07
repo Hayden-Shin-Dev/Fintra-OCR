@@ -50,11 +50,20 @@ def _candidate(field_name: str, field: EvidenceField, result: OCRResult) -> Fiel
         xs = [point[0] for point in bbox]
         ys = [point[1] for point in bbox]
         geometry = (min(xs) / width, min(ys) / height, max(xs) / width, max(ys) / height)
+    region_indices: list[int] = []
+    if bbox:
+        fx1, fy1, fx2, fy2 = min(xs), min(ys), max(xs), max(ys)
+        for region in result.regions:
+            rx1, ry1, rx2, ry2 = region.bbox
+            overlap = max(0.0, min(fx2, rx2) - max(fx1, rx1)) * max(0.0, min(fy2, ry2) - max(fy1, ry1))
+            region_area = max(1.0, (rx2 - rx1) * (ry2 - ry1))
+            if overlap / region_area >= 0.25 or (fx1 <= region.bbox[0] <= fx2 and fy1 <= region.bbox[1] <= fy2):
+                region_indices.append(region.index)
     return FieldCandidate(
         field_name=field_name,
         value=field.value,
         source_text=field.source_text,
-        ocr_region_indices=tuple(),
+        ocr_region_indices=tuple(sorted(set(region_indices))),
         bbox=bbox,
         ocr_confidence=field.confidence,
         semantic_anchor=None,
