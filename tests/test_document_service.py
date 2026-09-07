@@ -30,6 +30,15 @@ class DocumentServiceTests(unittest.TestCase):
             self.assertEqual(payload["ocr"]["regions"][0]["text"], "INV-1")
             self.assertIn("seller", payload["document"])
 
+            clean_payload = extract_document(
+                document,
+                "Commercial Invoice",
+                FixtureOCRAdapter(root),
+                extractor="clean",
+            )
+            self.assertEqual(clean_payload["schema_version"], "fintra-document-contract.v1")
+            self.assertIn("seller", clean_payload["document"])
+
     def test_missing_file_is_rejected_before_ocr(self):
         with self.assertRaises(FileNotFoundError):
             extract_document(Path("does-not-exist.png"), "B/L", FixtureOCRAdapter(Path(".")))

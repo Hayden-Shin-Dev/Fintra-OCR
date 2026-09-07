@@ -19,6 +19,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--document", type=Path, required=True)
     parser.add_argument("--document-type", choices=DOCUMENT_TYPES, required=True)
+    parser.add_argument("--extractor", choices=("active", "clean"), default="active")
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--ocr-fixture-dir", type=Path)
     source.add_argument(
@@ -46,7 +47,7 @@ def main() -> None:
         adapter = FixtureOCRAdapter(args.ocr_fixture_dir)
     else:
         adapter = CommandOCRAdapter(args.ocr_command, work_dir=args.work_dir)
-    payload = extract_document(args.document, args.document_type, adapter)
+    payload = extract_document(args.document, args.document_type, adapter, extractor=args.extractor)
     rendered = json.dumps(payload, ensure_ascii=False, indent=2 if args.pretty else None)
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

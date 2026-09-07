@@ -32,6 +32,21 @@ historical dispatch until the clean candidate passes Accurate75, Fast300, and
 DEV60 regression; backend callers must use the service boundary and need not
 import resolver modules.
 
+For candidate integration smoke tests, select the clean path explicitly:
+
+```powershell
+python scripts/run_document_extraction.py `
+  --document C:\data\invoice.png `
+  --document-type "Commercial Invoice" `
+  --extractor clean `
+  --ocr-fixture-dir artifacts\integration\ocr `
+  --output artifacts\integration\invoice-clean.json `
+  --pretty
+```
+
+The default remains `--extractor active` until the clean three-set regression
+gate is closed.
+
 ## Direct validated Paddle runtime
 
 The validated Paddle runtime can be selected explicitly for local MVP use:
