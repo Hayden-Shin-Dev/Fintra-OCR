@@ -1,9 +1,9 @@
 """Clean production extraction boundary.
 
-The production boundary consumes only :class:`OCRResult` and emits the
-evidence-bearing canonical schema.  Its implementation is the normalized
-layout strategy in ``strategies.py``; historical coordinate/template
-extractors remain available only to the probe and regression tools.
+The boundary consumes only :class:`OCRResult` and emits the evidence-bearing
+canonical schema.  Its standalone parity kernel is kept separate from the
+historical ``documents``/``refinement`` modules; those modules remain
+available only to comparison probes and historical regression tools.
 """
 
 from __future__ import annotations
