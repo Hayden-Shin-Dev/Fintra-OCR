@@ -26,7 +26,7 @@ SPECS = {
     "buyer": _spec(("BUYER", "SOLD TO", "BILL TO", "BUYER IF OTHER THAN CONSIGNEE"), "party"),
     "consignee": _spec(("CONSIGNEE", "CONSIGNED TO", "SHIP TO"), "party"),
     "exporter": _spec(("EXPORTER", "SHIPPER/EXPORTER", "EXPORTED BY"), "party"),
-    "shipper": _spec(("SHIPPER", "CONSIGNOR", "CONSIGNOR/SHIPPER"), "party"),
+    "shipper": _spec(("SHIPPER", "SHIPPER/EXPORTER", "CONSIGNOR", "CONSIGNOR/SHIPPER"), "party"),
     "notify_party": _spec(("NOTIFY PARTY", "ALSO NOTIFY", "NOTIFY"), "party"),
     "lc_number": _spec(("L/C NO", "LC NO", "LETTER OF CREDIT NO", "L/C NUMBER"), "identifier"),
     "lc_date": _spec(("L/C DATE", "LC DATE", "LETTER OF CREDIT DATE"), "date"),

@@ -34,8 +34,8 @@ ROLE_HEADINGS = {
     # Explicit role namespaces are intentionally disjoint. Cross-role
     # relationships are represented only by a complete SAME AS expression.
     "seller": {"SELLER", "SELLER NAME", "SOLD BY"},
-    "exporter": {"EXPORTER", "SHIPPED BY", "EXPORTED BY"},
-    "shipper": {"SHIPPER", "CONSIGNOR", "CONSIGNOR/SHIPPER"},
+    "exporter": {"EXPORTER", "SHIPPER/EXPORTER", "SHIPPED BY", "EXPORTED BY"},
+    "shipper": {"SHIPPER", "SHIPPER/EXPORTER", "CONSIGNOR", "CONSIGNOR/SHIPPER"},
     "buyer": {"BUYER", "SOLD TO", "BILL TO", "BUYER IF OTHER THAN CONSIGNEE"},
     "consignee": {"CONSIGNEE", "CONSIGNED TO", "SHIP TO"},
     "notify_party": {"NOTIFY", "NOTIFY PARTY", "ALSO NOTIFY"},
@@ -54,10 +54,23 @@ def _same_as_target(text: str) -> str | None:
 def _anchor_is_compatible(anchor: Anchor, field: str) -> bool:
     """Reject a fuzzy role collision before candidate generation."""
 
-    observed = canonical(anchor.text)
+    raw = " ".join(str(anchor.text or "").split()).strip()
+    # AI-Hub forms frequently append a parenthesized qualifier to the role
+    # heading, e.g. ``NOTIFY PARTY (COMPLETE NAME, ADDRESS)``.  Treat only
+    # the heading prefix as semantic; phone/address text after the prefix is
+    # not a party label.  This is layout-independent and does not use values.
+    heading_prefix = raw.split("(", 1)[0].strip(" :;-|")
+    observed = canonical(heading_prefix)
     allowed = {canonical(item) for item in ROLE_HEADINGS.get(field, ())}
     if observed in allowed:
         return True
+    # A heading may be OCR-split or carry a short qualifier without brackets.
+    # Accept only a prefix match when the suffix is not a phone/contact marker.
+    for item in allowed:
+        if observed.startswith(item + " "):
+            suffix = observed[len(item):].strip()
+            if not re.search(r"\b(?:PHONE|TEL|TELEPHONE|FAX|EMAIL|NO)\b", suffix):
+                return True
     # A fuzzy alias such as CONSIGNOR can match the visible CONSIGNEE heading.
     # If the observed heading is an explicit competing role, it is not a
     # candidate for this field even when the string similarity passes.

@@ -142,3 +142,32 @@ def test_v2_party_block_uses_anchor_relative_right_column():
     )
     value = resolve_party(Layout(result), "shipper")
     assert value["value"] == "RIGHT COLUMN LOGISTICS LTD"
+
+
+def test_v2_party_accepts_qualified_role_headings_without_phone_values():
+    result = OCRResult(
+        "party-qualified",
+        "B/L",
+        "party-qualified.png",
+        [
+            region(0, 0, 0, 260, 20, "SHIPPER/EXPORTER (COMPLETE NAME, ADDRESS)"),
+            region(1, 0, 35, 260, 55, "ACME LOGISTICS LTD"),
+            region(2, 0, 80, 220, 100, "NOTIFY PARTY (COMPLETE NAME, ADDRESS)"),
+            region(3, 0, 115, 240, 135, "NOTICE TRADING LTD"),
+        ],
+        metadata={"page_width": 300, "page_height": 160},
+    )
+    layout = Layout(result)
+    assert resolve_party(layout, "shipper")["value"] == "ACME LOGISTICS LTD"
+    assert resolve_party(layout, "notify_party")["value"] == "NOTICE TRADING LTD"
+
+
+def test_v2_party_rejects_role_phone_heading_as_value_anchor():
+    result = OCRResult(
+        "party-phone-heading",
+        "B/L",
+        "party-phone-heading.png",
+        [region(0, 0, 0, 180, 20, "SHIPPER PHONE NO"), region(1, 0, 35, 160, 55, "010-1234")],
+        metadata={"page_width": 200, "page_height": 80},
+    )
+    assert resolve_party(Layout(result), "shipper")["value"] is None
