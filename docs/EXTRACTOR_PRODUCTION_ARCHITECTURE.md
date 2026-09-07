@@ -15,10 +15,12 @@ OCRResult
   -> source_text / bbox / confidence evidence
 ```
 
-The production module delegates to the normalized layout strategy and never
+The production module delegates to a standalone parity kernel and never
 imports or calls the historical fixed-template extractors, typed refinement,
 or ordered refinement. Those modules remain available only for comparison
-probes and historical regression analysis.
+probes and historical regression analysis. The current kernel projects its
+design-coordinate fallback rules through page dimensions when available; a
+fully template-independent resolver remains a follow-up limitation.
 
 Every extracted canonical field keeps its source OCR text and bounding box.
 `fintra.extraction.production.candidates_for` exposes a uniform
