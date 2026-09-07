@@ -74,6 +74,27 @@ class FieldEvaluationTests(unittest.TestCase):
             self.assertEqual(result["field_extraction_status"], "PASS")
             self.assertTrue(result["target_met"])
 
+    def test_evaluate_accepts_semantic_v4_from_an_explicit_gold_root(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            case = root / "ci-001"
+            recognition = case / "outputs" / "recognition"
+            recognition.mkdir(parents=True)
+            gold_root = root / "semantic-v4" / "ci-001"
+            gold_root.mkdir(parents=True)
+            (case / "case_manifest.json").write_text(json.dumps({
+                "case_id": "ci-001", "document_id": "doc-1", "document_type": "Commercial Invoice"
+            }), encoding="utf-8")
+            (gold_root / "semantic_gold_fields.json").write_text(json.dumps([
+                {"field_name": "invoice_number", "status": "available", "value": "INV-4"}
+            ]), encoding="utf-8")
+            (recognition / "doc-1.json").write_text(json.dumps({
+                "document_id": "doc-1", "regions": [{"bbox": [0, 0, 10, 10], "text": "INV-4"}]
+            }), encoding="utf-8")
+            result = evaluate(root, root / "report", gold_source="semantic-v4", gold_root=root / "semantic-v4")
+            self.assertEqual(result["gold_source"], "semantic-v4")
+            self.assertEqual(result["overall"]["applicable_gold"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()

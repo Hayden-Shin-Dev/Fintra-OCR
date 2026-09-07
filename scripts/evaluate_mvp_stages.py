@@ -193,7 +193,12 @@ def _nested_counts(rows: list[dict[str, Any]], failure_class: str) -> dict[str, 
     return {"by_document_type": {key: dict(value) for key, value in sorted(by_type.items())}, "by_field": {key: dict(value) for key, value in sorted(by_field.items())}}
 
 
-def write_report(datasets: list[Dataset], output: Path) -> dict[str, Any]:
+def write_report(
+    datasets: list[Dataset],
+    output: Path,
+    *,
+    final_holdout_2_accessed: bool = False,
+) -> dict[str, Any]:
     output.mkdir(parents=True, exist_ok=True)
     all_rows: list[dict[str, Any]] = []
     reports: dict[str, Any] = {}
@@ -206,7 +211,7 @@ def write_report(datasets: list[Dataset], output: Path) -> dict[str, Any]:
     with csv_path.open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
         writer.writeheader(); writer.writerows(all_rows)
-    payload = {"schema_version": "fintra-ocr-v2.mvp-stage-reports.v1", "datasets": reports, "output": str(output.resolve()), "final_holdout_2_accessed": False}
+    payload = {"schema_version": "fintra-ocr-v2.mvp-stage-reports.v1", "datasets": reports, "output": str(output.resolve()), "final_holdout_2_accessed": final_holdout_2_accessed}
     (output / "mvp_stage_metrics.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     lines = ["# MVP OCR vs extractor development stages", "", "The report uses frozen Paddle OCR JSON and prediction-blind Gold. It does not run OCR or alter Gold.", ""]
     for name, metrics in reports.items():
@@ -216,7 +221,7 @@ def write_report(datasets: list[Dataset], output: Path) -> dict[str, Any]:
             lines.append(f"| {scope} | {item['applicable']} | {item['recoverable']} | {item['candidate_hit']} | {item['final_correct']} | {item['ocr_recoverability']:.4f} | {item['candidate_recall_on_recoverable']:.4f} | {item['resolver_accuracy_on_candidate_hit']:.4f} | {item['final_accuracy']:.4f} |")
         lines += ["", "### Failure clusters", "", "```json", json.dumps({"ocr": metrics["ocr_failure_by_type"], "extractor": metrics["extractor_failure_by_type"]}, ensure_ascii=False, indent=2), "```", ""]
     (output / "MVP_STAGE_EVALUATION.md").write_text("\n".join(lines), encoding="utf-8")
-    print(json.dumps({"datasets": list(reports), "output": str(output.resolve()), "final_holdout_2_accessed": False}, ensure_ascii=False))
+    print(json.dumps({"datasets": list(reports), "output": str(output.resolve()), "final_holdout_2_accessed": final_holdout_2_accessed}, ensure_ascii=False))
     return payload
 
 
