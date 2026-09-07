@@ -20,7 +20,9 @@ available-field denominator by design.
 ## Frozen development metrics
 
 The current accepted extractor revision is `4f9487f` (header-relative CI item
-table extraction). These are separate development datasets:
+table extraction). The integration boundary and stage-report fixes are in
+`2581717`; they do not change extraction semantics. These are separate
+development datasets:
 
 | Set | Overall | CI | Packing List | B/L |
 |---|---:|---:|---:|---:|
