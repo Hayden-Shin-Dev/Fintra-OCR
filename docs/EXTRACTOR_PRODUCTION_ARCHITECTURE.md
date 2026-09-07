@@ -1,8 +1,9 @@
 # Production extractor architecture
 
 `fintra.services.document_service.extract_document` is the backend boundary.
-It runs the configured OCR adapter once and dispatches the resulting
-`OCRResult` to `fintra.extraction.production.EXTRACTORS`.
+The clean-room candidate is available at
+`fintra.extraction.clean.engine.EXTRACTORS`; the backend dispatch remains on
+the historical path until the three-set regression gate is closed.
 
 The production call graph is:
 
@@ -15,17 +16,16 @@ OCRResult
   -> source_text / bbox / confidence evidence
 ```
 
-The production module delegates to a standalone parity kernel and never
-imports or calls the historical fixed-template extractors, typed refinement,
-or ordered refinement. Those modules remain available only for comparison
-probes and historical regression analysis. The current kernel projects its
-design-coordinate fallback rules through page dimensions when available; a
-fully template-independent resolver remains a follow-up limitation.
+The clean candidate is standalone and never imports or calls the historical
+fixed-template extractors, typed refinement, ordered refinement, or legacy
+table resolver. Those modules remain available only for comparison probes and
+historical regression analysis. It uses normalized geometry, semantic anchors,
+typed candidates, and pre-selection ranking.
 
-Every extracted canonical field keeps its source OCR text and bounding box.
-`fintra.extraction.production.candidates_for` exposes a uniform
-`FieldCandidate` view with normalized geometry and OCR region identifiers for
-diagnostics without changing the v1 canonical JSON contract.
+Every clean-candidate canonical field keeps its source OCR text and bounding
+box. The clean party, scalar, and table resolvers construct `FieldCandidate`
+objects before selecting the final `EvidenceField`; the legacy
+`fintra.extraction.production` candidate view remains comparison-only.
 
 Primary production constraints:
 

@@ -26,9 +26,11 @@ python scripts/run_document_extraction.py `
 The command template must explicitly produce the OCR JSON path supplied as
 `{output_json}`. The service does not select or replace an OCR model.
 
-The service dispatches to the clean production entry point
-`fintra.extraction.production.EXTRACTORS`. Backend code does not import the
-historical extractor modules.
+The clean-room candidate entry point is
+`fintra.extraction.clean.engine.EXTRACTORS`. The service continues to use the
+historical dispatch until the clean candidate passes Accurate75, Fast300, and
+DEV60 regression; backend callers must use the service boundary and need not
+import resolver modules.
 
 ## Direct validated Paddle runtime
 
