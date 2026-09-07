@@ -25,3 +25,38 @@ python scripts/run_document_extraction.py `
 
 The command template must explicitly produce the OCR JSON path supplied as
 `{output_json}`. The service does not select or replace an OCR model.
+
+## Direct validated Paddle runtime
+
+The validated Paddle runtime can be selected explicitly for local MVP use:
+
+```powershell
+python scripts/run_document_extraction.py `
+  --document C:\data\invoice.png `
+  --document-type "Commercial Invoice" `
+  --paddle `
+  --paddle-device gpu `
+  --paddle-mode accurate `
+  --output artifacts\integration\invoice.json `
+  --pretty
+```
+
+Run this command from the project root inside the already validated Paddle
+environment. Use `--paddle-device cpu` only for a CPU smoke test. The command
+returns the same `fintra-document-contract.v1` shape as a configured adapter;
+the `ocr.regions` array carries the text, polygon, confidence, and page used
+as evidence by the canonical fields.
+
+## Local review UI
+
+Install the UI-only dependencies into the validated Paddle environment:
+
+```powershell
+python -m pip install -r requirements-ui.txt
+streamlit run app.py -- --device gpu --mode accurate
+```
+
+The UI accepts one document image and one of the three supported document
+types. It calls `extract_document` directly, displays evidence boxes, and
+shows the canonical JSON. Backend code does not need to import or modify the
+document-specific extractors.

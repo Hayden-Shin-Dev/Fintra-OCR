@@ -36,6 +36,7 @@ def extract_document(document_path: Path, document_type: str, ocr_adapter: OCRAd
             "runtime": ocr_result.runtime,
             "raw_output_path": ocr_result.raw_output_path,
             "region_count": len(ocr_result.regions),
+            "regions": [region.to_dict() for region in ocr_result.regions],
             "metadata": ocr_result.metadata,
         },
     }

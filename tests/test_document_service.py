@@ -26,6 +26,8 @@ class DocumentServiceTests(unittest.TestCase):
             self.assertEqual(payload["schema_version"], "fintra-document-contract.v1")
             self.assertEqual(payload["document"]["metadata"]["document_type"], "Commercial Invoice")
             self.assertEqual(payload["ocr"]["region_count"], 2)
+            self.assertEqual(len(payload["ocr"]["regions"]), 2)
+            self.assertEqual(payload["ocr"]["regions"][0]["text"], "INV-1")
             self.assertIn("seller", payload["document"])
 
     def test_missing_file_is_rejected_before_ocr(self):
