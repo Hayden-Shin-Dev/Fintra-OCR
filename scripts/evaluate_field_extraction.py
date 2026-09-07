@@ -67,6 +67,9 @@ def normalize_field(value: Any, field_name: str) -> str | None:
 
 
 def _document_payload(result: OCRResult, strategy: str = "active") -> dict[str, Any]:
+    if strategy == "production":
+        from fintra.extraction.production import EXTRACTORS
+        return EXTRACTORS[result.document_type](result).to_dict()
     legacy={"Commercial Invoice":extract_commercial_invoice_legacy,"Packing List":extract_packing_list_legacy,"B/L":extract_bill_of_lading_legacy}
     if strategy=="legacy":return legacy[result.document_type](result).to_dict()
     if strategy == "layout":
@@ -276,7 +279,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cases", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--strategy", choices=("active", "legacy", "layout", "typed", "ordered", "table"), default="active")
+    parser.add_argument("--strategy", choices=("active", "production", "legacy", "layout", "typed", "ordered", "table"), default="active")
     parser.add_argument("--gold-source", choices=("legacy", "semantic-v2", "semantic-v3", "semantic-v3.1", "semantic-v3.2", "semantic-v4"), default="legacy")
     parser.add_argument("--gold-root", type=Path, default=None, help="Root containing <case_id>/semantic_gold_fields.json for semantic Gold sources")
     args = parser.parse_args()
