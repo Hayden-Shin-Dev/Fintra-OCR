@@ -125,3 +125,18 @@ def test_v2_party_rejects_consignee_as_fuzzy_shipper_heading():
     result = OCRResult("party-2", "B/L", "party2.png", regions, metadata={"page_width": 300, "page_height": 60})
     value = resolve_party(Layout(result), "shipper")
     assert value["value"] is None
+
+
+def test_v2_party_block_uses_anchor_relative_right_column():
+    result = OCRResult(
+        "party-3",
+        "B/L",
+        "party3.png",
+        [
+            region(0, 700, 0, 800, 20, "SHIPPER"),
+            region(1, 710, 40, 980, 60, "RIGHT COLUMN LOGISTICS LTD"),
+        ],
+        metadata={"page_width": 1000, "page_height": 100},
+    )
+    value = resolve_party(Layout(result), "shipper")
+    assert value["value"] == "RIGHT COLUMN LOGISTICS LTD"

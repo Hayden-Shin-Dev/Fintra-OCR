@@ -121,9 +121,13 @@ def _line_candidates(layout: Layout, anchor: Anchor, all_anchors: list[Anchor], 
     page = anchor.cells[0].page
     competing = [item for item in all_anchors if item.field in PARTY_FIELDS and item.field != field and item.cells[0].page == page and item.y > anchor.y]
     boundary = min((item.y for item in competing), default=anchor.y + 0.16)
+    # Party blocks may be left, right, or stacked.  Use the anchor's
+    # normalized column as the reference instead of a page-template x cutoff.
+    column_left = max(0.0, anchor.box[0] - 0.03)
+    column_right = min(1.0, anchor.box[2] + 0.45)
     lines = [line for line in layout.lines if line and line[0].page == page and anchor.y < sum(x.y for x in line) / len(line) < boundary]
     for line in lines[:4]:
-        cells = [cell for cell in line if cell.y > anchor.y and cell.x <= 0.72]
+        cells = [cell for cell in line if cell.y > anchor.y and column_left <= cell.x <= column_right]
         if not cells:
             continue
         value = layout.text(cells).strip()

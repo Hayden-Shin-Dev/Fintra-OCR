@@ -18,7 +18,6 @@ from .party import resolve as resolve_party
 from .scalar import resolve as resolve_scalar
 from .specs import DOCUMENT_FIELDS, PARTY_FIELDS_BY_DOCUMENT, SPECS
 from .table import resolve as resolve_table, resolve_goods_description
-from .layout import canonical
 
 
 RELATIONS = {"inline", "right", "below"}
@@ -50,19 +49,6 @@ def _usable_candidate(value: dict[str, Any]) -> bool:
 
 def _missing(field: dict[str, Any] | None) -> bool:
     return not field or field.get("status") in {None, "missing"}
-
-
-def _party_override_allowed(base: dict[str, Any] | None, candidate: dict[str, Any]) -> bool:
-    """Allow only an exact-role, separate-evidence B/L party correction."""
-
-    if not base or base.get("status") != "extracted" or not _usable_candidate(candidate):
-        return False
-    metadata = candidate.get("candidate") or {}
-    if float(metadata.get("anchor_strength") or 0.0) < 0.99:
-        return False
-    if canonical(base.get("value")) == canonical(candidate.get("value")):
-        return False
-    return base.get("bbox") != candidate.get("bbox")
 
 
 def _usable_table_candidate(value: dict[str, Any]) -> bool:
@@ -100,9 +86,7 @@ def apply(result: OCRResult, payload: dict[str, Any]) -> tuple[dict[str, Any], d
         if field in allowed_parties:
             candidate = resolve_party(layout, field, all_anchors, resolved_parties)
             resolved_parties[field] = candidate
-            if (_missing(output.get(field)) or (
-                result.document_type == "B/L" and _party_override_allowed(output.get(field), candidate)
-            )) and _usable_candidate(candidate):
+            if _missing(output.get(field)) and _usable_candidate(candidate):
                 output[field] = candidate
                 overrides.append({"field": field, "method": "party_anchor_overlay"})
 
