@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from fintra.extraction.documents import EXTRACTORS
+from fintra.extraction.production import EXTRACTORS
 from fintra.ocr.adapter import OCRAdapter
 
 

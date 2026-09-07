@@ -1,0 +1,134 @@
+"""Clean production extraction boundary.
+
+The production boundary consumes only :class:`OCRResult` and emits the
+evidence-bearing canonical schema.  Its implementation is the normalized
+layout strategy in ``strategies.py``; historical coordinate/template
+extractors remain available only to the probe and regression tools.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any, Callable
+
+from fintra.domain.schema import EvidenceField
+from fintra.ocr.adapter import OCRResult
+
+from .layout import Layout
+from .strategies import STRATEGIES
+
+
+@dataclass(frozen=True)
+class FieldCandidate:
+    """Common evidence candidate used by production diagnostics and clients."""
+
+    field_name: str
+    value: Any
+    source_text: str | None
+    ocr_region_indices: tuple[int, ...]
+    bbox: list[list[float]] | None
+    ocr_confidence: float | None
+    semantic_anchor: str | None
+    normalized_geometry: tuple[float, float, float, float] | None
+    relation: str | None
+    extraction_method: str
+    type_valid: bool
+    score: float
+    reject_reason: str | None = None
+
+
+def _dimensions(result: OCRResult) -> tuple[float, float]:
+    layout = Layout(result)
+    return layout.width, layout.height
+
+
+def _candidate(field_name: str, field: EvidenceField, result: OCRResult) -> FieldCandidate:
+    bbox = field.bbox
+    geometry = None
+    if bbox:
+        width, height = _dimensions(result)
+        xs = [point[0] for point in bbox]
+        ys = [point[1] for point in bbox]
+        geometry = (min(xs) / width, min(ys) / height, max(xs) / width, max(ys) / height)
+    return FieldCandidate(
+        field_name=field_name,
+        value=field.value,
+        source_text=field.source_text,
+        ocr_region_indices=tuple(),
+        bbox=bbox,
+        ocr_confidence=field.confidence,
+        semantic_anchor=None,
+        normalized_geometry=geometry,
+        relation=None,
+        extraction_method=field.extraction_method,
+        type_valid=field.status.value == "extracted",
+        score=float(field.confidence or 0.0),
+    )
+
+
+def _walk_candidates(value: Any, prefix: str, result: OCRResult) -> list[FieldCandidate]:
+    candidates: list[FieldCandidate] = []
+    if isinstance(value, EvidenceField):
+        if value.status.value == "extracted":
+            candidates.append(_candidate(prefix, value, result))
+        return candidates
+    if isinstance(value, list):
+        for index, item in enumerate(value):
+            candidates.extend(_walk_candidates(item, f"{prefix}[{index}]", result))
+        return candidates
+    if hasattr(value, "__dataclass_fields__"):
+        for name in value.__dataclass_fields__:
+            if name == "metadata":
+                continue
+            child = getattr(value, name)
+            child_prefix = f"{prefix}.{name}" if prefix else name
+            candidates.extend(_walk_candidates(child, child_prefix, result))
+    return candidates
+
+
+def candidates_for(document: Any, result: OCRResult) -> list[FieldCandidate]:
+    """Return the selected canonical fields as a uniform evidence view."""
+
+    return _walk_candidates(document, "", result)
+
+
+def _extract(result: OCRResult) -> Any:
+    try:
+        factory = STRATEGIES[result.document_type]
+    except KeyError as exc:
+        raise ValueError(f"unsupported document_type: {result.document_type}") from exc
+    document = factory(result).extract()
+    # The clean path performs a single candidate selection pass.  The
+    # candidates are intentionally derived after selection for diagnostics;
+    # they never trigger a second resolver or overwrite a field.
+    candidates_for(document, result)
+    return document
+
+
+def extract_commercial_invoice(result: OCRResult):
+    return _extract(result)
+
+
+def extract_packing_list(result: OCRResult):
+    return _extract(result)
+
+
+def extract_bill_of_lading(result: OCRResult):
+    return _extract(result)
+
+
+EXTRACTORS: dict[str, Callable[[OCRResult], object]] = {
+    "Commercial Invoice": extract_commercial_invoice,
+    "Packing List": extract_packing_list,
+    "B/L": extract_bill_of_lading,
+}
+
+
+__all__ = [
+    "FieldCandidate",
+    "EXTRACTORS",
+    "candidates_for",
+    "extract_commercial_invoice",
+    "extract_packing_list",
+    "extract_bill_of_lading",
+]
