@@ -26,13 +26,14 @@ python scripts/run_document_extraction.py `
 The command template must explicitly produce the OCR JSON path supplied as
 `{output_json}`. The service does not select or replace an OCR model.
 
-The clean-room candidate entry point is
-`fintra.extraction.clean.engine.EXTRACTORS`. The service continues to use the
-historical dispatch until the clean candidate passes Accurate75, Fast300, and
-DEV60 regression; backend callers must use the service boundary and need not
-import resolver modules.
+The production entry point is
+`fintra.extraction.clean.engine.EXTRACTORS` (also re-exported by
+`fintra.extraction.production`). The service's default `active` strategy now
+uses this clean-room path. The historical extractor remains available only as
+the explicitly selected `legacy` comparison strategy; backend callers use the
+service boundary and never import resolver modules.
 
-For candidate integration smoke tests, select the clean path explicitly:
+For an explicit clean-path integration smoke test:
 
 ```powershell
 python scripts/run_document_extraction.py `

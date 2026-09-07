@@ -7,9 +7,9 @@ that the available-field accuracy target has been reached.
 | Component | Frozen reference |
 |---|---|
 | Git branch | `restart/clean-v2` |
-| Extractor semantics | `4f9487f` |
-| Integration boundary | `2581717` |
-| Evaluator v4 support | `f54b0bb` |
+| Extractor semantics | clean-room path in final freeze commit |
+| Integration boundary | `fintra.services.document_service.extract_document` |
+| Evaluator v4 support | `MVP_DEVELOPMENT_GOLD_V4` evaluator |
 | Gold | `MVP_DEVELOPMENT_GOLD_V4` |
 | Accurate Gold | `artifacts/fintra/gold_audit/semantic-v4-image-accurate75/cases` |
 | Fast Gold | `artifacts/fintra/gold_audit/semantic-v4-image-balanced300/cases` |
@@ -22,15 +22,16 @@ that the available-field accuracy target has been reached.
 
 Development metrics at freeze:
 
-- Accurate75-1: 377/653 overall (57.73%), 152/320 CI, 178/263 PL,
-  47/70 B/L.
-- Fast300: 1687/2409 overall (70.03%), 864/1106 CI, 656/1010 PL,
-  167/293 B/L.
-- Stage decomposition: `artifacts/fintra/train-scale-v1/mvp-v4-iter2/stages/`
-- Unit suite before final report: 84 tests passed.
+- Accurate75-1: 467/653 overall (71.52%), 250/320 CI, 180/263 PL,
+  37/70 B/L.
+- Fast300: 1830/2409 overall (75.96%), 946/1106 CI, 724/1010 PL,
+  160/293 B/L.
+- Stage decomposition: `artifacts/fintra/extractor-rebuild/regression/clean-stages-v11/`
+- Unit suite: 102 tests passed.
 
 The Accurate75-1 and Fast300 numbers are development-set measurements and
-must not be compared as a causal improvement claim. FINAL-HOLDOUT #2 is a
-separate one-shot evaluation and is not used for tuning.
+must not be interpreted as a causal comparison between datasets. DEV60 is
+diagnostic-only because its historical contract differs. FINAL-HOLDOUT #2 is
+a separate one-shot evaluation and is not used for tuning.
 
 The freeze does not alter Azure data, Gold, OCR JSON, or model files.

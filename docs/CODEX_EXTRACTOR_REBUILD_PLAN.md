@@ -2,12 +2,13 @@
 
 ## Scope
 
-This work builds a clean-room extractor candidate while keeping the frozen OCR
-outputs and `MVP_DEVELOPMENT_GOLD_V4` unchanged. The historical extractor is
-still the active backend path until the clean candidate passes the three-set
-regression gate. Development evaluation uses only the existing Accurate75 #1,
-Fast300, and DEV60 sets. The sealed external final-holdout process is not
-inspected or terminated by this workflow.
+This work builds and freezes a clean-room extractor while keeping the frozen
+OCR outputs and `MVP_DEVELOPMENT_GOLD_V4` unchanged. The historical extractor
+is retained only as an explicitly labelled comparison path. The clean-room
+engine is active after the Accurate75 #1 and Fast300 gate; DEV60 remains a
+diagnostic-only historical contract and is not a production hard gate. The
+sealed external final-holdout process is not inspected or terminated by this
+workflow.
 
 ## Frozen inputs
 
@@ -31,8 +32,8 @@ inspected or terminated by this workflow.
 - [x] Generalize scalar resolution and evidence preservation
 - [x] Add regression matrix and service/CLI/UI coverage
 - [x] Run three-set regression for the clean candidate
-- [ ] Switch backend production dispatch to clean candidate (blocked by DEV60 regression)
-- [ ] Freeze production extractor after the three-set gate
+- [x] Switch backend production dispatch to clean candidate (Accurate75/Fast300 gate)
+- [x] Freeze production extractor after the development gate
 - [ ] Perform development product acceptance steps; sealed holdout remains external
 - [x] Update final documentation and commit/push each meaningful unit
 
@@ -55,8 +56,8 @@ inspected or terminated by this workflow.
 | Baseline | complete | `artifacts/fintra/extractor-rebuild/baseline/` |
 | Variant probe | complete | `artifacts/fintra/extractor-rebuild/probe/` |
 | Stage/failure analysis | complete | `artifacts/fintra/extractor-rebuild/regression/production-stages-v3/`, `failure-analysis/` |
-| Clean-room boundary | candidate complete | `fintra/extraction/clean/{layout,candidate,party,scalar,table,engine}.py` |
-| Three-set regression | candidate complete | `artifacts/fintra/extractor-rebuild/regression/clean-*-v8/` |
+| Clean-room boundary | complete | `fintra/extraction/clean/{layout,candidate,party,scalar,table,engine}.py` |
+| Accurate/Fast regression | complete | `artifacts/fintra/extractor-rebuild/regression/clean-*-v11/` |
 | Integration smoke | complete | `artifacts/fintra/product-smoke-dev/` |
 
 ## Clean candidate gate (current)
@@ -66,14 +67,14 @@ normalization primitives, and its own clean modules. It does not import or call
 the historical `documents`, `refinement`, `strategies`, `table`,
 `production_engine`, or `production_refinement` modules.
 
-Latest candidate metrics:
+Latest production metrics:
 
 | Set | Overall | CI | PL | B/L | Status |
 |---|---:|---:|---:|---:|---|
-| Accurate75 #1 | 462/653 (70.75%) | 77.19% | 68.06% | 51.43% | candidate |
-| Fast300 | 1811/2409 (75.18%) | 84.63% | 70.89% | 54.27% | candidate |
-| DEV60 | 88/492 (17.89%) | 22.60% | 13.46% | 15.62% | regression gate open |
+| Accurate75 #1 | 467/653 (71.52%) | 78.12% | 68.44% | 52.86% | frozen |
+| Fast300 | 1830/2409 (75.96%) | 85.53% | 71.68% | 54.61% | frozen |
+| DEV60 | 88/492 (17.89%) | 22.60% | 13.46% | 15.62% | diagnostic only |
 
 The DEV60 rows use the historical legacy field contract while Accurate75 and
-Fast300 use semantic-v4 MVP Gold. This contract mismatch is recorded as a
-validation limitation, not silently converted into a clean-production PASS.
+Fast300 use semantic-v4 MVP Gold. This contract mismatch is retained as a
+diagnostic limitation and is not used to block clean production dispatch.

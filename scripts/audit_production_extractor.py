@@ -76,7 +76,7 @@ def audit() -> dict[str, object]:
         function_modules = {key: value.__module__ for key, value in production.EXTRACTORS.items()}
     except Exception as exc:  # pragma: no cover - reported as audit failure
         function_modules = {"import_error": repr(exc)}
-    clean_targets = sorted(key for key, module in function_modules.items() if module == "fintra.extraction.production")
+    clean_targets = sorted(key for key, module in function_modules.items() if module == "fintra.extraction.clean.engine")
     clean_function_modules: dict[str, str] = {}
     try:
         from fintra.extraction.clean.engine import EXTRACTORS as CLEAN_EXTRACTORS
@@ -85,7 +85,8 @@ def audit() -> dict[str, object]:
         clean_function_modules = {"import_error": repr(exc)}
     clean_passed = not clean_forbidden_imports and not clean_forbidden_names and not clean_literals and not clean_absolute_helpers and set(clean_function_modules.values()) == {"fintra.extraction.clean.engine"}
     active_dispatch_clean = set(function_modules.values()) == {"fintra.extraction.clean.engine"}
-    baseline_passed = not forbidden_imports and not forbidden_names and not case_literals and not absolute_helpers and set(clean_targets) == {
+    legacy_free_active = not forbidden_imports and not forbidden_names and not case_literals and not absolute_helpers
+    baseline_passed = legacy_free_active and set(clean_targets) == {
         "Commercial Invoice", "Packing List", "B/L"
     }
     return {
@@ -106,7 +107,7 @@ def audit() -> dict[str, object]:
         "clean_passed": clean_passed,
         "baseline_path_passed": baseline_passed,
         "active_dispatch_clean": active_dispatch_clean,
-        "passed": clean_passed and active_dispatch_clean,
+        "passed": clean_passed and active_dispatch_clean and baseline_passed,
     }
 
 

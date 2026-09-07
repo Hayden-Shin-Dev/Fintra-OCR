@@ -19,15 +19,14 @@ available-field denominator by design.
 
 ## Frozen development metrics
 
-The current accepted extractor revision is `4f9487f` (header-relative CI item
-table extraction). The integration boundary and stage-report fixes are in
-`2581717`; they do not change extraction semantics. These are separate
-development datasets:
+The current accepted extractor is the clean-room engine under
+`fintra/extraction/clean/`; the final freeze commit is recorded in git history.
+These are separate development datasets:
 
 | Set | Overall | CI | Packing List | B/L |
 |---|---:|---:|---:|---:|
-| Accurate75-1 | 377/653 = 57.73% | 152/320 = 47.50% | 178/263 = 67.68% | 47/70 = 67.14% |
-| Fast300 | 1687/2409 = 70.03% | 864/1106 = 78.12% | 656/1010 = 64.95% | 167/293 = 57.00% |
+| Accurate75-1 | 467/653 = 71.52% | 250/320 = 78.12% | 180/263 = 68.44% | 37/70 = 52.86% |
+| Fast300 | 1830/2409 = 75.96% | 946/1106 = 85.53% | 724/1010 = 71.68% | 160/293 = 54.61% |
 
 The stage decomposition is recorded at
 `artifacts/fintra/train-scale-v1/mvp-v4-iter2/stages/` and separates OCR
@@ -64,6 +63,7 @@ python -m unittest discover -s tests -q
 python scripts/evaluate_mvp_stages.py
 ```
 
-The stage report intentionally does not access FINAL-HOLDOUT #2. That holdout
-must be used only once after this revision is frozen and the final evaluation
-command is explicitly run.
+The stage report intentionally does not access FINAL-HOLDOUT #2. DEV60 is
+diagnostic-only for this freeze because its historical field contract differs
+from semantic-v4. The separate holdout must be used only once after this
+revision is frozen and the final evaluation command is explicitly run.

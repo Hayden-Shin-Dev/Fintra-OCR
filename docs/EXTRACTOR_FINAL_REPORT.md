@@ -1,83 +1,76 @@
-# Fintra OCR/Extractor rebuild final report
+# Fintra clean-room extractor freeze
 
-This report closes the development rebuild only. The sealed external final
-holdout process was not terminated, inspected, or used for tuning.
+This report closes the Accurate75/Fast300 development gate. Gold, frozen Paddle
+OCR output, and the sealed external holdout were not modified or inspected.
 
 ## Production handoff
 
 - Branch: `restart/clean-v2`
 - Production callable: `fintra.services.document_service.extract_document`
+- Production extractor namespace: `fintra.extraction.clean.engine`
 - CLI: `scripts/run_document_extraction.py`
-- Output: evidence-bearing `fintra-document-contract.v1` JSON
-- UI integration: `app.py` → the same service boundary
+- Output: `fintra-document-contract.v1` evidence-bearing canonical JSON
+- UI integration: `app.py` uses the same service boundary
+- Historical comparison: explicit `legacy` strategy from `fintra.extraction.documents`
 
-The historical `documents.py`, `refinement.py`, and `table.py` remain in the
-repository for comparison. They were removed from the production import path,
-not deleted, so historical probes remain reproducible.
+The clean path is an independent implementation under
+`fintra/extraction/clean/`. Its recursive audit has no imports or calls to the
+legacy documents/refinement/strategies/table or production-engine modules.
 
-## Before → after
+## Development before → after
 
-The clean boundary was accepted only after parity with the active implementation:
+The before values are the frozen historical extractor baseline. The after
+values are the clean engine measured with the same frozen OCR and
+`MVP_DEVELOPMENT_GOLD_V4` available-field evaluator.
 
-- Accurate75 #1: 377/653 (57.73%) → 377/653 (57.73%)
-- Fast300: 1687/2409 (70.03%) → 1687/2409 (70.03%)
-- DEV60: 183/492 (37.20%) → 183/492 (37.20%)
+| Set | Before overall | After overall | Before CI / PL / B/L | After CI / PL / B/L |
+|---|---:|---:|---|---|
+| Accurate75 #1 | 377/653 (57.73%) | 467/653 (71.52%) | 152/320, 178/263, 47/70 | 250/320, 180/263, 37/70 |
+| Fast300 | 1687/2409 (70.03%) | 1830/2409 (75.96%) | 864/1106, 656/1010, 167/293 | 946/1106, 724/1010, 160/293 |
+| DEV60 diagnostic | 183/492 (37.20%) | 88/492 (17.89% snapshot) | historical contract | diagnostic only |
 
-There is no claimed accuracy improvement from the boundary refactor. The
-improvement is isolation, evidence preservation, and backend usability.
+DEV60 uses a different historical Gold/OCR contract and is not a production
+hard gate or tuning target.
 
 ## OCR and extractor recovery
 
-- Paddle raw field recoverability: Accurate75 570/653 (87.29%), Fast300
-  2096/2409 (87.01%), DEV60 239/492 (48.58%).
-- Final correct among those recoverable rows: Accurate75 377/570 (66.14%),
-  Fast300 1687/2096 (80.49%), DEV60 183/239 (76.57%).
-- Post-filter loss: 0 in Accurate75 and 0 in Fast300; two Accurate75 adapter
-  parse gains are reported separately.
-- Remaining unrecoverable rows: Accurate75 83, Fast300 313, DEV60 253 under
-  the stage evaluator’s frozen contracts.
+| Set | OCR recoverable | Extractor correct | Recovery among recoverable | Remaining OCR-unrecoverable |
+|---|---:|---:|---:|---:|
+| Accurate75 #1 | 570/653 (87.29%) | 467 | 467/570 (81.93%) | 83 |
+| Fast300 | 2096/2409 (87.01%) | 1830 | 1830/2096 (87.31%) | 313 |
 
-## Document types and field regressions
+Stage artifacts separate OCR recoverability from candidate/resolver outcomes:
+`artifacts/fintra/extractor-rebuild/regression/clean-stages-v11/`.
 
-| Set | CI | PL | B/L |
-|---|---:|---:|---:|
-| Accurate75 #1 | 152/320 (47.50%) | 178/263 (67.68%) | 47/70 (67.14%) |
-| Fast300 | 864/1106 (78.12%) | 656/1010 (64.95%) | 167/293 (57.00%) |
-| DEV60 | 105/208 (50.48%) | 56/156 (35.90%) | 22/128 (17.19%) |
+## Main changes
 
-No field-level regression was introduced relative to the active extractor.
-The main remaining development weaknesses are CI/PL item description and unit
-selection, and B/L notify-party/party-block selection. The detailed field
-counts are in each `field_metrics.json` under the regression artifact root.
+- normalized page geometry and semantic-anchor discovery
+- pre-selection typed `FieldCandidate` generation and ranking
+- independent PARTY, SCALAR, and CI/PL ITEM_TABLE resolvers
+- wrapped-line reading order and multiline table continuation handling
+- typed organization/address boundary for combined party OCR regions
+- evidence source text, bbox, confidence, and provenance preserved
+- fragment suppression requires text and geometry duplicate evidence
 
 ## Unsupported Gold acceptance
 
-The v4 Gold benchmark supports CI parties/item rows, PL parties/item
-rows, and B/L shipper/consignee/notify-party rows. Other canonical keys are
-still emitted by the product but remain `ambiguous_gt` in this MVP benchmark
-and are excluded from accuracy. See
-`docs/UNSUPPORTED_FIELD_PRODUCT_ACCEPTANCE.md`.
+The MVP Gold intentionally excludes unsupported field families as
+`ambiguous_gt`; this is not a production claim that those fields are absent.
+See `docs/UNSUPPORTED_FIELD_PRODUCT_ACCEPTANCE.md`.
 
 ## Verification
 
-- `python -m unittest discover -s tests -v`: 90 passed.
-- Production static audit: PASS.
-- CLI/service fixture smoke: CI, PL, and B/L PASS.
-- `app.py` and integration CLI compile: PASS.
-- Historical evaluator consistency and three-set regression artifacts are
-  preserved.
+- recursive production audit: PASS
+- full unittest suite: 102 passed
+- CLI/service fixture smoke: CI, PL, and B/L PASS
+- smoke artifacts: `artifacts/fintra/extractor-rebuild/integration-freeze-smoke/`
+- Accurate/Fast metrics: `artifacts/fintra/extractor-rebuild/regression/clean-accurate75-v11/` and `clean-fast300-v11/`
 
 ## Limitations
 
-1. The current standalone production parity kernel retains normalized,
-   projected design-coordinate fallback rules internally to preserve active
-   behavior. It is isolated from legacy modules but is not a fully
-   layout-template-independent resolver yet.
-2. Available Gold is an MVP development subset; unsupported fields are not an
-   accuracy claim.
-3. Stage failure labels are diagnostic projections, not a new ground-truth
-   annotation of causal failure.
-4. DEV60 uses its historical Gold/OCR contract and must not be compared as an
-   equal distribution with Accurate75/Fast300.
-5. GPU execution depends on the validated local Paddle environment and was
-   not launched by this final documentation smoke.
+1. B/L party and item fields remain the weakest available-field clusters;
+   ambiguous Gold and role/layout mismatches are not fixed by hardcoding.
+2. OCR-unrecoverable fields cannot be recovered by the extractor.
+3. DEV60 is retained for diagnostics only because its historical contract is
+   not comparable to semantic-v4 MVP Gold.
+4. GPU execution still depends on the validated local Paddle environment.

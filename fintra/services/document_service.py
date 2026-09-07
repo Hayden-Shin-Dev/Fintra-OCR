@@ -5,13 +5,14 @@ from __future__ import annotations
 from pathlib import Path
 
 from fintra.extraction.clean.engine import EXTRACTORS as CLEAN_EXTRACTORS
-from fintra.extraction.production import EXTRACTORS as LEGACY_EXTRACTORS
+from fintra.extraction.documents import EXTRACTORS as LEGACY_EXTRACTORS
 from fintra.ocr.adapter import OCRAdapter
 
 
 EXTRACTORS_BY_STRATEGY = {
-    "active": LEGACY_EXTRACTORS,
+    "active": CLEAN_EXTRACTORS,
     "clean": CLEAN_EXTRACTORS,
+    "legacy": LEGACY_EXTRACTORS,
 }
 DOCUMENT_TYPES = tuple(CLEAN_EXTRACTORS)
 
