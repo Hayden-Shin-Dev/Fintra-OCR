@@ -63,9 +63,15 @@ def rank(candidates: Iterable[Candidate]) -> list[Candidate]:
 
 
 def select(layout: Layout, candidates: Iterable[Candidate], *, method: str = "v2_candidate_rank") -> dict[str, Any]:
-    ordered = rank(candidates)
+    candidate_list = list(candidates)
+    ordered = rank(candidate_list)
+    diagnostic = {
+        "candidate_count": len(ordered),
+        "candidate_values": [candidate.value for candidate in ordered[:8]],
+        "rejected_count": len(candidate_list) - len(ordered),
+    }
     if not ordered:
-        return {"value": None, "status": "missing", "extraction_method": method}
+        return {"value": None, "status": "missing", "extraction_method": method, "candidate": diagnostic}
     winner = ordered[0]
     if len(ordered) > 1:
         second = ordered[1]
@@ -78,9 +84,11 @@ def select(layout: Layout, candidates: Iterable[Candidate], *, method: str = "v2
                 "confidence": min(x for x in (winner.confidence, second.confidence) if x is not None) if winner.confidence is not None and second.confidence is not None else winner.confidence or second.confidence,
                 "extraction_method": method,
                 "status": "ambiguous",
-                "candidate": {"top": winner.evidence(layout), "runner_up": second.evidence(layout)},
+                "candidate": {**diagnostic, "top": winner.evidence(layout), "runner_up": second.evidence(layout)},
             }
-    return winner.evidence(layout, method=method)
+    result = winner.evidence(layout, method=method)
+    result["candidate"] = {**result.get("candidate", {}), **diagnostic}
+    return result
 
 
 __all__ = ["Candidate", "rank", "select"]

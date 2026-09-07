@@ -16,7 +16,11 @@ def extract_document(result: OCRResult) -> V2Document:
     if result.document_type not in DOCUMENT_FIELDS:
         raise ValueError(f"unsupported document type: {result.document_type}")
     baseline = extract_baseline(result)
-    overlaid, _diagnostics = apply_overlay(result, baseline)
+    overlaid, diagnostics = apply_overlay(result, baseline)
+    metadata = dict(overlaid.get("metadata") or {})
+    metadata["v2_title_diagnostics"] = diagnostics.get("title_diagnostics", [])
+    metadata["v2_overrides"] = diagnostics.get("overrides", [])
+    overlaid["metadata"] = metadata
     return build_document(result, overlaid)
 
 

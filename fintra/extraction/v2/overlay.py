@@ -16,7 +16,7 @@ from fintra.ocr.adapter import OCRResult
 from .layout import Layout
 from .party import resolve as resolve_party
 from .scalar import resolve as resolve_scalar
-from .specs import DOCUMENT_FIELDS, ITEM_FIELDS, PARTY_FIELDS_BY_DOCUMENT, SPECS
+from .specs import DOCUMENT_FIELDS, ITEM_FIELDS, PARTY_FIELDS, PARTY_FIELDS_BY_DOCUMENT, SPECS
 from .table import resolve as resolve_table, resolve_goods_description
 
 
@@ -110,8 +110,34 @@ def apply(result: OCRResult, payload: dict[str, Any]) -> tuple[dict[str, Any], d
     output = dict(payload)
     layout, all_anchors = _anchor_inventory(result)
     overrides: list[dict[str, Any]] = []
+    title_diagnostics: list[dict[str, Any]] = []
     resolved_parties: dict[str, dict[str, Any]] = {}
-    allowed_parties = set(PARTY_FIELDS_BY_DOCUMENT[result.document_type])
+    allowed_parties = set(PARTY_FIELDS_BY_DOCUMENT[result.document_type]) | {
+        field for field in DOCUMENT_FIELDS[result.document_type] if field in PARTY_FIELDS
+    }
+
+    def record_title(field: str, candidate: dict[str, Any], before: dict[str, Any] | None, family: str) -> None:
+        anchors = layout.anchors(field, SPECS[field].aliases) if field in SPECS else []
+        candidate_meta = candidate.get("candidate") or {}
+        status = candidate.get("status")
+        if status == "extracted":
+            state = "BASELINE_KEPT" if before and not _missing(before) and not _same_value(before, candidate) else "EXTRACTED"
+        elif status == "ambiguous":
+            state = "AMBIGUOUS"
+        elif anchors:
+            state = "LABEL_NO_VALUE"
+        else:
+            state = "NO_LABEL"
+        title_diagnostics.append({
+            "field": field,
+            "family": family,
+            "label_detected": bool(anchors),
+            "label_strength": max((anchor.strength for anchor in anchors), default=0.0),
+            "value_candidate_count": candidate_meta.get("candidate_count", 0),
+            "selected_value": candidate.get("value"),
+            "state": state,
+            "reject_reason": candidate_meta.get("reject_reason"),
+        })
 
     # Resolve party roles independently but keep the role inventory scoped to
     # the document contract.  This prevents e.g. CI seller/buyer resolution
@@ -120,6 +146,7 @@ def apply(result: OCRResult, payload: dict[str, Any]) -> tuple[dict[str, Any], d
         if field in allowed_parties:
             candidate = resolve_party(layout, field, all_anchors, resolved_parties)
             resolved_parties[field] = candidate
+            record_title(field, candidate, output.get(field), "party")
             if _semantic_override_allowed(output.get(field), candidate, "party"):
                 was_missing = _missing(output.get(field))
                 method = "party_anchor_overlay" if was_missing else "party_semantic_arbitration"
@@ -131,6 +158,7 @@ def apply(result: OCRResult, payload: dict[str, Any]) -> tuple[dict[str, Any], d
         if field not in SPECS or field in allowed_parties:
             continue
         candidate = resolve_scalar(layout, field, all_anchors)
+        record_title(field, candidate, output.get(field), "scalar")
         if _semantic_override_allowed(output.get(field), candidate, "scalar"):
             was_missing = _missing(output.get(field))
             output[field] = candidate
@@ -152,6 +180,18 @@ def apply(result: OCRResult, payload: dict[str, Any]) -> tuple[dict[str, Any], d
                         _usable_table_candidate(candidate)):
                     base_item[field] = candidate
                     overrides.append({"field": f"items[{index}].{field}", "method": "typed_table_overlay"})
+                if field in ITEM_FIELDS[result.document_type]:
+                    meta = candidate.get("candidate") or {}
+                    title_diagnostics.append({
+                        "field": f"items[{index}].{field}",
+                        "family": "table",
+                        "label_detected": bool(meta.get("source_label")),
+                        "label_strength": None,
+                        "value_candidate_count": meta.get("candidate_count", 0),
+                        "selected_value": candidate.get("value"),
+                        "state": "EXTRACTED" if candidate.get("status") == "extracted" else "NO_LABEL",
+                        "reject_reason": meta.get("reject_reason"),
+                    })
 
     # B/L goods description is a bounded semantic/table candidate, never an
     # unbounded page concatenation.  It is only used when clean has no value.
@@ -164,6 +204,7 @@ def apply(result: OCRResult, payload: dict[str, Any]) -> tuple[dict[str, Any], d
     return output, {
         "mode": "semantic_overlay",
         "overrides": overrides,
+        "title_diagnostics": title_diagnostics,
         "document_id": result.document_id,
     }
 

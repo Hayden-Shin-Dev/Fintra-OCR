@@ -39,6 +39,10 @@ ROLE_HEADINGS = {
     "buyer": {"BUYER", "SOLD TO", "BILL TO", "BUYER IF OTHER THAN CONSIGNEE"},
     "consignee": {"CONSIGNEE", "CONSIGNED TO", "SHIP TO"},
     "notify_party": {"NOTIFY", "NOTIFY PARTY", "ALSO NOTIFY"},
+    "carrier": {"CARRIER", "EXPORT CARRIER", "FORWARDER", "FORWARDING AGENT"},
+    "bank": {"BANK", "ISSUING BANK", "ADVISING BANK"},
+    "manufacturer": {"MANUFACTURER", "MADE BY"},
+    "signatory_company": {"AUTHORIZED SIGNATURE", "SIGNED BY", "SIGNATURE"},
 }
 
 
@@ -58,7 +62,9 @@ def _anchor_is_compatible(anchor: Anchor, field: str) -> bool:
     # If the observed heading is an explicit competing role, it is not a
     # candidate for this field even when the string similarity passes.
     competing = {
-        "SELLER", "EXPORTER", "SHIPPER", "CONSIGNOR", "BUYER", "CONSIGNEE", "NOTIFY", "NOTIFY PARTY", "ALSO NOTIFY"
+        "SELLER", "EXPORTER", "SHIPPER", "CONSIGNOR", "BUYER", "CONSIGNEE", "NOTIFY", "NOTIFY PARTY", "ALSO NOTIFY",
+        "CARRIER", "EXPORT CARRIER", "FORWARDER", "FORWARDING AGENT", "BANK", "ISSUING BANK",
+        "ADVISING BANK", "MANUFACTURER", "MADE BY", "AUTHORIZED SIGNATURE", "SIGNED BY", "SIGNATURE",
     }
     observed_words = set(observed.split())
     allowed_words = set().union(*(set(item.split()) for item in allowed)) if allowed else set()
@@ -199,7 +205,7 @@ def resolve(
             None,
             (cell,),
             None,
-            f"same_as_{target}",
+            "same_as_role",
             True,
             "party_block",
             6.0 if target_value else 5.0,

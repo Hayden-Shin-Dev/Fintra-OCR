@@ -170,9 +170,9 @@ RESOLUTION_DOCUMENT_FIELDS = DOCUMENT_FIELDS
 PARTY_FIELDS = {"seller", "buyer", "consignee", "exporter", "shipper", "notify_party", "carrier", "bank", "manufacturer", "signatory_company"}
 
 PARTY_FIELDS_BY_DOCUMENT = {
-    "Commercial Invoice": ("seller", "buyer", "consignee"),
-    "Packing List": ("exporter", "shipper", "buyer", "consignee"),
-    "B/L": ("shipper", "consignee", "notify_party"),
+    "Commercial Invoice": ("seller", "buyer", "consignee", "carrier", "bank", "manufacturer", "signatory_company"),
+    "Packing List": ("exporter", "shipper", "buyer", "consignee", "carrier", "manufacturer", "signatory_company"),
+    "B/L": ("shipper", "consignee", "notify_party", "carrier", "signatory_company"),
 }
 
 TABLE_FIELDS_BY_DOCUMENT = ITEM_FIELDS
