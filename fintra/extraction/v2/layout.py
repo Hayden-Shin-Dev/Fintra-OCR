@@ -120,6 +120,7 @@ class Layout:
         ]
         self.line_height = median([cell.height for cell in self.cells]) if self.cells else 0.01
         self.lines = self._group_lines(self.cells)
+        self._anchor_cache: dict[tuple[str, tuple[str, ...]], list[Anchor]] = {}
 
     @staticmethod
     def _group_lines(cells: list[Cell]) -> list[list[Cell]]:
@@ -158,6 +159,9 @@ class Layout:
         return next((line for line in self.lines if cell in line), None)
 
     def anchors(self, field: str, aliases: tuple[str, ...]) -> list[Anchor]:
+        cache_key = (field, tuple(aliases))
+        if cache_key in self._anchor_cache:
+            return self._anchor_cache[cache_key]
         found: list[Anchor] = []
         for line in self.lines:
             for start in range(len(line)):
@@ -177,7 +181,9 @@ class Layout:
             ids = {cell.index for cell in anchor.cells}
             if not any(item.field == field and ids & {cell.index for cell in item.cells} for item in selected):
                 selected.append(anchor)
-        return sorted(selected, key=lambda item: (item.cells[0].page, item.y, item.x))
+        result = sorted(selected, key=lambda item: (item.cells[0].page, item.y, item.x))
+        self._anchor_cache[cache_key] = result
+        return result
 
     def all_anchors(self, fields: dict[str, tuple[str, ...]]) -> list[Anchor]:
         result: list[Anchor] = []
@@ -205,7 +211,12 @@ class Layout:
             used.update(semantic_heading_ids)
         ax1, ay1, ax2, ay2 = anchor.box
         other = [item for item in all_anchors if item is not anchor and item.cells[0].page == page]
-        next_y = min((item.box[1] for item in other if item.box[1] > ay2 and abs(item.x - anchor.x) < 0.28), default=1.0)
+        # Only decisive semantic headings form a vertical boundary.  Fuzzy
+        # aliases found in ordinary value text must not truncate a candidate
+        # block merely because the full contract is now in the inventory.
+        next_y = min((item.box[1] for item in other
+                      if item.strength >= 0.90 and item.box[1] > ay2
+                      and abs(item.x - anchor.x) < 0.28), default=1.0)
         output: list[tuple[list[Cell], str, float]] = []
         for line in self.lines:
             if not line or line[0].page != page:

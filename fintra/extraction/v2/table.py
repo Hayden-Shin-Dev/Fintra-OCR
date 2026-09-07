@@ -31,6 +31,10 @@ TABLE_ALIASES = {
     "measurement": ("MEASUREMENT", "MEASUREMENTS", "CBM", "M3"),
     "po_number": ("PO NUMBER", "P/O NUMBER", "PURCHASE ORDER NO", "PO NO"),
     "shipping_mark": ("SHIPPING MARK", "SHIPPING MARKS", "MARKS & NOS", "MARKS AND NUMBERS"),
+    "line_number": ("LINE NO", "LINE NUMBER", "ITEM NO", "ITEM NUMBER"),
+    "part_number": ("PART NUMBER", "PART NO", "PART#"),
+    "product_code": ("PRODUCT CODE", "ITEM CODE", "PRODUCT NO"),
+    "sku": ("SKU",),
 }
 
 
@@ -124,8 +128,8 @@ def _description(value: str) -> str:
     return value.strip(" :;,|")
 
 
-def _field_candidate(layout: Layout, field: str, cells: list[Cell], value: str, valid: bool, score: float, reason: str | None = None) -> Candidate:
-    return Candidate(field, value, layout.text(cells), None, tuple(cells), None, "table_cell", valid,
+def _field_candidate(layout: Layout, field: str, cells: list[Cell], value: str, valid: bool, score: float, reason: str | None = None, header: Cell | None = None) -> Candidate:
+    return Candidate(field, value, layout.text(cells), header.text if header else None, tuple(cells), None, "table_cell", valid,
                      "item_table", score, reason or (None if valid else "typed_rejection"))
 
 
@@ -142,6 +146,10 @@ def _cell_value(layout: Layout, field: str, cells: list[Cell], header: Cell | No
             value, valid = text, _is_unit(text)
         elif field in {"unit_price", "amount", "gross_weight", "net_weight", "measurement"}:
             value, valid = text, _is_number(text)
+        elif field in {"line_number", "part_number", "po_number", "product_code", "sku"}:
+            value, valid = text, bool(re.search(r"[A-Za-z0-9]", text)) and not STOP.search(text)
+        elif field in {"shipping_mark", "package_type"}:
+            value, valid = text, bool(re.search(r"[A-Za-z]{2,}", text)) and not STOP.search(text)
         elif field == "hs_code":
             value, valid = text, bool(re.fullmatch(r"[A-Za-z0-9 ./-]{3,}", text))
         else:
@@ -150,7 +158,7 @@ def _cell_value(layout: Layout, field: str, cells: list[Cell], header: Cell | No
         if header:
             score -= abs(cell.x - header.x) * 1.5
         if valid:
-            candidates.append(_field_candidate(layout, field, [cell], value, True, score))
+            candidates.append(_field_candidate(layout, field, [cell], value, True, score, header=header))
     return select(layout, candidates, method="v2_table_rank") if candidates else {"value": None, "status": "missing", "extraction_method": "v2_table_no_candidate"}
 
 
@@ -161,7 +169,7 @@ def _header_items(layout: Layout, header_line: list[Cell], headers: dict[str, Ce
     for row in rows:
         row_y = median(cell.y for cell in row)
         values: dict[str, dict[str, Any]] = {}
-        for field in ("description", "hs_code", "quantity", "unit", "unit_price", "amount", "po_number", "package_count", "package_type", "gross_weight", "net_weight", "weight_unit", "measurement", "shipping_mark"):
+        for field in ("description", "hs_code", "line_number", "part_number", "po_number", "product_code", "sku", "quantity", "unit", "unit_price", "amount", "package_count", "package_type", "gross_weight", "net_weight", "weight_unit", "measurement", "shipping_mark"):
             if field not in bounds:
                 continue
             left, right = bounds[field]

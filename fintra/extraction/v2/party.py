@@ -31,11 +31,13 @@ SAME_AS_COMPATIBILITY = {
 }
 
 ROLE_HEADINGS = {
-    "seller": {"SELLER", "EXPORTER", "SHIPPER"},
-    "exporter": {"EXPORTER", "SELLER", "SHIPPER"},
-    "shipper": {"SHIPPER", "CONSIGNOR", "EXPORTER", "SELLER"},
-    "buyer": {"BUYER", "CONSIGNEE"},
-    "consignee": {"CONSIGNEE", "BUYER"},
+    # Explicit role namespaces are intentionally disjoint. Cross-role
+    # relationships are represented only by a complete SAME AS expression.
+    "seller": {"SELLER", "SELLER NAME", "SOLD BY"},
+    "exporter": {"EXPORTER", "SHIPPED BY", "EXPORTED BY"},
+    "shipper": {"SHIPPER", "CONSIGNOR", "CONSIGNOR/SHIPPER"},
+    "buyer": {"BUYER", "SOLD TO", "BILL TO", "BUYER IF OTHER THAN CONSIGNEE"},
+    "consignee": {"CONSIGNEE", "CONSIGNED TO", "SHIP TO"},
     "notify_party": {"NOTIFY", "NOTIFY PARTY", "ALSO NOTIFY"},
 }
 
@@ -93,9 +95,41 @@ def _candidate_value(text: str, alias: str) -> str | None:
     return None
 
 
+def _dedupe_cells(cells: Iterable[Cell]) -> list[Cell]:
+    """Remove only text+geometry duplicate fragments inside one party line.
+
+    OCR commonly emits a large company region and a smaller overlapping
+    suffix region (for example ``... CO., LTD.``).  The smaller region is
+    discarded only when its normalized text is contained in the larger text
+    and the two boxes overlap or touch; unrelated adjacent company/address
+    cells remain intact.
+    """
+    ordered = sorted(cells, key=lambda item: (item.box[0], item.box[1], -len(item.text)))
+    kept: list[Cell] = []
+    for cell in ordered:
+        current = canonical(cell.text)
+        if not current:
+            continue
+        duplicate = False
+        for prior in kept:
+            previous = canonical(prior.text)
+            overlap_x = min(cell.box[2], prior.box[2]) - max(cell.box[0], prior.box[0])
+            overlap_y = min(cell.box[3], prior.box[3]) - max(cell.box[1], prior.box[1])
+            touching = cell.box[0] <= prior.box[2] + max(cell.height, prior.height) * 0.35
+            if (current in previous or previous in current) and (overlap_x > 0 and overlap_y > 0 or touching):
+                if len(current) <= len(previous):
+                    duplicate = True
+                    break
+                kept.remove(prior)
+        if not duplicate:
+            kept.append(cell)
+    return kept
+
+
 def _line_candidates(layout: Layout, anchor: Anchor, all_anchors: list[Anchor], field: str) -> Iterable[Candidate]:
     spec = SPECS[field]
     for cells, relation, distance in layout.adjacent(anchor, all_anchors):
+        cells = _dedupe_cells(cells)
         text = layout.text(cells).strip()
         if not text:
             continue
@@ -127,7 +161,7 @@ def _line_candidates(layout: Layout, anchor: Anchor, all_anchors: list[Anchor], 
     column_right = min(1.0, anchor.box[2] + 0.45)
     lines = [line for line in layout.lines if line and line[0].page == page and anchor.y < sum(x.y for x in line) / len(line) < boundary]
     for line in lines[:4]:
-        cells = [cell for cell in line if cell.y > anchor.y and column_left <= cell.x <= column_right]
+        cells = _dedupe_cells(cell for cell in line if cell.y > anchor.y and column_left <= cell.x <= column_right)
         if not cells:
             continue
         value = layout.text(cells).strip()

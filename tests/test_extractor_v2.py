@@ -34,7 +34,8 @@ def test_v2_uses_inline_and_typed_table_evidence():
     payload = extract_document(invoice_result()).to_dict()
     baseline = extract_baseline(invoice_result())
     assert payload["invoice_number"]["value"] == "ABC-123"
-    assert payload["seller"]["value"] == baseline["seller"]["value"]
+    assert baseline["seller"]["value"] is None
+    assert payload["seller"]["value"] == "ACME TRADING CO LTD"
     assert payload["items"][0]["description"]["value"] == baseline["items"][0]["description"]["value"]
     assert payload["items"][0]["quantity"]["value"] == baseline["items"][0]["quantity"]["value"]
     assert payload["items"][0]["amount"]["value"] == baseline["items"][0]["amount"]["value"]
@@ -90,7 +91,8 @@ def test_v2_overlay_does_not_replace_existing_baseline_value():
     result = invoice_result()
     baseline = extract_baseline(result)
     updated, diagnostics = apply_overlay(result, baseline)
-    assert updated["invoice_number"] == baseline["invoice_number"]
+    assert updated["invoice_number"]["value"] == baseline["invoice_number"]["value"]
+    assert updated["invoice_number"]["candidate"]["semantic_anchor"] == "INVOICE NO"
     assert diagnostics["mode"] == "semantic_overlay"
 
 

@@ -160,32 +160,12 @@ COMPATIBILITY_DOCUMENT_FIELDS = {
     "Packing List": ("packing_list_number", "date"),
 }
 
-# Resolver scope is deliberately frozen to the fields that the v2 overlay
-# already handled.  Expanding the output contract must not silently retune
-# extraction or change benchmark behavior.
-RESOLUTION_DOCUMENT_FIELDS = {
-    "Commercial Invoice": (
-        "invoice_number", "invoice_date", "seller", "buyer", "consignee",
-        "lc_number", "lc_date", "bl_number", "purchase_order_number", "currency",
-        "total_amount", "payment_terms", "incoterm", "vessel", "voyage_number",
-        "departure_date", "port_of_loading", "port_of_discharge", "final_destination",
-    ),
-    "Packing List": (
-        "document_number", "packing_list_number", "document_date", "date",
-        "invoice_reference", "exporter", "shipper", "consignee", "buyer",
-        "package_count", "package_type", "gross_weight", "net_weight", "weight_unit",
-        "measurement", "vessel", "voyage_number", "port_of_loading",
-        "port_of_discharge", "final_destination",
-    ),
-    "B/L": (
-        "bl_number", "document_date", "shipment_date", "shipper", "consignee",
-        "notify_party", "vessel", "voyage_number", "invoice_reference",
-        "port_of_loading", "port_of_discharge", "place_of_receipt",
-        "place_of_delivery", "final_destination", "container_number", "seal_number",
-        "package_count", "gross_weight", "measurement", "weight_unit",
-        "goods_description",
-    ),
-}
+# Every field in the audited contract is routed through a resolver.  This is
+# intentionally derived from the contract inventory rather than a hand-held
+# benchmark allowlist: adding a schema field must not silently leave it
+# permanently nullable.  The old name remains as a compatibility alias for
+# callers written against the first v2 preview.
+RESOLUTION_DOCUMENT_FIELDS = DOCUMENT_FIELDS
 
 PARTY_FIELDS = {"seller", "buyer", "consignee", "exporter", "shipper", "notify_party", "carrier", "bank", "manufacturer", "signatory_company"}
 
@@ -195,16 +175,26 @@ PARTY_FIELDS_BY_DOCUMENT = {
     "B/L": ("shipper", "consignee", "notify_party"),
 }
 
+TABLE_FIELDS_BY_DOCUMENT = ITEM_FIELDS
+FIELD_FAMILY = {
+    name: ("party" if name in PARTY_FIELDS else "table" if name in {
+        item for fields in ITEM_FIELDS.values() for item in fields
+    } else "scalar")
+    for name in SPECS
+}
+
 
 __all__ = [
     "COMPATIBILITY_DOCUMENT_FIELDS",
     "DOCUMENT_FIELDS",
     "FIELD_SPEC",
+    "FIELD_FAMILY",
     "ITEM_FIELDS",
     "PARTY_FIELDS",
     "PARTY_FIELDS_BY_DOCUMENT",
     "RESOLUTION_DOCUMENT_FIELDS",
     "SPECS",
+    "TABLE_FIELDS_BY_DOCUMENT",
     "FieldSpec",
 ]
 
