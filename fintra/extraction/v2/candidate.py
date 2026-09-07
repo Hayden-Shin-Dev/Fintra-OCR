@@ -40,6 +40,7 @@ class Candidate:
             "status": "extracted" if self.value else "missing",
             "candidate": {
                 "semantic_anchor": self.anchor.alias if self.anchor else None,
+                "anchor_strength": round(self.anchor.strength, 6) if self.anchor else None,
                 "relation": self.relation,
                 "normalized_geometry": {
                     "x": sum(cell.x for cell in self.cells) / len(self.cells) if self.cells else None,

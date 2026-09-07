@@ -3,6 +3,8 @@ from fintra.extraction.v2.baseline import extract_baseline
 from fintra.extraction.v2.party import resolve as resolve_party
 from fintra.extraction.v2.table import _inferred_items
 from fintra.extraction.v2.layout import Layout
+from fintra.extraction.v2.overlay import apply as apply_overlay
+from fintra.extraction.v2.specs import DOCUMENT_FIELDS, PARTY_FIELDS_BY_DOCUMENT, SPECS
 from fintra.ocr.adapter import OCRRegion, OCRResult
 
 
@@ -82,3 +84,44 @@ def test_v2_same_as_role_is_not_cross_assigned():
     consignee = resolve_party(layout, "consignee")
     assert shipper["value"] != "SAME AS CONSIGNEE"
     assert consignee["value"] == "ACME LOGISTICS LTD"
+
+
+def test_v2_overlay_does_not_replace_existing_baseline_value():
+    result = invoice_result()
+    baseline = extract_baseline(result)
+    updated, diagnostics = apply_overlay(result, baseline)
+    assert updated["invoice_number"] == baseline["invoice_number"]
+    assert diagnostics["mode"] == "semantic_overlay"
+
+
+def test_v2_layout_keeps_value_cell_even_if_it_matches_another_alias():
+    result = OCRResult(
+        "anchor-1",
+        "Commercial Invoice",
+        "anchor.png",
+        [
+            region(0, 0, 0, 80, 20, "BUYER"),
+            region(1, 100, 0, 180, 20, "TOTAL"),
+        ],
+        metadata={"page_width": 200, "page_height": 40},
+    )
+    layout = Layout(result)
+    anchors = layout.all_anchors({"buyer": SPECS["buyer"].aliases, "total_amount": SPECS["total_amount"].aliases})
+    buyer = next(anchor for anchor in anchors if anchor.field == "buyer")
+    adjacent = layout.adjacent(buyer, anchors)
+    assert any(cell.text == "TOTAL" for cells, _relation, _distance in adjacent for cell in cells)
+
+
+def test_v2_document_contract_scopes_party_roles_and_keeps_shipment_date():
+    assert set(PARTY_FIELDS_BY_DOCUMENT["B/L"]) == {"shipper", "consignee", "notify_party"}
+    assert "shipment_date" in DOCUMENT_FIELDS["B/L"]
+
+
+def test_v2_party_rejects_consignee_as_fuzzy_shipper_heading():
+    regions = [
+        region(0, 0, 0, 90, 20, "CONSIGNEE"),
+        region(1, 100, 0, 260, 20, "ACME CONSIGNEE LTD"),
+    ]
+    result = OCRResult("party-2", "B/L", "party2.png", regions, metadata={"page_width": 300, "page_height": 60})
+    value = resolve_party(Layout(result), "shipper")
+    assert value["value"] is None

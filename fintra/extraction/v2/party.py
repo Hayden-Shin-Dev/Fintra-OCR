@@ -30,10 +30,37 @@ SAME_AS_COMPATIBILITY = {
     "notify_party": {"consignee", "buyer", "notify_party"},
 }
 
+ROLE_HEADINGS = {
+    "seller": {"SELLER", "EXPORTER", "SHIPPER"},
+    "exporter": {"EXPORTER", "SELLER", "SHIPPER"},
+    "shipper": {"SHIPPER", "CONSIGNOR", "EXPORTER", "SELLER"},
+    "buyer": {"BUYER", "CONSIGNEE"},
+    "consignee": {"CONSIGNEE", "BUYER"},
+    "notify_party": {"NOTIFY", "NOTIFY PARTY", "ALSO NOTIFY"},
+}
+
 
 def _same_as_target(text: str) -> str | None:
     match = SAME_AS.fullmatch(" ".join(str(text or "").split()))
     return match.group(1).lower() if match else None
+
+
+def _anchor_is_compatible(anchor: Anchor, field: str) -> bool:
+    """Reject a fuzzy role collision before candidate generation."""
+
+    observed = canonical(anchor.text)
+    allowed = {canonical(item) for item in ROLE_HEADINGS.get(field, ())}
+    if observed in allowed:
+        return True
+    # A fuzzy alias such as CONSIGNOR can match the visible CONSIGNEE heading.
+    # If the observed heading is an explicit competing role, it is not a
+    # candidate for this field even when the string similarity passes.
+    competing = {
+        "SELLER", "EXPORTER", "SHIPPER", "CONSIGNOR", "BUYER", "CONSIGNEE", "NOTIFY", "NOTIFY PARTY", "ALSO NOTIFY"
+    }
+    observed_words = set(observed.split())
+    allowed_words = set().union(*(set(item.split()) for item in allowed)) if allowed else set()
+    return not (observed_words & competing and not observed_words.issubset(allowed_words))
 
 
 def _organization_like(value: str) -> float:
@@ -113,7 +140,7 @@ def resolve(
     resolved_parties: dict[str, dict] | None = None,
 ) -> dict:
     aliases = SPECS[field].aliases
-    anchors = layout.anchors(field, aliases)
+    anchors = [anchor for anchor in layout.anchors(field, aliases) if _anchor_is_compatible(anchor, field)]
     all_anchors = all_anchors or layout.all_anchors({name: SPECS[name].aliases for name in PARTY_FIELDS if name in SPECS})
     candidates = [candidate for anchor in anchors for candidate in _line_candidates(layout, anchor, all_anchors, field)]
     # Explicit SAME AS values must survive generic heading filtering, but only
