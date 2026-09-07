@@ -32,7 +32,7 @@ def _evidence_fields(value: Any, prefix: str = "") -> Iterator[tuple[str, dict[s
             yield from _evidence_fields(child, f"{prefix}[{index}]")
 
 
-def _draw_evidence(image_bytes: bytes, payload: dict[str, Any]) -> Any:
+def _draw_evidence(image_bytes: bytes, payload: dict[str, Any], selected_field: str | None = None, show_all: bool = True) -> Any:
     from io import BytesIO
 
     from PIL import Image, ImageDraw
@@ -40,6 +40,8 @@ def _draw_evidence(image_bytes: bytes, payload: dict[str, Any]) -> Any:
     image = Image.open(BytesIO(image_bytes)).convert("RGB")
     draw = ImageDraw.Draw(image)
     for name, field in _evidence_fields(payload["document"]):
+        if not show_all and (selected_field is None or name != selected_field):
+            continue
         bbox = field.get("bbox")
         if not bbox or len(bbox) < 4:
             continue
@@ -82,9 +84,19 @@ def main() -> None:
         with st.spinner("Running OCR and deterministic extraction..."):
             payload = extract_document(document_path, document_type, backend(device, mode))
 
+    field_names = [name for name, field in _evidence_fields(payload["document"]) if field.get("bbox")]
+    selected_field = st.selectbox("Evidence field", ["(all fields)"] + field_names)
+    show_all = st.checkbox("Show all evidence boxes", value=True)
+    selected = None if selected_field == "(all fields)" else selected_field
+
+    metric_columns = st.columns(3)
+    metric_columns[0].metric("OCR runtime", payload["ocr"].get("runtime", "unknown"))
+    metric_columns[1].metric("OCR regions", payload["ocr"].get("region_count", 0))
+    metric_columns[2].metric("Document status", payload["document"].get("metadata", {}).get("extraction_status", "unknown"))
+
     left, right = st.columns((3, 2))
     with left:
-        st.image(_draw_evidence(image_bytes, payload), caption="Extracted evidence boxes", use_container_width=True)
+        st.image(_draw_evidence(image_bytes, payload, selected, show_all), caption="Extracted evidence boxes", use_container_width=True)
     with right:
         st.subheader("Extracted fields")
         for name, field in _evidence_fields(payload["document"]):
@@ -98,6 +110,8 @@ def main() -> None:
             })
         st.subheader("Canonical JSON")
         st.json(payload)
+        with st.expander("Raw OCR regions"):
+            st.json(payload["ocr"].get("regions", []))
 
 
 if __name__ == "__main__":

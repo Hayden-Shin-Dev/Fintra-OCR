@@ -26,6 +26,10 @@ python scripts/run_document_extraction.py `
 The command template must explicitly produce the OCR JSON path supplied as
 `{output_json}`. The service does not select or replace an OCR model.
 
+The service dispatches to the clean production entry point
+`fintra.extraction.production.EXTRACTORS`. Backend code does not import the
+historical extractor modules.
+
 ## Direct validated Paddle runtime
 
 The validated Paddle runtime can be selected explicitly for local MVP use:
@@ -57,6 +61,7 @@ streamlit run app.py -- --device gpu --mode accurate
 ```
 
 The UI accepts one document image and one of the three supported document
-types. It calls `extract_document` directly, displays evidence boxes, and
-shows the canonical JSON. Backend code does not need to import or modify the
-document-specific extractors.
+types. It calls `extract_document` directly, supports selected/all evidence
+boxes and a raw OCR expander, and shows the canonical JSON. Backend code does
+not need to import or modify the document-specific extractors. See
+`docs/LOCAL_TEST_UI_GUIDE.md` for the exact command.
