@@ -71,7 +71,7 @@ def _gold_path(case_dir: Path, gold_root: Path | None) -> Path:
     return (gold_root / case_dir.name / "semantic_gold_fields.json") if gold_root else case_dir / "semantic_gold_fields.json"
 
 
-def _evaluate_dataset(name: str, cases_root: Path, gold_root: Path | None) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+def _evaluate_dataset(name: str, cases_root: Path, gold_root: Path | None, gt_root: Path | None) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     output_rows: list[dict[str, Any]] = []
     cases = []
     for case_dir in sorted(path for path in cases_root.iterdir() if path.is_dir()):
@@ -84,8 +84,10 @@ def _evaluate_dataset(name: str, cases_root: Path, gold_root: Path | None) -> tu
     for case_dir, manifest in cases:
         result = evaluator._case_prediction(case_dir)
         gold = json.loads(_gold_path(case_dir, gold_root).read_text(encoding="utf-8"))
+        gt_case = (gt_root / manifest["case_id"]) if gt_root else case_dir
+        gt_path = gt_case / "gt.json" if (gt_case / "gt.json").is_file() else gt_case / "source_annotation.json"
         evidence = stages._field_evidence(
-            {"path": case_dir, "case_id": manifest["case_id"], "document_id": manifest["document_id"], "document_type": manifest["document_type"]},
+            {"path": case_dir, "case_id": manifest["case_id"], "document_id": manifest["document_id"], "document_type": manifest["document_type"], "gt_path": gt_path},
             "paddle",
             stages._read_ocr(Path(next((case_dir / "outputs" / "recognition").glob("*.json")))),
             gold_root,
@@ -159,20 +161,22 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--accurate-cases", type=Path, default=ROOT / "artifacts/fintra/train-scale-v1/accurate-balanced75-eval-cases-v1")
     parser.add_argument("--accurate-gold-root", type=Path, default=ROOT / "artifacts/fintra/gold_audit/semantic-v4-image-accurate75/cases")
+    parser.add_argument("--accurate-gt-root", type=Path, default=ROOT / "artifacts/fintra/train-scale-v1/cases")
     parser.add_argument("--fast-cases", type=Path, default=ROOT / "artifacts/fintra/train-scale-v1/balanced300-eval-cases-v1")
     parser.add_argument("--fast-gold-root", type=Path, default=ROOT / "artifacts/fintra/gold_audit/semantic-v4-image-balanced300/cases")
+    parser.add_argument("--fast-gt-root", type=Path, default=ROOT / "artifacts/fintra/train-scale-v1/balanced300-eval-cases-v1")
     parser.add_argument("--dev-cases", type=Path, default=ROOT / "artifacts/fintra/field_eval/cases")
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts/fintra/extractor-rebuild/probe")
     args = parser.parse_args()
     datasets = (
-        ("Accurate75-1", args.accurate_cases, args.accurate_gold_root),
-        ("Fast300", args.fast_cases, args.fast_gold_root),
-        ("DEV60-legacy", args.dev_cases, None),
+        ("Accurate75-1", args.accurate_cases, args.accurate_gold_root, args.accurate_gt_root),
+        ("Fast300", args.fast_cases, args.fast_gold_root, args.fast_gt_root),
+        ("DEV60-legacy", args.dev_cases, None, None),
     )
     all_rows: list[dict[str, Any]] = []
     reports: dict[str, Any] = {}
-    for name, cases, gold in datasets:
-        rows, report = _evaluate_dataset(name, cases, gold)
+    for name, cases, gold, gt_root in datasets:
+        rows, report = _evaluate_dataset(name, cases, gold, gt_root)
         all_rows.extend(rows)
         reports[name] = report
     args.output.mkdir(parents=True, exist_ok=True)
