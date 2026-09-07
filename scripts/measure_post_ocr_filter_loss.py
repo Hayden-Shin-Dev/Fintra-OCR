@@ -77,7 +77,8 @@ def measure(cases_root: Path, ocr_root: Path, gold_root: Path, gt_root: Path, ou
             filtered_recoverable = filtered_item["classification"] in stages.RECOVERABLE
             status = (
                 "POST_OCR_FILTER_LOSS" if raw_recoverable and not filtered_recoverable
-                else "RETAINED_RECOVERABLE" if filtered_recoverable
+                else "ADAPTER_PARSE_GAIN" if not raw_recoverable and filtered_recoverable
+                else "RETAINED_RECOVERABLE" if raw_recoverable and filtered_recoverable
                 else "RAW_UNRECOVERABLE"
             )
             rows.append({
@@ -101,8 +102,10 @@ def measure(cases_root: Path, ocr_root: Path, gold_root: Path, gt_root: Path, ou
         return {
             "applicable": len(group),
             "raw_recoverable": counts["POST_OCR_FILTER_LOSS"] + counts["RETAINED_RECOVERABLE"],
+            "filtered_recoverable": counts["POST_OCR_FILTER_LOSS"] + counts["RETAINED_RECOVERABLE"] + counts["ADAPTER_PARSE_GAIN"],
             "post_ocr_filter_loss": counts["POST_OCR_FILTER_LOSS"],
             "retained_recoverable": counts["RETAINED_RECOVERABLE"],
+            "adapter_parse_gain": counts["ADAPTER_PARSE_GAIN"],
             "raw_unrecoverable": counts["RAW_UNRECOVERABLE"],
             "filter_loss_rate_of_raw_recoverable": counts["POST_OCR_FILTER_LOSS"] / (counts["POST_OCR_FILTER_LOSS"] + counts["RETAINED_RECOVERABLE"]) if counts["POST_OCR_FILTER_LOSS"] + counts["RETAINED_RECOVERABLE"] else 0.0,
         }
