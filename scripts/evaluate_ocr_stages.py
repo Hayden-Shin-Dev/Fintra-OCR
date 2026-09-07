@@ -234,9 +234,15 @@ def _candidate_regions(field: dict[str, Any], gt_tokens: list[dict[str, Any]], r
     return selected
 
 
-def _field_evidence(case: dict[str, Any], backend: str, regions: list[dict[str, Any]], gold_root: Path | None = None) -> list[dict[str, Any]]:
+def _field_evidence(
+    case: dict[str, Any],
+    backend: str,
+    regions: list[dict[str, Any]],
+    gold_root: Path | None = None,
+    gold_fields: list[dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
     gold_path = (gold_root / case["case_id"] / "semantic_gold_fields.json") if gold_root else case["path"] / "semantic_gold_fields.json"
-    gold = json.loads(gold_path.read_text(encoding="utf-8"))
+    gold = gold_fields if gold_fields is not None else json.loads(gold_path.read_text(encoding="utf-8"))
     raw_gt_path = case.get("gt_path", case["path"] / "gt.json")
     raw_gt = json.loads(Path(raw_gt_path).read_text(encoding="utf-8"))
     rows = []

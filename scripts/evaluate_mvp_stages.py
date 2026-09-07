@@ -30,7 +30,7 @@ class Dataset:
     name: str
     cases: Path
     ocr_cases: Path
-    gold_root: Path
+    gold_root: Path | None
     gt_root: Path
     field_results: Path
     gold_contract: str
@@ -86,14 +86,29 @@ def evaluate_dataset(dataset: Dataset) -> tuple[list[dict[str, Any]], dict[str, 
             continue
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         case_id = str(manifest["case_id"])
-        ocr_path = dataset.ocr_cases / case_id / "outputs" / "recognition" / "paddle.json"
-        gold_path = dataset.gold_root / case_id / "semantic_gold_fields.json"
+        recognition_dir = dataset.ocr_cases / case_id / "outputs" / "recognition"
+        ocr_path = recognition_dir / "paddle.json"
+        if not ocr_path.is_file() and dataset.gold_contract == "DEV60_LEGACY_GOLD":
+            candidates = sorted(recognition_dir.glob("*.json"))
+            if len(candidates) == 1:
+                ocr_path = candidates[0]
+        gold_path = (dataset.gold_root / case_id / "semantic_gold_fields.json"
+                     if dataset.gold_root else case_path / "semantic_gold_fields.json")
+        gold_records = json.loads(gold_path.read_text(encoding="utf-8"))
+        if dataset.gold_contract == "DEV60_LEGACY_GOLD":
+            gold_records = manifest.get("gold_fields", gold_records)
         gt_case = dataset.gt_root / case_id
         gt_path = gt_case / "gt.json" if (gt_case / "gt.json").is_file() else gt_case / "source_annotation.json"
         if not ocr_path.is_file() or not gold_path.is_file() or not gt_path.is_file():
             raise FileNotFoundError(f"missing evaluation input for {case_id}: OCR={ocr_path}, Gold={gold_path}, GT={gt_path}")
         case = {"path": case_path, "case_id": case_id, "document_id": manifest["document_id"], "document_type": manifest["document_type"], "gt_path": gt_path}
-        evidence_rows = stage._field_evidence(case, "paddle", stage._read_ocr(ocr_path), dataset.gold_root)
+        evidence_rows = stage._field_evidence(
+            case,
+            "paddle",
+            stage._read_ocr(ocr_path),
+            dataset.gold_root,
+            gold_fields=gold_records,
+        )
         for item in evidence_rows:
             prediction = extracted.get((case_id, item["field_name"]), {})
             raw_recoverable = item["classification"] in stage.RECOVERABLE
@@ -238,6 +253,9 @@ def main() -> int:
     parser.add_argument("--fast-gt-root", type=Path, default=ROOT / "artifacts/fintra/train-scale-v1/balanced300-eval-cases-v1")
     parser.add_argument("--fast-field-results", type=Path, default=ROOT / "artifacts/fintra/train-scale-v1/mvp-v4-iter2/fast300/field_results.csv")
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts/fintra/train-scale-v1/mvp-v4-iter2/stages")
+    parser.add_argument("--dev-cases", type=Path, default=None)
+    parser.add_argument("--dev-ocr-cases", type=Path, default=None)
+    parser.add_argument("--dev-field-results", type=Path, default=None)
     args = parser.parse_args()
     accurate_ocr = args.accurate_ocr_cases or args.accurate_cases
     fast_ocr = args.fast_ocr_cases or args.fast_cases
@@ -245,6 +263,9 @@ def main() -> int:
         Dataset("Accurate75-1", args.accurate_cases, accurate_ocr, args.accurate_gold_root, args.accurate_gt_root, args.accurate_field_results, "MVP_DEVELOPMENT_GOLD_V4"),
         Dataset("Fast300", args.fast_cases, fast_ocr, args.fast_gold_root, args.fast_gt_root, args.fast_field_results, "MVP_DEVELOPMENT_GOLD_V4"),
     ]
+    if args.dev_cases and args.dev_field_results:
+        dev_ocr = args.dev_ocr_cases or args.dev_cases
+        datasets.append(Dataset("DEV60-legacy", args.dev_cases, dev_ocr, None, args.dev_cases, args.dev_field_results, "DEV60_LEGACY_GOLD"))
     write_report(datasets, args.output)
     return 0
 
