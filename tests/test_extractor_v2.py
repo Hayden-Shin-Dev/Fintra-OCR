@@ -34,10 +34,10 @@ def test_v2_uses_inline_and_typed_table_evidence():
     payload = extract_document(invoice_result()).to_dict()
     baseline = extract_baseline(invoice_result())
     assert payload["invoice_number"]["value"] == "ABC-123"
-    assert payload["seller"] == baseline["seller"]
-    assert payload["items"][0]["description"] == baseline["items"][0]["description"]
-    assert payload["items"][0]["quantity"] == baseline["items"][0]["quantity"]
-    assert payload["items"][0]["amount"] == baseline["items"][0]["amount"]
+    assert payload["seller"]["value"] == baseline["seller"]["value"]
+    assert payload["items"][0]["description"]["value"] == baseline["items"][0]["description"]["value"]
+    assert payload["items"][0]["quantity"]["value"] == baseline["items"][0]["quantity"]["value"]
+    assert payload["items"][0]["amount"]["value"] == baseline["items"][0]["amount"]["value"]
     assert payload["items"][0]["description"]["bbox"]
     assert payload["items"][0]["description"]["source_text"] == "WIDGET"
 

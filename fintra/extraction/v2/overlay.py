@@ -16,7 +16,7 @@ from fintra.ocr.adapter import OCRResult
 from .layout import Layout
 from .party import resolve as resolve_party
 from .scalar import resolve as resolve_scalar
-from .specs import DOCUMENT_FIELDS, PARTY_FIELDS_BY_DOCUMENT, SPECS
+from .specs import PARTY_FIELDS_BY_DOCUMENT, RESOLUTION_DOCUMENT_FIELDS, SPECS
 from .table import resolve as resolve_table, resolve_goods_description
 
 
@@ -65,7 +65,7 @@ def _usable_table_candidate(value: dict[str, Any]) -> bool:
 
 def _anchor_inventory(result: OCRResult) -> tuple[Layout, list]:
     layout = Layout(result)
-    fields = {name: SPECS[name].aliases for name in DOCUMENT_FIELDS[result.document_type] if name in SPECS}
+    fields = {name: SPECS[name].aliases for name in RESOLUTION_DOCUMENT_FIELDS[result.document_type] if name in SPECS}
     fields.update({name: SPECS[name].aliases for name in PARTY_FIELDS_BY_DOCUMENT[result.document_type]})
     return layout, layout.all_anchors(fields)
 
@@ -82,7 +82,7 @@ def apply(result: OCRResult, payload: dict[str, Any]) -> tuple[dict[str, Any], d
     # Resolve party roles independently but keep the role inventory scoped to
     # the document contract.  This prevents e.g. CI seller/buyer resolution
     # from being polluted by B/L-only notify-party anchors.
-    for field in DOCUMENT_FIELDS[result.document_type]:
+    for field in RESOLUTION_DOCUMENT_FIELDS[result.document_type]:
         if field in allowed_parties:
             candidate = resolve_party(layout, field, all_anchors, resolved_parties)
             resolved_parties[field] = candidate
@@ -91,7 +91,7 @@ def apply(result: OCRResult, payload: dict[str, Any]) -> tuple[dict[str, Any], d
                 overrides.append({"field": field, "method": "party_anchor_overlay"})
 
     # Typed scalar overlay uses the same document-scoped anchor inventory.
-    for field in DOCUMENT_FIELDS[result.document_type]:
+    for field in RESOLUTION_DOCUMENT_FIELDS[result.document_type]:
         if field not in SPECS or field in allowed_parties or not _missing(output.get(field)):
             continue
         candidate = resolve_scalar(layout, field, all_anchors)

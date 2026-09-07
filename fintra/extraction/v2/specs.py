@@ -35,9 +35,13 @@ SPECS = {
     "po_number": _spec(("PO NUMBER", "P/O NUMBER", "PURCHASE ORDER NO", "PO NO"), "identifier"),
     "invoice_reference": _spec(("INVOICE REF", "INVOICE REFERENCE", "RELATED INVOICE", "INVOICE NO"), "identifier"),
     "document_number": _spec(("DOCUMENT NO", "DOCUMENT NUMBER", "DOC NO", "PACKING LIST NO", "PACKING LIST NUMBER"), "identifier"),
-    "packing_list_number": _spec(("PACKING LIST NO", "PACKING LIST NUMBER", "PACKING NO", "DOCUMENT NO"), "identifier"),
+    "flight_number": _spec(("FLIGHT NO", "FLIGHT NUMBER"), "identifier"),
+    "contract_number": _spec(("CONTRACT NO", "CONTRACT NUMBER"), "identifier"),
+    "reference_number": _spec(("REFERENCE NO", "REFERENCE NUMBER", "OTHER REFERENCE", "REF NO"), "identifier"),
+    "booking_number": _spec(("BOOKING NO", "BOOKING NUMBER"), "identifier"),
+    "part_number": _spec(("PART NUMBER", "PART NO", "PART#"), "identifier"),
+    "sku": _spec(("SKU",), "identifier"),
     "document_date": _spec(("DOCUMENT DATE", "DATE OF DOCUMENT", "PACKING LIST DATE"), "date"),
-    "date": _spec(("DATE", "DATE OF PACKING", "PACKING LIST DATE"), "date"),
     "currency": _spec(("CURRENCY", "CURRENCY CODE", "AMOUNT IN"), "currency"),
     "total_amount": _spec(("TOTAL AMOUNT", "INVOICE TOTAL", "GRAND TOTAL", "TOTAL"), "amount"),
     "payment_terms": _spec(("PAYMENT TERMS", "TERMS OF PAYMENT"), "text"),
@@ -56,10 +60,14 @@ SPECS = {
     "seal_number": _spec(("SEAL NO", "SEAL NUMBER", "SEAL"), "identifier"),
     "package_count": _spec(("PACKAGE COUNT", "NO OF PACKAGES", "NUMBER OF PACKAGES", "PACKAGES", "PACKAGE"), "quantity"),
     "package_type": _spec(("PACKAGE TYPE", "KIND OF PACKAGES", "PACKING TYPE"), "text"),
+    "carton_count": _spec(("CARTON COUNT", "NO OF CARTONS", "CARTONS", "CARTON"), "quantity"),
+    "pallet_count": _spec(("PALLET COUNT", "NO OF PALLETS", "PALLETS", "PALLET"), "quantity"),
     "gross_weight": _spec(("GROSS WEIGHT", "GROSS WT", "G.W.", "G/W"), "weight"),
     "net_weight": _spec(("NET WEIGHT", "NET WT", "N.W.", "N/W"), "weight"),
     "weight_unit": _spec(("WEIGHT UNIT", "UNIT OF WEIGHT"), "unit"),
     "measurement": _spec(("MEASUREMENT", "MEASUREMENTS", "CUBIC METER", "CUBIC METERS"), "measurement"),
+    "cbm": _spec(("CBM", "CUBIC METER", "CUBIC METERS"), "measurement"),
+    "shipment_type": _spec(("SHIPMENT TYPE", "TYPE OF SHIPMENT"), "text"),
     "goods_description": _spec(("GOODS DESCRIPTION", "DESCRIPTION OF GOODS", "DESCRIPTION"), "text"),
     "description": _spec(("DESCRIPTION", "DESCRIPTION OF GOODS", "GOODS DESCRIPTION", "ITEM DESCRIPTION", "COMMODITY", "PARTICULARS"), "text"),
     "hs_code": _spec(("HS CODE", "H.S. CODE", "HARMONIZED CODE", "HS NO"), "identifier"),
@@ -67,17 +75,13 @@ SPECS = {
     "unit": _spec(("UNIT", "UOM", "UNITS"), "unit"),
     "unit_price": _spec(("UNIT PRICE", "UNIT COST", "PRICE/UNIT", "RATE"), "amount"),
     "amount": _spec(("LINE AMOUNT", "EXTENDED AMOUNT", "TOTAL PRICE", "AMOUNT", "VALUE"), "amount"),
+    "line_number": _spec(("LINE NO", "LINE NUMBER", "ITEM NO", "NO", "NO."), "quantity"),
     "product_code": _spec(("PRODUCT CODE", "ITEM CODE", "PRODUCT NO"), "identifier"),
     "shipping_mark": _spec(("SHIPPING MARK", "SHIPPING MARKS", "MARKS & NOS", "MARKS AND NUMBERS"), "text"),
     "country_of_origin": _spec(("COUNTRY OF ORIGIN", "ORIGIN COUNTRY"), "location"),
     "country_of_destination": _spec(("COUNTRY OF DESTINATION", "DESTINATION COUNTRY"), "location"),
     "carrier": _spec(("CARRIER", "EXPORT CARRIER", "FORWARDER"), "party"),
     "bank": _spec(("BANK", "ISSUING BANK", "ADVISING BANK"), "party"),
-    "reference_number": _spec(("REFERENCE NO", "REFERENCE NUMBER", "OTHER REFERENCE", "REF NO"), "identifier"),
-    "booking_number": _spec(("BOOKING NO", "BOOKING NUMBER"), "identifier"),
-    "contract_number": _spec(("CONTRACT NO", "CONTRACT NUMBER"), "identifier"),
-    "part_number": _spec(("PART NUMBER", "PART NO", "PART#"), "identifier"),
-    "sku": _spec(("SKU",), "identifier"),
     "manufacturer": _spec(("MANUFACTURER", "MADE BY"), "party"),
     "signatory_company": _spec(("AUTHORIZED SIGNATURE", "SIGNATURE", "SIGNED BY"), "party"),
     "delivery_terms": _spec(("DELIVERY TERMS", "TERMS OF DELIVERY"), "text"),
@@ -88,22 +92,99 @@ SPECS = {
     "discount": _spec(("DISCOUNT", "DISCOUNT AMOUNT"), "amount"),
     "subtotal": _spec(("SUBTOTAL", "SUB TOTAL"), "amount"),
     "other_charges": _spec(("OTHER CHARGES", "ADDITIONAL CHARGES"), "amount"),
-    "cbm": _spec(("CBM", "CUBIC METER", "CUBIC METERS"), "measurement"),
 }
 
 
+# These are derived from the checked-in ``field_schema_v2.json`` artifact.
+# The artifact is the source of truth for the 72-field inventory.  Fields
+# marked NOT_APPLICABLE in that artifact are intentionally not emitted for
+# that document type; nullable applicable slots are always emitted.
 DOCUMENT_FIELDS = {
-    "Commercial Invoice": ("invoice_number", "invoice_date", "seller", "buyer", "consignee", "lc_number", "lc_date", "bl_number", "purchase_order_number", "currency", "total_amount", "payment_terms", "incoterm", "vessel", "voyage_number", "departure_date", "port_of_loading", "port_of_discharge", "final_destination"),
-    "Packing List": ("document_number", "packing_list_number", "document_date", "date", "invoice_reference", "exporter", "shipper", "consignee", "buyer", "package_count", "package_type", "gross_weight", "net_weight", "weight_unit", "measurement", "vessel", "voyage_number", "port_of_loading", "port_of_discharge", "final_destination"),
-    # ``shipment_date`` is the stable B/L contract name.  ``document_date``
-    # remains as an optional compatibility field for callers that used the
-    # broader audit schema, but it is never a replacement for shipment_date.
-    "B/L": ("bl_number", "document_date", "shipment_date", "shipper", "consignee", "notify_party", "vessel", "voyage_number", "invoice_reference", "port_of_loading", "port_of_discharge", "place_of_receipt", "place_of_delivery", "final_destination", "container_number", "seal_number", "package_count", "gross_weight", "measurement", "weight_unit", "goods_description"),
+    "Commercial Invoice": (
+        "arrival_date", "bank", "buyer", "carrier", "consignee",
+        "contract_number", "country_of_destination", "country_of_origin",
+        "currency", "delivery_terms", "departure_date", "discount",
+        "document_date", "document_number", "final_destination",
+        "flight_number", "freight", "gross_weight", "incoterm",
+        "insurance", "invoice_date", "invoice_number", "lc_date", "lc_number",
+        "manufacturer", "method_of_dispatch", "other_charges", "package_count",
+        "payment_terms", "port_of_discharge", "port_of_loading",
+        "purchase_order_number", "reference_number", "seller",
+        "signatory_company", "subtotal", "tax", "total_amount", "vessel",
+        "voyage_number",
+    ),
+    "Packing List": (
+        "arrival_date", "buyer", "carrier", "carton_count", "cbm", "consignee",
+        "container_number", "contract_number", "country_of_destination",
+        "country_of_origin", "departure_date", "document_date", "document_number",
+        "exporter", "final_destination", "flight_number", "gross_weight",
+        "incoterm", "invoice_reference", "manufacturer", "measurement",
+        "method_of_dispatch", "net_weight", "package_count", "package_type",
+        "pallet_count", "port_of_discharge", "port_of_loading",
+        "purchase_order_number", "reference_number", "seal_number",
+        "shipment_type", "signatory_company", "vessel", "voyage_number",
+        "weight_unit",
+    ),
+    "B/L": (
+        "arrival_date", "bl_number", "booking_number", "carrier", "carton_count",
+        "cbm", "consignee", "container_number", "contract_number",
+        "country_of_destination", "country_of_origin", "departure_date",
+        "document_date", "document_number", "final_destination", "flight_number",
+        "gross_weight", "incoterm", "invoice_reference", "measurement",
+        "method_of_dispatch", "net_weight", "notify_party", "package_count",
+        "package_type", "pallet_count", "place_of_delivery", "place_of_receipt",
+        "port_of_discharge", "port_of_loading", "reference_number", "seal_number",
+        "shipment_date", "shipment_type", "shipper", "signatory_company", "vessel",
+        "voyage_number", "weight_unit",
+    ),
 }
 
 ITEM_FIELDS = {
-    "Commercial Invoice": ("description", "hs_code", "quantity", "unit", "unit_price", "amount", "po_number", "product_code", "shipping_mark"),
-    "Packing List": ("description", "quantity", "unit", "package_count", "package_type", "gross_weight", "net_weight", "weight_unit", "measurement", "shipping_mark"),
+    "Commercial Invoice": (
+        "amount", "description", "hs_code", "line_number", "part_number",
+        "po_number", "product_code", "quantity", "shipping_mark", "sku", "unit",
+        "unit_price",
+    ),
+    "Packing List": (
+        "description", "hs_code", "line_number", "part_number", "po_number",
+        "product_code", "quantity", "shipping_mark", "sku", "unit",
+    ),
+    "B/L": ("goods_description", "shipping_mark"),
+}
+
+# The two names below were present in the earlier v2 compatibility payload
+# but are not part of the 72-field artifact.  Keep their nullable slots so
+# callers of the initial v2 preview do not break while the audited inventory
+# remains exact and separately countable.
+COMPATIBILITY_DOCUMENT_FIELDS = {
+    "Packing List": ("packing_list_number", "date"),
+}
+
+# Resolver scope is deliberately frozen to the fields that the v2 overlay
+# already handled.  Expanding the output contract must not silently retune
+# extraction or change benchmark behavior.
+RESOLUTION_DOCUMENT_FIELDS = {
+    "Commercial Invoice": (
+        "invoice_number", "invoice_date", "seller", "buyer", "consignee",
+        "lc_number", "lc_date", "bl_number", "purchase_order_number", "currency",
+        "total_amount", "payment_terms", "incoterm", "vessel", "voyage_number",
+        "departure_date", "port_of_loading", "port_of_discharge", "final_destination",
+    ),
+    "Packing List": (
+        "document_number", "packing_list_number", "document_date", "date",
+        "invoice_reference", "exporter", "shipper", "consignee", "buyer",
+        "package_count", "package_type", "gross_weight", "net_weight", "weight_unit",
+        "measurement", "vessel", "voyage_number", "port_of_loading",
+        "port_of_discharge", "final_destination",
+    ),
+    "B/L": (
+        "bl_number", "document_date", "shipment_date", "shipper", "consignee",
+        "notify_party", "vessel", "voyage_number", "invoice_reference",
+        "port_of_loading", "port_of_discharge", "place_of_receipt",
+        "place_of_delivery", "final_destination", "container_number", "seal_number",
+        "package_count", "gross_weight", "measurement", "weight_unit",
+        "goods_description",
+    ),
 }
 
 PARTY_FIELDS = {"seller", "buyer", "consignee", "exporter", "shipper", "notify_party", "carrier", "bank", "manufacturer", "signatory_company"}
@@ -115,7 +196,17 @@ PARTY_FIELDS_BY_DOCUMENT = {
 }
 
 
-__all__ = ["DOCUMENT_FIELDS", "FIELD_SPEC", "ITEM_FIELDS", "PARTY_FIELDS", "PARTY_FIELDS_BY_DOCUMENT", "SPECS", "FieldSpec"]
+__all__ = [
+    "COMPATIBILITY_DOCUMENT_FIELDS",
+    "DOCUMENT_FIELDS",
+    "FIELD_SPEC",
+    "ITEM_FIELDS",
+    "PARTY_FIELDS",
+    "PARTY_FIELDS_BY_DOCUMENT",
+    "RESOLUTION_DOCUMENT_FIELDS",
+    "SPECS",
+    "FieldSpec",
+]
 
 # Compatibility alias for callers that prefer the singular spelling.
 FIELD_SPEC = SPECS
