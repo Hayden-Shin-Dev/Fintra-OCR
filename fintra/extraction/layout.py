@@ -106,8 +106,30 @@ class Layout:
                 for alias in names:
                     target=canonical(alias)
                     # Fuzzy matching is restricted to label words, never values.
-                    similarity=1.0 if text==target else SequenceMatcher(None,text,target).ratio() if len(target)>=5 else 0
-                    if similarity>=.78 and abs(len(text.split())-len(target.split()))<=1:
+                    words = text.split()
+                    target_words = target.split()
+                    contains_label = False
+                    if target_words:
+                        for start in range(max(1, len(words) - len(target_words) + 1)):
+                            if words[start:start + len(target_words)] == target_words:
+                                contains_label = True
+                                break
+                    # Shipping forms frequently append a parenthetical
+                    # instruction to a semantic label.  Treat the label
+                    # token sequence as an anchor while retaining the full
+                    # span for section geometry.  This is intentionally
+                    # token-boundary based; arbitrary value substrings do not
+                    # become anchors.
+                    similarity = (
+                        1.0 if text == target else
+                        0.96 if contains_label else
+                        SequenceMatcher(None,text,target).ratio() if len(target)>=5 else 0
+                    )
+                    if similarity>=.78 and (contains_label or abs(len(text.split())-len(target.split()))<=1):
+                        if contains_label and len(words) > len(target_words) + 1:
+                            # The containing line is still a valid anchor, but
+                            # it should not outrank an exact compact label.
+                            similarity = min(similarity, 0.90)
                         scores.append((similarity,alias))
                 if scores:
                     score,alias=max(scores)
