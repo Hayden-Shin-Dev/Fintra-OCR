@@ -38,8 +38,7 @@ jobs:
           mkdir -p handoff-validation
           set -o pipefail
           python -m pytest tests -q --junitxml=handoff-validation/tests.xml 2>&1 | tee handoff-validation/pytest.txt
-      - name: Run handoff integration tests when present
-        if: ${{ success() && hashFiles('handoff/test_integration.py') != '' }}
+      - name: Run handoff integration tests
         shell: bash
         run: |
           set -o pipefail
@@ -47,6 +46,9 @@ jobs:
       - name: Build installable wheel
         if: success()
         run: python -m build --wheel
+      - name: Test actual installer in a fresh environment (no models)
+        if: success()
+        run: python handoff/verify_installer.py
       - name: Record environment and commit
         if: always()
         shell: bash
@@ -55,17 +57,22 @@ jobs:
           python -m pip freeze > handoff-validation/installed.txt
           git rev-parse HEAD > handoff-validation/commit.txt
           python -VV > handoff-validation/python.txt
-      - name: Build handoff archive when present
-        if: ${{ success() && runner.os == 'Linux' && hashFiles('handoff/build_bundle.py') != '' }}
+      - name: Build handoff archive and replay all three document contracts
+        if: ${{ success() && runner.os == 'Linux' }}
         run: python handoff/build_bundle.py
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      - name: Upload teammate delivery
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: ${{ success() && runner.os == 'Linux' }}
+        with:
+          name: FintraOCR-Team-Handoff
+          path: handoff-dist/FintraOCR_Team_Handoff/
+          retention-days: 7
+          if-no-files-found: error
+      - name: Upload verification evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
           name: fintra-handoff-${{ runner.os }}-${{ github.run_number }}
-          path: |
-            handoff-validation/
-            dist/*.whl
-            handoff-dist/*.zip
-            handoff-dist/*.sha256
+          path: handoff-validation/
           retention-days: 1
           if-no-files-found: error
