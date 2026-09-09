@@ -1,0 +1,3 @@
+Build the handoff package for source commit 86f6668468d1ce65c6249ebfc8dfd3889d670cdd.
+Core source is unchanged. Run repository tests and added integration tests.
+Live GPU OCR and Ollama accuracy are not part of this CI run.
