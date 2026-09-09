@@ -1,5 +1,0 @@
-streamlit>=1.40,<2
-Pillow>=10
-
-# Paddle/PaddleOCR is installed in the validated runtime described by
-# runtime/paddle/README.md and is intentionally not replaced here.

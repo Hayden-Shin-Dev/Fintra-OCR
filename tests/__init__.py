@@ -1,1 +1,0 @@
-"""Fintra test suite."""

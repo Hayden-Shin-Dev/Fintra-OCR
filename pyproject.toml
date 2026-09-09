@@ -1,18 +1,22 @@
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
-
 [project]
-name = "fintra-ocr-v2"
-version = "0.1.0"
-description = "Evidence-first transaction review MVP built around the validated Fintra OCR runtime"
+name = "fintraocr"
+version = "0.3.0"
 requires-python = ">=3.10"
-dependencies = []
-
+dependencies = ["pydantic>=2.7,<3", "numpy>=1.24,<3", "opencv-python-headless>=4.10,<5", "pycountry>=24.6", "tokenizers>=0.22,<0.24"]
 [project.optional-dependencies]
-api = ["fastapi>=0.110", "uvicorn>=0.29"]
-retrieval = ["numpy>=1.24", "faiss-cpu>=1.7.4"]
-dev = ["pytest>=8"]
-
+ocr = ["paddleocr>=3.7,<4"]
+cpu = ["paddlepaddle>=3,<4"]
+ui = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1", "python-multipart>=0.0.20"]
+test = ["pytest>=8,<10", "fastapi>=0.115,<1", "python-multipart>=0.0.20", "httpx>=0.28", "Pillow>=10"]
+[project.scripts]
+fintraocr = "fintraocr.cli:main"
 [tool.setuptools.packages.find]
-include = ["fintra*"]
+include = ["fintraocr*"]
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.setuptools.package-data]
+fintraocr = ["static/*.html", "assets/*.json", "assets/*.txt", "assets/*.md"]

@@ -1,0 +1,122 @@
+{
+  "document_type": "commercial_invoice",
+  "type_score": 0.99,
+  "type_evidence": [
+    {
+      "token_id": "t0",
+      "start": 0,
+      "end": 18
+    }
+  ],
+  "fields": {
+    "invoice_number": {
+      "spans": [
+        {
+          "token_id": "t1",
+          "start": 16,
+          "end": 23
+        }
+      ],
+      "label_spans": [
+        {
+          "token_id": "t1",
+          "start": 0,
+          "end": 14
+        }
+      ],
+      "score": 0.96,
+      "ambiguous": false
+    },
+    "invoice_date": {
+      "spans": [
+        {
+          "token_id": "t2",
+          "start": 14,
+          "end": 24
+        }
+      ],
+      "label_spans": [
+        {
+          "token_id": "t2",
+          "start": 0,
+          "end": 12
+        }
+      ],
+      "score": 0.96,
+      "ambiguous": false
+    },
+    "seller": {
+      "spans": [
+        {
+          "token_id": "t3",
+          "start": 8,
+          "end": 27
+        }
+      ],
+      "label_spans": [
+        {
+          "token_id": "t3",
+          "start": 0,
+          "end": 6
+        }
+      ],
+      "score": 0.96,
+      "ambiguous": false
+    },
+    "buyer": {
+      "spans": [
+        {
+          "token_id": "t4",
+          "start": 7,
+          "end": 22
+        }
+      ],
+      "label_spans": [
+        {
+          "token_id": "t4",
+          "start": 0,
+          "end": 5
+        }
+      ],
+      "score": 0.96,
+      "ambiguous": false
+    },
+    "total_amount": {
+      "spans": [
+        {
+          "token_id": "t5",
+          "start": 7,
+          "end": 14
+        }
+      ],
+      "label_spans": [
+        {
+          "token_id": "t5",
+          "start": 0,
+          "end": 5
+        }
+      ],
+      "score": 0.96,
+      "ambiguous": false
+    },
+    "currency": {
+      "spans": [
+        {
+          "token_id": "t6",
+          "start": 10,
+          "end": 13
+        }
+      ],
+      "label_spans": [
+        {
+          "token_id": "t6",
+          "start": 0,
+          "end": 8
+        }
+      ],
+      "score": 0.96,
+      "ambiguous": false
+    }
+  },
+  "items": []
+}
