@@ -1,0 +1,68 @@
+name: Fintra OCR handoff validation
+on:
+  push:
+    branches: [handoff/ocr-candidate110b-20260909]
+    paths:
+      - .github/workflows/fintra-handoff.yml
+      - handoff/READY
+permissions:
+  contents: read
+concurrency:
+  group: fintra-ocr-handoff-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONUTF8: '1'
+      PYTHONIOENCODING: utf-8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install code-test dependencies only
+        run: python -m pip install -e ".[test]" build
+      - name: Run repository tests (no GPU or live Ollama)
+        shell: bash
+        run: |
+          mkdir -p handoff-validation
+          set -o pipefail
+          python -m pytest tests -q --junitxml=handoff-validation/tests.xml 2>&1 | tee handoff-validation/pytest.txt
+      - name: Run handoff integration tests when present
+        if: ${{ success() && hashFiles('handoff/test_integration.py') != '' }}
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m pytest handoff/test_integration.py -q --junitxml=handoff-validation/integration.xml 2>&1 | tee handoff-validation/integration.txt
+      - name: Build installable wheel
+        if: success()
+        run: python -m build --wheel
+      - name: Build handoff archive when present
+        if: ${{ success() && runner.os == 'Linux' && hashFiles('handoff/build_bundle.py') != '' }}
+        run: python handoff/build_bundle.py
+      - name: Record environment and commit
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p handoff-validation
+          python -m pip freeze > handoff-validation/installed.txt
+          git rev-parse HEAD > handoff-validation/commit.txt
+          python -VV > handoff-validation/python.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fintra-handoff-${{ runner.os }}-${{ github.run_number }}
+          path: |
+            handoff-validation/
+            dist/
+            handoff-dist/
+          retention-days: 1
+          if-no-files-found: error
