@@ -1,7 +1,5 @@
 # FintraOCR 검증 진행 현황 — candidate110b
 
-인수 기준 미달입니다. 외부 양식과 일부 핵심 필드의 재현율이 부족합니다. 이번 수정은 공통 매핑 코드에 한정했고 모델·프롬프트·문서 스키마·정답표는 변경하지 않았습니다.
-
 ## 동일 정답 기준 비교
 
 아래는 실제 모델 응답을 저장해 재사용한 replay 비교입니다. 실제 재실행 성능과 구분합니다.
@@ -40,9 +38,3 @@
 - 이번 브라우저 시각 검증은 미확인입니다.
 - 미사용 120장: OCR 완료, 정답 60장 동결, 모델 예측 전. 기존과 같은 양식이므로 새 양식으로 세지 않습니다.
 - 모든 양식 일반화, 유형별·핵심 필드별 95%, 전체 처리 20초는 아직 입증되지 않았습니다.
-
-실행 위치: `C:\Users\shinm\FintraOCR`
-
-검증: `C:\Users\shinm\.cache\fintraocr-venv\Scripts\python.exe -X utf8 -m pytest tests -q`
-
-소스·스키마·해시: `outputs/acceptance/versions/candidate110b`. 과거 experiment/apply 스크립트는 버전 전용이므로 현재 코드에 중복 적용하지 마세요.
