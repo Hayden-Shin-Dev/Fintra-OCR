@@ -28,7 +28,8 @@ def main() -> None:
     python = environment / ("Scripts/python.exe" if sys.platform == "win32" else "bin/python")
     if not python.exists():
         venv.EnvBuilder(with_pip=True).create(environment)
-    check = subprocess.run([str(python), "-c", "import importlib.metadata as m; print('\n'.join(d.metadata['Name'].lower() for d in m.distributions()))"], text=True, capture_output=True, check=True)
+    probe = "import importlib.metadata as m; print(*[d.metadata['Name'].lower() for d in m.distributions()], sep=chr(10))"
+    check = subprocess.run([str(python), "-c", probe], text=True, capture_output=True, check=True)
     installed = set(check.stdout.splitlines())
     if args.runtime == "cpu" and "paddlepaddle-gpu" in installed:
         parser.error("This isolated environment already uses GPU Paddle. Do not install CPU and GPU Paddle together.")
