@@ -1,5 +1,5 @@
 # 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
-"""Single-workspace web application. Bound to loopback until managed identity deployment."""
+"""Local multi-user web application with per-account document authorization."""
 import json,os,time,secrets,hashlib,hmac,re,threading,mimetypes,copy
 from pathlib import Path
 from http.cookies import SimpleCookie
@@ -15,6 +15,13 @@ ROOT=Path(__file__).resolve().parent.parent
 WEB=ROOT/'web';DATA=Path(os.environ.get('FINTRA_WORKSPACE_DATA',str(ROOT/'data')));DATA.mkdir(parents=True,exist_ok=True)
 ACCOUNT=Path(os.environ.get('FINTRA_ACCOUNT_FILE',str(DATA/'account.json')))
 from workpapers import LOCK as GUARD
+from accounts import Accounts
+ACCOUNTS=Accounts(DATA/'users.sqlite3')
+LEGACY_OWNER=ACCOUNTS.migrate(ACCOUNT)
+# Persist ownership before accepting requests. Existing records stay with the shared account.
+if LEGACY_OWNER:
+    for legacy_job in engine.JOBS.values():
+        if not legacy_job.get('owner_id'):engine.save(legacy_job,owner_id=LEGACY_OWNER)
 SESSIONS={};ATTEMPTS={}
 SUPPORT={};SUPPORT_POOL=ThreadPoolExecutor(max_workers=2)
 
@@ -150,6 +157,38 @@ def _draft_for(job):
     return {'title':'거래 검토 보고서','summary':f"증빙 {facts['document_count']}개와 연결된 거래 {len(facts['transactions'])}건을 검토했습니다. 아래 비교 내역과 원본 근거를 확인하세요.",'sections':sections,'conclusion':'','revision':0,'reviewed':False,'facts':facts}
 
 class Handler(engine.Handler):
+    def analysis_owner(self):return (self.session() or {}).get('user_id')
+    def can_access(self,job):return bool(self.analysis_owner() and job and job.get('owner_id')==self.analysis_owner())
+    def denied_analysis(self,path):
+        match=re.match(r'/api/(?:analyses|jobs)/([^/]+)',path)
+        return bool(match and not self.can_access(engine.JOBS.get(match[1])))
+    def auth_reply(self,account):
+        token=secrets.token_urlsafe(32)
+        with GUARD:
+            for old,value in list(SESSIONS.items()):
+                if value['expires']<=time.time():SESSIONS.pop(old,None)
+            SESSIONS[token]={**account,'expires':time.time()+43200}
+        secure='; Secure' if engine.deployment.public_origin() else ''
+        body=b'{"ok":true}'
+        self.send_response(200)
+        self.send_header('Set-Cookie',f'fintra_session={token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200{secure}')
+        self.send_header('Content-Type','application/json')
+        self.send_header('Content-Length',str(len(body)))
+        self.send_header('Cache-Control','no-store')
+        self.end_headers();self.wfile.write(body)
+    def auth_limited(self):
+        # Cloudflare overwrites this header; the app itself only listens on loopback.
+        peer=self.headers.get('CF-Connecting-IP') if engine.deployment.public_origin() else None
+        key=peer or self.client_address[0]
+        now=time.time()
+        with GUARD:
+            for old in list(ATTEMPTS):
+                ATTEMPTS[old]=[t for t in ATTEMPTS[old] if t>now-300]
+                if not ATTEMPTS[old]:ATTEMPTS.pop(old,None)
+            attempts=ATTEMPTS.setdefault(key,[])
+            if len(attempts)>=20:return True
+            attempts.append(now)
+        return False
     def session(self):
         try:c=SimpleCookie(self.headers.get('Cookie',''));token=c['fintra_session'].value
         except Exception:return None
@@ -165,7 +204,7 @@ class Handler(engine.Handler):
         if path=='/api/public-health':
             body=b'{"service":"fintra","online":true}'
             self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(body)));self.send_header('Cache-Control','no-store');self.send_header('Access-Control-Allow-Origin','https://hayden-shin-dev.github.io');self.end_headers();self.wfile.write(body);return
-        if path=='/api/session':return self.reply({'authenticated':bool(self.session()),'setup':not ACCOUNT.exists() and not engine.deployment.public_origin(),'name':(self.session() or {}).get('name')})
+        if path=='/api/session':return self.reply({'authenticated':bool(self.session()),'setup':False,'registration':True,'name':(self.session() or {}).get('name')})
         if path=='/' or path.startswith('/assets/') or path in {'/app.js','/styles.css'}:
             p=(WEB/('index.html' if path=='/' else path.lstrip('/'))).resolve()
             if not p.is_relative_to(WEB.resolve()) or not p.is_file():return self.reply({'error':'Not found'},404)
@@ -175,6 +214,7 @@ class Handler(engine.Handler):
                 self.send_response(304);self.send_header('ETag',etag);self.send_header('Cache-Control','no-cache');self.send_header('Vary','Accept-Encoding');self.end_headers();return
             return self.reply(body,mime=(mimetypes.guess_type(p.name)[0] or 'application/octet-stream')+('; charset=utf-8' if p.suffix in {'.js','.css','.html'} else ''),cache_control='no-cache',etag=etag)
         if not self.session():return self.reply({'error':'로그인 후 이용할 수 있습니다.'},401)
+        if self.denied_analysis(path):return self.reply({'error':'분석을 찾을 수 없습니다.'},404)
         stream=re.fullmatch(r'/api/(?:support/([a-f0-9]{32})|analyses/([a-f0-9]{32})/chat/([a-f0-9]{32}))/events',path)
         if stream:
             import chat_events,conversations
@@ -216,36 +256,31 @@ class Handler(engine.Handler):
         if not engine.deployment.valid_origin(self.headers.get('Origin'),engine.PORT):return self.reply({'error':'Invalid origin'},403)
         path=urlparse(self.path).path
         try:
-            if path=='/api/login':
-                data=self.json_body();name=str(data.get('name','')).strip();password=data.get('password','')
-                if not name or not isinstance(password,str) or not password:raise ValueError('이름과 비밀번호를 입력하세요.')
-                if not ACCOUNT.exists() and len(password)<10:raise ValueError('새 계정의 비밀번호는 10자 이상 입력하세요.')
-                key=self.client_address[0];attempts=[t for t in ATTEMPTS.get(key,[]) if t>time.time()-300]
-                if len(attempts)>=10:return self.reply({'error':'잠시 후 다시 로그인하세요.'},429)
-                ATTEMPTS[key]=attempts+[time.time()]
-                with GUARD:
-                    p=ACCOUNT
-                    if not p.exists():
-                        if engine.deployment.public_origin():return self.reply({'error':'팀 계정이 준비되지 않았습니다.'},503)
-                        salt=secrets.token_hex(16);digest=hashlib.scrypt(password.encode(),salt=bytes.fromhex(salt),n=16384,r=8,p=1).hex()
-                        write(p,{'name':name,'salt':salt,'hash':digest})
-                    account=json.loads(p.read_text('utf-8'));digest=hashlib.scrypt(password.encode(),salt=bytes.fromhex(account['salt']),n=16384,r=8,p=1).hex()
-                    if not hmac.compare_digest(digest,account['hash']) or name!=account['name']:return self.reply({'error':'이름 또는 비밀번호가 맞지 않습니다.'},401)
-                    token=secrets.token_urlsafe(32);SESSIONS[token]={'name':name,'expires':time.time()+43200};ATTEMPTS[key]=[]
-                secure='; Secure' if engine.deployment.public_origin() else ''
-                self.send_response(200);self.send_header('Set-Cookie',f'fintra_session={token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200{secure}');self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(b'{"ok":true}');return
+            if path in {'/api/login','/api/register'}:
+                if self.auth_limited():return self.reply({'error':'요청이 많습니다. 5분 후 다시 시도하세요.'},429)
+                data=self.json_body()
+                if not isinstance(data,dict):raise ValueError('입력 내용을 확인하세요.')
+                name=data.get('name','');password=data.get('password','')
+                if path=='/api/register':
+                    if password!=data.get('confirm_password'):raise ValueError('비밀번호 확인이 일치하지 않습니다.')
+                    account=ACCOUNTS.register(name,password)
+                else:
+                    account=ACCOUNTS.authenticate(name,password)
+                    if not account:return self.reply({'error':'아이디 또는 비밀번호가 맞지 않습니다.'},401)
+                return self.auth_reply(account)
             if not self.session():return self.reply({'error':'로그인 후 이용할 수 있습니다.'},401)
+            if self.denied_analysis(path):return self.reply({'error':'분석을 찾을 수 없습니다.'},404)
             chat_match=re.fullmatch(r'/api/analyses/([a-f0-9]{32})/chat',path)
             if chat_match:
                 import conversations
                 jid=chat_match[1]
-                if jid not in engine.JOBS:raise ValueError('분석을 찾지 못했습니다.')
+                if not self.can_access(engine.JOBS.get(jid)):return self.reply({'error':'분석을 찾을 수 없습니다.'},404)
                 data=self.json_body()
                 prior=[m for m in support_history(self.session()['name']) if m.get('analysis_id')==jid]
                 return self.reply(conversations.submit(engine.DATA/jid,data.get('question'),data.get('transaction_id'),prior,view=data.get('view')),202)
             if path=='/api/support/bind':
                 data=self.json_body();jid=data.get('analysis_id')
-                if jid not in engine.JOBS:raise ValueError('분석을 찾지 못했습니다.')
+                if not self.can_access(engine.JOBS.get(jid)):return self.reply({'error':'분석을 찾을 수 없습니다.'},404)
                 with GUARD:
                     rows=support_history(self.session()['name'])
                     for row in rows:
@@ -256,6 +291,7 @@ class Handler(engine.Handler):
                 return self.reply({'ok':True})
             if path=='/api/support':
                 data=self.json_body();question=data.get('question','')
+                if data.get('analysis_id') and not self.can_access(engine.JOBS.get(data['analysis_id'])):return self.reply({'error':'분석을 찾을 수 없습니다.'},404)
                 if not isinstance(question,str) or not 1<=len(question.strip())<=1500:raise ValueError('질문을 1~1500자로 입력하세요.')
                 with GUARD:
                     if any(t['status']=='running' and t['owner']==self.session()['name'] for t in SUPPORT.values()):raise ValueError('답변을 생성하고 있습니다. 잠시 후 다시 질문하세요.')

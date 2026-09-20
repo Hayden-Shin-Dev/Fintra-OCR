@@ -208,7 +208,7 @@ def compare(job):
         save(job,status='failed',error=str(e),finished=time.time())
 
 
-def new_job(uploads,settings):
+def new_job(uploads,settings,owner_id=None):
     ledgers=[x for x in uploads if x[0]=='ledger'];docs=[x for x in uploads if x[0]=='documents']
     if len(ledgers)>1 or not docs:raise ValueError('증빙 파일과 선택사항인 장부 CSV 최대 1개를 선택하세요.')
     if len(docs)>30:raise ValueError('한 번에 증빙 30개까지 지원합니다.')
@@ -216,7 +216,7 @@ def new_job(uploads,settings):
         ext=Path(name).suffix.lower()
         if ext not in ({'.csv'} if field=='ledger' else {'.json','.png','.jpg','.jpeg','.webp','.bmp'}):raise ValueError('지원하지 않는 파일 형식: '+ext)
     jid=uuid.uuid4().hex;folder=DATA/jid;folder.mkdir()
-    job={'id':jid,'status':'queued','stage':'queued','created':time.time(),'timings':{},'ocr_jobs':[],'settings':settings,'documents':[],'document_records':[],'failures':[],'processed_documents':0,'files':[],'error':None,'cancel':threading.Event(),'process':None}
+    job={'id':jid,'owner_id':owner_id,'status':'queued','stage':'queued','created':time.time(),'timings':{},'ocr_jobs':[],'settings':settings,'documents':[],'document_records':[],'failures':[],'processed_documents':0,'files':[],'error':None,'cancel':threading.Event(),'process':None}
     for i,(field,name,blob) in enumerate(ledgers+docs):
         filename=str(i)+Path(name).suffix.lower();(folder/filename).write_bytes(blob)
         job['files'].append({'stored':filename,'name':Path(name).name,'bytes':len(blob)})
@@ -237,6 +237,8 @@ def new_job(uploads,settings):
     JOBS[jid]=job;save(job);POOL.submit(run,job);return jid
 
 class Handler(BaseHTTPRequestHandler):
+    def analysis_owner(self):return None
+    def can_access(self,job):return True
     def reply(self,data,code=200,mime='application/json',download=None,cache_control='no-store',etag=None):
         from http_payload import encode_payload
         body=data if isinstance(data,bytes) else json.dumps(data,ensure_ascii=False).encode()
@@ -284,10 +286,10 @@ class Handler(BaseHTTPRequestHandler):
             except Exception as exc:standards_health={'ready':False,'error':str(exc)}
             return self.reply({'ocr':ocr_health,'audit':PYTHON['audit'].exists(),'standards':standards_health,'extensions':{'standards':standards_health.get('ready',False),'explanation':bool(os.environ.get('FINTRA_STANDARDS_URL'))}})
         if path=='/api/jobs':
-            with LOCK:history=[{k:j.get(k) for k in ('id','status','created','finished','error')} for j in JOBS.values()]
+            with LOCK:history=[{k:j.get(k) for k in ('id','status','created','finished','error')} for j in JOBS.values() if self.can_access(j)]
             return self.reply(sorted(history,key=lambda j:j['created'],reverse=True)[:100])
         match=re.fullmatch(r'/api/jobs/([a-f0-9]{32})(?:/(.*))?',path)
-        if match and match[1] in JOBS:
+        if match and match[1] in JOBS and self.can_access(JOBS[match[1]]):
             job=JOBS[match[1]];suffix=match[2];folder=DATA/job['id']
             if suffix=='chat':
                 import conversations
@@ -365,7 +367,7 @@ class Handler(BaseHTTPRequestHandler):
                         save(job,status='cancelled',error='사용자가 대기 작업을 중지했습니다.',finished=time.time())
                     return self.reply({'status':'cancellation_requested'})
                 return self.reply({'error':'Not found'},404)
-            return self.reply({'id':new_job(uploads,settings)},202)
+            return self.reply({'id':new_job(uploads,settings,owner_id=self.analysis_owner())},202)
         except Exception as e:return self.reply({'error':str(e)},400)
 
 for p in DATA.glob('*/status.json'):

@@ -26,3 +26,7 @@ studio/tests/chat-architecture/*.json
 !studio/tests/chat-architecture/evaluation.json
 .DS_Store
 Thumbs.db
+
+# Private account database
+*.sqlite3
+*.sqlite3-*

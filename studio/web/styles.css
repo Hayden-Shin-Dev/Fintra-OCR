@@ -53,3 +53,8 @@ dialog.report-progress{position:fixed;inset:50% auto auto 50%;transform:translat
 
 /* Plain-language sample scenarios. */
 .examples>.row{flex-wrap:wrap;gap:8px 18px}.examples>.row>small{line-height:1.7}.example-card .sample-copy{min-width:0}.example-card .sample-label{display:block;font-size:11px;font-weight:600;color:#6264b9;margin:0 0 8px}.example-card .sample-title{display:block;font-size:14px;font-weight:600;line-height:1.6;color:#303b59;white-space:normal;word-break:keep-all;overflow-wrap:anywhere}.example-card .sample-description{margin:8px 0 0;font-size:12px;line-height:1.7;color:#657188;white-space:normal;word-break:keep-all;overflow-wrap:anywhere}.example-card>svg{flex-shrink:0}
+
+/* Local account registration */
+.auth-switch{display:block;margin:18px auto 0;padding:10px 14px;background:transparent;border:0;color:#555bc4;font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+.auth-switch:focus-visible{outline:2px solid #6266dd;outline-offset:3px;border-radius:8px}
+.login-form{overflow-y:auto}.login-form form{padding-block:24px}#loginError{color:#9e3e27;font-size:14px}

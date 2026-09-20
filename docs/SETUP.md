@@ -14,6 +14,8 @@
 
 팀 서버는 `studio/서버켜기.cmd`, 종료는 `studio/서버끄기.cmd`입니다. 고정 공유 링크는 https://hayden-shin-dev.github.io/Fintra-OCR/ 입니다. 시작 후 창은 닫아도 되며 Windows 로그인 시에도 자동 실행됩니다. PC가 꺼지거나 절전 상태이면 접속할 수 없습니다.
 
+로그인 화면의 회원가입으로 개인 계정을 만들 수 있습니다. 아이디는 영문, 숫자, 밑줄, 하이픈 3~32자, 비밀번호는 10~128자입니다. 계정 DB는 팀 서버의 `studio/team-preview/users.sqlite3`에 저장하고 비밀번호는 scrypt로 해시합니다. 업로드 자료, 검토 기록, 보고서와 대화는 계정별로 접근을 제한합니다. 기존 공용 계정과 그 기록은 유지됩니다. 로컬 단독 실행은 `studio/data/`를 사용합니다. 백업할 때는 서버를 종료하고 해당 데이터 폴더 전체를 복사하세요. 이메일 인증과 비밀번호 찾기는 제공하지 않습니다.
+
 내부 실행 스크립트는 `studio/tools/`에 있습니다. `tools/bin/cloudflared.exe`와 Git Credential Manager의 GitHub 인증이 필요합니다. Cloudflare 주소가 바뀌면 `fintra-live` 브랜치에 접속 주소만 갱신합니다. `gh-pages`는 접속 안내 페이지만 게시하며 문서나 비밀번호는 올리지 않습니다. GitHub 인증이 만료되면 Git 로그인을 갱신해야 합니다.
 
 `FINTRA_ROUTER_MODEL`, `FINTRA_REASONING_MODEL`, `FINTRA_VALIDATOR_MODEL` 환경변수로 챗봇 역할별 모델을 지정할 수 있습니다. 지정하지 않으면 선택한 로컬 모델을 재사용합니다.
