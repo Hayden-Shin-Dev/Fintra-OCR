@@ -51,7 +51,7 @@ try:
         except OSError:time.sleep(.5)
     else:raise RuntimeError('App startup timed out')
     c=json.loads(credentials.read_text('utf-8'))
-    (DATA/'access.txt').write_text('Fintra 팀 테스트\n\nURL: '+origin+'\n이름: '+c['name']+'\n비밀번호: '+c['password']+'\n\n팀 공용 공간: 로그인한 팀원은 이 공간의 자료를 함께 봅니다.\n기존 로컬 문서와 대화는 이 공간에 포함되지 않습니다.\nPC가 켜져 있고 이 실행이 유지되는 동안 사용 가능합니다.\n주소 유지 조건은 사용 중인 연결 방식에 따라 다릅니다.\n중지: 프로젝트의 Stop-Team-Preview.cmd 실행\n','utf-8')
+    (DATA/'access.txt').write_text('Fintra 팀 테스트\n\nURL: '+origin+'\n이름: '+c['name']+'\n비밀번호: '+c['password']+'\n\n팀 공용 공간: 로그인한 팀원은 이 공간의 자료를 함께 봅니다.\n기존 로컬 문서와 대화는 이 공간에 포함되지 않습니다.\nPC가 켜져 있고 이 실행이 유지되는 동안 사용 가능합니다.\n주소 유지 조건은 사용 중인 연결 방식에 따라 다릅니다.\n중지: 프로젝트의 서버끄기.cmd 실행\n','utf-8')
     (DATA/'state.json').write_text(json.dumps({'url':origin,'provider':'tailscale' if fixed_origin else 'cloudflare','status':'running','manager_pid':os.getpid(),'app_pid':app.pid,'tunnel_pid':None if fixed_origin else tunnel.pid}),'utf-8')
     if publish_link:
         sys.path.insert(0,str(ROOT/'tools'))

@@ -9,12 +9,12 @@
 이 저장소를 clone하는 것만으로 해당 서비스와 데이터가 설치되지는 않습니다.
 
 1. 필요한 경우 `studio/config/ai-runtime.example.json`을 `ai-runtime.json`으로 복사하고 설치된 모델 이름을 지정합니다.
-2. `studio/Start-Fintra.cmd`를 실행합니다.
+2. `studio` 폴더에서 설치된 Fintra Python으로 `run.py`를 실행합니다.
 3. 로컬 웹 화면은 `http://127.0.0.1:8780`에서 엽니다.
 
-팀 공유는 `studio/Start-Team-Preview.cmd`로 시작합니다. `studio/tools/bin/cloudflared.exe`가 필요하며 [공식 배포](https://github.com/cloudflare/cloudflared/releases)에서 준비합니다. URL과 로그인 정보는 실행 후 `studio/team-preview/access.txt`에 생성됩니다. PC가 켜져 있어야 하며, 종료는 `Stop-Team-Preview.cmd`입니다.
+팀 서버는 `studio/서버켜기.cmd`, 종료는 `studio/서버끄기.cmd`입니다. 고정 공유 링크는 https://hayden-shin-dev.github.io/Fintra-OCR/ 입니다. 시작 후 창은 닫아도 되며 Windows 로그인 시에도 자동 실행됩니다. PC가 꺼지거나 절전 상태이면 접속할 수 없습니다.
 
-고정 공유 링크는 https://hayden-shin-dev.github.io/Fintra-OCR/ 입니다. `studio/Start-Fixed-URL.cmd`를 실행하면 Windows 로그인 시 서버가 자동 실행되도록 등록합니다. 창을 닫아도 서버는 유지됩니다. Cloudflare 주소가 바뀌면 Git Credential Manager의 GitHub 인증으로 `fintra-live` 브랜치에 접속 주소만 갱신합니다. `gh-pages` 브랜치는 접속 안내 페이지만 게시하며 문서나 비밀번호는 올리지 않습니다. PC가 꺼지거나 절전 상태이면 접속할 수 없습니다. 중지는 `Stop-Team-Preview.cmd`입니다. GitHub 인증이 만료되면 Git 로그인 갱신이 필요합니다.
+내부 실행 스크립트는 `studio/tools/`에 있습니다. `tools/bin/cloudflared.exe`와 Git Credential Manager의 GitHub 인증이 필요합니다. Cloudflare 주소가 바뀌면 `fintra-live` 브랜치에 접속 주소만 갱신합니다. `gh-pages`는 접속 안내 페이지만 게시하며 문서나 비밀번호는 올리지 않습니다. GitHub 인증이 만료되면 Git 로그인을 갱신해야 합니다.
 
 `FINTRA_ROUTER_MODEL`, `FINTRA_REASONING_MODEL`, `FINTRA_VALIDATOR_MODEL` 환경변수로 챗봇 역할별 모델을 지정할 수 있습니다. 지정하지 않으면 선택한 로컬 모델을 재사용합니다.
 

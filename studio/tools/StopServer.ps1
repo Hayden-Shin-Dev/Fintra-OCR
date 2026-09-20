@@ -1,6 +1,7 @@
 ﻿# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 $ErrorActionPreference = 'Stop'
-$fintraData = Join-Path $PSScriptRoot 'team-preview'
+$fintraRoot = Split-Path -Parent $PSScriptRoot
+$fintraData = Join-Path $fintraRoot 'team-preview'
 $fintraStatePath = Join-Path $fintraData 'state.json'
 if (-not (Test-Path -LiteralPath $fintraStatePath)) {
     Write-Host '이 폴더에서 실행 중인 팀 서버가 없습니다.'
