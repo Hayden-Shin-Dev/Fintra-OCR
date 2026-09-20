@@ -162,6 +162,9 @@ class Handler(engine.Handler):
     def do_GET(self):
         if not self.valid_host():return self.reply({'error':'Invalid Host'},403)
         path=urlparse(self.path).path
+        if path=='/api/public-health':
+            body=b'{"service":"fintra","online":true}'
+            self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(body)));self.send_header('Cache-Control','no-store');self.send_header('Access-Control-Allow-Origin','https://hayden-shin-dev.github.io');self.end_headers();self.wfile.write(body);return
         if path=='/api/session':return self.reply({'authenticated':bool(self.session()),'setup':not ACCOUNT.exists() and not engine.deployment.public_origin(),'name':(self.session() or {}).get('name')})
         if path=='/' or path.startswith('/assets/') or path in {'/app.js','/styles.css'}:
             p=(WEB/('index.html' if path=='/' else path.lstrip('/'))).resolve()

@@ -9,6 +9,8 @@
 - `studio/` — 문서 업로드, 거래 비교, 챗봇, 검토조서 웹 화면
 - `tests/`, `studio/tests/` — 기능 및 회귀 테스트
 
+[팀 테스트 접속](https://hayden-shin-dev.github.io/Fintra-OCR/)
+
 현재는 로컬 실행과 팀 테스트용으로 사용하고 있습니다. 웹 서비스는 별도 Fintra 런타임이 필요합니다.
 
 [실행 방법](docs/SETUP.md) / [추출 필드](SCHEMA.md) / [사용한 기술과 출처](SOURCES.md)
