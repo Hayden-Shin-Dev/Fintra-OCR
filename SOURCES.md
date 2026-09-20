@@ -41,3 +41,7 @@
 공식 수집 출발점은 한국회계기준원의 [시행 중 K-IFRS 목록](https://www.kasb.or.kr/front/board/ingAccountingList.do)과 [질의회신 목록](https://www.kasb.or.kr/front/board/List016005.do)입니다. 기준서 원문, 질의회신, 내부 참고 사례는 출처 유형을 구분합니다. 원문과 검색 인덱스는 저장소에 포함하지 않습니다.
 
 `examples/`의 JSON은 자체 합성 예제입니다. 실제 고객 자료나 OCR 정확도 평가 결과가 아닙니다. 업로드 문서, 장부, 개인정보, 계정, 대화, 실행 로그는 공개 대상에서 제외합니다.
+
+## 대표 이미지
+
+`docs/assets/fintra-cover.png`는 Fintra의 색상과 캐릭터를 참고해 OpenAI 이미지 생성 도구로 제작한 소개 이미지입니다. 실제 서비스 화면 캡처가 아닙니다. 웹에서 동작하는 캐릭터는 위에 기록한 Three.js 구현을 사용합니다.
