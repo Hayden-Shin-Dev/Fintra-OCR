@@ -79,14 +79,14 @@ try:
         if any(p.poll() is not None for p in children):raise RuntimeError('Preview process exited')
         time.sleep(1)
 finally:
-    if publish_link and link_published and origin:
-        try:publish(origin,online=False)
-        except Exception as exc:print('Offline status update failed: '+type(exc).__name__,flush=True)
     for p in children:
         if p.poll() is None:
             p.terminate()
             try:p.wait(timeout=10)
             except subprocess.TimeoutExpired:p.kill();p.wait()
+    if publish_link and link_published and origin:
+        try:publish(origin,online=False)
+        except Exception as exc:print('Offline status update failed: '+type(exc).__name__,flush=True)
     for log in logs:log.close()
     (DATA/'state.json').write_text(json.dumps({'status':'stopped'}),'utf-8')
     guard.close()

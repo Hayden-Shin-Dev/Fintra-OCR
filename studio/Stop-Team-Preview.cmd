@@ -1,3 +1,9 @@
 @echo off
-REM 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
-"%LOCALAPPDATA%\Fintra\runtimes\8a307c021740a0e4\python.exe" -X utf8 "%~dp0tools\team_preview.py" --stop
+REM Author: Shin Mincheol | min.developer.acc@gmail.com
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0Stop-Team-Preview.ps1"
+if errorlevel 1 (
+  echo Fintra command failed. Review the error above.
+  pause
+  exit /b 1
+)
+pause
