@@ -12,9 +12,12 @@
 |---|---|---|
 | `studio/web/assets/three.module.js` | [Three.js r160](https://github.com/mrdoob/three.js/tree/r160) | [MIT 원문](studio/web/assets/three-LICENSE.txt), 원본 헤더 보존 |
 | `studio/web/assets/lucide.js` | [Lucide 0.468.0](https://www.npmjs.com/package/lucide/v/0.468.0) | [해당 버전 ISC 원문](studio/web/assets/lucide-LICENSE.txt), 원본 헤더 보존 |
-| `fintraocr/assets/qwen35-tokenizer.json` | [Qwen3.5-4B tokenizer](https://huggingface.co/Qwen/Qwen3.5-4B/resolve/main/tokenizer.json) | [Apache-2.0 원문](fintraocr/assets/LICENSE.txt), [다운로드 기록·해시](fintraocr/assets/README.md) |
+| `fintraocr/assets/qwen35-tokenizer.json` | [Qwen3.5-4B tokenizer](https://huggingface.co/Qwen/Qwen3.5-4B/resolve/main/tokenizer.json) | [Apache-2.0 원문](fintraocr/assets/LICENSE.txt) |
 
-`studio/web/assets/companion.png`는 기존 프로젝트에 포함된 캐릭터 이미지입니다. 원본 제작자·제작 도구에 대한 기록은 저장소에서 확인되지 않아, 코드 제작자 표기를 이미지의 원저작자 표기로 사용하지 않습니다.
+
+현재 안경 쓴 로봇은 `studio/web/assets/experience.js`의 `character()`에서 Three.js로 그립니다. 사용하지 않는 이전 PNG 이미지는 제거했습니다.
+
+토크나이저 다운로드: 2026-09-09 · SHA-256: `5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42`. 모델 가중치가 아닌 문맥 길이 계산용 파일입니다.
 
 ## 외부 패키지·실행 도구
 

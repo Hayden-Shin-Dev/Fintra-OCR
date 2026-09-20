@@ -1,1 +1,0 @@
-These are synthetic fixtures for offline pipeline demonstration, not real OCR output or mapping accuracy evidence. Run: `python -m fintraocr map examples/synthetic.ocr.json --proposal examples/synthetic.proposal.json --output outputs/demo.json`. No examples are loaded by the engine.

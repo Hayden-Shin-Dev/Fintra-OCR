@@ -20,4 +20,4 @@ include = ["fintraocr*"]
 testpaths = ["tests"]
 
 [tool.setuptools.package-data]
-fintraocr = ["static/*.html", "assets/*.json", "assets/*.txt", "assets/*.md"]
+fintraocr = ["static/*.html", "assets/*.json", "assets/*.txt"]

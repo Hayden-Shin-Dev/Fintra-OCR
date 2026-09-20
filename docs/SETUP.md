@@ -29,6 +29,14 @@ ollama pull qwen3.5:4b
 
 위 명령은 CPU 설치입니다. GPU를 사용할 때는 `cpu` 옵션을 빼고 [PaddlePaddle 공식 설치 안내](https://www.paddlepaddle.org.cn/install/quick)에 맞는 런타임을 설치합니다.
 
+## 합성 예제
+
+`examples/`는 실제 고객 문서가 아닌 오프라인 시연용 데이터입니다.
+
+```powershell
+python -m fintraocr map examples/synthetic.ocr.json --proposal examples/synthetic.proposal.json --output outputs/demo.json
+```
+
 ## 테스트
 
 ```powershell
