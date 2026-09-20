@@ -42,3 +42,5 @@ dialog.report-progress{position:fixed;inset:50% auto auto 50%;transform:translat
 .comparison-sources button{color:#5967a8;font-size:12px;padding:9px 12px;min-height:36px}.comparison-differences{font-size:12px}
 .paper .comparison-overview p{color:#5e6b82}.paper .comparison-missing{color:#98701f}
 @media(max-width:600px){.comparison-group .comparison-cell-grid{grid-template-columns:1fr}.comparison-area{padding-left:12px;padding-right:12px}.comparison-group{padding:12px}}
+
+.original-image-status{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 18px;font-size:12px;background:#f2f5fc}.original-image-status[hidden]{display:none}.original-image-status a{text-decoration:underline}#evidenceViewer .viewer{position:static}
