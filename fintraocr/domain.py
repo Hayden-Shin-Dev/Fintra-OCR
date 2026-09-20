@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Auditable trade-label vocabulary: proposes semantics, never selects a value.
 
 All entries describe document concepts, not companies, fixtures or coordinates.

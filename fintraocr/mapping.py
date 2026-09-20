@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 import re
 from .models import Evidence, FieldValue, Result
 from .schemas import SCHEMAS, ITEM_SCHEMAS, ALIASES

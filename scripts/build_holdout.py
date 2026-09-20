@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Create new synthetic layouts and gold BEFORE inference. Never imported by engine."""
 import json
 from pathlib import Path

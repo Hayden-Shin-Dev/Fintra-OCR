@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Source-image adjudication after external development review; retain v1.
 
 No engine predictions are read. These cases are development, never final holdout.

@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Preselect staged documents without looking at engine output; not a gold mapper."""
 import argparse,hashlib,json,random,zipfile
 from pathlib import Path

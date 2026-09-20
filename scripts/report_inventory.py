@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Report measured subsets without presenting diagnostics as population accuracy."""
 import json,statistics,xml.etree.ElementTree as ET
 from pathlib import Path

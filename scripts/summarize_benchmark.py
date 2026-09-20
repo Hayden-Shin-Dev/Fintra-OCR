@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Summarize frozen benchmark outputs, excluding the UI development case."""
 import json
 from pathlib import Path

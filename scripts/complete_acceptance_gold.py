@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Evaluation-only human source review, never imported by the extraction engine.
 
 Completes the initial DEVELOPMENT set against all frozen schema fields. Values

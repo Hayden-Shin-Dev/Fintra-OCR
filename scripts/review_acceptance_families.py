@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Manual visual family assessment of source-only contact sheets (no predictions)."""
 import json,hashlib
 from scripts.azure_acceptance import ROOT

@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Actual OCR regression against the immutable 31-document baseline."""
 import argparse,json,time,hashlib
 from pathlib import Path

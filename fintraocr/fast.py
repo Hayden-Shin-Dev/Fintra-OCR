@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Explicit low-latency structural pass; no LLM calls or hidden accuracy claim."""
 from .grounded import GroundedSelector
 

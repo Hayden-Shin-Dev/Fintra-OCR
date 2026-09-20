@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Manual source review of unused batch20. Never reads engine predictions.
 
 Incomplete until every selected document has been transcribed and reviewed.

@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Isolate resolver changes with frozen model responses; not inference timings."""
 import json,argparse
 from pathlib import Path

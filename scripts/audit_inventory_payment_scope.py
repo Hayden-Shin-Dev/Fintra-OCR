@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Versioned source-image correction; never reads engine predictions."""
 import hashlib,json
 from pathlib import Path

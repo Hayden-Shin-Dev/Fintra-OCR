@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Common defects found in unseen forms, using unrelated values and geometry."""
 from tests.test_structural import doc,run
 from fintraocr.domain import semantic_label

@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Compact semantic label selection followed by structural value resolution."""
 import json
 import time

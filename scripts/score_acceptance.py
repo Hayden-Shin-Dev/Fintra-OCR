@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Acceptance scoring independent of production resolver and normalization."""
 import argparse,json,re,statistics,hashlib
 from collections import defaultdict,Counter

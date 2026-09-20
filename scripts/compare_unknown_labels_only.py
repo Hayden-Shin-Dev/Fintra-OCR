@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Evaluation-only: avoid asking the model to repeat exact domain captions."""
 import json,time,hashlib
 from io import BytesIO

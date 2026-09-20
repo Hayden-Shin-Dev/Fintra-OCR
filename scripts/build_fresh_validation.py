@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Create a separately frozen post-refactor synthetic challenge, never engine input."""
 import json,hashlib
 from pathlib import Path

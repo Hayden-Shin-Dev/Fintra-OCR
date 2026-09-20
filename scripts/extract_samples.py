@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Extract target images only, without trusting ZIP paths or document instructions."""
 import argparse
 import json

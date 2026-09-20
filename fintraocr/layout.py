@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Relative geometry and exact character spans. No template or company data."""
 import re
 import unicodedata

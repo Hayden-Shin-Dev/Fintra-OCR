@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Read-only Azure ZIP member retrieval; OAuth token stays in process memory.
 Uses Get Blob byte ranges: https://learn.microsoft.com/rest/api/storageservices/get-blob
 """

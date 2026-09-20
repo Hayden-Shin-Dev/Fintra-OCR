@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 from fintraocr.normalize import normalize,country_inverted_names
 
 def test_documented_historical_names_preserve_country_identity_only():

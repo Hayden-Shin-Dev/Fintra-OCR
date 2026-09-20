@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 from tests.test_structural import doc,run
 
 def test_nested_reference_caption_is_preserved_for_review_not_whole_value():

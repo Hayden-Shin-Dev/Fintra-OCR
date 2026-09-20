@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Run actual OCR or mapping on the preselected batch, preserving all failures."""
 import argparse,json,time,hashlib
 from pathlib import Path

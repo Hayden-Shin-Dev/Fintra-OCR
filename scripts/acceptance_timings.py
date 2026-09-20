@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Timing-only report; does not inspect unseen mapping predictions."""
 import argparse,json,statistics,math
 from scripts.azure_acceptance import ROOT

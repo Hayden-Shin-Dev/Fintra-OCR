@@ -5,3 +5,12 @@ __pycache__/
 data/
 outputs/
 .env
+
+# Runtime state and private workspace data
+studio/team-preview/
+studio/data/
+studio/output/
+studio/tmp/
+studio/config/ai-runtime.json
+studio/tools/bin/
+*.log

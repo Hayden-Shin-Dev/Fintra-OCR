@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Frozen legacy field scores, separate real/synthetic and per-document results."""
 import argparse,json,time,hashlib
 from pathlib import Path

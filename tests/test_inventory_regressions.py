@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Structural regressions discovered across the inventory; unrelated fixture values."""
 import json
 from io import BytesIO

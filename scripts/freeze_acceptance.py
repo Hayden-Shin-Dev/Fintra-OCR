@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Create an immutable-by-convention baseline before acceptance work."""
 import hashlib,json,shutil,subprocess,sys,zipfile
 from pathlib import Path

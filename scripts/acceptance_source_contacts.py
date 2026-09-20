@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Source-only review sheets; never opens model outputs or predicted fields."""
 import json
 from PIL import Image,ImageDraw

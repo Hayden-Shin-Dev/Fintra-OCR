@@ -1,0 +1,518 @@
+[
+  {
+    "id": "Q01",
+    "question": "안녕하세요",
+    "route": "general",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q02",
+    "question": "고마워",
+    "route": "general",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q03",
+    "question": "지금 무슨 단계야?",
+    "route": "general",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q04",
+    "question": "문서 네 개를 다 올려야 해?",
+    "route": "general",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q05",
+    "question": "CSV는 뭐야?",
+    "route": "general",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q06",
+    "question": "Fintra 사용법 알려줘",
+    "route": "general",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q07",
+    "question": "피곤해서 집중이 안 돼",
+    "route": "general",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q08",
+    "question": "송장을 업로드하는 방법은?",
+    "route": "general",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q09",
+    "question": "현재 거래 요약해줘",
+    "route": "transaction",
+    "expected_contains": [
+      "TX013",
+      "필수정보 누락"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q10",
+    "question": "장부 금액 알려줘",
+    "route": "transaction",
+    "expected_contains": [
+      "3325.00"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q11",
+    "question": "TX013 거래처 알려줘",
+    "route": "transaction",
+    "expected_contains": [
+      "fintra demo buyer 13 ltd"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q12",
+    "question": "정보 부족으로 남은 이유",
+    "route": "transaction",
+    "expected_contains": [
+      "누락",
+      "상품 수량"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q13",
+    "question": "불일치 항목 보여줘",
+    "route": "transaction",
+    "expected_contains": [
+      "불일치 항목은 없습니다"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q14",
+    "question": "어떤 순서로 검토하면 좋을까?",
+    "route": "transaction",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q15",
+    "question": "담당자에게 요청할 자료와 질문을 작성해줘",
+    "route": "transaction",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q16",
+    "question": "이 결과로 검토 메모 초안을 써줘",
+    "route": "transaction",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q17",
+    "question": "TX999 거래 요약해줘",
+    "route": "transaction",
+    "expected_contains": [
+      "없습니다"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q18",
+    "question": "TX013 적용 환율 알려줘",
+    "route": "transaction",
+    "expected_contains": [
+      "없습니다"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q19",
+    "question": "송장 원본 총액 알려줘",
+    "route": "evidence",
+    "expected_contains": [
+      "3325.00"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q20",
+    "question": "포장명세서 수량 보여줘",
+    "route": "evidence",
+    "expected_contains": [
+      "40",
+      "추출되지 않음"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q21",
+    "question": "선하증권 순중량 보여줘",
+    "route": "evidence",
+    "expected_contains": [
+      "320"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q22",
+    "question": "송장 번호 얼마야",
+    "route": "evidence",
+    "expected_contains": [
+      "INV-26-0013"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q23",
+    "question": "원본 추출 통화 보여줘",
+    "route": "evidence",
+    "expected_contains": [
+      "USD"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q24",
+    "question": "OCR 추출값 보여줘",
+    "route": "evidence",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q25",
+    "question": "송장 원본 단가 보여줘",
+    "route": "evidence",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q26",
+    "question": "선하증권 원본 구매자 보여줘",
+    "route": "evidence",
+    "expected_contains": [
+      "추출되지 않음"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q27",
+    "question": "K-IFRS 제1002호 설명해줘",
+    "route": "accounting_standard",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q28",
+    "question": "K-IFRS 제1002호 문단 9 설명해줘",
+    "route": "accounting_standard",
+    "expected_contains": [
+      "원문",
+      "찾지 못했습니다"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q29",
+    "question": "재고자산 회계기준 설명해줘",
+    "route": "accounting_standard",
+    "expected_contains": [
+      "1002"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q30",
+    "question": "수익 인식 기준 설명해줘",
+    "route": "accounting_standard",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q31",
+    "question": "K-IFRS 제1021호 환율 설명해줘",
+    "route": "accounting_standard",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q32",
+    "question": "K-IFRS 제1007호 설명해줘",
+    "route": "accounting_standard",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q33",
+    "question": "K-IFRS 제2122호 설명해줘",
+    "route": "accounting_standard",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q34",
+    "question": "현재 불일치 리스크 알려줘",
+    "route": "hybrid",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q35",
+    "question": "TX013 회계기준을 설명해줘",
+    "route": "hybrid",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q36",
+    "question": "현재 검토 항목과 관련된 회계 원칙을 쉽게 설명해줘",
+    "route": "hybrid",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q37",
+    "question": "송장 원본 금액과 회계처리 기준을 설명해줘",
+    "route": "hybrid",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q38",
+    "question": "이 거래 수량 차이의 위험은?",
+    "route": "hybrid",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q39",
+    "question": "현재 누락 항목의 회계적 위험은?",
+    "route": "hybrid",
+    "expected_contains": [],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  },
+  {
+    "id": "Q40",
+    "question": "TX999 회계기준과 검토 결과 알려줘",
+    "route": "hybrid",
+    "expected_contains": [
+      "없습니다"
+    ],
+    "forbidden": [
+      "987654321",
+      "리스 상담",
+      "오류가 확정"
+    ],
+    "rubric": "Route, selected-tool isolation, owned factual values, provenance and absence of invented case facts. LLM semantic quality is separately live-reviewed."
+  }
+]

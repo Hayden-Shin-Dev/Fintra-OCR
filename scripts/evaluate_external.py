@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Re-evaluate the public development case; never call it unseen after debugging."""
 import json,time,hashlib
 from pathlib import Path

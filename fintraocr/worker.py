@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Isolated stage worker; web.py may retain a separate warm OCR process."""
 import json
 import sys

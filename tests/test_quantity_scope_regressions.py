@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 import fintraocr.table_captions as experiment_quantity104
 from tests.test_structural import doc,run
 import pytest

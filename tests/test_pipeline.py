@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 import json
 import pytest
 from fintraocr.models import OCRDocument, Page, Token, Proposal, Selection, Span

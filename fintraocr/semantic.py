@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Semantic selection with exact-quote resolution; no model-written value reaches output."""
 import json
 from urllib.request import Request,urlopen

@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Evaluation-only recognition model comparison, with the same medium detector."""
 import json,time,hashlib
 from scripts.azure_acceptance import ROOT

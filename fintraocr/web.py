@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Local test UI and asynchronous inference jobs. Cloud inference can replace worker boundary."""
 import json
 import os

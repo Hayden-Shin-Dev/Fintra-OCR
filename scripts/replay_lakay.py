@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 import json
 from pathlib import Path
 from unittest.mock import patch

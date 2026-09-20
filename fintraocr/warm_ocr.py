@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """One OCR model per child process; stdin EOF releases GPU on server exit."""
 import json
 import sys

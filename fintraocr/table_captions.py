@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Complete table-caption spans, grounded by independent neighboring headers."""
 import re
 from .domain import semantic_label

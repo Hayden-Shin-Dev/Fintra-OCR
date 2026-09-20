@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Evaluation-only vision context; OCR IDs/spans remain the sole value source.
 
 Does not change the default application pipeline or default model.

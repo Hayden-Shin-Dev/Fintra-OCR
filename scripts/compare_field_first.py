@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Evaluation-only field-first label selection, preserving raw wire traces."""
 import argparse,json,time,hashlib
 from io import BytesIO

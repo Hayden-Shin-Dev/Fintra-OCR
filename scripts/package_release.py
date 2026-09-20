@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Package source and selected reproducibility artifacts, excluding runtimes."""
 from pathlib import Path
 import zipfile,json,hashlib

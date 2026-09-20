@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Evaluate reviewed ground truth against output; missing expected fields count as failures.
 Gold format: {"document_type": "commercial_invoice", "fields": {"invoice_number": "...", "buyer": null}, "items": [{"quantity": "10"}]}
 Only explicitly annotated fields are scored; items are aligned by human-verified row order.

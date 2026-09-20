@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Evaluation-only required nullable label decisions; production unchanged."""
 import json,time,hashlib
 from unittest.mock import patch

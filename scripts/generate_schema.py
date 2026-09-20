@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Generate the extraction contract tables from the actual engine schema."""
 from pathlib import Path
 from fintraocr.schemas import catalog

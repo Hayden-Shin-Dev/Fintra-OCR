@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 import argparse,json,subprocess,sys
 from pathlib import Path
 from io import BytesIO

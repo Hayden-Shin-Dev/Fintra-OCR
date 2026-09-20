@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Source-image adjudication only; never imported by the extraction engine."""
 import hashlib,json
 from scripts.azure_acceptance import ROOT

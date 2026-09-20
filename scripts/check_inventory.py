@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 import json,argparse
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--version',default='candidate-v2');p.add_argument('--checks',default='data/inventory_checks.json');a=p.parse_args()

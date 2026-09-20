@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"

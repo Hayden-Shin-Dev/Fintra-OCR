@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Exercise real UI endpoints sequentially, including GPU OCR and remapping."""
 import json,time
 from pathlib import Path

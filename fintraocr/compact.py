@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Compact model-backed label classification; v2 grounding remains mandatory."""
 import json,time
 from urllib.request import Request,urlopen

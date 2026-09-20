@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Inventory all provided images and reuse OCR only after matching image bytes."""
 import json,hashlib,time,argparse
 from pathlib import Path

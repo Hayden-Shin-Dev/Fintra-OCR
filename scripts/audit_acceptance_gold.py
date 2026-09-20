@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Document transcription corrections using independent Azure annotations.
 Original pre-inference drafts remain untouched. Both baseline and candidates
 must be rescored against this same audited version; no engine output is gold.

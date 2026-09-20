@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Run publisher examples against frozen OCR and mapping, never against PDF text."""
 import argparse,json,time,hashlib
 from scripts.azure_acceptance import ROOT

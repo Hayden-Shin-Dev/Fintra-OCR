@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Manual transcription of publisher images, before external engine inference.
 
 Evaluation fixtures only. No production module imports this file.

@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Count Qwen text tokens locally; never download assets during inference."""
 from functools import lru_cache
 from pathlib import Path

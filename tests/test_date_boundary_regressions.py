@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 from fintraocr.layout import unambiguous_date_prefix
 from tests.test_structural import doc,run
 import pytest

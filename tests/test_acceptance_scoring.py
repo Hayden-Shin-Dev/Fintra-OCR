@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 from scripts.score_acceptance import audit_result_contract, bucket, count, rates
 
 

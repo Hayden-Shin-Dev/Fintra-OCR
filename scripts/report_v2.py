@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Reproducible old/new comparison with unchanged legacy gold fields."""
 import json
 from pathlib import Path

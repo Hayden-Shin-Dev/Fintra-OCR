@@ -115,3 +115,10 @@ python -m scripts.report_v2
 서버는 `127.0.0.1:8768`에 바인딩하고, Ollama도 localhost만 허용합니다. 이 MVP 서버에 외부 공개용 인증·사용자 격리·분산 큐는 없습니다. 클라우드 공개 전에는 해당 기능이 필요합니다. 작업은 `data/ui/<job-id>`에 저장되며 자동 삭제하지 않습니다.
 
 공식 참고: [PP-OCRv6 비교](https://github.com/PaddlePaddle/PaddleOCR/blob/main/docs/version3.x/algorithm/PP-OCRv6/PP-OCRv6.en.md), [OCR 언어 지원](https://github.com/PaddlePaddle/PaddleOCR/blob/main/docs/version3.x/pipeline_usage/OCR.en.md), [Ollama 구조화 출력](https://docs.ollama.com/capabilities/structured-outputs), [Paddle Windows GPU 설치](https://www.paddlepaddle.org.cn/documentation/docs/zh/install/pip/windows-pip.html).
+
+
+## 제작자 및 웹 워크스페이스
+
+제작자: 신민철 · 이메일: min.developer.acc@gmail.com
+
+[제작자·외부 출처 안내](AUTHORS.md) · [Fintra Studio 웹·챗봇 서비스](studio/README.md)

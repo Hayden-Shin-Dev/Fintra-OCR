@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Run real local model mapping on saved OCR; score only pre-annotated fields."""
 import argparse,json,time,hashlib
 from pathlib import Path

@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 from pathlib import Path
 import subprocess,sys,time,webbrowser,json,os
 from urllib.request import urlopen

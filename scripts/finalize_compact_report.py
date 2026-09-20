@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Collect saved measurements without rerunning or changing evaluation gold."""
 import json
 from pathlib import Path

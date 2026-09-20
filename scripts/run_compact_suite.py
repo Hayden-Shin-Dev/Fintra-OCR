@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 import json,subprocess,sys
 from pathlib import Path
 entries=json.loads(Path('data/holdout/manifest.json').read_text(encoding='utf-8'))+json.loads(Path('data/fresh/manifest.json').read_text(encoding='utf-8'))

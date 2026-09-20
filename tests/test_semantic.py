@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 import pytest
 from fintraocr.semantic import OllamaSelector,wire_schema
 from fintraocr.mapping import MappingEngine

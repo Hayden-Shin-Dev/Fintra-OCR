@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 from fintraocr.table_captions import package_count_caption
 from tests.test_structural import doc,run
 from fintraocr.layout import value_spans

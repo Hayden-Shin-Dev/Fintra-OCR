@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Append source-only transcriptions. No engine predictions are read."""
 import json
 from scripts.azure_acceptance import ROOT

@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Run inference before reading frozen gold; cached OCR only, no model response replay."""
 import hashlib
 import json

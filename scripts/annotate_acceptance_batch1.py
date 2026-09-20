@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Human-readable manual transcription from batch-1 images, BEFORE mapping output.
 This is evaluation data only; never imported by fintraocr. Unreviewed fields are
 explicitly unscored, not assumed absent. Later audit must complete coverage.

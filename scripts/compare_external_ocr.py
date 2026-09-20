@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Evaluation-only OCR profile/preprocessing comparison on publisher examples."""
 import json,time,gc,hashlib
 from scripts.azure_acceptance import ROOT

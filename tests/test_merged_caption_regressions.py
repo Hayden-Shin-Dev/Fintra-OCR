@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 from fintraocr.table_captions import complete_column_parts,merged_table_caption
 from tests.test_structural import doc,run
 import pytest

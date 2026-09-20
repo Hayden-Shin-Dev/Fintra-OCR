@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Replay frozen model responses to isolate shared resolver changes."""
 import argparse,json
 from io import BytesIO

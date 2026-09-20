@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 from dataclasses import dataclass, asdict
 @dataclass(frozen=True)
 class FieldSpec:

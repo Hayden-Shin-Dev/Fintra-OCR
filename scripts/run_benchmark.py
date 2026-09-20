@@ -1,3 +1,4 @@
+# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 """Reproducible image OCR comparison and grounded field evaluation. Gold is used ONLY after inference."""
 import argparse,json,time,hashlib,sys,subprocess,unicodedata,re
 from pathlib import Path
