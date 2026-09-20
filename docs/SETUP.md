@@ -14,7 +14,7 @@
 
 팀 공유는 `studio/Start-Team-Preview.cmd`로 시작합니다. `studio/tools/bin/cloudflared.exe`가 필요하며 [공식 배포](https://github.com/cloudflare/cloudflared/releases)에서 준비합니다. URL과 로그인 정보는 실행 후 `studio/team-preview/access.txt`에 생성됩니다. PC가 켜져 있어야 하며, 종료는 `Stop-Team-Preview.cmd`입니다.
 
-고정 주소는 Tailscale을 설치하고 로그인한 뒤 `studio/Start-Fixed-URL.cmd`로 실행합니다. 처음에는 CLI에 표시되는 계정 설정 링크에서 Funnel을 활성화해야 합니다. 기존 팀 테스트 계정과 자료를 유지하며, 연결 주소는 `studio/team-preview/access.txt`에 기록됩니다. 장치명과 Tailscale 네트워크 이름을 유지하면 재실행해도 같은 주소를 사용합니다. PC를 재시작한 뒤에는 이 실행 파일을 다시 열어야 합니다. PC가 꺼지거나 절전 상태이면 접속할 수 없습니다. 중지는 `Stop-Team-Preview.cmd`를 사용합니다.
+고정 주소는 Tailscale을 설치하고 로그인한 뒤 `studio/Start-Fixed-URL.cmd`로 실행합니다. 처음에는 CLI에 표시되는 계정 설정 링크에서 Funnel을 활성화해야 합니다. 기존 팀 테스트 계정과 자료를 유지하며, 연결 주소는 `studio/team-preview/access.txt`에 기록됩니다. 장치명과 Tailscale 네트워크 이름을 유지하면 재실행해도 같은 주소를 사용합니다. 고정 주소 실행 파일은 Windows 작업 스케줄러에 서버를 등록합니다. 이후 Windows 로그인 시 자동 실행되며 비정상 종료 시 1분 간격으로 최대 3회 재시작합니다. PC가 꺼지거나 절전 상태이면 접속할 수 없습니다. 중지는 `Stop-Team-Preview.cmd`를 사용합니다.
 
 `FINTRA_ROUTER_MODEL`, `FINTRA_REASONING_MODEL`, `FINTRA_VALIDATOR_MODEL` 환경변수로 챗봇 역할별 모델을 지정할 수 있습니다. 지정하지 않으면 선택한 로컬 모델을 재사용합니다.
 

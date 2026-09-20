@@ -1,4 +1,4 @@
-# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
+﻿# 제작자: 신민철 | 이메일: min.developer.acc@gmail.com
 $ErrorActionPreference = 'Stop'
 $fintraRoot = $PSScriptRoot
 $fintraCli = Join-Path $env:ProgramFiles 'Tailscale/tailscale.exe'
@@ -57,15 +57,21 @@ if ($fintraListener) {
 }
 if (Get-NetTCPConnection -LocalPort 8781 -State Listen -ErrorAction SilentlyContinue) { throw 'Port 8781 is still occupied.' }
 $env:FINTRA_FIXED_ORIGIN = $fintraOrigin
-$fintraManager = Start-Process -FilePath $fintraPython -ArgumentList @('-X','utf8',('"'+(Join-Path $fintraRoot 'tools/team_preview.py')+'"')) -WorkingDirectory $fintraRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $fintraData 'fixed-manager.log') -RedirectStandardError (Join-Path $fintraData 'fixed-manager-error.log')
+$fintraTaskName = 'Fintra Fixed URL Server'
+$fintraUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+$fintraAction = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument ('-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "' + (Join-Path $fintraRoot 'Run-Fixed-Server.ps1') + '"') -WorkingDirectory $fintraRoot
+$fintraTrigger = New-ScheduledTaskTrigger -AtLogOn -User $fintraUser
+$fintraPrincipal = New-ScheduledTaskPrincipal -UserId $fintraUser -LogonType Interactive -RunLevel Limited
+$fintraSettings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit ([TimeSpan]::Zero) -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1) -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -MultipleInstances IgnoreNew -StartWhenAvailable
+Register-ScheduledTask -TaskName $fintraTaskName -Action $fintraAction -Trigger $fintraTrigger -Principal $fintraPrincipal -Settings $fintraSettings -Force | Out-Null
+Start-ScheduledTask -TaskName $fintraTaskName
 $fintraDeadline = (Get-Date).AddSeconds(60)
 while ((Get-Date) -lt $fintraDeadline) {
-    if ($fintraManager.HasExited) { throw 'Fintra failed to start. Check team-preview/fixed-manager-error.log.' }
     $fintraStatePath = Join-Path $fintraData 'state.json'
     if (Test-Path -LiteralPath $fintraStatePath) {
         try {
             $fintraState = Get-Content -LiteralPath $fintraStatePath | ConvertFrom-Json
-            if ($fintraState.status -eq 'running' -and $fintraState.manager_pid -eq $fintraManager.Id -and $fintraState.url -eq $fintraOrigin) {
+            if ($fintraState.status -eq 'running' -and (Get-NetTCPConnection -LocalPort 8788 -State Listen -ErrorAction SilentlyContinue).OwningProcess -eq $fintraState.manager_pid -and $fintraState.url -eq $fintraOrigin) {
                 Write-Host ('Fintra URL: ' + $fintraOrigin)
                 Write-Host 'Login details: team-preview/access.txt. Keep this PC awake and connected.'
                 exit 0
