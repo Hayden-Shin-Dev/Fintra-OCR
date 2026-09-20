@@ -8,7 +8,8 @@ if kind=='audit':
     from fintra_audit import analyze
     result=analyze(request['ledger'],request['documents'],config=request['config'])
 elif kind=='report':
-    from fintra_standards.report import create_report
+    sys.path.insert(0,str(Path(__file__).resolve().parent))
+    from report_renderer import create_report
     result=create_report(request['result'],request['path'],request['analysis_id'])
 else:raise ValueError('Unknown stage')
 Path(output_path).write_text(json.dumps(result,ensure_ascii=False),encoding='utf-8')
