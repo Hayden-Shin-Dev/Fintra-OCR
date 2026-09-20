@@ -43,6 +43,8 @@ body:has(.review-layout) #supporter{bottom:16px}.chat-open .layout{margin-right:
 
 .missing-summary{padding:20px;margin:18px 0;background:#f5f7fc;border:1px solid #dce3ef;border-radius:14px}.missing-summary h4{margin:0 0 10px}.missing-summary p{color:#64718b;font-size:13px;line-height:1.7}.missing-summary ul{padding:0;list-style:none}.missing-summary li{padding:10px 0;border-top:1px solid #e2e7ef;display:flex;align-items:center;justify-content:space-between;gap:12px}.missing-summary li small{display:block;color:#69768d;margin-top:5px}
 
+.site-credit{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:4px 12px;padding:12px 20px;color:#68758b;font-size:11px;line-height:1.6;text-align:center;overflow-wrap:anywhere}.site-credit a:hover{text-decoration:underline}.site-credit a:focus-visible{outline:2px solid #6673ce;outline-offset:3px;border-radius:2px}@media print{.site-credit{display:none}}
+
 /* Keep document help above adjacent cards and the ledger without clipping. */
 .uploads:has(.document-tip:hover),.uploads:has(.document-tip:focus-within),.ledger:has(.document-tip:hover),.ledger:has(.document-tip:focus-within){position:relative;z-index:50}
 .upload-card:before{border-radius:inherit}
