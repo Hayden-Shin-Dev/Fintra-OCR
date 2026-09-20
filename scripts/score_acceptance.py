@@ -4,7 +4,7 @@ import argparse,json,re,statistics,hashlib
 from collections import defaultdict,Counter
 from decimal import Decimal,InvalidOperation
 from pathlib import Path
-from scripts.azure_acceptance import ROOT
+ROOT=Path(__file__).resolve().parents[1]
 from fintraocr.schemas import catalog,ALIASES
 def equivalent(a,b,kind):
  if a is None or b is None:return a is b

@@ -37,7 +37,7 @@ class ArchitectureTests(unittest.TestCase):
             with self.subTest(case=case['id'],question=case['question']):
                 calls=[]
                 def retrieve(*args):calls.append(args);return retrieval(*args)
-                result=pipeline.answer(audit,case['question'],platform_context=context,generate=generation,retrieve=retrieve)
+                result=pipeline.legacy_answer(audit,case['question'],platform_context=context,generate=generation,retrieve=retrieve)
                 errors=[]
                 if result['selection']['intent']!=case['route']:errors.append('route')
                 for word in case['expected_contains']:
@@ -64,7 +64,7 @@ class ArchitectureTests(unittest.TestCase):
 
     def test_ocr_evidence_without_comparison(self):
         _,context=fixture();context['stage']='awaiting_review'
-        result=pipeline.answer({},'송장 원본 총액',platform_context=context,generate=generation,retrieve=lambda *a:self.fail('RAG'))
+        result=pipeline.legacy_answer({},'송장 원본 총액',platform_context=context,generate=generation,retrieve=lambda *a:self.fail('RAG'))
         self.assertIn('3325.00',result['answer'])
 
     def test_metadata_all_five_fields(self):
@@ -87,12 +87,12 @@ class ArchitectureTests(unittest.TestCase):
         audit,context=fixture();barrier=threading.Barrier(3)
         def wait(value):barrier.wait(timeout=2);return value
         with patch.object(pipeline,'transaction_lookup',side_effect=lambda *a:wait({'transactions':[]})),patch.object(pipeline,'evidence_lookup',side_effect=lambda *a:wait({'documents':[]})):
-            r=pipeline.answer(audit,'TX013 회계기준 설명',platform_context=context,generate=generation,retrieve=lambda *a:wait(retrieval()))
+            r=pipeline.legacy_answer(audit,'TX013 회계기준 설명',platform_context=context,generate=generation,retrieve=lambda *a:wait(retrieval()))
         self.assertEqual(r['selection']['intent'],'hybrid')
 
     def test_no_data_no_fake_amount(self):
         audit,context=fixture()
-        result=pipeline.answer(audit,'TX999 장부 금액',platform_context=context,generate=lambda *a:self.fail('LLM'))
+        result=pipeline.legacy_answer(audit,'TX999 장부 금액',platform_context=context,generate=lambda *a:self.fail('LLM'))
         self.assertIn('없습니다',result['answer']);self.assertNotIn('3325',result['answer'])
 
     def test_sentence_grounding(self):
@@ -111,7 +111,7 @@ class ArchitectureTests(unittest.TestCase):
         events=[]
         def model(system,data,emit):
             emit('먼저 ');self.assertEqual(events,['먼저 ']);emit('답변합니다.');return '먼저 답변합니다.'
-        result=pipeline.answer({},'피곤해',on_token=events.append,generate=model)
+        result=pipeline.legacy_answer({},'피곤해',on_token=events.append,generate=model)
         self.assertEqual(result['answer'],''.join(events));self.assertLessEqual(result['latency']['first_content'],result['latency']['total'])
 
     def test_context_excludes_report(self):
@@ -122,19 +122,19 @@ class ArchitectureTests(unittest.TestCase):
     def test_hybrid_context_selects_only_question_fields(self):
         audit,context=fixture();seen=[]
         def model(system,data,emit):seen.append(data);emit('추가 증빙을 확인해야 합니다.');return ''
-        pipeline.answer(audit,'현재 누락 수량의 회계기준 설명',platform_context=context,generate=model,retrieve=retrieval)
+        pipeline.legacy_answer(audit,'현재 누락 수량의 회계기준 설명',platform_context=context,generate=model,retrieve=retrieval)
         fields={f['field'] for d in seen[0]['evidence']['documents'] for f in d['fields']}
         self.assertLessEqual(fields,{'quantity','unit','product_code'})
         self.assertNotIn('report',seen[0]);self.assertLess(len(json.dumps(seen[0],ensure_ascii=False)),14000)
 
     def test_currency_match_does_not_open_inventory_search(self):
         audit,context=fixture()
-        result=pipeline.answer(audit,'현재 통화 일치의 회계기준 설명',platform_context=context,retrieve=lambda *args:self.fail('Unperformed accounting procedure'))
+        result=pipeline.legacy_answer(audit,'현재 통화 일치의 회계기준 설명',platform_context=context,retrieve=lambda *args:self.fail('Unperformed accounting procedure'))
         self.assertIn('직접 연결할 기준 원문은 없습니다',result['answer'])
 
     def test_general_pipeline_never_opens_any_data_tool(self):
         with patch.object(pipeline,'transaction_lookup',side_effect=AssertionError('DB')),patch.object(pipeline,'evidence_lookup',side_effect=AssertionError('evidence')),patch.object(pipeline,'standard_lookup',side_effect=AssertionError('RAG')):
-            self.assertIn('안녕하세요',pipeline.answer({},'안녕하세요')['answer'])
+            self.assertIn('안녕하세요',pipeline.legacy_answer({},'안녕하세요')['answer'])
 
     def test_followup_keeps_question_scope(self):
         p=route('왜?', [{'status':'complete','question':'현재 불일치 리스크 알려줘'}])

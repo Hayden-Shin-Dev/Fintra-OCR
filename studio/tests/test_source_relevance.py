@@ -49,7 +49,7 @@ class RelevancePipelineTests(unittest.TestCase):
   p={'id':'arbitrary','title':'새 기준서','text':'전혀 다른 경제적 사건에 관한 문단 내용입니다.'}
   emitted=[]
   def reject(system,data,schema):return {'decisions':[{'id':c['id'],'relation':'unrelated','answers_question':False,'quote':'','fact_ids':[],'missing_premises':[],'reason':'다른 주제'} for c in data['candidates']]}
-  answer=chat_pipeline.answer(audit,'품목정보가 누락된다면 어떤 리스크가 있어?',retrieve=lambda *a:{'passages':[p]},assess=reject,on_token=emitted.append,generate=lambda *a:self.fail('rejected source used for generation'))
+  answer=chat_pipeline.legacy_answer(audit,'품목정보가 누락된다면 어떤 리스크가 있어?',retrieve=lambda *a:{'passages':[p]},assess=reject,on_token=emitted.append,generate=lambda *a:self.fail('rejected source used for generation'))
   self.assertNotIn('새 기준서',answer['answer']);self.assertNotIn('전혀 다른', ''.join(emitted))
   self.assertFalse(any(c['kind']=='standard' for c in answer['citations']))
   self.assertIn('발견하지 못할 가능성',answer['answer'])
@@ -57,6 +57,6 @@ class RelevancePipelineTests(unittest.TestCase):
   import chat_pipeline
   p={'id':'exact','title':'원문','text':'요청한 문단의 원문','metadata':{'paragraph':'9'}}
   def fail(*a):self.fail('Exact lookup must not call semantic adjudication')
-  answer=chat_pipeline.answer({},'1002호 문단 9가 뭐야?',retrieve=lambda *a:{'passages':[p],'method':'exact_metadata_lookup'},assess=fail)
+  answer=chat_pipeline.legacy_answer({},'1002호 문단 9가 뭐야?',retrieve=lambda *a:{'passages':[p],'method':'exact_metadata_lookup'},assess=fail)
   self.assertIn(p['text'],answer['answer'])
 if __name__=='__main__':unittest.main()

@@ -1,16 +1,28 @@
+# Python and local environments
 .venv/
+venv/
 __pycache__/
 .pytest_cache/
 *.egg-info/
+*.py[cod]
+
+# Secrets and generated data
+.env
+.env.*
+!.env.example
 data/
 outputs/
-.env
-
-# Runtime state and private workspace data
+output/
+tmp/
+*.log
+*.zip
+*.pstats
 studio/team-preview/
-studio/data/
-studio/output/
-studio/tmp/
 studio/config/ai-runtime.json
 studio/tools/bin/
-*.log
+studio/tests/conversation-evaluation/
+studio/tests/conversation-*.json
+studio/tests/chat-architecture/*.json
+!studio/tests/chat-architecture/evaluation.json
+.DS_Store
+Thumbs.db

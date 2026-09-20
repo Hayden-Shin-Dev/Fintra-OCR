@@ -119,7 +119,7 @@ def standard_excerpt(passages,question):
         lines=[p['title']+(' · 문단 '+str(p.get('metadata',{}).get('paragraph')) if p.get('metadata',{}).get('paragraph') else ' · 검색된 원문 발췌')+'\n'+p['text'] for p in passages[:2]]
     return '\n\n'.join(lines)
 
-def answer(audit,question,history=(),transaction_id=None,framework=None,cancel=None,platform_context=None,on_token=None,generate=None,retrieve=None,assess=None):
+def legacy_answer(audit,question,history=(),transaction_id=None,framework=None,cancel=None,platform_context=None,on_token=None,generate=None,retrieve=None,assess=None,_plan=None):
     t0=time.perf_counter();metrics={k:0.0 for k in ('router','DB_lookup','retrieval','reranking','LLM','relevance','answer_validation','total')};chunks=[];context=dict(platform_context or {})
     def emit(chunk):
         remaining()
@@ -131,7 +131,7 @@ def answer(audit,question,history=(),transaction_id=None,framework=None,cancel=N
     result=None
     try:
         context['comparison_available']=bool(audit.get('transactions'))
-        t=time.perf_counter();plan=route(question,history,context);metrics['router']=time.perf_counter()-t
+        t=time.perf_counter();plan=_plan or route(question,history,context);metrics['router']=time.perf_counter()-t
         owned=scoped(audit,transaction_id,plan.transaction_name)
         context['comparison_available']=bool(audit.get('transactions'))
         jobs={};values={}
@@ -256,3 +256,11 @@ def answer(audit,question,history=(),transaction_id=None,framework=None,cancel=N
         entry={'at':time.time(),'question_hash':hashlib.sha256(question.encode()).hexdigest()[:16],'route':locals().get('plan').route if 'plan' in locals() else None,'latency':metrics,'success':result is not None,'relevance_decisions':locals().get('relevance',{}).get('decisions',[])}
         with LOG_LOCK:
             with (folder/'chat-latency.jsonl').open('a',encoding='utf-8') as out:out.write(json.dumps(entry)+'\n')
+
+
+def answer(audit,question,history=(),transaction_id=None,framework=None,cancel=None,platform_context=None,on_token=None,generate=None,retrieve=None,assess=None,model=None):
+    from conversational_analysis import answer as converse
+    def legacy(*args,**kwargs):return legacy_answer(*args,generate=generate,**kwargs)
+    from answer_budget import remaining,scope
+    with scope(cancel,seconds=min(50,remaining(52)-1)):
+        return converse(audit,question,history,transaction_id,framework,cancel,platform_context,on_token,legacy=legacy,model=model,retrieve=retrieve,assess=assess)
