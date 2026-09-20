@@ -237,9 +237,18 @@ def new_job(uploads,settings):
     JOBS[jid]=job;save(job);POOL.submit(run,job);return jid
 
 class Handler(BaseHTTPRequestHandler):
-    def reply(self,data,code=200,mime='application/json',download=None):
+    def reply(self,data,code=200,mime='application/json',download=None,cache_control='no-store',etag=None):
+        from http_payload import encode_payload
         body=data if isinstance(data,bytes) else json.dumps(data,ensure_ascii=False).encode()
-        self.send_response(code);self.send_header('Content-Type',mime);self.send_header('Content-Length',str(len(body)));self.send_header('Cache-Control','no-store');self.send_header('X-Content-Type-Options','nosniff')
+        body,encoding=encode_payload(body,mime,self.headers.get('Accept-Encoding',''))
+        self.send_response(code)
+        self.send_header('Content-Type',mime)
+        self.send_header('Content-Length',str(len(body)))
+        self.send_header('Cache-Control',cache_control)
+        self.send_header('Vary','Accept-Encoding')
+        self.send_header('X-Content-Type-Options','nosniff')
+        if etag:self.send_header('ETag',etag)
+        if encoding:self.send_header('Content-Encoding',encoding)
         if download:self.send_header('Content-Disposition','attachment; filename="'+download+'"')
         self.end_headers();self.wfile.write(body)
     def valid_host(self):return self.headers.get('Host') in deployment.allowed_hosts(PORT)

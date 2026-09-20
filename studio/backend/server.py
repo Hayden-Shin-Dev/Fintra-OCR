@@ -166,7 +166,11 @@ class Handler(engine.Handler):
         if path=='/' or path.startswith('/assets/') or path in {'/app.js','/styles.css'}:
             p=(WEB/('index.html' if path=='/' else path.lstrip('/'))).resolve()
             if not p.is_relative_to(WEB.resolve()) or not p.is_file():return self.reply({'error':'Not found'},404)
-            return self.reply(p.read_bytes(),mime=(mimetypes.guess_type(p.name)[0] or 'application/octet-stream')+('; charset=utf-8' if p.suffix in {'.js','.css','.html'} else ''))
+            from http_payload import content_etag
+            body=p.read_bytes();etag=content_etag(body)
+            if etag in self.headers.get('If-None-Match','').split(', '):
+                self.send_response(304);self.send_header('ETag',etag);self.send_header('Cache-Control','no-cache');self.send_header('Vary','Accept-Encoding');self.end_headers();return
+            return self.reply(body,mime=(mimetypes.guess_type(p.name)[0] or 'application/octet-stream')+('; charset=utf-8' if p.suffix in {'.js','.css','.html'} else ''),cache_control='no-cache',etag=etag)
         if not self.session():return self.reply({'error':'로그인 후 이용할 수 있습니다.'},401)
         stream=re.fullmatch(r'/api/(?:support/([a-f0-9]{32})|analyses/([a-f0-9]{32})/chat/([a-f0-9]{32}))/events',path)
         if stream:
