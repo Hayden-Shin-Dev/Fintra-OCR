@@ -1,11 +1,11 @@
 # 실행 방법
 
-제작자: 신민철 · min.developer.acc@gmail.com
+제작자: 신민철 / 이메일: min.developer.acc@gmail.com
 
 ## 웹 서비스
 
-`studio/`는 기존 Fintra 설치 환경의 OCR·거래 비교·회계기준 서비스를 사용합니다.
-`%LOCALAPPDATA%/Fintra/current.json`, 해당 버전의 런타임과 모델·검색 데이터가 필요합니다.
+`studio/`는 기존 Fintra 설치 환경의 OCR, 거래 비교, 회계기준 서비스를 사용합니다.
+`%LOCALAPPDATA%/Fintra/current.json`, 해당 버전의 런타임과 모델과 검색 데이터가 필요합니다.
 이 저장소를 clone하는 것만으로 해당 서비스와 데이터가 설치되지는 않습니다.
 
 1. 필요한 경우 `studio/config/ai-runtime.example.json`을 `ai-runtime.json`으로 복사하고 설치된 모델 이름을 지정합니다.

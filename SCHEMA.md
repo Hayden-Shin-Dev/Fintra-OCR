@@ -1,6 +1,6 @@
 # FintraOCR JSON 계약 v2.0
 
-금액·수량은 이진 부동소수점 오차를 피하기 위한 Decimal 문자열, 날짜는 YYYY-MM-DD, 식별자는 선행 0을 보존하는 문자열입니다. 단위는 명시된 표기의 정규화이며 서로 다른 단위 사이의 환산이나 합계 계산은 하지 않습니다.
+금액과 수량은 이진 부동소수점 오차를 피하기 위한 Decimal 문자열, 날짜는 YYYY-MM-DD, 식별자는 선행 0을 보존하는 문자열입니다. 단위는 명시된 표기의 정규화이며 서로 다른 단위 사이의 환산이나 합계 계산은 하지 않습니다.
 
 presence_status는 not_observed / label_only / value_observed / unresolved_evidence로 관측 상태를 구분합니다. 국가명은 원문을 보존하면서 ISO alpha-2 코드로 표준화합니다.
 
@@ -18,11 +18,11 @@ gross_weight_unit과 net_weight_unit을 별도로 보존합니다. 기존 weight
 
 견적송장 참조 `proforma_invoice_number`는 상업송장 번호와 분리했습니다. 신용장 개설은행 `letter_of_credit_issuing_bank`를 명시적 참조 필드로 추가했습니다. 송장 품목에도 `marks`를 보존합니다. 기존 경로를 삭제하거나 의미가 다른 당사자를 합치지 않았습니다.
 
-제품 사이즈 `product_size`는 수량 단위와 분리합니다. 송장 품목의 `package_count`도 상품 수량과 별개입니다. 화인 영역에 명시된 포장 개수·단위는 문자 구간을 나눠 보존합니다.
+제품 사이즈 `product_size`는 수량 단위와 분리합니다. 송장 품목의 `package_count`도 상품 수량과 별개입니다. 화인 영역에 명시된 포장 개수와 단위는 문자 구간을 나눠 보존합니다.
 
 운송 주선인 이름과 등록 번호, 청구 대상자와 인도 대상자, 신용장 발행일과 현재 문서 발행일, 배송일과 본선 적재일을 분리했습니다. 품목별 주문 번호는 items[].purchase_order_number에 보존합니다. incoterms는 명시적 인도 조건 코드가 있을 때만 표준화하며 결제 문구를 대신 넣지 않습니다.
 
-소재(material)·색상(color)을 품목별로 보존합니다. shipping_origin은 배송 출발지이며 선적항이나 제조 원산지로 바꾸지 않습니다.
+소재(material)와 색상(color)을 품목별로 보존합니다. shipping_origin은 배송 출발지이며 선적항이나 제조 원산지로 바꾸지 않습니다.
 
 ## commercial_invoice
 
