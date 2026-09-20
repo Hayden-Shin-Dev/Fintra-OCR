@@ -33,7 +33,7 @@
 | PDF 출력 | [ReportLab](https://www.reportlab.com/opensource/) |
 | 설치형 기준 검색 서비스 | [FAISS](https://github.com/facebookresearch/faiss), [rank_bm25](https://github.com/dorianbrown/rank_bm25) |
 | 테스트 | [pytest](https://github.com/pytest-dev/pytest), [HTTPX](https://github.com/encode/httpx) |
-| 팀 테스트 터널 | [cloudflared](https://github.com/cloudflare/cloudflared) |
+| 팀 테스트 터널 | [cloudflared](https://github.com/cloudflare/cloudflared), [Tailscale Funnel](https://tailscale.com/docs/features/tailscale-funnel) |
 | 웹 폰트 | Google Fonts의 [DM Sans](https://fonts.google.com/specimen/DM+Sans), [Noto Sans KR](https://fonts.google.com/noto/specimen/Noto+Sans+KR) — CSS로 불러오며 폰트 파일은 저장소에 포함하지 않음 |
 
 ## 회계기준과 데이터

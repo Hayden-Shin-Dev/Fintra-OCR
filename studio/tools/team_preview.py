@@ -20,15 +20,24 @@ if not account.exists():
     credentials.write_text(json.dumps({'name':'FintraTeam','password':password}),'utf-8')
 children=[];logs=[]
 try:
-    tunnel_log=DATA/'tunnel.log';log=tunnel_log.open('w',encoding='utf-8');logs.append(log)
-    tunnel=subprocess.Popen([str(ROOT/'tools/bin/cloudflared.exe'),'--no-autoupdate','tunnel','--url','http://127.0.0.1:8781'],stdout=log,stderr=log,creationflags=subprocess.CREATE_NO_WINDOW);children.append(tunnel)
-    deadline=time.monotonic()+90;origin=None
-    while time.monotonic()<deadline:
-        if tunnel.poll() is not None:raise RuntimeError('Tunnel stopped; inspect team-preview/tunnel.log')
-        match=re.search(r'https://[a-z0-9-]+\.trycloudflare\.com',tunnel_log.read_text('utf-8',errors='replace'))
-        if match:origin=match.group();break
-        time.sleep(.5)
-    if not origin:raise RuntimeError('Tunnel did not return a URL')
+    fixed_origin=os.environ.get('FINTRA_FIXED_ORIGIN','').strip()
+    if fixed_origin:
+        from urllib.parse import urlsplit
+        parsed=urlsplit(fixed_origin)
+        if (parsed.scheme!='https' or not parsed.hostname or not parsed.hostname.endswith('.ts.net')
+                or parsed.username or parsed.password or parsed.port or parsed.path or parsed.query or parsed.fragment):
+            raise ValueError('Invalid Tailscale public origin')
+        origin=fixed_origin
+    else:
+        tunnel_log=DATA/'tunnel.log';log=tunnel_log.open('w',encoding='utf-8');logs.append(log)
+        tunnel=subprocess.Popen([str(ROOT/'tools/bin/cloudflared.exe'),'--no-autoupdate','tunnel','--url','http://127.0.0.1:8781'],stdout=log,stderr=log,creationflags=subprocess.CREATE_NO_WINDOW);children.append(tunnel)
+        deadline=time.monotonic()+90;origin=None
+        while time.monotonic()<deadline:
+            if tunnel.poll() is not None:raise RuntimeError('Tunnel stopped; inspect team-preview/tunnel.log')
+            match=re.search(r'https://[a-z0-9-]+\.trycloudflare\.com',tunnel_log.read_text('utf-8',errors='replace'))
+            if match:origin=match.group();break
+            time.sleep(.5)
+        if not origin:raise RuntimeError('Tunnel did not return a URL')
     env={**os.environ,'FINTRA_PUBLIC_ORIGIN':origin,'FINTRA_WEB_PORT':'8781',
          'FINTRA_WORKSPACE_DATA':str(DATA),'FINTRA_WEB_DATA':str(DATA/'analyses'),'FINTRA_ACCOUNT_FILE':str(account)}
     log=(DATA/'app.log').open('w',encoding='utf-8');logs.append(log)
@@ -41,8 +50,8 @@ try:
         except OSError:time.sleep(.5)
     else:raise RuntimeError('App startup timed out')
     c=json.loads(credentials.read_text('utf-8'))
-    (DATA/'access.txt').write_text('Fintra 팀 테스트\n\nURL: '+origin+'\n이름: '+c['name']+'\n비밀번호: '+c['password']+'\n\n팀 공용 공간: 로그인한 팀원은 이 공간의 자료를 함께 봅니다.\n기존 로컬 문서와 대화는 이 공간에 포함되지 않습니다.\nPC가 켜져 있고 이 실행이 유지되는 동안 사용 가능합니다.\n다시 시작하면 URL이 바뀔 수 있습니다.\n중지: 프로젝트의 Stop-Team-Preview.cmd 실행\n','utf-8')
-    (DATA/'state.json').write_text(json.dumps({'url':origin,'status':'running','manager_pid':os.getpid(),'app_pid':app.pid,'tunnel_pid':tunnel.pid}),'utf-8')
+    (DATA/'access.txt').write_text('Fintra 팀 테스트\n\nURL: '+origin+'\n이름: '+c['name']+'\n비밀번호: '+c['password']+'\n\n팀 공용 공간: 로그인한 팀원은 이 공간의 자료를 함께 봅니다.\n기존 로컬 문서와 대화는 이 공간에 포함되지 않습니다.\nPC가 켜져 있고 이 실행이 유지되는 동안 사용 가능합니다.\n주소 유지 조건은 사용 중인 연결 방식에 따라 다릅니다.\n중지: 프로젝트의 Stop-Team-Preview.cmd 실행\n','utf-8')
+    (DATA/'state.json').write_text(json.dumps({'url':origin,'provider':'tailscale' if fixed_origin else 'cloudflare','status':'running','manager_pid':os.getpid(),'app_pid':app.pid,'tunnel_pid':None if fixed_origin else tunnel.pid}),'utf-8')
     print(origin,flush=True)
     while not (DATA/'stop.request').exists():
         if (DATA/'reload.request').exists():
@@ -52,7 +61,7 @@ try:
             except subprocess.TimeoutExpired:app.kill();app.wait()
             children.remove(app)
             app=subprocess.Popen([sys.executable,'-X','utf8',str(ROOT/'run.py')],cwd=str(ROOT),env=env,stdout=log,stderr=log,creationflags=subprocess.CREATE_NO_WINDOW);children.append(app)
-            (DATA/'state.json').write_text(json.dumps({'url':origin,'status':'running','manager_pid':os.getpid(),'app_pid':app.pid,'tunnel_pid':tunnel.pid}),'utf-8')
+            (DATA/'state.json').write_text(json.dumps({'url':origin,'provider':'tailscale' if fixed_origin else 'cloudflare','status':'running','manager_pid':os.getpid(),'app_pid':app.pid,'tunnel_pid':None if fixed_origin else tunnel.pid}),'utf-8')
         if any(p.poll() is not None for p in children):raise RuntimeError('Preview process exited')
         time.sleep(1)
 finally:
