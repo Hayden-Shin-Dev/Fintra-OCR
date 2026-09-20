@@ -43,10 +43,12 @@ body:has(.review-layout) #supporter{bottom:16px}.chat-open .layout{margin-right:
 
 .missing-summary{padding:20px;margin:18px 0;background:#f5f7fc;border:1px solid #dce3ef;border-radius:14px}.missing-summary h4{margin:0 0 10px}.missing-summary p{color:#64718b;font-size:13px;line-height:1.7}.missing-summary ul{padding:0;list-style:none}.missing-summary li{padding:10px 0;border-top:1px solid #e2e7ef;display:flex;align-items:center;justify-content:space-between;gap:12px}.missing-summary li small{display:block;color:#69768d;margin-top:5px}
 
-.site-credit{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:4px 12px;padding:12px 20px;color:#68758b;font-size:11px;line-height:1.6;text-align:center;overflow-wrap:anywhere}.site-credit a:hover{text-decoration:underline}.site-credit a:focus-visible{outline:2px solid #6673ce;outline-offset:3px;border-radius:2px}@media print{.site-credit{display:none}}
 
 /* Keep document help above adjacent cards and the ledger without clipping. */
 .uploads:has(.document-tip:hover),.uploads:has(.document-tip:focus-within),.ledger:has(.document-tip:hover),.ledger:has(.document-tip:focus-within){position:relative;z-index:50}
 .upload-card:before{border-radius:inherit}
 
 .review-area-summary{margin:20px 0}.review-area-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:15px 0}.review-area{border:1px solid #e0e5f0;border-radius:12px;background:#fafbff;padding:0 14px}.review-area>summary{display:flex;align-items:center;justify-content:space-between;gap:10px}.review-area[open]{grid-column:1/-1}.review-area .report-fact p{overflow-wrap:anywhere}@media(max-width:700px){.review-area-grid{grid-template-columns:1fr}}
+
+/* Author credit stays inside the existing panels without adding a page footer. */
+.author-credit{display:flex;flex-wrap:wrap;align-items:center;gap:3px 10px;font-size:10px;line-height:1.6;font-weight:400;letter-spacing:0;color:#94a0b5;overflow-wrap:anywhere}.author-credit a:hover{text-decoration:underline}.author-credit a:focus-visible{outline:1px solid currentColor;outline-offset:3px}.sidebar>.author-credit{display:block;margin-top:10px}.sidebar>.author-credit>span,.sidebar>.author-credit>a{display:block}.sidebar>.author-credit>a{font-size:9px}.login-art footer .author-credit{color:#94a0b5}@media(max-width:800px){.sidebar>.author-credit{grid-column:1/-1;display:flex;margin-top:5px}.login-art footer{display:block}}@media print{.author-credit{display:none}}
