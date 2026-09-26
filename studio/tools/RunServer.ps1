@@ -7,5 +7,5 @@ $fintraHome = Join-Path $env:LOCALAPPDATA 'Fintra'
 $fintraConfig = Get-Content -LiteralPath (Join-Path $fintraHome 'current.json') | ConvertFrom-Json
 $fintraPython = Join-Path $fintraHome ('runtimes/' + $fintraConfig.runtime_id + '/python.exe')
 Set-Location -LiteralPath $fintraRoot
-& $fintraPython -X utf8 (Join-Path $fintraRoot 'tools/team_preview.py') >> (Join-Path $fintraRoot 'team-preview/public-service.log') 2>&1
+& $fintraPython -X utf8 (Join-Path $fintraRoot 'tools/service_runner.py')
 exit $LASTEXITCODE

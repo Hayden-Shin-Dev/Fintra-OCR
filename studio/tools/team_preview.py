@@ -33,7 +33,7 @@ try:
             raise ValueError('Invalid Tailscale public origin')
         origin=fixed_origin
     else:
-        tunnel_log=DATA/'tunnel.log';log=tunnel_log.open('w',encoding='utf-8');logs.append(log)
+        tunnel_log=DATA/('tunnel-'+str(os.getpid())+'.log');log=tunnel_log.open('w',encoding='utf-8');logs.append(log)
         tunnel=subprocess.Popen([str(ROOT/'tools/bin/cloudflared.exe'),'--no-autoupdate','tunnel','--url','http://127.0.0.1:8781'],stdout=log,stderr=log,creationflags=subprocess.CREATE_NO_WINDOW);children.append(tunnel)
         deadline=time.monotonic()+90;origin=None
         while time.monotonic()<deadline:
@@ -44,7 +44,7 @@ try:
         if not origin:raise RuntimeError('Tunnel did not return a URL')
     env={**os.environ,'FINTRA_PUBLIC_ORIGIN':origin,'FINTRA_WEB_PORT':'8781',
          'FINTRA_WORKSPACE_DATA':str(DATA),'FINTRA_WEB_DATA':str(DATA/'analyses'),'FINTRA_ACCOUNT_FILE':str(account)}
-    log=(DATA/'app.log').open('w',encoding='utf-8');logs.append(log)
+    log=(DATA/('app-'+str(os.getpid())+'.log')).open('w',encoding='utf-8');logs.append(log)
     app=subprocess.Popen([sys.executable,'-X','utf8',str(ROOT/'run.py')],cwd=str(ROOT),env=env,stdout=log,stderr=log,creationflags=subprocess.CREATE_NO_WINDOW);children.append(app)
     for _ in range(60):
         if app.poll() is not None:raise RuntimeError('App stopped; inspect team-preview/app.log')
@@ -83,14 +83,14 @@ try:
             next_publish=time.monotonic()+30
         if any(p.poll() is not None for p in children):raise RuntimeError('Preview process exited')
         if time.monotonic()>=next_health:
-            if not fixed_origin and tunnel_revoked(tunnel_log.read_text('utf-8',errors='replace')):
-                raise RuntimeError('Cloudflare tunnel expired; restarting via the Windows service task')
             try:
                 check_health(origin,public=True)
                 health_failures=0
             except Exception as exc:
                 health_failures+=1
                 print('Public health failure '+str(health_failures)+': '+type(exc).__name__,flush=True)
+                if not fixed_origin and tunnel_revoked(tunnel_log.read_text('utf-8',errors='replace')):
+                    raise RuntimeError('Cloudflare tunnel expired; restarting via the Windows service task')
                 if health_failures>=4:raise RuntimeError('Public connection unavailable; restarting via the Windows service task')
             next_health=time.monotonic()+30
         time.sleep(1)

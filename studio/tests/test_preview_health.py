@@ -7,8 +7,13 @@ from pathlib import Path
 from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 import preview_health
+import service_runner
 
 class PreviewHealthTests(unittest.TestCase):
+    def test_supervisor_retries_failure_but_honors_user_stop(self):
+        self.assertTrue(service_runner.should_restart(1,False))
+        self.assertFalse(service_runner.should_restart(1,True))
+        self.assertFalse(service_runner.should_restart(0,False))
     def test_existing_listener_is_not_treated_as_new_app(self):
         with preview_health.exclusive_socket() as listener:
             listener.bind(('127.0.0.1',0))
