@@ -3,6 +3,7 @@
 import hashlib,json,os,re,secrets,socket,subprocess,sys,time
 from pathlib import Path
 from urllib.request import urlopen
+sys.path.insert(0,str(Path(__file__).resolve().parent))
 from preview_health import exclusive_socket, require_free_port, check_health, tunnel_revoked
 ROOT=Path(__file__).resolve().parents[1];DATA=ROOT/'team-preview';DATA.mkdir(exist_ok=True)
 if '--stop' in sys.argv:
