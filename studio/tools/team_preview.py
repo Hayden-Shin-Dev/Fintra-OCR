@@ -3,12 +3,13 @@
 import hashlib,json,os,re,secrets,socket,subprocess,sys,time
 from pathlib import Path
 from urllib.request import urlopen
+from preview_health import exclusive_socket, require_free_port, check_health, tunnel_revoked
 ROOT=Path(__file__).resolve().parents[1];DATA=ROOT/'team-preview';DATA.mkdir(exist_ok=True)
 if '--stop' in sys.argv:
     (DATA/'stop.request').touch();print('Team preview stop requested.');raise SystemExit
 if '--reload' in sys.argv:
     (DATA/'reload.request').touch();print('Team preview app reload requested.');raise SystemExit
-guard=socket.socket()
+guard=exclusive_socket()
 try:guard.bind(('127.0.0.1',8788));guard.listen(1)
 except OSError:print('Team preview already running. Read team-preview/access.txt');raise SystemExit
 (DATA/'stop.request').unlink(missing_ok=True)
@@ -21,6 +22,7 @@ if not account.exists():
 children=[];logs=[];origin=None;link_published=False
 publish_link=os.environ.get('FINTRA_PUBLISH_LINK')=='1'
 try:
+    require_free_port(8781)
     fixed_origin=os.environ.get('FINTRA_FIXED_ORIGIN','').strip()
     if fixed_origin:
         from urllib.parse import urlsplit
@@ -46,7 +48,7 @@ try:
     for _ in range(60):
         if app.poll() is not None:raise RuntimeError('App stopped; inspect team-preview/app.log')
         try:
-            with urlopen('http://127.0.0.1:8781/api/session',timeout=2) as response:json.load(response)
+            check_health(origin)
             break
         except OSError:time.sleep(.5)
     else:raise RuntimeError('App startup timed out')
@@ -62,6 +64,8 @@ try:
             print('Public link: '+PUBLIC_URL,flush=True)
         except Exception as exc:print('Public link update pending: '+type(exc).__name__,flush=True)
     next_publish=time.monotonic()+30
+    next_health=time.monotonic()+30
+    health_failures=0
     print(origin,flush=True)
     while not (DATA/'stop.request').exists():
         if (DATA/'reload.request').exists():
@@ -77,6 +81,17 @@ try:
             except Exception as exc:print('Public link update pending: '+type(exc).__name__,flush=True)
             next_publish=time.monotonic()+30
         if any(p.poll() is not None for p in children):raise RuntimeError('Preview process exited')
+        if time.monotonic()>=next_health:
+            if not fixed_origin and tunnel_revoked(tunnel_log.read_text('utf-8',errors='replace')):
+                raise RuntimeError('Cloudflare tunnel expired; restarting via the Windows service task')
+            try:
+                check_health(origin,public=True)
+                health_failures=0
+            except Exception as exc:
+                health_failures+=1
+                print('Public health failure '+str(health_failures)+': '+type(exc).__name__,flush=True)
+                if health_failures>=4:raise RuntimeError('Public connection unavailable; restarting via the Windows service task')
+            next_health=time.monotonic()+30
         time.sleep(1)
 finally:
     for p in children:

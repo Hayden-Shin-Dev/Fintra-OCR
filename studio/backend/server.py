@@ -334,7 +334,14 @@ class Handler(engine.Handler):
         except Exception as e:return self.reply({'error':str(e)},400)
 
 def serve():
+    import socket
+    class ExclusiveHTTPServer(ThreadingHTTPServer):
+        def server_bind(self):
+            if hasattr(socket, 'SO_EXCLUSIVEADDRUSE'):
+                self.allow_reuse_address=False
+                self.socket.setsockopt(socket.SOL_SOCKET,socket.SO_EXCLUSIVEADDRUSE,1)
+            super().server_bind()
     from workpapers import resume_preparation
     resume_preparation(engine.JOBS,engine.DATA)
     print(f'Fintra web workspace: http://127.0.0.1:{engine.PORT}',flush=True)
-    ThreadingHTTPServer(('127.0.0.1',engine.PORT),Handler).serve_forever()
+    ExclusiveHTTPServer(('127.0.0.1',engine.PORT),Handler).serve_forever()
