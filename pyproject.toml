@@ -5,6 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "fintraocr"
 version = "0.3.0"
+description = "Evidence-grounded document extraction for the Fintra audit review portfolio"
+authors = [{name = "신민철", email = "min.developer.acc@gmail.com"}]
+license = {file = "LICENSE"}
 requires-python = ">=3.10"
 dependencies = ["pydantic>=2.7,<3", "numpy>=1.24,<3", "opencv-python-headless>=4.10,<5", "pycountry>=24.6", "tokenizers>=0.22,<0.24"]
 [project.optional-dependencies]

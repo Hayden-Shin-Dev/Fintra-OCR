@@ -30,3 +30,12 @@ Thumbs.db
 # Private account database
 *.sqlite3
 *.sqlite3-*
+*.sqlite
+*.db
+*.pem
+*.key
+credentials.json
+account.json
+service-account*.json
+dist/
+build/

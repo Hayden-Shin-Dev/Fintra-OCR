@@ -37,6 +37,8 @@ ollama pull qwen3.5:4b
 
 `examples/`는 실제 고객 문서가 아닌 오프라인 시연용 데이터입니다.
 
+OCR 모델과 전체 Studio 런타임을 설치하지 않고도 구조화된 OCR 입력을 필드로 매핑하는 과정을 확인할 수 있습니다. 먼저 저장소 루트에서 `python -m pip install -e ".[test]"`를 실행합니다. 아래 명령은 실제 이미지를 OCR로 읽는 성능 시험이 아니라, 제공된 합성 OCR 결과와 필드 선택 제안을 처리하는 예제입니다.
+
 ```powershell
 python -m fintraocr map examples/synthetic.ocr.json --proposal examples/synthetic.proposal.json --output outputs/demo.json
 ```
