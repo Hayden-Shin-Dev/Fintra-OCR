@@ -1,0 +1,4 @@
+# Third-party assets are excluded from repository language statistics.
+studio/web/assets/three.module.js linguist-vendored=true
+studio/web/assets/lucide.js linguist-vendored=true
+fintraocr/assets/qwen35-tokenizer.json linguist-vendored=true
